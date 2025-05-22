@@ -1,0 +1,58 @@
+@import 'normalize.css';
+
+:root {
+    --primary-color: #2563eb;
+    --primary-color-light: #3b82f6;
+    --primary-color-dark: #1d4ed8;
+    --text-color: #374151;
+    --white: #fff;
+    --black: #000;
+    --background-color: #f8f9fa;
+    --border-color: #ced4da;
+    --error-color: #dc2626;
+    --success-color: #16a34a;
+    --warning-color: #f59e0b;
+    --info-color: #3b82f6;
+    --disabled-color: #6b7280;
+    --placeholder-color: #6b7280;
+
+    --font-family: 'Poppins', sans-serif;
+
+    --font-size: 1.6rem;
+    --line-height: 1.5rem;
+    --border-radius: 0.5rem;
+    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease-in-out;
+
+    --default-layout-width: 120rem;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+html {
+    font-size: 62.5%;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.6rem;
+    line-height: 1.5rem;
+    text-rendering: optimizeSpeed;
+    color: var(--text-color);
+    // overflow-y: hidden;
+}
+
+a {
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.mantine-Checkbox-icon {
+    display: none;
+}
+.mantine-Checkbox-body {
+    display: flex;
+    gap: 1rem;
+}
