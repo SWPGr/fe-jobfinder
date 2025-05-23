@@ -3,15 +3,15 @@ import styles from './Login.module.scss';
 import { useState } from 'react';
 
 import { IconMail, IconBrandSamsungpass, IconEye, IconEyeOff } from '@tabler/icons-react';
-import { Checkbox, ActionIcon, Button } from '@mantine/core';
+import { Checkbox, ActionIcon, Button, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import TextInputCustom from '~/components/TextInputCustom';
 
 import ResetPassword from './ResetPassword';
 import { Link } from 'react-router-dom';
 import { LeftSideLogin } from '../components';
 import GoogleLoginButton from '~/components/GoogleLoginButton';
 import { validator } from '~/utils';
+import { Button as CustomButton } from '~/components';
 
 // Bind styles for conditional class names
 const cx = classNames.bind(styles);
@@ -66,32 +66,32 @@ function Login() {
                     {/* FORM SINGIN */}
                     {/* Email input field */}
                     <form className={cx('form')} onSubmit={formLogin.onSubmit((values) => handleSubmitForm(values))}>
-                        <TextInputCustom
+                        <TextInput
                             label="Email address"
                             placeholder="you@example.com"
                             key={formLogin.key.email}
                             {...formLogin.getInputProps('email')}
                             leftSectionPointerEvents="none"
-                            leftSection={<IconMail size={18} />}
+                            leftSection={<IconMail size={20} />}
                             classNames={{
-                                input: cx('input'),
-                                label: cx('label'),
-                                section: cx('section'),
                                 wrapper: cx('text-wrapper'),
+                                input: cx('input'),
+                                section: cx('section'),
+                                label: cx('label'),
                                 error: cx('error'),
                             }}
                             // Example error message
                         />
 
                         {/* Password input field with show/hide toggle */}
-                        <TextInputCustom
+                        <TextInput
                             label="Password"
                             placeholder="your password..."
                             type={showPassword ? 'text' : 'password'}
                             key={formLogin.key.password}
                             {...formLogin.getInputProps('password')}
                             leftSectionPointerEvents="none"
-                            leftSection={<IconBrandSamsungpass size={18} />}
+                            leftSection={<IconBrandSamsungpass size={20} />}
                             rightSection={
                                 <ActionIcon
                                     variant="light"
@@ -103,10 +103,11 @@ function Login() {
                                 </ActionIcon>
                             }
                             classNames={{
-                                input: cx('input'),
-                                label: cx('label'),
-                                section: cx('section'),
                                 wrapper: cx('text-wrapper'),
+                                input: cx('input'),
+                                section: cx('section'),
+                                label: cx('label'),
+                                error: cx('error'),
                             }}
                         />
 
@@ -116,16 +117,34 @@ function Login() {
                                 checked={checked}
                                 label="Remember me"
                                 onChange={(event) => setChecked(event.currentTarget.checked)}
+                                classNames={{
+                                    input: cx('checkbox-input'),
+                                    label: cx('checkbox-label'),
+                                    inner: cx('checkbox-inner'),
+                                    icon: cx('checkbox-icon'),
+                                    body: cx('checkbox-body'),
+                                }}
                             />
 
                             {/* Reset password modal trigger */}
-                            <ResetPassword content={<p>Forgot password?</p>} title="Reset password">
-                                <TextInputCustom
+                            <ResetPassword content={<p>Forgot your password?</p>} title="Reset password">
+                                <TextInput
                                     label="Email address"
                                     placeholder="you@example.com"
                                     value={resetEmail}
                                     onChange={(e) => setResetEmail(e.target.value)}
-                                    classNames={{ input: cx('input'), label: cx('label') }}
+                                    classNames={{
+                                        wrapper: cx('text-wrapper'),
+                                        input: cx('input'),
+                                        section: cx('section'),
+                                        label: cx('label'),
+                                        error: cx('error'),
+                                    }}
+                                    rightSection={
+                                        <CustomButton yellow className={cx('send-otp')}>
+                                            Send OTP
+                                        </CustomButton>
+                                    }
                                 />
                             </ResetPassword>
                         </div>

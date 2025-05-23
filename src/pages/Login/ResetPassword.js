@@ -1,4 +1,3 @@
-import { IconXboxX } from '@tabler/icons-react';
 import { Button, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classNames from 'classnames/bind';
@@ -26,8 +25,9 @@ function ResetPassword({
                 title={title}
                 centered
                 withinPortal={true}
+                size={'xl'}
                 classNames={{
-                    content: cx('content'),
+                    content: cx('modal-content'),
                     header: cx('header'),
                     root: cx('root-popup'),
                     close: cx('close'),

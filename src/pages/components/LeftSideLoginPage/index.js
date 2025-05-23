@@ -3,6 +3,8 @@ import styles from './LeftSideLoginPage.module.scss';
 import { IconBriefcase } from '@tabler/icons-react';
 import { memo } from 'react';
 
+import { Images } from '~/assets';
+
 const cx = classNames.bind(styles);
 
 function LeftSideLogin({ props }) {
@@ -13,7 +15,7 @@ function LeftSideLogin({ props }) {
                     {/* Logo and app name */}
                     <div className={cx('logo')}>
                         <span className={cx('logo-icon')}>
-                            <IconBriefcase size={25} />
+                            <img src={Images.logo} alt="logo" />
                         </span>
                         <h3 className={cx('logo-text')}>JobFinder</h3>
                     </div>
