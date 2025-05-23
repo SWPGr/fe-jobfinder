@@ -3,15 +3,14 @@ import styles from './Login.module.scss';
 import { useState } from 'react';
 
 import { IconMail, IconBrandSamsungpass, IconEye, IconEyeOff } from '@tabler/icons-react';
-import { Checkbox, ActionIcon, Button, TextInput } from '@mantine/core';
+import { Checkbox, ActionIcon, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import ResetPassword from './ResetPassword';
 import { Link } from 'react-router-dom';
 import { LeftSideLogin } from '../components';
-import GoogleLoginButton from '~/components/GoogleLoginButton';
 import { validator } from '~/utils';
-import { Button as CustomButton } from '~/components';
+import { Button, GoogleLoginButton } from '~/components';
 
 // Bind styles for conditional class names
 const cx = classNames.bind(styles);
@@ -31,8 +30,6 @@ function Login() {
 
     const [loading, setLoading] = useState(false);
     const [checked, setChecked] = useState(false); // Remember me checkbox
-    const [resetEmail, setResetEmail] = useState(''); // For reset password modal
-    const [resetPassword, setResetPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
 
     // Handler for form submission (currently empty)
@@ -127,37 +124,12 @@ function Login() {
                             />
 
                             {/* Reset password modal trigger */}
-                            <ResetPassword content={<p>Forgot your password?</p>} title="Reset password">
-                                <TextInput
-                                    label="Email address"
-                                    placeholder="you@example.com"
-                                    value={resetEmail}
-                                    onChange={(e) => setResetEmail(e.target.value)}
-                                    classNames={{
-                                        wrapper: cx('text-wrapper'),
-                                        input: cx('input'),
-                                        section: cx('section'),
-                                        label: cx('label'),
-                                        error: cx('error'),
-                                    }}
-                                    rightSection={
-                                        <CustomButton yellow className={cx('send-otp')}>
-                                            Send OTP
-                                        </CustomButton>
-                                    }
-                                />
-                            </ResetPassword>
+                            <ResetPassword />
                         </div>
 
                         {/* Submit button */}
                         <div className={cx('btn-submit')}>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="filled"
-                                size="md"
-                                classNames={{ root: cx('root-submit-btn'), inner: cx('inner-submit-btn') }}
-                            >
+                            <Button type="submit" className={cx('submit')}>
                                 Sign in
                             </Button>
                         </div>

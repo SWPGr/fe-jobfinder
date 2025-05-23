@@ -141,24 +141,8 @@
 }
 
 // ========== SUBMIT BUTTON ==========
-.btn-submit {
+.submit {
     width: 100%;
-}
-
-.root-submit-btn {
-    width: 100%;
-    background: var(--primary-color);
-    border: none;
-    color: var(--white);
-    height: 50px;
-    padding: 12px;
-    border-radius: var(--border-radius);
-    font-size: 1.6rem;
-    cursor: pointer;
-
-    &:hover {
-        background: var(--primary-color-light);
-    }
 }
 
 // ========== OPTIONAL: ROOT BUTTON RESETPASSWORD  ==========
@@ -181,6 +165,7 @@
 .modal-content {
     min-width: 40rem;
     padding: 2rem;
+    border-radius: var(--border-radius);
 
     .header {
         h2 {
@@ -301,4 +286,25 @@
             width: 12rem;
         }
     }
+}
+
+// ==========FORGET PASSWORD ==========
+.forgot-password {
+    min-width: auto;
+    min-height: auto;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1.2rem;
+    font-weight: 400;
+    height: 1.6rem;
+
+    &:hover {
+        background: transparent;
+    }
+}
+
+.reset-password-form {
+    margin-top: 0;
+    margin-bottom: 0;
 }

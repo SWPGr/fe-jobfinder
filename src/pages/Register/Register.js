@@ -2,12 +2,13 @@ import classNames from 'classnames/bind';
 import styles from './Register.module.scss';
 import { useState } from 'react';
 import { IconMail, IconBrandSamsungpass, IconEyeOff, IconEye } from '@tabler/icons-react';
-import { Checkbox, Button, TextInput, ActionIcon } from '@mantine/core';
+import { Checkbox, TextInput, ActionIcon } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 
 import GoogleLoginButton from '~/components/GoogleLoginButton';
 import { LeftSideLogin } from '../components';
+import { Button } from '~/components';
 // popup phần chính sách bảo mật
 import { validator } from '~/utils';
 
@@ -35,6 +36,7 @@ function Register() {
 
     const [agree, setAgree] = useState(false);
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle password visibility
 
     const handleSubmitForm = (values) => {
         console.log('Form submitted:', values);
@@ -125,12 +127,22 @@ function Register() {
                         />
 
                         <TextInput
-                            type="password"
+                            type={showConfirmPassword ? 'text' : 'password'}
                             label="Confirm password"
                             placeholder="Confirm your password"
                             {...formLogin.getInputProps('confirmPassword')}
                             leftSection={<IconBrandSamsungpass size={18} />}
                             withVisibilityToggle
+                            rightSection={
+                                <ActionIcon
+                                    variant="light"
+                                    aria-label="Settings"
+                                    classNames={{ root: cx('root-right-btn'), icon: cx('icon-right-btn') }}
+                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                >
+                                    {showConfirmPassword ? <IconEyeOff size={24} /> : <IconEye size={24} />}
+                                </ActionIcon>
+                            }
                             classNames={{
                                 wrapper: cx('text-wrapper'),
                                 input: cx('input'),
@@ -167,9 +179,12 @@ function Register() {
                             />
                         </div>
 
-                        <Button fullWidth size="md" classNames={{ root: cx('root-submit-btn') }} type="submit">
-                            Create account
-                        </Button>
+                        {/* Submit button */}
+                        <div className={cx('btn-submit')}>
+                            <Button type="submit" className={cx('submit')}>
+                                Create account
+                            </Button>
+                        </div>
 
                         <div className={cx('login')}>
                             <p className={cx('description')}>

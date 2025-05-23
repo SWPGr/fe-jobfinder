@@ -153,24 +153,8 @@
 }
 
 // ========== SUBMIT BUTTON ==========
-.btn-submit {
+.submit {
     width: 100%;
-}
-
-.root-submit-btn {
-    width: 100%;
-    background: var(--primary-color);
-    border: none;
-    color: var(--white);
-    height: 50px;
-    padding: 12px;
-    border-radius: var(--border-radius);
-    font-size: 1.6rem;
-    cursor: pointer;
-
-    &:hover {
-        background: var(--primary-color-light);
-    }
 }
 
 // ========== OPTIONAL: ROOT BUTTON RESETPASSWORD  ==========
