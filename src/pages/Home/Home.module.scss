@@ -1,0 +1,861 @@
+.container {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #222;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  /* Header */
+  .header {
+    border-bottom: 1px solid #c8dbf4;
+  }
+  
+  /* Top info bar */
+  .topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e3f2ff;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .topNav {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .topNavItem {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .topNavItem:hover,
+  .topNavItem:focus {
+    background-color: #d0e5ff;
+    outline: none;
+  }
+  
+  .contactLang {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .phone span {
+    margin-right: 6px;
+  }
+  
+  .languageSelector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+  
+  .flagIcon {
+    width: 20px;
+    height: 14px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  
+  /* Main header content */
+  .mainHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+  }
+  
+  .logoSection {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .logoButton {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #004ea2;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+  }
+  
+  .logoIcon {
+    font-size: 24px;
+  }
+  
+  .countrySelect {
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background-color: white;
+  }
+  
+  /* Search bar */
+  .searchSection {
+    /* giữ nguyên phần style của searchSectionMain để tránh trùng */
+  }
+  
+  .searchSectionMain {
+    text-align: center;
+    margin: 40px 0;
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+  
+  /* Auth buttons */
+  .authButtons {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .signIn {
+    border: 1px solid #004ea2;
+    background-color: white;
+    color: #004ea2;
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .signIn:hover {
+    background-color: #004ea2;
+    color: white;
+  }
+  
+  .postJob {
+    background-color: #004ea2;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .postJob:hover {
+    background-color: #00306e;
+  }
+  
+  /* Các style khác như vacancies, how it works, popular categories ... giữ nguyên như đã cung cấp trước đó */
+  .heroSection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+    padding: 40px 0;
+    background-color: #f8f9fb;
+    border-radius: 12px;
+    padding-left: 150px;
+  }
+  
+  .heroLeft {
+    max-width: 600px;
+  }
+  
+  .heroLeft h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #121212;
+    margin-bottom: 15px;
+  }
+  
+  .heroLeft p {
+    color: #777;
+    font-size: 1rem;
+    margin-bottom: 25px;
+  }
+  
+  .searchFormHero {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .searchInputHero {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #dfe4ed;
+    font-size: 1rem;
+  }
+  
+  .findJobBtn {
+    background-color: #1a58fc;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+  }
+  
+  .findJobBtn:hover {
+    background-color: #0043d6;
+  }
+  
+  .suggestion {
+    font-size: 0.85rem;
+    color: #999;
+    margin-bottom: 30px;
+  }
+  
+  .suggestion span {
+    color: #1a58fc;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  .statsHero {
+    display: flex;
+    gap: 25px;
+  }
+  
+  .statItemHero {
+    background-color: white;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+    border-radius: 12px;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+  }
+  
+  .statIcon,
+  .statIconActive {
+    width: 50px;
+    height: 50px;
+    background-color: #e3efff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .statIconActive {
+    background-color: #1a58fc;
+  }
+  
+  .statIcon img {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .statIconActive img {
+    filter: brightness(0) invert(1);
+  }
+  
+  .statItemHero strong {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #121212;
+  }
+  
+  .statItemHero span {
+    font-size: 0.9rem;
+    color: #999;
+  }
+  
+  .heroRight {
+    max-width: 450px;
+  }
+  
+  .heroImage {
+    width: 100%;
+    height: auto;
+  }
+  .popularVacanciesSection {
+    margin-top: 60px;
+    padding: 0 100px; /* nếu muốn lề 2 bên rộng */
+  }
+  
+  .popularVacanciesSection h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #121212;
+    margin-bottom: 30px;
+  }
+  
+  .vacanciesGrid {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+  }
+  
+  .vacancyColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* giảm gap từ 15px xuống 8px */
+    flex: 1;
+  }
+  
+  .vacancyColumn strong {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #111;
+    line-height: 1.1; /* giảm khoảng cách dòng */
+    margin-bottom: 0; /* bỏ margin dưới nếu có */
+  }
+  
+  .openPositions {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 6px; /* giảm margin-bottom xuống 6px */
+    line-height: 1.1;
+  }
+  
+  .vacancyLink {
+    color: #1a58fc;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .vacancyLink:hover {
+    color: #004ea2;
+  }
+  .howItWorksSection {
+    margin-top: 60px;
+    background-color: #f0f2f7;
+    padding: 40px 100px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  
+  .howItWorksSection h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #121212;
+    margin-bottom: 30px;
+  }
+  
+  .steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    position: relative;
+  }
+  
+  .step {
+    max-width: 180px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 40px;
+    right: -40px;
+    width: 80px;
+    height: 2px;
+    border-top: 2px dashed #a9c0f6;
+    z-index: 1;
+  }
+  
+  .step:not(:last-child)::before {
+    content: "→";
+    position: absolute;
+    top: 30px;
+    right: -18px;
+    color: #a9c0f6;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 2;
+  }
+  
+  .iconCircle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1.5px solid #a9c0f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 15px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    cursor: default;
+  }
+  
+  .activeStep .iconCircle,
+  .iconCircle.activeIcon {
+    background-color: #1a58fc;
+    border-color: #1a58fc;
+  }
+  
+  .stepIcon {
+    stroke: #1a58fc;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .activeStep .stepIcon,
+  .iconCircle.activeIcon svg {
+    stroke: #fff;
+  }
+  
+  .step h3 {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #121212;
+    margin-bottom: 8px;
+  }
+  
+  .step p {
+    font-size: 0.85rem;
+    color: #777;
+    line-height: 1.4;
+    max-width: 180px;
+    margin: 0 auto;
+  }
+  .popularCategorySection {
+    margin-top: 60px;
+    padding: 0 100px;
+  }
+  
+  .categoryHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+  }
+  
+  .categoryHeader h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #121212;
+  }
+  
+  .viewAllBtn {
+    background: none;
+    border: none;
+    color: #1a58fc;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .viewAllBtn span {
+    font-size: 1.2rem;
+  }
+  
+  .categoryList {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px 30px;
+  }
+  
+  .categoryItem {
+    background-color: #e8f0fe;
+    border-radius: 8px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    min-width: 230px;
+    box-shadow: none;
+    transition: box-shadow 0.3s ease;
+    border: none;
+  }
+  
+  .categoryItem:hover {
+    box-shadow: 0 8px 30px rgba(26, 88, 252, 0.25);
+  }
+  
+  .activeCategory {
+    background-color: white;
+    box-shadow: 0 8px 40px rgba(26, 88, 252, 0.3);
+  }
+  
+  .categoryIcon {
+    background-color: #cfe0fd;
+    border-radius: 6px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    color: #1a58fc;
+  }
+  
+  .activeCategory .categoryIcon {
+    background-color: #1a58fc;
+    color: white;
+  }
+  
+  .categoryText strong {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #121212;
+  }
+  
+  .categoryText span {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 2px;
+    display: block;
+  }
+  .testimonialSection {
+    margin-top: 60px;
+    background-color: #f2f4f8;
+    padding: 40px 100px;
+    border-radius: 12px;
+    text-align: center;
+  }
+  
+  .testimonialSection h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #121212;
+    margin-bottom: 40px;
+  }
+  
+  .testimonialList {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+  
+  .testimonialItem {
+    background: white;
+    border-radius: 12px;
+    padding: 25px 20px 30px;
+    max-width: 350px;
+    box-shadow: 0 0 20px rgb(0 0 0 / 0.05);
+    text-align: left;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .stars {
+    color: #ffbb00;
+    font-size: 1.2rem;
+  }
+  
+  .testimonialItem p {
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+  }
+  
+  .testimonialFooter {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+  }
+  
+  .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .clientName {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #222;
+  }
+  
+  .clientRole {
+    font-size: 0.8rem;
+    color: #999;
+  }
+  
+  .quoteIcon {
+    font-size: 3rem;
+    color: #cbd2d9;
+    position: absolute;
+    right: 15px;
+    bottom: 10px;
+    font-weight: 700;
+    user-select: none;
+  }
+  
+  /* Navigation */
+  .testimonialNav {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .navArrow {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 36px;
+    text-align: center;
+    user-select: none;
+    transition: background-color 0.2s ease;
+  }
+  
+  .navArrow:hover {
+    background-color: #1a58fc;
+    color: white;
+    border-color: #1a58fc;
+  }
+  
+  .navDots {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #ccc;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .activeDot {
+    background-color: #1a58fc;
+  }
+  .becomeSection {
+    display: flex;
+    gap: 30px;
+    margin-top: 60px;
+    padding: 0 100px;
+  }
+  
+  .becomeCandidate,
+  .becomeEmployer {
+    flex: 1;
+    border-radius: 12px;
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    color: #222;
+  }
+  
+  .becomeCandidate {
+    background-color: #dbe0e6;
+  }
+  
+  .becomeEmployer {
+    background-color: #0b4a9c;
+    color: white;
+  }
+  
+  .becomeCandidate h3,
+  .becomeEmployer h3 {
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
+  }
+  
+  .becomeCandidate p,
+  .becomeEmployer p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: inherit;
+    margin-bottom: 15px;
+  }
+  
+  .registerBtn,
+  .registerBtnWhite {
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 22px;
+    border-radius: 25px;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .registerBtn {
+    background-color: white;
+    color: #222;
+  }
+  
+  .registerBtn:hover {
+    background-color: #cbd0d7;
+  }
+  
+  .registerBtnWhite {
+    background-color: #1a58fc;
+    color: white;
+  }
+  
+  .registerBtnWhite:hover {
+    background-color: #154abf;
+  }
+  
+  .registerBtn span,
+  .registerBtnWhite span {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .footer {
+    background-color: #111;
+    color: #bbb;
+    padding: 50px 100px 30px;
+    font-size: 0.9rem;
+    border-radius: 12px 12px 0 0;
+    margin-top: 50px;
+  }
+  
+  .footerTop {
+    display: flex;
+    justify-content: space-between; /* chia đều khoảng cách */
+    align-items: flex-start;
+    margin-bottom: 30px;
+    flex-wrap: nowrap;
+    gap: 0;
+    padding-top: 0px;
+  }
+  
+  .footerBrand {
+    flex: 0 0 280px; /* Cố định rộng 280px */
+  }
+  
+  .footerLogo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 15px;
+  }
+  
+  .footerBrand p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #777;
+  }
+  
+  .phone {
+    font-weight: 700;
+    color: white;
+  }
+  
+  .footerLinks {
+    display: flex;
+    gap: 40px;
+    flex-wrap: nowrap; /* Không xuống dòng */
+    flex: 1; /* Chiếm phần còn lại */
+    overflow-x: auto; /* Nếu quá rộng sẽ có scroll ngang */
+  }
+  
+  .footerColumn {
+    flex: 1; /* mỗi phần chiếm đều 1 phần */
+    min-width: 0; /* để flex-shrink hoạt động */
+  }
+  
+  .footerColumn h4 {
+    font-weight: 600;
+    color: white;
+    margin-bottom: 15px;
+  }
+  
+  .footerColumn ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .footerColumn li {
+    margin-bottom: 12px;
+    cursor: pointer;
+    color: #bbb;
+    transition: color 0.3s ease;
+  }
+  
+  .footerColumn li:hover {
+    color: white;
+  }
+  
+  .footerColumn strong {
+    color: white;
+  }
+  
+  .footerBottom {
+    border-top: 1px solid #222;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #555;
+    flex-wrap: wrap;
+  }
+  
+  .socialIcons {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .socialIcon {
+    width: 28px;
+    height: 28px;
+    background-color: #333;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .socialIcon:hover {
+    background-color: #1a58fc;
+  }
+  
+  
+  
+  
