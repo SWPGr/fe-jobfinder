@@ -289,22 +289,24 @@
 }
 
 // ==========FORGET PASSWORD ==========
-.forgot-password {
-    min-width: auto;
-    min-height: auto;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 1.2rem;
-    font-weight: 400;
-    height: 1.6rem;
-
-    &:hover {
+.popup {
+    .forgot-password {
+        min-width: auto;
+        min-height: auto;
+        border: none;
+        outline: none;
         background: transparent;
-    }
-}
+        font-size: 1.2rem;
+        font-weight: 400;
+        height: 1.6rem;
 
-.reset-password-form {
-    margin-top: 0;
-    margin-bottom: 0;
+        &:hover {
+            background: transparent;
+        }
+    }
+
+    .reset-password-form {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
 }

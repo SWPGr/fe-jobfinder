@@ -9,6 +9,7 @@ function Button({
     href,
     leftIcon,
     rightIcon,
+    type = 'button',
 
     // Button types
     primary = true,
@@ -28,6 +29,7 @@ function Button({
     yellow_white = false,
 
     rounded = false,
+    text,
 
     // Button sizes
     medium = true,
@@ -78,6 +80,7 @@ function Button({
         yellow_white,
 
         rounded,
+        text,
         medium,
         large,
         disabled,
@@ -86,7 +89,7 @@ function Button({
     });
 
     return (
-        <Comp className={classes} {...props}>
+        <Comp className={classes} {...props} type={type}>
             {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
             <span className={cx('title')}>{children}</span>
             {rightIcon && <span className={cx('icon')}>{rightIcon}</span>}

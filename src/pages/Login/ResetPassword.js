@@ -33,7 +33,7 @@ function ResetPassword({
     };
 
     return (
-        <div className="popup">
+        <div className={cx('popup')}>
             <Modal
                 title="Reset Password"
                 opened={opened}
@@ -84,7 +84,7 @@ function ResetPassword({
             </Modal>
 
             <Button blue_white onClick={open} className={cx('forgot-password')}>
-                {<p>Forgot your password?</p>}
+                Forgot your password?
             </Button>
         </div>
     );
