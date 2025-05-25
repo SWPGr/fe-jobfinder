@@ -1,6 +1,6 @@
 import { JobItem, JobItemList, JobItemOwner, JobItemApplied } from '~/components';
 import { Images } from '~/assets';
-
+import { Button } from '~/components';
 function Home() {
     return (
         <>
@@ -13,7 +13,7 @@ function Home() {
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                 }}
-                isLogin
+                // isLogin
                 isVIP
             />
 
@@ -28,6 +28,7 @@ function Home() {
                     remainDate: '3',
                 }}
                 isLogin
+
                 // isVIP
             />
 
@@ -58,6 +59,10 @@ function Home() {
                 }}
                 isVIP
             />
+
+            <Button black_lighter disabled large type="submit">
+                CLick
+            </Button>
         </>
     );
 }

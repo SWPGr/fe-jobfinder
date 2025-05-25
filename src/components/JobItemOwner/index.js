@@ -4,7 +4,6 @@ import { IconMapPin, IconCurrencyDollar, IconPencil, IconUsers, IconEye, IconTra
 import { Badge } from '@mantine/core';
 
 import { Images } from '~/assets';
-import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
