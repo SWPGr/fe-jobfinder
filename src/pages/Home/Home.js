@@ -1,3 +1,4 @@
+
 import { JobItem, JobItemList, JobItemOwner, JobItemApplied } from '~/components';
 import { Images } from '~/assets';
 
@@ -61,5 +62,6 @@ function Home() {
         </>
     );
 }
+
 
 export default Home;
