@@ -13,6 +13,10 @@ const routes = {
     applicationDetails: '/applications/:id', // Application details page
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
-};
 
+    
+    dashboard: '/dashboard', // Admin or user dashboard
+
+};
+ 
 export default routes;
