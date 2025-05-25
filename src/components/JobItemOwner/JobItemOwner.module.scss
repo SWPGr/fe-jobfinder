@@ -1,7 +1,7 @@
 .wrapper {
     width: 100%;
-    // min-width: 150rem;
-    height: 13rem;
+    max-width: 99rem;
+    height: 9.5rem;
     padding: 3rem;
     display: flex;
     align-items: center;
@@ -19,37 +19,6 @@
 
         .title {
             color: var(--blue-500);
-        }
-
-        .action {
-            .edit {
-                background: var(--blue-50);
-
-                &:hover {
-                    border: 1px solid var(--blue-500);
-                }
-            }
-            .applicant {
-                background: var(--green-50);
-
-                &:hover {
-                    border: 1px solid var(--green-500);
-                }
-            }
-            .delete {
-                background: var(--red-50);
-
-                &:hover {
-                    border: 1px solid var(--red-500);
-                }
-            }
-            .show {
-                background: var(--orange-50);
-
-                &:hover {
-                    border: 1px solid var(--orange-500);
-                }
-            }
         }
     }
 }
@@ -99,7 +68,7 @@
         -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
         overflow: hidden; /* Ẩn phần nội dung tràn */
         text-overflow: ellipsis;
-        max-width: 25rem;
+        max-width: 50rem;
     }
 }
 
@@ -150,11 +119,19 @@
     color: var(--green-500);
     display: flex;
     align-items: center;
+    gap: 0.5rem;
 }
 .inactive {
     color: var(--red-500);
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+}
+
+.applications {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 // ACTION
@@ -164,16 +141,39 @@
     align-items: center;
     gap: 0.8rem;
 }
-.action span {
+
+.item-label {
+    font-size: 1.4rem;
+    width: 20rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.item-main {
+    &:hover {
+        background: var(--blue-50);
+        color: var(--blue-500);
+    }
+}
+.dropdown {
+    border-radius: var(--border-radius);
+    transform: translateX(3rem);
+}
+
+.options {
     width: 4.8rem;
     height: 4.8rem;
-    padding: 1rem;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     border-radius: var(--border-radius);
-    transition: background 300ms ease-in-out; /* Add smooth transition effect (đếch phải lỗi) */
-    cursor: pointer;
+    transition: var(--transition);
+
+    &:hover {
+        background: var(--gray-50);
+    }
 }
 
 // FEATURED
@@ -201,18 +201,7 @@
         .top {
             .title {
                 font-size: 1.8rem;
-                max-width: 20rem;
-            }
-        }
-
-        .action span {
-            width: 4.2rem;
-            height: 4.2rem;
-            padding: 0.8rem;
-
-            svg {
-                width: 20px;
-                height: 20px;
+                max-width: 15rem;
             }
         }
     }
@@ -234,11 +223,6 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 1.2rem;
-        }
-        .label-badge {
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .logo-company {
@@ -274,7 +258,6 @@
         }
 
         .status,
-        .end-date,
         .applications {
             margin-top: 1rem;
             font-size: 1.2rem;
@@ -303,6 +286,21 @@
                     height: 18px;
                 }
             }
+
+            .view-applications {
+                padding: 0.6rem;
+                font-size: 1.2rem;
+                width: 15rem;
+                min-height: auto;
+                height: 3.5rem;
+
+                span {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
         }
     }
 }
@@ -329,12 +327,6 @@
             }
         }
 
-        .label-badge {
-            font-size: 0.9rem;
-            height: 1.8rem;
-            padding: 0 0.4rem;
-        }
-
         .bottom {
             flex-direction: column;
             gap: 0.8rem;
@@ -345,7 +337,6 @@
         }
 
         .status,
-        .end-date,
         .applications {
             font-size: 1rem;
             margin-top: 0.5rem;

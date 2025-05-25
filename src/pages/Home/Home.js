@@ -1,7 +1,6 @@
-
 import { JobItem, JobItemList, JobItemOwner, JobItemApplied } from '~/components';
 import { Images } from '~/assets';
-
+import { Button } from '~/components';
 function Home() {
     return (
         <>
@@ -14,7 +13,7 @@ function Home() {
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                 }}
-                isLogin
+                // isLogin
                 isVIP
             />
 
@@ -26,9 +25,10 @@ function Home() {
                     jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
-                    remainDate: '3',
+                    remainDay: '3',
                 }}
                 isLogin
+
                 // isVIP
             />
 
@@ -36,10 +36,10 @@ function Home() {
                 image={Images.google_image}
                 jobDescription={{
                     companyAddress: '1600 Amphitheatre Parkway Mountain ',
-                    jobTitle: 'Software Engineer asdasd asdhasdjahs asd asdhagsd asdsh ',
+                    jobTitle: 'Software Engineer ',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
-                    remainDate: '3',
+                    remainDay: '3',
                     isActive: false,
                     dueDate: 'June 15, 2021',
                     numberApplications: 10,
@@ -59,9 +59,12 @@ function Home() {
                 }}
                 isVIP
             />
+
+            <Button green large type="submit">
+                CLick
+            </Button>
         </>
     );
 }
-
 
 export default Home;
