@@ -159,13 +159,13 @@ function Register() {
                                 label={
                                     <>
                                         I agree to the{' '}
-                                        <a href="https://www.facebook.com/mai.dat.270705" className={cx('link')}>
+                                        <Link to="/service-and-policy" className={cx('link')}>
                                             Terms of Service
-                                        </a>{' '}
+                                        </Link>{' '}
                                         and{' '}
-                                        <a href="https://www.facebook.com/mai.dat.270705" className={cx('link')}>
+                                        <Link to="/service-and-policy" className={cx('link')}>
                                             Privacy Policy
-                                        </a>
+                                        </Link>
                                     </>
                                 }
                                 classNames={{

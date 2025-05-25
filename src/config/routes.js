@@ -11,6 +11,7 @@ const routes = {
     dashboard: '/dashboard', // Admin or user dashboard
     applications: '/applications', // List of job applications
     applicationDetails: '/applications/:id', // Application details page
+    serviceAndPolicy: '/service-and-policy',
     error: '/error',
 };
 
