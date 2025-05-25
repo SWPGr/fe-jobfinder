@@ -7,9 +7,9 @@ function Home() {
             <JobItem
                 image={Images.google_image}
                 jobDescription={{
-                    companyName: 'Google',
+                    companyName: 'Google ádas ádasds ádasdad ádsadadasd ádas',
                     companyAddress: '1600 Amphitheatre Parkway Mountain ',
-                    jobTitle: 'Software Engineer',
+                    jobTitle: 'Software Engineer sdasdash ahsdhas ahdsasjh bdjashdbsajh dajshdbjsa sbjdhasdjadhabdajsh',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                 }}
@@ -22,7 +22,7 @@ function Home() {
                 jobDescription={{
                     companyName: 'Google',
                     companyAddress: '1600 Amphitheatre Parkway Mountain ',
-                    jobTitle: 'Software Engineer',
+                    jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                     remainDate: '3',
@@ -34,9 +34,8 @@ function Home() {
             <JobItemOwner
                 image={Images.google_image}
                 jobDescription={{
-                    companyName: 'Google',
                     companyAddress: '1600 Amphitheatre Parkway Mountain ',
-                    jobTitle: 'Software Engineer',
+                    jobTitle: 'Software Engineer asdasd asdhasdjahs asd asdhagsd asdsh ',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                     remainDate: '3',
@@ -52,7 +51,7 @@ function Home() {
                 jobDescription={{
                     companyName: 'Google',
                     companyAddress: '1600 Amphitheatre Parkway Mountain ',
-                    jobTitle: 'Software Engineer',
+                    jobTitle: 'Software Engineer asdasd asdasds asdadasd',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                     dueDate: 'June 15, 2021',

@@ -94,6 +94,12 @@
     .title {
         color: var(--gray-900);
         font-size: 1.8rem;
+        display: -webkit-box; /* Sử dụng flexbox với WebKit */
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
+        -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
+        overflow: hidden; /* Ẩn phần nội dung tràn */
+        text-overflow: ellipsis;
+        max-width: 25rem;
     }
 }
 
@@ -177,5 +183,198 @@
 
     .logo-company {
         border-color: transparent;
+    }
+}
+
+// Responsive cho màn hình <= 1024px (tablet lớn)
+@media (max-width: 1024px) {
+    .wrapper {
+        height: auto;
+        padding: 2.5rem;
+        font-size: 1.4rem;
+
+        .logo-company {
+            width: 5rem;
+            height: 5rem;
+        }
+
+        .top {
+            .title {
+                font-size: 1.8rem;
+                max-width: 20rem;
+            }
+        }
+
+        .action span {
+            width: 4.2rem;
+            height: 4.2rem;
+            padding: 0.8rem;
+
+            svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    }
+}
+
+// Responsive cho màn hình <= 768px (tablet nhỏ)
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        height: auto;
+        padding: 2rem;
+        font-size: 1.2rem;
+
+        .content {
+            width: 49%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.2rem;
+        }
+        .label-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-company {
+            width: 4.8rem;
+            height: 4.8rem;
+        }
+
+        .top {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+
+            .title {
+                font-size: 1.6rem;
+                flex: 1 1 100%;
+                max-width: 15rem;
+            }
+
+            .label-badge {
+                font-size: 1rem;
+                height: 2rem;
+                padding: 0 0.5rem;
+            }
+        }
+
+        .bottom {
+            flex-wrap: wrap;
+            gap: 1rem;
+
+            & > div {
+                font-size: 1.2rem;
+                gap: 0.4rem;
+            }
+        }
+
+        .status,
+        .end-date,
+        .applications {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            text-align: left;
+            width: 100%;
+            flex: 1 1 17%;
+        }
+
+        .status {
+            display: flex;
+            justify-content: center;
+        }
+
+        .action {
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: flex-start;
+
+            span {
+                width: 3.8rem;
+                height: 3.8rem;
+                padding: 0.6rem;
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+    }
+}
+
+// Responsive cho màn hình <= 480px (điện thoại)
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 1.5rem;
+        font-size: 1rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .logo-company {
+            width: 4rem;
+            height: 4rem;
+        }
+
+        .top {
+            .title {
+                font-size: 1.4rem;
+                font-weight: 600;
+                max-width: fit-content;
+            }
+        }
+
+        .label-badge {
+            font-size: 0.9rem;
+            height: 1.8rem;
+            padding: 0 0.4rem;
+        }
+
+        .bottom {
+            flex-direction: column;
+            gap: 0.8rem;
+
+            & > div {
+                font-size: 1rem;
+            }
+        }
+
+        .status,
+        .end-date,
+        .applications {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            flex: 1 1 48%;
+            display: flex;
+            justify-content: start;
+            margin-left: 0.5rem;
+        }
+
+        .status {
+            justify-content: center;
+        }
+
+        .action {
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: center;
+            gap: 2rem;
+
+            span {
+                width: 3.2rem;
+                height: 3.2rem;
+                padding: 0.4rem;
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+        }
     }
 }

@@ -289,4 +289,10 @@
         background: transparent;
         text-decoration: underline;
     }
+
+    span {
+        display: flex;
+        justify-content: center;
+        height: fit-content;
+    }
 }

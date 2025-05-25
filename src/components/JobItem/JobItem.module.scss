@@ -61,6 +61,14 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            .name {
+                display: -webkit-box; /* Sử dụng flexbox với WebKit */
+                -webkit-line-clamp: 1; /* Hiển thị tối đa 1 dòng */
+                -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
+                overflow: hidden; /* Ẩn phần nội dung tràn */
+                text-overflow: ellipsis;
+                max-width: 15rem;
+            }
 
             button span {
                 font-size: 1.6rem;
@@ -110,6 +118,11 @@
         font-weight: 500;
         color: var(--gray-900);
         transition: var(--transition);
+        display: -webkit-box; /* Sử dụng flexbox với WebKit */
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
+        -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
+        overflow: hidden; /* Ẩn phần nội dung tràn */
+        text-overflow: ellipsis;
     }
 
     .job-description {
@@ -133,7 +146,8 @@
     background: linear-gradient(90deg, var(--orange-50), var(--white));
 
     .logo-company {
-        border-color: transparent;
+        // border-color: transparent;
+        border: none;
     }
 }
 
@@ -150,3 +164,79 @@
 }
 
 //
+
+//RESPONSIVE
+
+// Responsive cho màn hình <= 1024px
+@media (max-width: 1024px) {
+    .wrapper {
+        height: auto;
+        padding: 2.5rem;
+        font-size: 1.4rem;
+    }
+
+    .body {
+        .job-title {
+            font-size: 1.8rem;
+        }
+    }
+}
+
+// Responsive cho màn hình <= 768px
+@media (max-width: 768px) {
+    .wrapper {
+        min-width: auto;
+        max-width: auto;
+        height: 16rem;
+        font-size: 1.2rem;
+        padding: 2rem;
+    }
+
+    .header {
+        font-size: 1.2rem;
+
+        .logo-company {
+            width: 4rem;
+            height: 4rem;
+        }
+
+        .company-inf {
+            gap: 0;
+            .company-address {
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .body {
+        margin-top: 1.5rem;
+        gap: 1rem;
+
+        .job-title {
+            font-size: 1.6rem;
+            max-width: 12rem;
+        }
+
+        .job-description {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+    }
+}
+
+// Responsive cho màn hình <= 480px
+@media (max-width: 480px) {
+    .wrapper {
+        min-width: auto;
+        max-width: auto;
+        height: 14rem;
+        font-size: 1rem;
+        padding: 1.5rem;
+    }
+    .body {
+        .job-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+    }
+}

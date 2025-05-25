@@ -30,8 +30,8 @@ function JobItem({ image = Images.default_image, jobDescription = {}, isLogin = 
                     </div>
                     <div className={cx('company-inf')}>
                         <span className={cx('company-name')}>
-                            <Button text to={'#'}>
-                                {companyName}
+                            <Button text to={'#'} className={cx('name')}>
+                                <p>{companyName}</p>
                             </Button>
                             {isVIP && (
                                 <Badge
