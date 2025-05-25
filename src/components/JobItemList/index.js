@@ -22,8 +22,9 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, isLogi
     // save job status
     const [save, setSave] = useState(false);
 
-    const { companyName, companyAddress, jobTitle, workTime, salary, remainDate } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, remainDay } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
+
     return (
         <div className={classes}>
             <div className={cx('content')}>
@@ -68,7 +69,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, isLogi
                         </div>
                         <div className={cx('remain-date')}>
                             <IconCalendarWeek size={20} />
-                            {remainDate} Days Remaining
+                            {remainDay} Days Remaining
                         </div>
                     </div>
                     {/*  */}

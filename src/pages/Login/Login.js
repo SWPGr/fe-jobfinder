@@ -66,8 +66,8 @@ function Login() {
                         <TextInput
                             label="Email address"
                             placeholder="you@example.com"
-                            key={formLogin.key.email}
-                            {...formLogin.getInputProps('email')}
+                            key={formLogin.key.email} // Unique key
+                            {...formLogin.getInputProps('email')} // Get input props
                             leftSectionPointerEvents="none"
                             leftSection={<IconMail size={20} />}
                             classNames={{

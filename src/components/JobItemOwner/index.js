@@ -1,16 +1,25 @@
 import classNames from 'classnames/bind';
 import styles from './JobItemOwner.module.scss';
-import { IconMapPin, IconCurrencyDollar, IconPencil, IconUsers, IconEye, IconTrash } from '@tabler/icons-react';
-import { Badge } from '@mantine/core';
+import {
+    IconDotsVertical,
+    IconCircleX,
+    IconCircleCheck,
+    IconUsers,
+    IconPencil,
+    IconEye,
+    IconX,
+} from '@tabler/icons-react';
+import { Menu } from '@mantine/core';
 
 import { Images } from '~/assets';
 import { Button } from '~/components';
+import { EyeIcon } from 'lucide-react';
 
 const cx = classNames.bind(styles);
 
 function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false }) {
     const classes = cx('wrapper', { isVIP });
-    const { companyAddress, jobTitle, workTime, salary, isActive, dueDate, numberApplications } = jobDescription;
+    const { jobTitle, workTime, remainDay, isActive, numberApplications } = jobDescription;
 
     return (
         <div className={classes}>
@@ -19,34 +28,12 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
                     {/* Top */}
                     <div className={cx('top')}>
                         <div className={cx('title')}>{jobTitle}</div>
-                        {isVIP && (
-                            <Badge
-                                color="#ffeded"
-                                size="lg"
-                                classNames={{ label: cx('label-badge', 'featured'), root: cx('root-badge') }}
-                            >
-                                Featured
-                            </Badge>
-                        )}
-                        <Badge
-                            color="#E8F1FF"
-                            size="lg"
-                            classNames={{ label: cx('label-badge', 'work-time'), root: cx('root-badge') }}
-                        >
-                            {workTime}
-                        </Badge>
                     </div>
 
                     {/* Bottom */}
                     <div className={cx('bottom')}>
-                        <div className={cx('company-address')}>
-                            <IconMapPin size={20} />
-                            {companyAddress}
-                        </div>
-                        <div className={cx('salary')}>
-                            <IconCurrencyDollar size={20} />
-                            {salary}
-                        </div>
+                        <div className={cx('work-time')}>{workTime}</div>
+                        <div className={cx('remain-date')}>{remainDay} days remaining</div>
                     </div>
                     {/*  */}
                 </div>
@@ -55,53 +42,49 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
 
             {/* STATUS */}
             <div className={cx('status')}>
-                {isActive ? <p className={cx('active')}>Active</p> : <p className={cx('inactive')}>Expire</p>}
+                {isActive ? (
+                    <p className={cx('active')}>
+                        {' '}
+                        <IconCircleCheck size={20} /> Active
+                    </p>
+                ) : (
+                    <p className={cx('inactive')}>
+                        <IconCircleX size={20} /> Expire
+                    </p>
+                )}
             </div>
 
-            {/* END DATE */}
-            <div className={cx('end-date')}>{dueDate}</div>
-
             {/* NUMBER OF APPLICATIONS */}
-            <div className={cx('applications')}>{numberApplications} applications</div>
+            <div className={cx('applications')}>
+                <IconUsers size={20} />
+                {numberApplications} applications
+            </div>
 
             {/* ACTION */}
             <div className={cx('action')}>
-                <span className={cx('edit')}>
-                    <IconPencil
-                        size={22}
-                        color="var(--blue-500)"
-                        onClick={() => {
-                            console.log('edit');
-                        }}
-                    />
-                </span>
-                <span className={cx('applicant')}>
-                    <IconUsers
-                        size={22}
-                        color="var(--green-500)"
-                        onClick={() => {
-                            console.log('applicant');
-                        }}
-                    />
-                </span>
-                <span className={cx('show')}>
-                    <IconEye
-                        size={22}
-                        color="var(--orange-500)"
-                        onClick={() => {
-                            console.log('show');
-                        }}
-                    />
-                </span>
-                <span className={cx('delete')}>
-                    <IconTrash
-                        size={22}
-                        color="var(--red-500)"
-                        onClick={() => {
-                            console.log('delete');
-                        }}
-                    />
-                </span>
+                <Button className={cx('view-applications')}>View Applications</Button>
+                <Menu
+                    shadow="md"
+                    position="bottom-end"
+                    classNames={{ item: cx('item-main'), itemLabel: cx('item-label'), dropdown: cx('dropdown') }}
+                >
+                    <Menu.Target>
+                        <div className={cx('options')}>
+                            <IconDotsVertical size={24} />
+                        </div>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                        <Menu.Item leftSection={<IconPencil size={20} />} onClick={() => {}}>
+                            Edit Job
+                        </Menu.Item>
+                        <Menu.Item leftSection={<EyeIcon size={20} />} onClick={() => {}}>
+                            View Job
+                        </Menu.Item>
+                        <Menu.Item leftSection={<IconX size={20} />} onClick={() => {}}>
+                            Delete Job
+                        </Menu.Item>
+                    </Menu.Dropdown>
+                </Menu>
             </div>
         </div>
     );
