@@ -12,6 +12,10 @@ const routes = {
     applications: '/applications', // List of job applications
     applicationDetails: '/applications/:id', // Application details page
     error: '/error',
-};
 
+    
+    dashboard: '/dashboard', // Admin or user dashboard
+
+};
+ 
 export default routes;
