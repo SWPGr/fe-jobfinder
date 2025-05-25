@@ -1,7 +1,7 @@
 .wrapper {
     width: 100%;
     max-width: 98.4rem;
-    min-height: 13.2rem;
+    max-height: 9.6rem;
     padding: 3rem;
     display: flex;
     align-items: center;
@@ -147,7 +147,7 @@
         max-width: 100%;
         flex-wrap: wrap;
         padding: 2rem;
-        min-height: auto;
+        max-height: none;
     }
 
     .content {
