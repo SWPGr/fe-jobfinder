@@ -35,8 +35,17 @@ function Header() {
                 <div className={cx('right-side')}>
                     {user ? (
                         <div className={cx('user')}>
-                            <IconBellRinging size={24} />
-                            <Avatar src={user?.avatar} alt="avatar" radius="xl" classNames={{ root: cx('avatar') }} />
+                            <div className={cx('notification')}>
+                                <IconBellRinging size={24} />
+                                <span className={cx('badge')}></span>
+                            </div>
+                            <Avatar
+                                src={user?.avatar}
+                                alt="avatar"
+                                // radius={'xl'}
+                                // size={'lg'}
+                                classNames={{ root: cx('avatar') }}
+                            />
                         </div>
                     ) : (
                         <div className={cx('actions')}>

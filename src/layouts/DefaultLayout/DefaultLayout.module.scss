@@ -11,8 +11,18 @@
 .container {
     width: 100%;
     max-width: var(--default-layout-width);
-    padding: 2rem;
+    padding: 0 2rem;
     margin: 0 auto;
-    border-radius: var(--border-radius);
     transition: var(--transition);
+    display: flex;
+    border: 1px solid var(--gray-100);
+}
+
+.side-bar {
+    width: 40rem;
+    height: 100vh;
+}
+
+.content {
+    width: 100%;
 }

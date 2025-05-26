@@ -4,11 +4,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
-    // background: grey;
+    background: var(--white);
     display: flex;
     justify-content: center;
     align-items: center;
+    border-bottom: 1px solid var(--gray-100);
+    position: sticky;
+    top: 4.8rem;
+    z-index: 1000;
 }
 
 .container {
@@ -67,11 +70,38 @@
 .right-side .actions {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 
-.avatar {
-    width: 4.8rem;
-    height: 4.8rem;
-    border-radius: 50%;
+.user {
+    .avatar {
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .notification {
+        position: relative;
+        cursor: pointer;
+        width: 5rem;
+        height: 5rem;
+        border-radius: var(--border-radius);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:hover {
+            background: var(--gray-100);
+        }
+
+        & .badge {
+            position: absolute;
+            top: 0.9rem;
+            right: 0.9rem;
+            width: 1rem;
+            height: 1rem;
+            background-color: var(--red-500);
+            border-radius: 50%;
+        }
+    }
 }

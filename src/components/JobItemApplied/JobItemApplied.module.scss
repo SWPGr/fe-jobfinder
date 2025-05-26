@@ -6,13 +6,13 @@
     align-items: center;
     justify-content: space-between;
     font-size: 1.4rem;
-    border: 1px solid var(--gray-100);
-    border-radius: var(--border-radius);
+    border: 1px transparent;
     transition: var(--transition);
-    cursor: pointer;
 
     &:hover {
+        border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
+        border: 1px solid;
         border-color: var(--blue-500);
 
         .title {
