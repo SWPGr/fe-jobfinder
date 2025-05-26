@@ -7,7 +7,7 @@ import { IconPhoneCall, IconFlagExclamation } from '@tabler/icons-react';
 const cx = classNames.bind(styles);
 
 function NavBar() {
-    const [active, setActive] = useState(1);
+    const [active, setActive] = useState(0); // Default to the first tab
     const navList = [
         {
             name: 'Home',
@@ -48,7 +48,7 @@ function NavBar() {
                                 key={index}
                                 onClick={() => setActive(index)}
                             >
-                                <p to={item.link}>{item.name}</p>
+                                <Link to={item.link}>{item.name}</Link>
                             </div>
                         );
                     })}

@@ -5,6 +5,9 @@
     justify-content: center;
     align-items: center;
     background: var(--gray-50);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .container {

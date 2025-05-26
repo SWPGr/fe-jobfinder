@@ -5,10 +5,10 @@
     height: 20.4rem;
     padding: 3rem;
     border: 1px solid var(--gray-100);
-    border-radius: var(--border-radius);
     background-color: var(--white);
+    border-radius: var(--border-radius);
+
     transition: var(--transition);
-    cursor: pointer;
 
     &:hover {
         box-shadow: var(--box-shadow);
