@@ -7,12 +7,11 @@
     justify-content: space-between;
     border: 1px solid var(--gray-100);
     border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
     transition: var(--transition);
     cursor: pointer;
 
     &:hover {
-        box-shadow: none;
+        box-shadow: var(--box-shadow);
         border-color: var(--blue-500);
 
         .title {

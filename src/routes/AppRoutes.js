@@ -2,6 +2,7 @@
 import config from '~/config';
 
 import { LoginPage, RegisterPage, HomePage, ErrorPage, ServiceAndPolicyPage } from '~/pages';
+import { HeaderOnly } from '~/layouts';
 
 const publicRoutes = [
     { path: config.routes.login, component: LoginPage, layout: null },

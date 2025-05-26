@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Fragment } from 'react';
 
-import DefaultLayout from './layouts/DefaultLayout';
+import { DefaultLayout } from './layouts';
 import { publicRoutes, privateRoutes } from './routes/AppRoutes';
 import { ErrorPage } from './pages';
 import ProtectedRoute from './routes/ProtectedRoute';

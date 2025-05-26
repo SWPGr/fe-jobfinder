@@ -163,7 +163,7 @@ function Register() {
                                 {...formRegister.getInputProps('userRole')}
                                 classNames={{
                                     label: cx('group-label'),
-                                    error: cx('radio-error'),
+                                    error: cx('error'),
                                 }}
                             >
                                 <Group>
