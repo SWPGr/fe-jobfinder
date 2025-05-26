@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Register.module.scss';
 import { useState } from 'react';
 import { IconMail, IconBrandSamsungpass, IconEyeOff, IconEye } from '@tabler/icons-react';
-import { Checkbox, TextInput, ActionIcon } from '@mantine/core';
+import { Checkbox, TextInput, ActionIcon, Radio, Group } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 
@@ -15,21 +15,23 @@ import { validator } from '~/utils';
 const cx = classNames.bind(styles);
 
 function Register() {
-    const formLogin = useForm({
+    const formRegister = useForm({
         initialValues: {
-            firstName: '',
-            lastName: '',
+            // firstName: '',
+            // lastName: '',
             email: '',
             password: '',
             confirmPassword: '',
+            userRole: '', // ban đầu chưa chọn
             agree: false,
         },
         validate: {
-            firstName: (value) => (value.trim().length > 0 ? null : 'First name is required'),
-            lastName: (value) => (value.trim().length > 0 ? null : 'Last name is required'),
+            // firstName: (value) => (value.trim().length > 0 ? null : 'First name is required'),
+            // lastName: (value) => (value.trim().length > 0 ? null : 'Last name is required'),
             email: (value) => validator.validateEmail(value),
             password: (value) => validator.validatePassword(value),
             confirmPassword: (value, values) => validator.validateConfirmPassword(value, values.password),
+            userRole: (value) => (value ? null : 'Please select your role'),
             agree: (value) => (value === true ? null : alert('You must agree to terms')),
         },
     });
@@ -58,8 +60,8 @@ function Register() {
                 <div className={cx('right-side')}>
                     <h2 className={cx('title')}>Create your account</h2>
 
-                    <form className={cx('form')} onSubmit={formLogin.onSubmit(handleSubmitForm)}>
-                        <div className={cx('name-fields')}>
+                    <form className={cx('form')} onSubmit={formRegister.onSubmit(handleSubmitForm)}>
+                        {/* <div className={cx('name-fields')}>
                             <TextInput
                                 label="First name"
                                 placeholder="John"
@@ -84,12 +86,12 @@ function Register() {
                                     error: cx('error'),
                                 }}
                             />
-                        </div>
+                        </div> */}
 
                         <TextInput
                             label="Email address"
                             placeholder="you@example.com"
-                            {...formLogin.getInputProps('email')}
+                            {...formRegister.getInputProps('email')}
                             leftSection={<IconMail size={18} />}
                             classNames={{
                                 wrapper: cx('text-wrapper'),
@@ -104,7 +106,7 @@ function Register() {
                             type={showPassword ? 'text' : 'password'}
                             label="Password"
                             placeholder="Enter at least 8 characters"
-                            {...formLogin.getInputProps('password')}
+                            {...formRegister.getInputProps('password')}
                             withVisibilityToggle
                             leftSection={<IconBrandSamsungpass size={18} />}
                             rightSection={
@@ -130,7 +132,7 @@ function Register() {
                             type={showConfirmPassword ? 'text' : 'password'}
                             label="Confirm password"
                             placeholder="Confirm your password"
-                            {...formLogin.getInputProps('confirmPassword')}
+                            {...formRegister.getInputProps('confirmPassword')}
                             leftSection={<IconBrandSamsungpass size={18} />}
                             withVisibilityToggle
                             rightSection={
@@ -152,10 +154,51 @@ function Register() {
                             }}
                         />
 
+                        {/* USER ROLE */}
+                        <div className={'user-role'}>
+                            <Radio.Group
+                                name="userRole"
+                                label="You are "
+                                withAsterisk
+                                {...formRegister.getInputProps('userRole')}
+                                classNames={{
+                                    label: cx('group-label'),
+                                    error: cx('radio-error'),
+                                }}
+                            >
+                                <Group>
+                                    <Radio
+                                        value="JOB_SEEKER"
+                                        label="Applicant"
+                                        size="md"
+                                        classNames={{
+                                            radio: cx('radio'),
+                                            icon: cx('radio-icon'),
+                                            body: cx('radio-body'),
+                                            inner: cx('radio-inner'),
+                                            label: cx('radio-label'),
+                                        }}
+                                    />
+                                    <Radio
+                                        value="EMPLOYER"
+                                        label="Employer"
+                                        size="md"
+                                        classNames={{
+                                            radio: cx('radio'),
+                                            icon: cx('radio-icon'),
+                                            body: cx('radio-body'),
+                                            inner: cx('radio-inner'),
+                                            label: cx('radio-label'),
+                                        }}
+                                    />
+                                </Group>
+                            </Radio.Group>
+                        </div>
+
                         <div className={cx('checkbox')}>
                             <Checkbox
-                                key={formLogin.key.agree}
-                                {...formLogin.getInputProps('agree', { type: 'checkbox' })}
+                                key={formRegister.key.agree}
+                                {...formRegister.getInputProps('agree', { type: 'checkbox' })}
                                 label={
                                     <>
                                         I agree to the{' '}
