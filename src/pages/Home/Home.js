@@ -36,7 +36,7 @@ function Home() {
                 image={Images.google_image}
                 jobDescription={{
                     companyAddress: '1600 Amphitheatre Parkway Mountain ',
-                    jobTitle: 'Software Engineer ',
+                    jobTitle: 'Software Engineer sdasdas ádasdas ádasdasd âdsda dsadasds ',
                     workTime: 'Full-time',
                     salary: '$100 - $200',
                     remainDay: '3',

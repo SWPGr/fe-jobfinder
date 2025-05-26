@@ -79,37 +79,84 @@
     div[data-position='left'] + .input {
         padding: 0 5rem;
     }
-}
-.error {
-    font-size: 1.2rem;
+    .error {
+        font-size: 1.2rem;
+    }
 }
 
 // --- Password Visibility Toggle Button ---
-.root-right-btn {
-    border: none;
-    background: none;
-    width: 4rem;
-    height: 4rem;
-    padding: 4px;
-    border-radius: var(--border-radius);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--black);
-    cursor: pointer;
-
-    &:hover {
-        background: #dfe3e7;
-        color: var(--black);
-    }
-    .icon-right-btn {
+.form {
+    .root-right-btn {
+        border: none;
+        background: none;
+        width: 4rem;
+        height: 4rem;
+        padding: 4px;
+        border-radius: var(--border-radius);
         display: flex;
-        align-self: center;
+        justify-content: center;
+        align-items: center;
+        color: var(--black);
         cursor: pointer;
+
+        &:hover {
+            background: #dfe3e7;
+            color: var(--black);
+        }
+        .icon-right-btn {
+            display: flex;
+            align-self: center;
+            cursor: pointer;
+        }
     }
 }
 
 //============== TEXT INPUT
+
+// ========== USER ROLE ==============
+
+.group-label {
+    font-size: 1.2rem;
+}
+
+.radio-body {
+    height: 5rem;
+    width: 12rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-100);
+    cursor: pointer;
+
+    &:hover {
+        box-shadow: var(--box-shadow);
+        border-color: var(--blue-500);
+    }
+}
+
+.radio-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // border-radius: 50%;
+    cursor: pointer;
+}
+
+.radio-label {
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.radio {
+    cursor: pointer;
+}
+.radio-icon {
+    cursor: pointer;
+}
 
 // ========== CHECKBOX & RESET PASSWORD ==========
 .checkbox {

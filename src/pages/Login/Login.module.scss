@@ -80,27 +80,29 @@
 }
 
 // --- Password Visibility Toggle Button ---
-.root-right-btn {
-    border: none;
-    background: none;
-    width: 4rem;
-    height: 4rem;
-    padding: 4px;
-    border-radius: var(--border-radius);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--black);
-    cursor: pointer;
-
-    &:hover {
-        background: #dfe3e7;
-        color: var(--black);
-    }
-    .icon-right-btn {
+.form {
+    .root-right-btn {
+        border: none;
+        background: none;
+        width: 4rem;
+        height: 4rem;
+        padding: 4px;
+        border-radius: var(--border-radius);
         display: flex;
-        align-self: center;
+        justify-content: center;
+        align-items: center;
+        color: var(--black);
         cursor: pointer;
+
+        &:hover {
+            background: #dfe3e7;
+            color: var(--black);
+        }
+        .icon-right-btn {
+            display: flex;
+            align-self: center;
+            cursor: pointer;
+        }
     }
 }
 
