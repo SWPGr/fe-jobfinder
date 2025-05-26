@@ -2,11 +2,13 @@
   display: flex;
   height: 100vh;
   width: 100%;
+  gap: 20px;
+  align-items: stretch;
 }
 
 .sidebar {
   width: 240px;
-  background: #f9fafb;
+  //background: #f9fafb;
   padding: 1rem;
   border-right: 1px solid #e5e7eb;
 }
@@ -19,12 +21,12 @@
 
 .nav {
   list-style: none;
-  padding: 0;
-
+  padding: 10px;
+  gap: 20px;
   .nav-item {
     padding: 0.5rem;
     cursor: pointer;
-    color: #374151;
+    //color: #374151;
 
     &.active {
       background-color: #e5e7eb;
@@ -74,8 +76,9 @@
 }
 
 .main {
-  padding: 2rem;
-  background: #f1f5f9;
+  padding: 10px 1rem;
+  //background: #f1f5f9;
+  gap: 50px;
 
   h2 {
     margin-bottom: 0.25rem;
@@ -83,8 +86,10 @@
 
   .stats {
     display: flex;
-    gap: 1rem;
+    gap: 2rem;
     margin: 1rem 0;
+    height: 100px;
+    width: 500px;
 
     .stat {
       flex: 1;
