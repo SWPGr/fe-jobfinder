@@ -8,44 +8,6 @@ import { Images } from '~/assets';
 
 const cx = classNames.bind(styles);
 
-const jobsData = [
-    {
-        title: 'UI/UX Designer',
-        type: 'Full Time',
-        remaining: '27 days remaining',
-        status: 'Active',
-        applications: 798,
-    },
-    {
-        title: 'Senior UX Designer',
-        type: 'Internship',
-        remaining: '8 days remaining',
-        status: 'Active',
-        applications: 185,
-    },
-    {
-        title: 'Technical Support Specialist',
-        type: 'Part Time',
-        remaining: '4 days remaining',
-        status: 'Active',
-        applications: 556,
-    },
-    {
-        title: 'Junior Graphic Designer',
-        type: 'Full Time',
-        remaining: '24 days remaining',
-        status: 'Active',
-        applications: 583,
-    },
-    {
-        title: 'Front End Developer',
-        type: 'Full Time',
-        remaining: 'Dec 7, 2019',
-        status: 'Expired',
-        applications: 740,
-    },
-];
-
 function Dashboard() {
     const [selectedMenu, setSelectedMenu] = useState('Overview');
 

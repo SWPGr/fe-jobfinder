@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header/Header';
 import NavBar from '../components/NavBar/NavBar';
 import Sidebar from '../components/Sidebar';
-import Overview from '../components/Overview';
+import Overview from '../../pages/Overview';
 
 const cx = classNames.bind(styles);
 

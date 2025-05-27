@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 
-import Overview from '../Overview';
+import Overview from '../../../pages/Overview';
 
 import {
     IconStack2,
