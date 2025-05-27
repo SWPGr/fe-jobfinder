@@ -27,6 +27,7 @@ export const items = {
         {
             title: 'Overview',
             icon: <IconStack2 />, // Replace with actual icon component
+            // page: <Overview />, // Example page component
         },
         {
             title: 'Employer Profile',
