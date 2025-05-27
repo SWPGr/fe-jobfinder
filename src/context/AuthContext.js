@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await authService.getUser(username, password); // Axios call
+            const response = await authService.postUser(username, password); // Axios call
             // Axios automatically parses JSON, so you can directly access response.data
             const data = response.data;
 
