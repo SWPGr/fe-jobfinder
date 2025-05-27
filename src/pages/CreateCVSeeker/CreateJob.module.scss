@@ -1,0 +1,745 @@
+.container {
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+  background: #fff;
+}
+
+.sidebar {
+  width: 220px;
+  border-right: 1px solid #eaeaea;
+  padding: 20px;
+  box-sizing: border-box;
+
+  h2 {
+    margin-bottom: 30px;
+    font-weight: 700;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 50px;
+
+    li {
+      padding: 10px 0;
+      cursor: pointer;
+      color: #555;
+      position: relative;
+      font-weight: 500;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #0066f5;
+      }
+
+      &.active {
+        color: #0066f5;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .alertCount {
+    background: #0066f5;
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    padding: 2px 8px;
+    margin-left: 6px;
+    font-weight: 600;
+  }
+
+  .logoutBtn {
+    border: none;
+    background: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    padding: 0;
+  }
+}
+
+.main {
+  flex: 1;
+  padding: 40px 50px;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  h1 {
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .tabs {
+    margin-bottom: 30px;
+
+    button {
+      background: none;
+      border: none;
+      margin-right: 20px;
+      font-weight: 500;
+      color: #777;
+      cursor: pointer;
+      padding-bottom: 6px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s, color 0.2s;
+
+      &:hover {
+        color: #0066f5;
+      }
+
+      &.active {
+        color: #0066f5;
+        border-color: #0066f5;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .form {
+    max-width: 800px;
+
+    .row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .inputGroup {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #444;
+      }
+
+      select,
+      input[type='date'],
+      input[type='url'],
+      textarea {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+
+        &:focus {
+          border-color: #0066f5;
+        }
+      }
+    }
+
+    .textareaVision {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      resize: vertical;
+      font-family: Arial, sans-serif;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    .textEditorIcons {
+      margin-top: 8px;
+
+      button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin-right: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        color: #666;
+        transition: color 0.2s;
+
+        &:hover {
+          color: #1677ff;
+        }
+      }
+    }
+
+    .previousBtn {
+      background: #eee;
+      border: none;
+      color: #333;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 10px;
+
+      &:hover {
+        background: #ddd;
+      }
+    }
+
+    .saveNextBtn {
+      background-color: #1677ff;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background-color: #005ecb;
+      }
+    }
+  }
+
+  /* Company Info tab styles */
+  .companyInfoTab {
+    h3 {
+      margin-bottom: 15px;
+    }
+    .uploadSection {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+
+      .uploadBox {
+        border: 1px dashed #ccc;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        flex: 1;
+
+        &:nth-child(2) {
+          flex: 2;
+        }
+
+        .uploadLabel {
+          cursor: pointer;
+          display: block;
+
+          .uploadIcon {
+            font-size: 40px;
+            color: #aaa;
+            margin-bottom: 8px;
+          }
+
+          small {
+            color: #666;
+          }
+        }
+
+        .uploadInput {
+          display: none;
+        }
+
+        .previewImage {
+          max-width: 100%;
+          max-height: 150px;
+          margin-bottom: 10px;
+        }
+
+        .uploadTitle {
+          margin-top: 10px;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .formGroup {
+      margin-bottom: 20px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 8px;
+        font-size: 16px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        resize: vertical;
+        font-family: Arial, sans-serif;
+      }
+    }
+  }
+
+  /* Social Media Profile tab */
+  .socialLinksContainer {
+    max-width: 700px;
+  }
+
+  .socialLinkRow {
+    margin-bottom: 8px;
+
+    label {
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .socialLinkInputs {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      select.socialSelect {
+        width: 160px;
+        padding: 6px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        appearance: none;
+        background: white;
+      }
+
+      input.socialInput {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      button.removeBtn {
+        background: #f0f0f0;
+        border: none;
+        font-size: 20px;
+        padding: 0 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #666;
+        transition: background-color 0.2s, color 0.2s;
+
+        &:hover {
+          background: #ff4d4d;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .addSocialBtn {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    background: #f0f0f0;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #ddd;
+    }
+  }
+  .contactTab {
+    max-width: 700px;
+  
+    h2 {
+      margin-top: 20px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+  
+    .formGroup {
+      margin-bottom: 15px;
+  
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+  
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"] {
+        width: 100%;
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+    }
+  
+    .phoneGroup {
+      margin-bottom: 15px;
+  
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+  
+      .phoneInput {
+        display: flex;
+        gap: 8px;
+  
+        .countryCodeSelect {
+          width: 100px;
+          padding: 8px;
+          border-radius: 4px;
+          border: 1px solid #ddd;
+          font-size: 14px;
+          cursor: pointer;
+        }
+  
+        input[type="tel"] {
+          flex: 1;
+          padding: 8px 12px;
+          border-radius: 4px;
+          border: 1px solid #ddd;
+          font-size: 14px;
+        }
+      }
+    }
+  
+    .saveBtn {
+      background-color: #1677ff;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+  
+      &:hover {
+        background-color: #005ecb;
+      }
+    }
+  
+    .divider {
+      border: none;
+      border-bottom: 1px solid #eee;
+      margin: 30px 0;
+    }
+  
+    .passwordGroup {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+  
+      .inputGroup {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+  
+        label {
+          margin-bottom: 6px;
+          font-weight: 500;
+        }
+  
+        .passwordInput {
+          position: relative;
+  
+          input {
+            width: 100%;
+            padding: 8px 40px 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            box-sizing: border-box;
+          }
+  
+          button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #777;
+            padding: 0;
+          }
+        }
+      }
+    }
+  
+    .deleteDesc {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+  
+    .deleteBtn {
+      background: none;
+      border: none;
+      color: #d32f2f;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+  
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  //Post a job
+  .postJobTab {
+    max-width: 800px;
+  
+    h2 {
+      margin-bottom: 20px;
+    }
+  
+    h3 {
+      margin-top: 25px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+  
+    .formGroup {
+      margin-bottom: 15px;
+  
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+  
+      input[type='text'],
+      input[type='number'],
+      input[type='date'],
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+    }
+  
+    .row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+  
+      .inputGroup {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  
+    .currency {
+      position: absolute;
+      right: 10px;
+      top: 34px;
+      color: #888;
+      font-weight: 600;
+      pointer-events: none;
+    }
+  
+    fieldset.applyJobOn {
+      border: 1px solid #ddd;
+      padding: 15px 20px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+  
+      legend {
+        font-weight: 600;
+        margin-bottom: 12px;
+        padding: 0 5px;
+      }
+  
+      label {
+        display: block;
+        margin-bottom: 10px;
+        cursor: pointer;
+  
+        strong {
+          display: block;
+          margin-bottom: 4px;
+        }
+  
+        p {
+          font-size: 13px;
+          color: #666;
+          margin: 0;
+        }
+      }
+  
+      input[type='radio'] {
+        margin-right: 8px;
+      }
+    }
+  
+    button.saveNextBtn {
+      background-color: #1677ff;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+  
+      &:hover {
+        background-color: #005ecb;
+      }
+    }
+  }
+  //save candidate
+  .savedCandidatesContainer {
+    max-width: 800px;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  
+    h2 {
+      margin: 0;
+    }
+  
+    .info {
+      font-size: 12px;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+  }
+  
+  .candidateList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .candidateItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+  
+    &.active {
+      border: 1px solid #2563eb; /* Viền xanh khi active */
+      border-radius: 4px;
+      background-color: #f0f7ff;
+    }
+  }
+  
+  .candidateInfo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  
+    .avatar {
+      width: 48px;
+      height: 48px;
+      background-color: #999;
+      border-radius: 6px;
+    }
+  
+    .name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+  
+    .role {
+      font-size: 13px;
+      color: #666;
+    }
+  }
+  
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  }
+  
+  .bookmarkBtn {
+    font-size: 18px;
+  }
+  
+  .viewProfileBtn {
+    background-color: #dbeafe;
+    color: #2563eb;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  
+    span {
+      font-weight: 700;
+    }
+  }
+  
+  .moreBtn {
+    font-size: 22px;
+    line-height: 1;
+  }
+  
+  .dropdownMenu {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    z-index: 10;
+    min-width: 140px;
+  
+    .dropdownItem {
+      padding: 8px 12px;
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+  
+      &:hover {
+        background-color: #f0f7ff;
+      }
+    }
+  }
+  
+  
+  
+}

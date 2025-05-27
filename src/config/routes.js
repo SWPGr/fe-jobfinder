@@ -1,3 +1,4 @@
+
 const routes = {
     home: '/',
     profile: '/profile',
@@ -12,6 +13,7 @@ const routes = {
     applications: '/applications', // List of job applications
     applicationDetails: '/applications/:id', // Application details page
     error: '/error',
+    createCVSeekerPage: '/createCVSeekerPage',
 };
 
 export default routes;
