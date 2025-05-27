@@ -1,171 +1,252 @@
 import classNames from 'classnames/bind';
 import styles from './Register.module.scss';
 import { useState } from 'react';
-import { IconBriefcase, IconMail, IconBrandSamsungpass } from '@tabler/icons-react';
-import { TextInput, PasswordInput, Checkbox, Button } from '@mantine/core';
+import { IconMail, IconBrandSamsungpass, IconEyeOff, IconEye } from '@tabler/icons-react';
+import { Checkbox, TextInput, ActionIcon, Radio, Group } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import { useForm } from '@mantine/form';
 
 import GoogleLoginButton from '~/components/GoogleLoginButton';
-import TextInputCustom from '~/components/TextInputCustom';
-
-//popup phần chính sách bảo mật
+import { LeftSideLogin } from '../components';
+import { Button } from '~/components';
+// popup phần chính sách bảo mật
+import { validator } from '~/utils';
 
 const cx = classNames.bind(styles);
 
 function Register() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [agree, setAgree] = useState(false);
+    const formRegister = useForm({
+        initialValues: {
+            // firstName: '',
+            // lastName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            userRole: '', // ban đầu chưa chọn
+            agree: false,
+        },
+        validate: {
+            // firstName: (value) => (value.trim().length > 0 ? null : 'First name is required'),
+            // lastName: (value) => (value.trim().length > 0 ? null : 'Last name is required'),
+            email: (value) => validator.validateEmail(value),
+            password: (value) => validator.validatePassword(value),
+            confirmPassword: (value, values) => validator.validateConfirmPassword(value, values.password),
+            userRole: (value) => (value ? null : 'Please select your role'),
+            agree: (value) => (value === true ? null : alert('You must agree to terms')),
+        },
+    });
 
-    const handleSubmitForm = () => {
-        // Handle form submission logic here
-        // For example, you can send the data to your backend API
-        // or perform validation before submitting
-        console.log('Form submitted:', {
-            firstName,
-            lastName,
-            email,
-            password,
-            confirmPassword,
-            agree,
-        });
+    const [agree, setAgree] = useState(false);
+    const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle password visibility
+
+    const handleSubmitForm = (values) => {
+        console.log('Form submitted:', values);
     };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
                 {/* LEFT SIDE REGISTER */}
-                <div className={cx('left-side')}>
-                    <div className={cx('top-left')}>
-                        {/* Logo and app name */}
-                        <div className={cx('logo')}>
-                            <span className={cx('logo-icon')}>
-                                <IconBriefcase size={25} />
-                            </span>
-                            <h3 className={cx('logo-text')}>JobFinder</h3>
-                        </div>
-                        {/* Welcome title and description */}
-                        <h1 className={cx('title')}>Start your journey</h1>
-                        <p className={cx('description')}>
-                            Create an account to unlock your career potential and connect with employers worldwide
-                        </p>
-                    </div>
-                    {/* Features or highlights */}
-                    <div className={cx('bottom-left')}>
-                        <div className={cx('content')}>
-                            <span className={cx('icon')}>
-                                <IconBriefcase />
-                            </span>
-                            <p className={cx('description')}>Create your professional profile</p>
-                        </div>
-                        <div className={cx('content')}>
-                            <span className={cx('icon')}>
-                                <IconBriefcase />
-                            </span>
-                            <p className={cx('description')}>Get noticed by top companies</p>
-                        </div>
-                        <div className={cx('content')}>
-                            <span className={cx('icon')}>
-                                <IconBriefcase />
-                            </span>
-                            <p className={cx('description')}>Apply to jobs with one click</p>
-                        </div>
-                    </div>
-                </div>
+                <LeftSideLogin
+                    props={[
+                        'Create your professional profile',
+                        'Get noticed by top companies',
+                        'Apply to jobs with one click',
+                    ]}
+                />
 
                 {/* RIGHT SIDE REGISTER */}
                 <div className={cx('right-side')}>
                     <h2 className={cx('title')}>Create your account</h2>
 
-                    <div className={cx('form')}>
-                        <div className={cx('name-fields')}>
-                            <TextInputCustom
+                    <form className={cx('form')} onSubmit={formRegister.onSubmit(handleSubmitForm)}>
+                        {/* <div className={cx('name-fields')}>
+                            <TextInput
                                 label="First name"
                                 placeholder="John"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                classNames={{ input: cx('input'), label: cx('label') }}
+                                {...formLogin.getInputProps('firstName')}
+                                classNames={{
+                                    wrapper: cx('text-wrapper'),
+                                    input: cx('input'),
+                                    section: cx('section'),
+                                    label: cx('label'),
+                                    error: cx('error'),
+                                }}
                             />
-                            <TextInputCustom
+                            <TextInput
                                 label="Last name"
                                 placeholder="Doe"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                classNames={{ input: cx('input'), label: cx('label') }}
+                                {...formLogin.getInputProps('lastName')}
+                                classNames={{
+                                    wrapper: cx('text-wrapper'),
+                                    input: cx('input'),
+                                    section: cx('section'),
+                                    label: cx('label'),
+                                    error: cx('error'),
+                                }}
                             />
-                        </div>
+                        </div> */}
 
-                        <TextInputCustom
+                        <TextInput
                             label="Email address"
                             placeholder="you@example.com"
-                            value={email}
+                            {...formRegister.getInputProps('email')}
                             leftSection={<IconMail size={18} />}
-                            onChange={(e) => setEmail(e.target.value)}
-                            classNames={{ input: cx('input'), label: cx('label'), section: cx('section') }}
+                            classNames={{
+                                wrapper: cx('text-wrapper'),
+                                input: cx('input'),
+                                section: cx('section'),
+                                label: cx('label'),
+                                error: cx('error'),
+                            }}
                         />
 
-                        <TextInputCustom
-                            type="password"
+                        <TextInput
+                            type={showPassword ? 'text' : 'password'}
                             label="Password"
                             placeholder="Enter at least 8 characters"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            {...formRegister.getInputProps('password')}
                             withVisibilityToggle
                             leftSection={<IconBrandSamsungpass size={18} />}
-                            classNames={{ input: cx('input'), label: cx('label'), section: cx('section') }}
+                            rightSection={
+                                <ActionIcon
+                                    variant="light"
+                                    aria-label="Settings"
+                                    classNames={{ root: cx('root-right-btn'), icon: cx('icon-right-btn') }}
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                >
+                                    {showPassword ? <IconEyeOff size={24} /> : <IconEye size={24} />}
+                                </ActionIcon>
+                            }
+                            classNames={{
+                                wrapper: cx('text-wrapper'),
+                                input: cx('input'),
+                                section: cx('section'),
+                                label: cx('label'),
+                                error: cx('error'),
+                            }}
                         />
 
-                        <TextInputCustom
-                            type="password"
+                        <TextInput
+                            type={showConfirmPassword ? 'text' : 'password'}
                             label="Confirm password"
                             placeholder="Confirm your password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            {...formRegister.getInputProps('confirmPassword')}
+                            leftSection={<IconBrandSamsungpass size={18} />}
                             withVisibilityToggle
-                            classNames={{ input: cx('input'), label: cx('label') }}
+                            rightSection={
+                                <ActionIcon
+                                    variant="light"
+                                    aria-label="Settings"
+                                    classNames={{ root: cx('root-right-btn'), icon: cx('icon-right-btn') }}
+                                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                                >
+                                    {showConfirmPassword ? <IconEyeOff size={24} /> : <IconEye size={24} />}
+                                </ActionIcon>
+                            }
+                            classNames={{
+                                wrapper: cx('text-wrapper'),
+                                input: cx('input'),
+                                section: cx('section'),
+                                label: cx('label'),
+                                error: cx('error'),
+                            }}
                         />
+
+                        {/* USER ROLE */}
+                        <div className={'user-role'}>
+                            <Radio.Group
+                                name="userRole"
+                                label="You are "
+                                withAsterisk
+                                {...formRegister.getInputProps('userRole')}
+                                classNames={{
+                                    label: cx('group-label'),
+                                    error: cx('error'),
+                                }}
+                            >
+                                <Group>
+                                    <Radio
+                                        value="JOB_SEEKER"
+                                        label="Applicant"
+                                        size="md"
+                                        classNames={{
+                                            radio: cx('radio'),
+                                            icon: cx('radio-icon'),
+                                            body: cx('radio-body'),
+                                            inner: cx('radio-inner'),
+                                            label: cx('radio-label'),
+                                        }}
+                                    />
+                                    <Radio
+                                        value="EMPLOYER"
+                                        label="Employer"
+                                        size="md"
+                                        classNames={{
+                                            radio: cx('radio'),
+                                            icon: cx('radio-icon'),
+                                            body: cx('radio-body'),
+                                            inner: cx('radio-inner'),
+                                            label: cx('radio-label'),
+                                        }}
+                                    />
+                                </Group>
+                            </Radio.Group>
+                        </div>
 
                         <div className={cx('checkbox')}>
                             <Checkbox
-                                checked={agree}
-                                onChange={(e) => setAgree(e.currentTarget.checked)}
+                                key={formRegister.key.agree}
+                                {...formRegister.getInputProps('agree', { type: 'checkbox' })}
                                 label={
-                                    //agree to the link trang term  of service và privacy policy và em đang bỏ tạm link fb của đạt đẹp trai
                                     <>
                                         I agree to the{' '}
-                                        <a href="https://www.facebook.com/mai.dat.270705" className={cx('link')}>
+                                        <Link to="/service-and-policy" className={cx('link')}>
                                             Terms of Service
-                                        </a>{' '}
+                                        </Link>{' '}
                                         and{' '}
-                                        <a href="https://www.facebook.com/mai.dat.270705" className={cx('link')}>
+                                        <Link to="/service-and-policy" className={cx('link')}>
                                             Privacy Policy
-                                        </a>
+                                        </Link>
                                     </>
                                 }
+                                classNames={{
+                                    input: cx('checkbox-input'),
+                                    label: cx('checkbox-label'),
+                                    inner: cx('checkbox-inner'),
+                                    icon: cx('checkbox-icon'),
+                                    body: cx('checkbox-body'),
+                                    error: cx('error'),
+                                }}
                             />
                         </div>
 
-                        <Button
-                            fullWidth
-                            size="md"
-                            classNames={{ root: cx('root-submit-btn') }}
-                            onClick={handleSubmitForm}
-                        >
-                            Create account
-                        </Button>
+                        {/* Submit button */}
+                        <div className={cx('btn-submit')}>
+                            <Button type="submit" className={cx('submit')}>
+                                Create account
+                            </Button>
+                        </div>
 
-                        <p className={cx('description')}>
-                            Already have an account?{' '}
-                            <Link to="/login" className={cx('link')}>
-                                Sign in
-                            </Link>
-                        </p>
-                    </div>
+                        <div className={cx('login')}>
+                            <p className={cx('description')}>
+                                Already have an account?{' '}
+                                <span>
+                                    <Link to="/login" className={cx('link')}>
+                                        Log in
+                                    </Link>
+                                </span>
+                            </p>
+                        </div>
+                    </form>
 
                     <div className={cx('social-media')}>
-                        <p className={cx('description')}>Or continue with</p>
+                        <div className={cx('content')}>
+                            {/* <hr className={cx('divider')} /> */}
+                            <p className={cx('description')}>Or continue with</p>
+                        </div>
+
                         <GoogleLoginButton />
                     </div>
                 </div>
