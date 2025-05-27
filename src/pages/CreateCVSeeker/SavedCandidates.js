@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
-import styles from './CreateJob.module.scss';
+import styles from './CreateJob.module.scss'; // Hoặc đường dẫn style bạn dùng
 
-import SettingsPage from './SettingsPage';
-import PostJob from './PostJob';
-
-// Dữ liệu danh sách ứng viên đã lưu
 const candidatesData = [
   { id: 1, name: 'Guy Hawkins', role: 'Technical Support Specialist' },
   { id: 2, name: 'Jacob Jones', role: 'Product Designer' },
@@ -18,7 +14,6 @@ const candidatesData = [
   { id: 10, name: 'Theresa Webb', role: 'Software Engineer' },
 ];
 
-// Component danh sách ứng viên đã lưu
 const SavedCandidates = () => {
   const [activeDropdownId, setActiveDropdownId] = useState(null);
 
@@ -51,10 +46,17 @@ const SavedCandidates = () => {
               </div>
             </div>
             <div className={styles.actions}>
-              <button className={styles.bookmarkBtn} title="Bookmark">
+              <button
+                className={styles.bookmarkBtn}
+                title="Bookmark"
+                aria-label={`Bookmark ${candidate.name}`}
+              >
                 🔖
               </button>
-              <button className={styles.viewProfileBtn}>
+              <button
+                className={styles.viewProfileBtn}
+                aria-label={`View profile of ${candidate.name}`}
+              >
                 View Profile <span>→</span>
               </button>
               <button
@@ -64,10 +66,15 @@ const SavedCandidates = () => {
               >
                 ⋮
               </button>
+
               {activeDropdownId === candidate.id && (
                 <div className={styles.dropdownMenu}>
-                  <button className={styles.dropdownItem}>📧 Send Email</button>
-                  <button className={styles.dropdownItem}>📄 Download CV</button>
+                  <button className={styles.dropdownItem} type="button">
+                    📧 Send Email
+                  </button>
+                  <button className={styles.dropdownItem} type="button">
+                    📄 Download CV
+                  </button>
                 </div>
               )}
             </div>
@@ -78,56 +85,4 @@ const SavedCandidates = () => {
   );
 };
 
-const CreateJob = () => {
-  const [activePage, setActivePage] = useState('Overview');
-
-  const menuItems = [
-    'Overview',
-    'Employers Frofile',
-    'Post a Job',
-    'My Jobs',
-    'Save Candidate',
-    'Plans & Billing',
-    'All Companies',
-    'Settings',
-  ];
-
-  const handleClick = (item) => {
-    setActivePage(item);
-  };
-
-  return (
-    <div className={styles.container}>
-      <div className={styles.sidebar}>
-        <h2>MyJob</h2>
-        <ul>
-          {menuItems.map((item) => (
-            <li
-              key={item}
-              className={activePage === item ? styles.active : ''}
-              onClick={() => handleClick(item)}
-              style={{ cursor: 'pointer' }}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-        <button className={styles.logoutBtn}>Log-out</button>
-      </div>
-
-      <div className={styles.main}>
-        {activePage === 'Settings' ? (
-          <SettingsPage />
-        ) : activePage === 'Post a Job' ? (
-          <PostJob />
-        ) : activePage === 'Save Candidate' ? (
-          <SavedCandidates />
-        ) : (
-          <h1>Xin chào</h1>
-        )}
-      </div>
-    </div>
-  );
-};
-
-export default CreateJob;
+export default SavedCandidates;

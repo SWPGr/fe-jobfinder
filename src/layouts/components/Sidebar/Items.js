@@ -2,6 +2,8 @@ import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 
 import Overview from '../Overview';
+import { CreateCVSeekerPage } from '~/pages';
+
 
 import {
     IconStack2,
@@ -14,6 +16,9 @@ import {
     IconNotebook,
     IconBuildingCommunity,
 } from '@tabler/icons-react';
+import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
+import PostJob from '~/pages/CreateCVSeeker/PostJob';
+import SavedCandidates from '~/pages/CreateCVSeeker/SavedCandidates';
 
 const cx = classNames.bind(styles);
 
@@ -30,14 +35,18 @@ export const items = {
         {
             title: 'Post a Job',
             icon: <IconCirclePlus />, // Replace with actual icon component
+            page: <PostJob />
         },
         {
             title: 'My Jobs',
             icon: <IconBriefcase />, // Replace with actual icon component
+            
+            
         },
         {
             title: 'Saved Candidates',
             icon: <IconBookmark />, // Replace with actual icon component
+            page: <SavedCandidates/>
         },
         {
             title: 'Plans & Billing',
@@ -50,6 +59,8 @@ export const items = {
         {
             title: 'Settings',
             icon: <IconSettings />, // Replace with actual icon component
+            page: <SettingsPage/>
+            
         },
     ],
 
