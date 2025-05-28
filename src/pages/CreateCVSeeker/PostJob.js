@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './CreateJob.module.scss';
+import styles from './PostJob.module.scss';
 
 const PostJob = () => {
   const [jobTitle, setJobTitle] = useState('');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './CreateJob.module.scss'; // hoặc file CSS phù hợp
+import styles from './SettingsPage.module.scss'; // hoặc file CSS phù hợp
 
 // Các tab trong settings
 const tabsOrder = ['Company Info', 'Founding Info', 'Social Media Profile', 'Contact'];
@@ -299,55 +299,55 @@ function SettingsPage() {
         </form>
       )}
 
-      {activeTab === 'Social Media Profile' && (
-        <div className={styles.socialLinksContainer}>
-          {socialLinks.map((link, idx) => (
-            <div key={link.id} className={styles.socialLinkRow}>
-              <label>{`Social Link ${idx + 1}`}</label>
-              <div className={styles.socialLinkInputs}>
-                <select
-                  value={link.type}
-                  onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
-                  className={styles.socialSelect}
-                >
-                  {socialOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Profile link/url..."
-                  value={link.url}
-                  onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
-                  className={styles.socialInput}
-                />
-                <button
-                  type="button"
-                  className={styles.removeBtn}
-                  onClick={() => handleRemoveSocialLink(link.id)}
-                  aria-label={`Remove Social Link ${idx + 1}`}
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          ))}
-          <button type="button" className={styles.addSocialBtn} onClick={handleAddSocialLink}>
-            + Add New Social Link
+{activeTab === 'Social Media Profile' && (
+  <div className={styles.socialLinksContainer}>
+    {socialLinks.map((link, idx) => (
+      <div key={link.id} className={styles.socialLinkRow}>
+        <label>{`Social Link ${idx + 1}`}</label>
+        <div className={styles.socialLinkInputs}>
+          <select
+            value={link.type}
+            onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
+            className={styles.socialSelect}
+          >
+            {socialOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Profile link/url..."
+            value={link.url}
+            onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
+            className={styles.socialInput}
+          />
+          <button
+            type="button"
+            className={styles.removeBtn}
+            onClick={() => handleRemoveSocialLink(link.id)}
+            aria-label={`Remove Social Link ${idx + 1}`}
+          >
+            ×
           </button>
-
-          <div style={{ marginTop: 20 }}>
-            <SaveNextButton
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            />
-          </div>
         </div>
-      )}
+      </div>
+    ))}
+    <button type="button" className={styles.addSocialBtn} onClick={handleAddSocialLink}>
+      + Add New Social Link
+    </button>
+
+    <div style={{ marginTop: 20 }}>
+      <SaveNextButton
+        onClick={() => {
+          handleSave();
+          goToNextTab();
+        }}
+      />
+    </div>
+  </div>
+)}
 
       {activeTab === 'Contact' && (
         <div className={styles.contactTab}>

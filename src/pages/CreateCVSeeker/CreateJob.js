@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import styles from './CreateJob.module.scss';
-
+import MyJob from './MyJob';
 import SettingsPage from './SettingsPage';
 import PostJob from './PostJob';
+import PlansBilling from './PlansBilling';
+import { IconH1 } from '@tabler/icons-react';
+import Overview1 from './Overview1';
+
 
 // Dữ liệu danh sách ứng viên đã lưu
 const candidatesData = [
@@ -122,9 +126,15 @@ const CreateJob = () => {
           <PostJob />
         ) : activePage === 'Save Candidate' ? (
           <SavedCandidates />
-        ) : (
-          <h1>Xin chào</h1>
-        )}
+          
+        ) : activePage === 'My Jobs' ? (
+          <MyJob />
+        ) : activePage === 'Plans & Billing' ? (
+          <PlansBilling />
+        ) : activePage === 'Overview' ? (
+          <Overview1 />
+        )
+         : null }
       </div>
     </div>
   );

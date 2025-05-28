@@ -19,6 +19,9 @@ import {
 import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
 import PostJob from '~/pages/CreateCVSeeker/PostJob';
 import SavedCandidates from '~/pages/CreateCVSeeker/SavedCandidates';
+import MyJob from '~/pages/CreateCVSeeker/MyJob';
+import PlansBilling from '~/pages/CreateCVSeeker/PlansBilling';
+import Overview1 from '~/pages/CreateCVSeeker/Overview1';
 
 const cx = classNames.bind(styles);
 
@@ -27,7 +30,8 @@ export const items = {
         {
             title: 'Overview',
             icon: <IconStack2 />, // Replace with actual icon component
-            // page: <Overview />, // Example page component
+            page: <Overview1 />
+            
         },
         {
             title: 'Employer Profile',
@@ -41,6 +45,7 @@ export const items = {
         {
             title: 'My Jobs',
             icon: <IconBriefcase />, // Replace with actual icon component
+            page: <MyJob />
             
             
         },
@@ -52,6 +57,7 @@ export const items = {
         {
             title: 'Plans & Billing',
             icon: <IconNotebook />, // Replace with actual icon component
+            page: <PlansBilling />
         },
         {
             title: 'All Companies',

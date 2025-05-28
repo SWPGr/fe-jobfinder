@@ -1,0 +1,256 @@
+@charset "UTF-8";
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.top-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.box {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+.title-small {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.plan-name {
+  font-size: 28px;
+  /* to hơn */
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.description,
+.package-start,
+.notice,
+.benefits-text {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+.actions .btn {
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-size: 14px;
+}
+.actions .btn-primary {
+  background-color: #2563eb;
+  /* màu xanh đậm hơn */
+  color: white;
+  transition: background-color 0.3s;
+}
+.actions .btn-primary:hover {
+  background-color: #1e40af;
+}
+.actions .btn-cancel {
+  background-color: transparent;
+  color: #2563eb;
+  font-weight: 600;
+}
+.actions .btn-cancel:hover {
+  text-decoration: underline;
+}
+
+.plan-benefits .benefits-list-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+.plan-benefits .benefits-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.plan-benefits .benefits-list li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plan-benefits .benefit-active {
+  color: #2563eb;
+}
+.plan-benefits .benefit-active .icon {
+  font-weight: 700;
+  font-size: 16px;
+}
+.plan-benefits .benefit-inactive {
+  color: #e74c3c;
+}
+.plan-benefits .benefit-inactive .icon {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.next-invoices {
+  text-align: left;
+}
+.next-invoices .amount {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #2563eb;
+}
+.next-invoices .date,
+.next-invoices .package-start,
+.next-invoices .notice {
+  font-size: 12px;
+  color: #777;
+  margin-bottom: 4px;
+}
+.next-invoices .btn-pay {
+  margin-top: 10px;
+  background-color: #2563eb;
+  color: white;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+.next-invoices .btn-pay:hover {
+  background-color: #1e40af;
+}
+
+.payment-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.payment-card .card-header .card-logo {
+  font-weight: 700;
+  color: #f44336;
+  font-size: 20px;
+}
+.payment-card .card-header div {
+  flex-grow: 1;
+  margin-left: 12px;
+}
+.payment-card .card-header div .card-name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+}
+.payment-card .card-header div .expire-date {
+  color: #777;
+  font-size: 14px;
+}
+.payment-card .btn-edit {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+}
+.payment-card .btn-edit:hover {
+  text-decoration: underline;
+}
+.payment-card .card-number {
+  font-size: 24px;
+  letter-spacing: 4px;
+  font-weight: 600;
+  color: #222;
+}
+
+.latest-invoices {
+  margin-top: 40px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+}
+.latest-invoices h3 {
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #222;
+}
+.latest-invoices table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.latest-invoices table th,
+.latest-invoices table td {
+  padding: 12px 15px;
+  font-size: 14px;
+  color: #444;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+.latest-invoices table th {
+  background: #f9fafb;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.latest-invoices table td:last-child {
+  text-align: center;
+}
+.latest-invoices .download-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #2563eb;
+}
+.latest-invoices .download-btn:hover {
+  color: #1e40af;
+}
+.latest-invoices .pagination {
+  margin-top: 20px;
+  text-align: center;
+}
+.latest-invoices .pagination button {
+  background: none;
+  border: 1px solid #ccc;
+  margin: 0 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 14px;
+  color: #2563eb;
+  transition: background-color 0.3s;
+}
+.latest-invoices .pagination button.active {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+.latest-invoices .pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.latest-invoices .pagination button:hover:not(:disabled):not(.active) {
+  background-color: #dbeafe;
+}
