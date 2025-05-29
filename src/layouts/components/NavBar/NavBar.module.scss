@@ -5,16 +5,15 @@
     justify-content: center;
     align-items: center;
     background: var(--gray-50);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    // position: sticky;
+    // top: 0;
 }
 
 .container {
     width: var(--default-layout-width);
     height: 100%;
     padding: 0 2rem;
-    font-size: 1.4rem;
+    font-size: var(--font-size-14px);
     font-weight: 500;
 
     display: flex;
@@ -54,4 +53,38 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+// open menu
+.open-drawer {
+    display: none;
+}
+.drawer-body {
+    display: flex;
+    flex-direction: column;
+}
+.tab-hidden {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-50);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--gray-100);
+    }
+}
+.drawer-title {
+    font-size: var(--font-size-logo);
+    padding-left: 1rem;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+    .tab {
+        display: none;
+    }
+    .open-drawer {
+        display: block;
+        background: var(--gray-50);
+        border: none;
+    }
 }

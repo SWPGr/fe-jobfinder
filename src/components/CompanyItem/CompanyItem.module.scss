@@ -1,0 +1,168 @@
+.wrapper {
+    width: max-content;
+    min-width: 30rem;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-50);
+    padding: 2rem;
+
+    &:hover {
+        box-shadow: var(--box-shadow);
+        border-color: var(--blue-500);
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .logo-company {
+        width: 5.6rem;
+        height: 5.6rem;
+        border: 1px solid var(--gray-100);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0rem;
+
+        .company-name {
+            font-size: var(--font-size-18px);
+            font-weight: 500;
+            color: var(--gray-900);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 20rem;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+        .badge {
+            font-size: var(--font-size-10px);
+            font-weight: 400;
+            color: var(--red-500);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 9rem;
+            background: var(--red-50);
+            text-align: center;
+            padding: 0.2rem;
+            border-radius: 1000px;
+        }
+    }
+
+    .location,
+    .open-jobs {
+        font-size: var(--font-size-14px);
+        color: var(--gray-600);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+.action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+
+    .save {
+        height: 4.8rem;
+        width: 4.8rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid var(--gray-100);
+        border-radius: var(--border-radius);
+        color: var(--blue-500);
+        cursor: pointer;
+        transition: var(--transition);
+
+        &:hover {
+            background: var(--blue-50);
+            border-color: var(--blue-500);
+        }
+    }
+    .button {
+        flex: 1;
+    }
+}
+
+.long.wrapper {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+
+    .description {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+}
+
+.saved .save {
+    background: var(--blue-50);
+    border-color: transparent;
+}
+
+/* Khi màn hình <= 768px */
+@media screen and (max-width: 768px) {
+    .wrapper {
+        min-width: 25rem;
+        width: 100%;
+        gap: 1rem;
+        padding: 1.6rem;
+    }
+    .header {
+        .logo-company {
+            width: 4rem;
+            height: 4rem;
+        }
+
+        .content {
+            .badge {
+                padding: 0.1rem;
+                max-width: 8rem;
+            }
+            .company-name {
+                max-width: 25rem;
+            }
+        }
+    }
+    .action {
+        .save {
+            width: 4rem;
+            height: 4rem;
+        }
+        .button {
+            min-height: auto;
+            height: 4rem;
+        }
+    }
+}

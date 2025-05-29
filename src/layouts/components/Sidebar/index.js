@@ -12,6 +12,7 @@ function Sidebar({ setSelectedMenu }) {
     const [active, setActive] = useState('Overview');
 
     const role = user?.role || 'JOB_SEEKER'; // Default to JOB_SEEKER if user or role is not defined
+
     const itemList = items[role];
 
     return (

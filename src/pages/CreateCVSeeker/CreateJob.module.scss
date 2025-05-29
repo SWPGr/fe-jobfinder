@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+  background: #fff;
+}
+
+.sidebar {
+  width: 220px;
+  border-right: 1px solid #eaeaea;
+  padding: 20px;
+  box-sizing: border-box;
+
+  h2 {
+    margin-bottom: 30px;
+    font-weight: 700;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 50px;
+
+    li {
+      padding: 10px 0;
+      cursor: pointer;
+      color: #555;
+      position: relative;
+      font-weight: 500;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #0066f5;
+      }
+
+      &.active {
+        color: #0066f5;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .alertCount {
+    background: #0066f5;
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    padding: 2px 8px;
+    margin-left: 6px;
+    font-weight: 600;
+  }
+
+  .logoutBtn {
+    border: none;
+    background: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    padding: 0;
+  }
+}
+
+.main {
+  flex: 1;
+  padding: 40px 50px;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  h1 {
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  // Tabs dùng chung cho Settings
+  .tabs {
+    margin-bottom: 30px;
+
+    button {
+      background: none;
+      border: none;
+      margin-right: 20px;
+      font-weight: 500;
+      color: #777;
+      cursor: pointer;
+      padding-bottom: 6px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s, color 0.2s;
+
+      &:hover {
+        color: #0066f5;
+      }
+
+      &.active {
+        color: #0066f5;
+        border-color: #0066f5;
+        font-weight: 700;
+      }
+    }
+  }
+}

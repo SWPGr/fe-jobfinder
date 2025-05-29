@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 
-import Overview from '../../../pages/Overview';
+import { CreateCVSeekerPage } from '~/pages';
 
 import {
     IconStack2,
@@ -14,11 +14,20 @@ import {
     IconNotebook,
     IconBuildingCommunity,
 } from '@tabler/icons-react';
+
 import Dashboard1 from '../../../pages/DashBoard/Dashboard'; //Overview của Job Seeker
 import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs'; //Applied Jobs page của Job Seeker
 import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs'; //Favorite Jobs page của Job Seeker
 import JobAlerts from '~/pages/DashBoard/JobAlerts/JobAlerts';
 import Setting from '~/pages/DashBoard/Setting/Setting';
+
+import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
+import PostJob from '~/pages/CreateCVSeeker/PostJob';
+import SavedCandidates from '~/pages/CreateCVSeeker/SavedCandidates';
+import MyJob from '~/pages/CreateCVSeeker/MyJob';
+import PlansBilling from '~/pages/CreateCVSeeker/PlansBilling';
+import Overview1 from '~/pages/CreateCVSeeker/Overview1';
+
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -26,8 +35,10 @@ export const items = {
         {
             title: 'Overview',
             icon: <IconStack2 />, // Replace with actual icon component
+
             // page: <Overview />, // Example page component
-            page: <Overview />,
+
+            page: <Overview1 />,
         },
         {
             title: 'Employer Profile',
@@ -36,18 +47,22 @@ export const items = {
         {
             title: 'Post a Job',
             icon: <IconCirclePlus />, // Replace with actual icon component
+            page: <PostJob />,
         },
         {
             title: 'My Jobs',
             icon: <IconBriefcase />, // Replace with actual icon component
+            page: <MyJob />,
         },
         {
             title: 'Saved Candidates',
             icon: <IconBookmark />, // Replace with actual icon component
+            page: <SavedCandidates />,
         },
         {
             title: 'Plans & Billing',
             icon: <IconNotebook />, // Replace with actual icon component
+            page: <PlansBilling />,
         },
         {
             title: 'All Companies',
@@ -56,6 +71,7 @@ export const items = {
         {
             title: 'Settings',
             icon: <IconSettings />, // Replace with actual icon component
+            page: <SettingsPage />,
         },
     ],
 

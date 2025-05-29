@@ -5,13 +5,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px transparent;
+    border: 1px solid var(--gray-50);
+    border-radius: var(--border-radius);
     transition: var(--transition);
 
     &:hover {
-        border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
-        border: 1px solid;
         border-color: var(--blue-500);
 
         .title {
@@ -64,12 +63,12 @@
     .title {
         color: var(--gray-900);
         font-size: 1.8rem;
-        display: -webkit-box; /* Sử dụng flexbox với WebKit */
-        -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
-        -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
-        overflow: hidden; /* Ẩn phần nội dung tràn */
-        text-overflow: ellipsis;
-        max-width: 25rem;
+        // display: -webkit-box; /* Sử dụng flexbox với WebKit */
+        // -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
+        // -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
+        // overflow: hidden; /* Ẩn phần nội dung tràn */
+        // text-overflow: ellipsis;
+        // max-width: 25rem;
     }
 }
 
@@ -112,6 +111,13 @@
         color: var(--gray-500);
         gap: 0.6rem;
     }
+}
+
+// SAVED
+
+.saved .save-job {
+    background: var(--blue-50);
+    border-color: transparent;
 }
 
 // ACTION

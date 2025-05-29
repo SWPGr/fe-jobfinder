@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './JobItem.module.scss';
 import { IconMapPin, IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
@@ -9,11 +10,11 @@ import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
-function JobItem({ image = Images.default_image, jobDescription = {}, isLogin = false, isVIP = false }) {
+function JobItem({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
     // save job status
-    const [save, setSave] = useState(false);
+    const [save, setSave] = useState(saved || false);
 
-    const classes = cx('wrapper', { isLogin, isVIP });
+    const classes = cx('wrapper', { isLogin, isVIP, saved });
     const { companyName, companyAddress, jobTitle, workTime, salary } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
 
@@ -43,10 +44,10 @@ function JobItem({ image = Images.default_image, jobDescription = {}, isLogin = 
                                 </Badge>
                             )}
                         </span>
-                        <span className={cx('company-address')}>
-                            <IconMapPin size={20} />
+                        <p className={cx('company-address')}>
+                            {/* <IconMapPin size={20} /> */}
                             {companyAddress}
-                        </span>
+                        </p>
                     </div>
                 </div>
                 {isLogin && (
@@ -65,10 +66,12 @@ function JobItem({ image = Images.default_image, jobDescription = {}, isLogin = 
                 )}
             </div>
             <div className={cx('body')}>
-                <span className={cx('job-title')}>{jobTitle}</span>
+                <Link to={`/find-job?search=${encodeURIComponent(jobTitle)}`} className={cx('job-title')}>
+                    {jobTitle}
+                </Link>
                 <div className={cx('job-description')}>
                     <span className={cx('work-time')}>{workTime}</span>
-                    <span className={cx('salary')}>{salary}</span>
+                    <span className={cx('job-salary')}>{salary}</span>
                 </div>
             </div>
         </div>
