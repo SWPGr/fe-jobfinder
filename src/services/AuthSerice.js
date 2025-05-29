@@ -1,7 +1,7 @@
 import { httpRequest } from '~/utils';
 
-const getUser = async (username, password) => {
-    const response = await httpRequest.get('/api/user', {
+const postUser = async (username, password) => {
+    const response = await httpRequest.post('/login', {
         params: {
             username,
             password,
@@ -11,6 +11,6 @@ const getUser = async (username, password) => {
 };
 
 const AuthService = {
-    getUser,
+    postUser,
 };
 export default AuthService;
