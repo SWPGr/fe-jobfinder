@@ -1,6 +1,7 @@
 import { JobItemApplied, JobItem, JobItemOwner, JobItemList } from '~/components';
 import classNames from 'classnames/bind';
 import styles from './Overview.module.scss';
+import { RichTextEditor } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -71,6 +72,8 @@ function Overview() {
                     className={cx('item')}
                 />
             </div>
+
+            <RichTextEditor />
         </div>
     );
 }

@@ -7,7 +7,6 @@ import Instruction from './Instruction';
 import PopularCategory from './PopularCategory';
 import FeaturedJob from './FeaturedJob';
 import TopCompanies from './TopCompanies';
-import ClientsTestimonial from './ClientsTestimonial';
 import CTA from './CTA';
 
 const cx = classNames.bind(styles);
@@ -21,7 +20,6 @@ function Home() {
             <PopularCategory />
             <FeaturedJob />
             <TopCompanies />
-            {/* <ClientsTestimonial /> */}
             <CTA />
         </div>
     );
