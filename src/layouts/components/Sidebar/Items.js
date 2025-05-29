@@ -1,9 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 
-import Overview from '../Overview';
 import { CreateCVSeekerPage } from '~/pages';
-
 
 import {
     IconStack2,
@@ -16,6 +14,13 @@ import {
     IconNotebook,
     IconBuildingCommunity,
 } from '@tabler/icons-react';
+
+import Dashboard1 from '../../../pages/DashBoard/Dashboard'; //Overview của Job Seeker
+import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs'; //Applied Jobs page của Job Seeker
+import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs'; //Favorite Jobs page của Job Seeker
+import JobAlerts from '~/pages/DashBoard/JobAlerts/JobAlerts';
+import Setting from '~/pages/DashBoard/Setting/Setting';
+
 import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
 import PostJob from '~/pages/CreateCVSeeker/PostJob';
 import SavedCandidates from '~/pages/CreateCVSeeker/SavedCandidates';
@@ -30,8 +35,10 @@ export const items = {
         {
             title: 'Overview',
             icon: <IconStack2 />, // Replace with actual icon component
-            page: <Overview1 />
-            
+
+            // page: <Overview />, // Example page component
+
+            page: <Overview1 />,
         },
         {
             title: 'Employer Profile',
@@ -40,24 +47,22 @@ export const items = {
         {
             title: 'Post a Job',
             icon: <IconCirclePlus />, // Replace with actual icon component
-            page: <PostJob />
+            page: <PostJob />,
         },
         {
             title: 'My Jobs',
             icon: <IconBriefcase />, // Replace with actual icon component
-            page: <MyJob />
-            
-            
+            page: <MyJob />,
         },
         {
             title: 'Saved Candidates',
             icon: <IconBookmark />, // Replace with actual icon component
-            page: <SavedCandidates/>
+            page: <SavedCandidates />,
         },
         {
             title: 'Plans & Billing',
             icon: <IconNotebook />, // Replace with actual icon component
-            page: <PlansBilling />
+            page: <PlansBilling />,
         },
         {
             title: 'All Companies',
@@ -66,8 +71,7 @@ export const items = {
         {
             title: 'Settings',
             icon: <IconSettings />, // Replace with actual icon component
-            page: <SettingsPage/>
-            
+            page: <SettingsPage />,
         },
     ],
 
@@ -75,24 +79,28 @@ export const items = {
         {
             title: 'Overview',
             icon: <IconStack2 />, // Replace with actual icon component
-            page: <Overview />, // Example page component
+            page: <Dashboard1 />, // Example page component
         },
         {
             title: 'Applied Jobs',
             icon: <IconBriefcase />, // Replace with actual icon component
+            page: <AppliedJobs />,
         },
         {
             title: 'Favorite Jobs',
             icon: <IconBookmark />, // Replace with actual icon component
+            page: <FavoriteJobs />,
         },
         {
             title: 'Job Alert',
             icon: <IconBellRinging />, // Replace with actual icon component
             rightSection: <span className={cx('badge')}>3</span>, // Example right section
+            page: <JobAlerts />,
         },
         {
             title: 'Settings',
             icon: <IconSettings />, // Replace with actual icon component
+            page: <Setting />,
         },
     ],
 };

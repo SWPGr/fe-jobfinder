@@ -10,6 +10,7 @@ import Overview1 from '~/pages/CreateCVSeeker/Overview1';
 import Footer from '../components/Footer/Footer';
 import { useAuth } from '~/context/AuthContext';
 
+
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
