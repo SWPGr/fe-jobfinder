@@ -28,8 +28,7 @@ function Home() {
                     remainDay: '3',
                 }}
                 isLogin
-
-                // isVIP
+                isVIP
             />
 
             <JobItemOwner

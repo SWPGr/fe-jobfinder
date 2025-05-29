@@ -1,0 +1,99 @@
+.favorite-jobs-wrapper {
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    padding: 20px 0;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 1.6rem;
+    margin-bottom: 24px;
+    color: #222;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 4fr  2.4fr 1.1fr; 
+    font-size: 18px;
+    font-weight: 700;
+    color: #777;
+    text-transform: uppercase;
+    padding: 12px 0 10px 0;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 10px;
+}
+
+/* Các dòng job */
+.job-row {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #eee;
+    gap: 12px;
+    transition: background-color 0.15s ease;
+}
+
+.job-row:hover {
+    background-color: #f8faff;
+    cursor: pointer;
+}
+
+.job-status.expired {
+    color: #d93025;
+    font-weight: 700;
+}
+
+.job-status.open {
+    color: #188038;
+    /* màu xanh lá cho trạng thái mở */
+    font-weight: 700;
+}
+
+.apply-btn {
+    background-color: #1a73e8;
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.apply-btn:hover {
+    background-color: #155ab6;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: #555;
+    user-select: none;
+}
+
+.pagination button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #333;
+    transition: background-color 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+    background-color: #cde1ff;
+}
+
+.pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
