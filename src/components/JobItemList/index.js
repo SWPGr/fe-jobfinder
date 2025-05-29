@@ -16,11 +16,11 @@ import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
-function JobItemList({ image = Images.default_image, jobDescription = {}, isLogin = false, isVIP = false }) {
-    const classes = cx('wrapper', { isLogin, isVIP });
+function JobItemList({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
+    const classes = cx('wrapper', { isLogin, isVIP, saved });
 
     // save job status
-    const [save, setSave] = useState(false);
+    const [save, setSave] = useState(saved || false);
 
     const { companyName, companyAddress, jobTitle, workTime, salary, remainDay } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;

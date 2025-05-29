@@ -2,7 +2,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './NavBar.module.scss';
-import { IconPhoneCall, IconFlagExclamation } from '@tabler/icons-react';
+import { IconPhoneCall, IconFlagExclamation, IconMenu2 } from '@tabler/icons-react';
+import { Drawer } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 import { useAuth } from '~/context/AuthContext';
 import getNavItems from './ItemsNav';
@@ -11,10 +13,12 @@ const cx = classNames.bind(styles);
 
 function NavBar() {
     const location = useLocation();
+    const [opened, { open, close }] = useDisclosure(false);
+
     const { user } = useAuth();
 
     // // Đặt mặc định role nếu không có
-    const role = user?.role || 'EMPLOYER';
+    const role = user?.role;
     const isAuthenticated = Boolean(user);
 
     // Lấy danh sách menu theo trạng thái đăng nhập và role
@@ -48,6 +52,30 @@ function NavBar() {
                                 {item.name}
                             </Link>
                         ))}
+                    <>
+                        <Drawer
+                            opened={opened}
+                            onClose={close}
+                            title="Menu"
+                            classNames={{ body: cx('drawer-body'), title: cx('drawer-title') }}
+                        >
+                            {Array.isArray(navList) &&
+                                navList.map((item, index) => (
+                                    <Link
+                                        key={index}
+                                        to={item.link}
+                                        className={cx('tab-hidden', { active: active === index })}
+                                        onClick={() => setActive(index)}
+                                    >
+                                        {item.name}
+                                    </Link>
+                                ))}
+                        </Drawer>
+
+                        <button variant="default" onClick={open} className={cx('open-drawer')}>
+                            <IconMenu2 />
+                        </button>
+                    </>
                 </div>
                 {/* END TABS */}
 

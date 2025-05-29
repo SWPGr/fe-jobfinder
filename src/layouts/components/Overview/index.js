@@ -18,6 +18,8 @@ function Overview() {
                         salary: '$100 - $200',
                         dueDate: 'June 15, 2021',
                     }}
+                    saved
+                    isLogin
                     isVIP
                     className={cx('item')}
                 />
@@ -39,6 +41,8 @@ function Overview() {
             </div>
             <div className={cx('box')}>
                 <JobItemList
+                    saved
+                    isLogin
                     image={'asdasd'}
                     jobDescription={{
                         companyName: 'Google',

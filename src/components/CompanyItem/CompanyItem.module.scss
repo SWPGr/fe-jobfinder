@@ -45,7 +45,7 @@
         gap: 0rem;
 
         .company-name {
-            font-size: 1.8rem;
+            font-size: var(--font-size-18px);
             font-weight: 500;
             color: var(--gray-900);
             display: -webkit-box;
@@ -60,7 +60,7 @@
             }
         }
         .badge {
-            font-size: 1rem;
+            font-size: var(--font-size-10px);
             font-weight: 400;
             color: var(--red-500);
             display: -webkit-box;
@@ -78,7 +78,7 @@
 
     .location,
     .open-jobs {
-        font-size: 1.4rem;
+        font-size: var(--font-size-14px);
         color: var(--gray-600);
         display: flex;
         align-items: center;
@@ -129,4 +129,40 @@
 .saved .save {
     background: var(--blue-50);
     border-color: transparent;
+}
+
+/* Khi màn hình <= 768px */
+@media screen and (max-width: 768px) {
+    .wrapper {
+        min-width: 25rem;
+        width: 100%;
+        gap: 1rem;
+        padding: 1.6rem;
+    }
+    .header {
+        .logo-company {
+            width: 4rem;
+            height: 4rem;
+        }
+
+        .content {
+            .badge {
+                padding: 0.1rem;
+                max-width: 8rem;
+            }
+            .company-name {
+                max-width: 25rem;
+            }
+        }
+    }
+    .action {
+        .save {
+            width: 4rem;
+            height: 4rem;
+        }
+        .button {
+            min-height: auto;
+            height: 4rem;
+        }
+    }
 }

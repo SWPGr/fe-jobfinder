@@ -4,7 +4,7 @@ import { authService } from '~/services';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
+    let [user, setUser] = useState(() => {
         // Load user from localStorage on initialization
         const storedUser = localStorage.getItem('user');
         return storedUser ? JSON.parse(storedUser) : null;
@@ -38,6 +38,9 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
+    };
+    user = {
+        role: 'JOB_SEEKER',
     };
 
     return <AuthContext.Provider value={{ user, login, logout, loading, error }}>{children}</AuthContext.Provider>;
