@@ -1,0 +1,241 @@
+.savedCandidatesContainer {
+  max-width: 800px;
+  margin: auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 0;
+  }
+
+  .info {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.candidateList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.candidateItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.candidateInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    background-color: #999;
+    border-radius: 6px;
+  }
+
+  .name {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .role {
+    font-size: 13px;
+    color: #666;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+
+  button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+}
+
+.viewProfileBtn {
+  background-color: #dbeafe;
+  color: #2563eb;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  span {
+    font-weight: 700;
+  }
+}
+
+/* Modal styles */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 8px;
+  width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 20px 30px;
+  position: relative;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.closeBtn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.headerModal {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  .avatarLarge {
+    width: 80px;
+    height: 80px;
+    background: #ccc;
+    border-radius: 50%;
+  }
+
+  h2 {
+    margin: 0;
+  }
+
+  .infoHeader {
+    flex-grow: 1;
+  }
+
+  .actionButtons {
+    display: flex;
+    gap: 10px;
+
+    button {
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: 1px solid #0a64ff;
+      background: #0a64ff;
+      color: white;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background: #004bb5;
+      }
+    }
+  }
+}
+
+.bioSection,
+.coverLetterSection,
+.detailsSection,
+.socialMedia {
+  margin-top: 20px;
+
+  h3,
+  h4 {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.5;
+  }
+}
+
+.detailsSection {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.detailsColumn {
+  flex: 1;
+
+  div {
+    margin-bottom: 10px;
+  }
+}
+
+.downloadResume {
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 6px;
+
+  button {
+    cursor: pointer;
+    background: #f0f4ff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+}
+
+.contactInfo {
+  flex: 1;
+
+  h4 {
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin: 6px 0;
+    font-size: 13px;
+    color: #555;
+
+    strong {
+      display: block;
+      font-weight: 600;
+    }
+  }
+}
+
+.socialMedia .socialIcons {
+  display: flex;
+  gap: 10px;
+
+  a {
+    font-size: 18px;
+    text-decoration: none;
+  }
+}
