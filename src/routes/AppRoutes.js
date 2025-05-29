@@ -1,7 +1,15 @@
 //routes
 import config from '~/config';
 
-import { LoginPage, RegisterPage, HomePage, ErrorPage, DashboardPage, ServiceAndPolicyPage,CreateCVSeekerPage } from '~/pages';
+import {
+    LoginPage,
+    RegisterPage,
+    HomePage,
+    ErrorPage,
+    DashboardPage,
+    ServiceAndPolicyPage,
+    CreateCVSeekerPage,
+} from '~/pages';
 import { HeaderOnly } from '~/layouts';
 
 const publicRoutes = [
@@ -9,11 +17,11 @@ const publicRoutes = [
     { path: config.routes.register, component: RegisterPage, layout: null },
     { path: config.routes.home, component: HomePage, layout: HeaderOnly },
     { path: config.routes.error, component: ErrorPage, layout: null },
-    { path: config.routes.createCVSeekerPage, component: CreateCVSeekerPage, layout:HeaderOnly},
+    { path: config.routes.createCVSeekerPage, component: CreateCVSeekerPage, layout: HeaderOnly },
     { path: config.routes.dashboard, component: DashboardPage },
     { path: config.routes.serviceAndPolicy, component: ServiceAndPolicyPage, layout: HeaderOnly },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [{ path: config.routes.dashboard, component: DashboardPage }];
 
 export { publicRoutes, privateRoutes };
