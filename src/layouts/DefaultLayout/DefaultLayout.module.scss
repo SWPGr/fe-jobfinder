@@ -13,6 +13,10 @@
     max-width: var(--default-layout-width);
     padding: 0 2rem;
     margin: 0 auto;
+
+    //border-radius: var(--border-radius);
+    //box-shadow: var(--box-shadow);
+
     transition: var(--transition);
     display: flex;
     border: 1px solid var(--gray-100);
