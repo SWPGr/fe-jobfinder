@@ -1,0 +1,130 @@
+.container {
+    max-width: 700px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    margin-bottom: 20px;
+  }
+  
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  
+    input,
+    select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  
+    input[type="text"]:first-child {
+      flex: 2;
+    }
+  
+    input[type="text"]:nth-child(2),
+    select {
+      flex: 1;
+    }
+  
+    button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+  }
+  
+  .jobCard {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  
+    .leftSide {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+  
+      img {
+        width: 40px;
+        height: 40px;
+      }
+  
+      .jobInfo {
+        h3 {
+          margin: 0;
+        }
+        .tags {
+          display: flex;
+          gap: 10px;
+          margin: 4px 0;
+  
+          span {
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            &.Featured {
+              background-color: #ef4444;
+            }
+            &.Remote {
+              background-color: #6366f1;
+            }
+            &.FullTime {
+              background-color: #2563eb;
+            }
+            &.PartTime {
+              background-color: #10b981;
+            }
+            &.ContractBase {
+              background-color: #2563eb;
+            }
+            &.Temporary {
+              background-color: #2563eb;
+            }
+          }
+        }
+        p {
+          margin: 0;
+          color: #666;
+        }
+        small {
+          color: #999;
+        }
+      }
+    }
+  
+    button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  }
+  
+  .pagination {
+    margin-top: 20px;
+    text-align: center;
+  
+    button {
+      margin: 0 10px;
+      cursor: pointer;
+    }
+  
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+  

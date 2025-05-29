@@ -1,7 +1,7 @@
 //routes
 import config from '~/config';
 
-import { LoginPage, RegisterPage, HomePage, ErrorPage, DashboardPage, ServiceAndPolicyPage,CreateCVSeekerPage } from '~/pages';
+import { LoginPage, RegisterPage, HomePage, ErrorPage, DashboardPage, ServiceAndPolicyPage,CreateCVSeekerPage, FindJobPage } from '~/pages';
 import { HeaderOnly } from '~/layouts';
 
 const publicRoutes = [
@@ -12,6 +12,7 @@ const publicRoutes = [
     { path: config.routes.createCVSeekerPage, component: CreateCVSeekerPage, layout:HeaderOnly},
     { path: config.routes.dashboard, component: DashboardPage },
     { path: config.routes.serviceAndPolicy, component: ServiceAndPolicyPage, layout: HeaderOnly },
+    { path: config.routes.findJob, component: FindJobPage, layout: HeaderOnly },
 ];
 
 const privateRoutes = [];
