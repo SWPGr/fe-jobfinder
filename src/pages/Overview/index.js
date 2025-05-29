@@ -1,6 +1,7 @@
 import { JobItemApplied, JobItem, JobItemOwner, JobItemList } from '~/components';
 import classNames from 'classnames/bind';
 import styles from './Overview.module.scss';
+import { RichTextEditor } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,8 @@ function Overview() {
                         salary: '$100 - $200',
                         dueDate: 'June 15, 2021',
                     }}
+                    saved
+                    isLogin
                     isVIP
                     className={cx('item')}
                 />
@@ -39,6 +42,8 @@ function Overview() {
             </div>
             <div className={cx('box')}>
                 <JobItemList
+                    saved
+                    isLogin
                     image={'asdasd'}
                     jobDescription={{
                         companyName: 'Google',
@@ -67,6 +72,8 @@ function Overview() {
                     className={cx('item')}
                 />
             </div>
+
+            <RichTextEditor />
         </div>
     );
 }
