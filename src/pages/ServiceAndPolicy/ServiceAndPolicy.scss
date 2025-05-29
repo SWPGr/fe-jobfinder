@@ -1,0 +1,70 @@
+.policy-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 40px 80px;
+    background-color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.7;
+    color: #333;
+}
+
+.policy-content {
+    width: 70%;
+}
+
+.policy-content h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 32px;
+}
+
+.policy-content h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    color: #111;
+}
+
+.policy-content ul {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.policy-content ul li {
+    margin-bottom: 8px;
+    list-style-type: disc;
+}
+
+.policy-sidebar {
+    width: 25%;
+    padding-left: 40px;
+    border-left: 1px solid #eee;
+    position: sticky;
+    top: 40px;
+}
+
+.sidebar-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.policy-sidebar ul {
+    list-style-type: none;
+    padding-left: 0;
+    font-size: 14px;
+}
+
+.policy-sidebar ul li {
+    margin-bottom: 10px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.policy-sidebar ul li:hover {
+    color: #007bff;
+}
