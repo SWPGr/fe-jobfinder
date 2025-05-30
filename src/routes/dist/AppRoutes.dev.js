@@ -39,6 +39,9 @@ var publicRoutes = [{
   component: _pages.DashboardPage
 }, {
   path: _config["default"].routes.serviceAndPolicy,
+  component: _pages.ServiceAndPolicyPage
+}, {
+  path: _config["default"].routes.serviceAndPolicy,
   component: _pages.ServiceAndPolicyPage,
   layout: _layouts.HeaderOnly
 }, {
@@ -47,5 +50,8 @@ var publicRoutes = [{
   layout: _layouts.HeaderOnly
 }];
 exports.publicRoutes = publicRoutes;
-var privateRoutes = [];
+var privateRoutes = [{
+  path: _config["default"].routes.dashboard,
+  component: _pages.DashboardPage
+}];
 exports.privateRoutes = privateRoutes;
