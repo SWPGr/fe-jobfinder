@@ -83,14 +83,34 @@
         }
 
         .company-address {
+            display: flex;
+            align-items: center; /* căn giữa theo chiều dọc */
             font-size: var(--font-size-14px);
             color: var(--gray-500);
-            display: -webkit-box; /* Sử dụng flexbox với WebKit */
-            -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
-            -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
-            overflow: hidden; /* Ẩn phần nội dung tràn */
-            text-overflow: ellipsis;
             max-width: 22rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; /* chỉ 1 dòng, hoặc bỏ nếu muốn nhiều dòng */
+        }
+
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            margin-right: 0.1rem; /* khoảng cách icon và text */
+            flex-shrink: 0; /* không co icon */
+        }
+
+        .text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; /* hoặc remove nếu muốn wrap */
+            flex: 1; /* chiếm phần còn lại */
+        }
+
+        .company-address svg {
+            width: var(--font-size-14px);
+            height: var(--font-size-14px);
+            color: var(--gray-500);
         }
     }
 

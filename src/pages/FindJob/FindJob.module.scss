@@ -1,0 +1,23 @@
+.find-job__wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.find-job__header {
+    width: 100%;
+    height: 19rem;
+    display: flex;
+    justify-content: center;
+}
+.header__container {
+    width: var(--default-layout-width);
+    padding: 2rem;
+}
+.header__title {
+    h1 {
+        font-size: var(--font-size-18px);
+    }
+}
+.header__filter {
+}

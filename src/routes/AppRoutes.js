@@ -9,6 +9,7 @@ import {
     DashboardPage,
     ServiceAndPolicyPage,
     CreateCVSeekerPage,
+    FindJob,
 } from '~/pages';
 import { HeaderOnly } from '~/layouts';
 
@@ -25,6 +26,9 @@ const publicRoutes = [
     { path: config.routes.serviceAndPolicy, component: ServiceAndPolicyPage, layout: HeaderOnly },
 ];
 
-const privateRoutes = [{ path: config.routes.dashboard, component: DashboardPage }];
+const privateRoutes = [
+    { path: config.routes.dashboard, component: DashboardPage },
+    { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
+];
 
 export { publicRoutes, privateRoutes };
