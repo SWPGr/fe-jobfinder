@@ -1,0 +1,235 @@
+.outerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.container {
+  display: flex;
+  gap: 40px;
+}
+
+/* LEFT */
+.left {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  background-color: #8793a7;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.basic-info {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+
+.name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.jobTitle {
+  font-size: 14px;
+  color: #5a5a5a;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 6px 12px;
+  transition: background-color 0.3s ease;
+  user-select: none;
+}
+
+.btnStar {
+  background-color: transparent;
+  font-size: 18px;
+  padding: 6px 10px;
+}
+
+.btnSendMail {
+  background-color: #e0e7ff;
+  color: #3736a9;
+}
+.btnSendMail:hover {
+  background-color: #c7d2fe;
+}
+
+.btnHire {
+  background-color: #3736a9;
+  color: white;
+}
+.btnHire:hover {
+  background-color: #2b2a7a;
+}
+
+.section {
+  line-height: 1.6;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.sectionText {
+  font-size: 13px;
+  white-space: pre-line;
+}
+
+.socialMedia {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.socialIcon {
+  font-size: 18px;
+  color: #555;
+  transition: color 0.3s ease;
+}
+.socialIcon:hover {
+  color: #2563eb;
+}
+
+/* RIGHT */
+.right {
+  flex: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.infoBox {
+  background: #f5f8ff;
+  border-radius: 8px;
+  padding: 18px 20px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.infoItem {
+  flex-basis: 48%;
+}
+
+.infoLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.infoValue {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.resumeBox {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.resumeTitle {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.resumeName {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.downloadBtn {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #2563eb;
+}
+.downloadBtn:hover {
+  color: #1e40af;
+}
+
+.contactTitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.contactItem {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.icon {
+  font-size: 18px;
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.contactText {
+  flex-grow: 1;
+  line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left, .right {
+    flex: none;
+  }
+}

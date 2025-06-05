@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
     user = {
-        role: 'JOB_SEEKER',
+        role: 'EMPLOYER',
     };
 
     return <AuthContext.Provider value={{ user, login, logout, loading, error }}>{children}</AuthContext.Provider>;

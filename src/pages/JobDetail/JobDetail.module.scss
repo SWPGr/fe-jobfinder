@@ -1,0 +1,266 @@
+.container {
+    display: flex;
+    gap: 40px;
+    max-width: 1140px;
+    margin: 40px auto;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  /* Left content */
+  .left {
+    flex: 2;
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgb(0 0 0 / 0.1);
+    position: relative;
+  }
+  
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    object-fit: contain;
+  }
+  
+  .job-info {
+    flex-grow: 1;
+  
+    .job-title {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+  
+      .badge {
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 100px;
+        padding: 4px 8px;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+  
+        &.featured {
+          background-color: #ff4f4f;
+        }
+        &.fulltime {
+          background-color: #3b82f6;
+        }
+      }
+    }
+  
+    .contact {
+      margin-top: 6px;
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: #5a5a5a;
+  
+      .link {
+        color: #3b82f6;
+        text-decoration: none;
+  
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .bookmark {
+    border: none;
+    background: transparent;
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 20px;
+  }
+  
+  .apply-btn {
+    background-color: #2563eb;
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  
+    &:hover {
+      background-color: #1e40af;
+    }
+  }
+  
+  .expire {
+    font-size: 13px;
+    margin-left: auto;
+    color: #ef4444;
+    margin-top: 6px;
+  
+    span {
+      font-weight: 700;
+    }
+  }
+  
+  .job-description,
+  .responsibilities {
+    margin-top: 20px;
+  
+    h3 {
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+  
+    p,
+    ul {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #555;
+    }
+  
+    ul {
+      padding-left: 18px;
+    }
+  
+    li {
+      margin-bottom: 6px;
+    }
+  }
+  
+  .share {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  
+    span {
+      font-weight: 600;
+    }
+  
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+  
+      button {
+        border: 1px solid #d1d5db;
+        background: white;
+        padding: 6px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #333;
+  
+        &:hover {
+          background-color: #3b82f6;
+          color: white;
+          border-color: #3b82f6;
+        }
+      }
+    }
+  }
+  
+  /* Right content */
+  .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .job-overview,
+  .company-info {
+    background: white;
+    padding: 25px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgb(0 0 0 / 0.1);
+  }
+  
+  .job-overview h3,
+  .company-info h3 {
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 20px;
+  }
+  
+  .overview-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  
+    .icon {
+      font-size: 22px;
+    }
+  
+    p {
+      font-size: 13px;
+      color: #888;
+      margin: 0;
+    }
+  
+    strong {
+      font-weight: 600;
+      font-size: 15px;
+    }
+  }
+  
+  .company-info {
+    .social-desc {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 15px;
+    }
+  
+    .company-details {
+      font-size: 14px;
+      line-height: 1.5;
+  
+      p {
+        margin-bottom: 8px;
+  
+        b {
+          font-weight: 600;
+        }
+      }
+    }
+  
+    .social-icons {
+      display: flex;
+      gap: 14px;
+      margin-top: 12px;
+  
+      .social-icon {
+        font-size: 20px;
+        color: #3b82f6;
+        cursor: pointer;
+  
+        &:hover {
+          color: #1e40af;
+        }
+      }
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 991px) {
+    .container {
+      flex-direction: column;
+    }
+    .right {
+      width: 100%;
+    }
+  }
+  

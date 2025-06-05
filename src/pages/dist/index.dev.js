@@ -51,6 +51,18 @@ Object.defineProperty(exports, "FindJobPage", {
     return _FindJob["default"];
   }
 });
+Object.defineProperty(exports, "JobDetail", {
+  enumerable: true,
+  get: function get() {
+    return _JobDetail["default"];
+  }
+});
+Object.defineProperty(exports, "SeekerDetailPage", {
+  enumerable: true,
+  get: function get() {
+    return _SeekerDetail["default"];
+  }
+});
 
 var _Login = _interopRequireDefault(require("./Login/Login.js"));
 
@@ -67,5 +79,9 @@ var _Dashboard = _interopRequireDefault(require("./DashBoard/Dashboard.js"));
 var _index = _interopRequireDefault(require("./ServiceAndPolicy/index.js"));
 
 var _FindJob = _interopRequireDefault(require("./FindJob/FindJob.js"));
+
+var _JobDetail = _interopRequireDefault(require("./JobDetail/JobDetail.js"));
+
+var _SeekerDetail = _interopRequireDefault(require("./SeekerDetail/SeekerDetail.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

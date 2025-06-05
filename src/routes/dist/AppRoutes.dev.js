@@ -45,8 +45,16 @@ var publicRoutes = [{
   component: _pages.ServiceAndPolicyPage,
   layout: _layouts.HeaderOnly
 }, {
-  path: _config["default"].routes.findJob,
+  path: _config["default"].routes.findJobPage,
   component: _pages.FindJobPage,
+  layout: _layouts.HeaderOnly
+}, {
+  path: _config["default"].routes.jobDetails,
+  component: _pages.JobDetail,
+  layout: _layouts.HeaderOnly
+}, {
+  path: _config["default"].routes.seekerDetailPage,
+  component: _pages.SeekerDetailPage,
   layout: _layouts.HeaderOnly
 }];
 exports.publicRoutes = publicRoutes;

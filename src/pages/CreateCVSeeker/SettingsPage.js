@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import styles from './SettingsPage.module.scss'; // hoặc file CSS phù hợp
+import classNames from 'classnames/bind';
+import styles from './SettingsPage.module.scss';
+
+const cx = classNames.bind(styles);
 
 // Các tab trong settings
 const tabsOrder = ['Company Info', 'Founding Info', 'Social Media Profile', 'Contact'];
@@ -13,7 +16,7 @@ const socialOptions = [
 ];
 
 const SaveNextButton = ({ onClick }) => (
-  <button type="button" className={styles.saveNextBtn} onClick={onClick}>
+  <button type="button" className={cx('saveNextBtn')} onClick={onClick}>
     Save & Next →
   </button>
 );
@@ -94,13 +97,13 @@ function SettingsPage() {
   };
 
   return (
-    <div className={styles.main}>
+    <div className={cx('main')}>
       <h1>Settings</h1>
-      <div className={styles.tabs}>
+      <div className={cx('tabs')}>
         {tabsOrder.map((tab) => (
           <button
             key={tab}
-            className={`${styles.tab} ${activeTab === tab ? styles.active : ''}`}
+            className={cx('tab', { active: activeTab === tab })}
             onClick={() => setActiveTab(tab)}
             type="button"
           >
@@ -110,95 +113,96 @@ function SettingsPage() {
       </div>
 
       {activeTab === 'Company Info' && (
-        <div className={styles.companyInfoTab}>
-          <h3>Logo & Banner Image</h3>
-          <div className={styles.uploadSection}>
-            <div className={styles.uploadBox}>
-              <label htmlFor="logo-upload" className={styles.uploadLabel}>
-                {logoFile ? (
-                  <img src={URL.createObjectURL(logoFile)} alt="logo" className={styles.previewImage} />
-                ) : (
-                  <>
-                    <div className={styles.uploadIcon}>⬆️</div>
-                    <div>
-                      <b>Browse photo</b> or drop here
-                    </div>
-                    <small>A photo larger than 400 pixels work best. Max photo size 5 MB.</small>
-                  </>
-                )}
-              </label>
-              <input
-                id="logo-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
-                className={styles.uploadInput}
-              />
-              <div className={styles.uploadTitle}>Upload document</div>
-            </div>
+  <div className={cx('companyInfoTab')}>
+    <h3>Logo & Banner Image</h3>
+    <div className={cx('uploadSection')}>
+      <div className={cx('uploadBox')}>
+        <label htmlFor="logo-upload" className={cx('uploadLabel')}>
+          {logoFile ? (
+            <img src={URL.createObjectURL(logoFile)} alt="logo" className={cx('previewImage')} />
+          ) : (
+            <>
+              <div className={cx('uploadIcon')}>⬆️</div>
+              <div>
+                <b>Browse photo</b> or drop here
+              </div>
+              <small>A photo larger than 400 pixels work best. Max photo size 5 MB.</small>
+            </>
+          )}
+        </label>
+        <input
+          id="logo-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleLogoChange}
+          className={cx('uploadInput')}
+        />
+        <div className={cx('uploadTitle')}>Upload document</div>
+      </div>
 
-            <div className={styles.uploadBox}>
-              <label htmlFor="banner-upload" className={styles.uploadLabel}>
-                {bannerFile ? (
-                  <img src={URL.createObjectURL(bannerFile)} alt="banner" className={styles.previewImage} />
-                ) : (
-                  <>
-                    <div className={styles.uploadIcon}>⬆️</div>
-                    <div>
-                      <b>Browse photo</b> or drop here
-                    </div>
-                    <small>Banner images optical dimension 1520×400. Supported format JPEG, PNG. Max photo size 5 MB.</small>
-                  </>
-                )}
-              </label>
-              <input
-                id="banner-upload"
-                type="file"
-                accept="image/jpeg, image/png"
-                onChange={handleBannerChange}
-                className={styles.uploadInput}
-              />
-              <div className={styles.uploadTitle}>Banner Image</div>
-            </div>
-          </div>
+      <div className={cx('uploadBox')}>
+        <label htmlFor="banner-upload" className={cx('uploadLabel')}>
+          {bannerFile ? (
+            <img src={URL.createObjectURL(bannerFile)} alt="banner" className={cx('previewImage')} />
+          ) : (
+            <>
+              <div className={cx('uploadIcon')}>⬆️</div>
+              <div>
+                <b>Browse photo</b> or drop here
+              </div>
+              <small>Banner images optical dimension 1520×400. Supported format JPEG, PNG. Max photo size 5 MB.</small>
+            </>
+          )}
+        </label>
+        <input
+          id="banner-upload"
+          type="file"
+          accept="image/jpeg, image/png"
+          onChange={handleBannerChange}
+          className={cx('uploadInput')}
+        />
+        <div className={cx('uploadTitle')}>Banner Image</div>
+      </div>
+    </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="company-name">Company name</label>
-            <input
-              id="company-name"
-              type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              placeholder=""
-            />
-          </div>
+    <div className={cx('formGroup')}>
+      <label htmlFor="company-name">Company name</label>
+      <input
+        id="company-name"
+        type="text"
+        value={companyName}
+        onChange={(e) => setCompanyName(e.target.value)}
+        placeholder=""
+      />
+    </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="about-us">About Us</label>
-            <textarea
-              id="about-us"
-              value={aboutUs}
-              onChange={(e) => setAboutUs(e.target.value)}
-              rows={5}
-              placeholder="Write down about your company here. Let the candidate know who we are..."
-            />
-          </div>
+    <div className={cx('formGroup')}>
+      <label htmlFor="about-us">About Us</label>
+      <textarea
+        id="about-us"
+        value={aboutUs}
+        onChange={(e) => setAboutUs(e.target.value)}
+        rows={5}
+        placeholder="Write down about your company here. Let the candidate know who we are..."
+      />
+    </div>
 
-          <div style={{ marginTop: 20 }}>
-            <SaveNextButton
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            />
-          </div>
-        </div>
-      )}
+    <div style={{ marginTop: 20 }}>
+      <SaveNextButton
+        onClick={() => {
+          handleSave();
+          goToNextTab();
+        }}
+      />
+    </div>
+  </div>
+)}
+
 
       {activeTab === 'Founding Info' && (
-        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
-          <div className={styles.row}>
-            <div className={styles.inputGroup}>
+        <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
+          <div className={cx('row')}>
+            <div className={cx('inputGroup')}>
               <label>Organization Type</label>
               <select name="organizationType" value={form.organizationType} onChange={handleChange}>
                 <option value="">Select...</option>
@@ -208,7 +212,7 @@ function SettingsPage() {
                 <option value="Non-profit">Non-profit</option>
               </select>
             </div>
-            <div className={styles.inputGroup}>
+            <div className={cx('inputGroup')}>
               <label>Industry Types</label>
               <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
                 <option value="">Select...</option>
@@ -218,7 +222,7 @@ function SettingsPage() {
                 <option value="Education">Education</option>
               </select>
             </div>
-            <div className={styles.inputGroup}>
+            <div className={cx('inputGroup')}>
               <label>Team Size</label>
               <select name="teamSize" value={form.teamSize} onChange={handleChange}>
                 <option value="">Select...</option>
@@ -231,8 +235,8 @@ function SettingsPage() {
             </div>
           </div>
 
-          <div className={styles.row}>
-            <div className={styles.inputGroup}>
+          <div className={cx('row')}>
+            <div className={cx('inputGroup')}>
               <label>Year of Establishment</label>
               <input
                 type="date"
@@ -242,7 +246,7 @@ function SettingsPage() {
                 placeholder="dd/mm/yyyy"
               />
             </div>
-            <div className={styles.inputGroup}>
+            <div className={cx('inputGroup')}>
               <label>Company Website</label>
               <input
                 type="url"
@@ -254,7 +258,7 @@ function SettingsPage() {
             </div>
           </div>
 
-          <div className={styles.inputGroup} style={{ marginBottom: '20px' }}>
+          <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
             <label>Company Vision</label>
             <textarea
               name="companyVision"
@@ -262,9 +266,9 @@ function SettingsPage() {
               placeholder="Tell us about your company vision..."
               value={form.companyVision}
               onChange={handleChange}
-              className={styles.textareaVision}
+              className={cx('textareaVision')}
             />
-            <div className={styles.textEditorIcons}>
+            <div className={cx('textEditorIcons')}>
               <button type="button">
                 <b>B</b>
               </button>
@@ -282,12 +286,12 @@ function SettingsPage() {
           </div>
 
           <div>
-            <button type="button" className={styles.previousBtn} onClick={() => setActiveTab('Company Info')}>
+            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
               Previous
             </button>
             <button
               type="submit"
-              className={styles.saveNextBtn}
+              className={cx('saveNextBtn')}
               onClick={() => {
                 handleSave();
                 goToNextTab();
@@ -299,67 +303,67 @@ function SettingsPage() {
         </form>
       )}
 
-{activeTab === 'Social Media Profile' && (
-  <div className={styles.socialLinksContainer}>
-    {socialLinks.map((link, idx) => (
-      <div key={link.id} className={styles.socialLinkRow}>
-        <label>{`Social Link ${idx + 1}`}</label>
-        <div className={styles.socialLinkInputs}>
-          <select
-            value={link.type}
-            onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
-            className={styles.socialSelect}
-          >
-            {socialOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <input
-            type="text"
-            placeholder="Profile link/url..."
-            value={link.url}
-            onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
-            className={styles.socialInput}
-          />
-          <button
-            type="button"
-            className={styles.removeBtn}
-            onClick={() => handleRemoveSocialLink(link.id)}
-            aria-label={`Remove Social Link ${idx + 1}`}
-          >
-            ×
+      {activeTab === 'Social Media Profile' && (
+        <div className={cx('socialLinksContainer')}>
+          {socialLinks.map((link, idx) => (
+            <div key={link.id} className={cx('socialLinkRow')}>
+              <label>{`Social Link ${idx + 1}`}</label>
+              <div className={cx('socialLinkInputs')}>
+                <select
+                  value={link.type}
+                  onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
+                  className={cx('socialSelect')}
+                >
+                  {socialOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Profile link/url..."
+                  value={link.url}
+                  onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
+                  className={cx('socialInput')}
+                />
+                <button
+                  type="button"
+                  className={cx('removeBtn')}
+                  onClick={() => handleRemoveSocialLink(link.id)}
+                  aria-label={`Remove Social Link ${idx + 1}`}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+          <button type="button" className={cx('addSocialBtn')} onClick={handleAddSocialLink}>
+            + Add New Social Link
           </button>
-        </div>
-      </div>
-    ))}
-    <button type="button" className={styles.addSocialBtn} onClick={handleAddSocialLink}>
-      + Add New Social Link
-    </button>
 
-    <div style={{ marginTop: 20 }}>
-      <SaveNextButton
-        onClick={() => {
-          handleSave();
-          goToNextTab();
-        }}
-      />
-    </div>
-  </div>
-)}
+          <div style={{ marginTop: 20 }}>
+            <SaveNextButton
+              onClick={() => {
+                handleSave();
+                goToNextTab();
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {activeTab === 'Contact' && (
-        <div className={styles.contactTab}>
+        <div className={cx('contactTab')}>
           <h2>Contact Information</h2>
-          <div className={styles.formGroup}>
+          <div className={cx('formGroup')}>
             <label>Map Location</label>
             <input type="text" placeholder="Map Location" />
           </div>
-          <div className={styles.phoneGroup}>
+          <div className={cx('phoneGroup')}>
             <label>Phone</label>
-            <div className={styles.phoneInput}>
-              <select className={styles.countryCodeSelect} defaultValue="+880">
+            <div className={cx('phoneInput')}>
+              <select className={cx('countryCodeSelect')} defaultValue="+880">
                 <option value="+880">🇧🇩 +880</option>
                 <option value="+1">🇺🇸 +1</option>
                 <option value="+44">🇬🇧 +44</option>
@@ -367,37 +371,37 @@ function SettingsPage() {
               <input type="tel" placeholder="Phone number.." />
             </div>
           </div>
-          <div className={styles.formGroup}>
+          <div className={cx('formGroup')}>
             <label>Email</label>
             <input type="email" placeholder="Email address" />
           </div>
-          <button className={styles.saveBtn}>Save Changes</button>
+          <button className={cx('saveBtn')}>Save Changes</button>
 
-          <hr className={styles.divider} />
+          <hr className={cx('divider')} />
 
           <h2>Change Password</h2>
-          <div className={styles.passwordGroup}>
-            <div className={styles.inputGroup}>
+          <div className={cx('passwordGroup')}>
+            <div className={cx('inputGroup')}>
               <label>Current Password</label>
-              <div className={styles.passwordInput}>
+              <div className={cx('passwordInput')}>
                 <input type="password" placeholder="Password" />
                 <button type="button" aria-label="Toggle visibility">
                   👁️
                 </button>
               </div>
             </div>
-            <div className={styles.inputGroup}>
+            <div className={cx('inputGroup')}>
               <label>New Password</label>
-              <div className={styles.passwordInput}>
+              <div className={cx('passwordInput')}>
                 <input type="password" placeholder="Password" />
                 <button type="button" aria-label="Toggle visibility">
                   👁️
                 </button>
               </div>
             </div>
-            <div className={styles.inputGroup}>
+            <div className={cx('inputGroup')}>
               <label>Confirm Password</label>
-              <div className={styles.passwordInput}>
+              <div className={cx('passwordInput')}>
                 <input type="password" placeholder="Password" />
                 <button type="button" aria-label="Toggle visibility">
                   👁️
@@ -405,17 +409,17 @@ function SettingsPage() {
               </div>
             </div>
           </div>
-          <button className={styles.saveBtn}>Change Password</button>
+          <button className={cx('saveBtn')}>Change Password</button>
 
-          <hr className={styles.divider} />
+          <hr className={cx('divider')} />
 
           <h2>Delete Your Company</h2>
-          <p className={styles.deleteDesc}>
+          <p className={cx('deleteDesc')}>
             If you delete your Jobpilot account, you will no longer be able to get information about
             the matched jobs, following employers, and job alert, shortlisted jobs and more. You
             will be abandoned from all the services of Jobpilot.com.
           </p>
-          <button className={styles.deleteBtn}>❌ Close Account</button>
+          <button className={cx('deleteBtn')}>❌ Close Account</button>
         </div>
       )}
     </div>

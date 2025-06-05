@@ -1,183 +1,206 @@
 import React, { useState } from "react";
+import classNames from "classnames/bind";
 import styles from "./FindJob.module.scss";
+
+const cx = classNames.bind(styles);
 
 const jobData = [
   {
     id: 1,
-    title: "Marketing Manager",
-    tags: ["Featured", "Remote"],
-    location: "New Mexico, USA",
-    salary: "$50K-$60k/month",
-    daysRemaining: 4,
+    company: "Reddit",
+    title: "Marketing Officer",
+    tags: ["Featured", "Design"],
+    location: "United Kingdom of Great Britain",
+    jobType: "Full Time",
+    salary: "$30K-$35K",
     logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Windows_Logo_2012.svg/120px-Windows_Logo_2012.svg.png",
+    logoBg: "#FF4500",
   },
   {
     id: 2,
-    title: "Project Manager",
-    tags: ["Featured", "Full Time"],
-    location: "Dhaka, Bangladesh",
-    salary: "$60k-$80k/month",
-    daysRemaining: 4,
+    company: "Dribbble",
+    title: "Senior UX Designer",
+    tags: ["Featured"],
+    location: "California",
+    jobType: "Full-Time",
+    salary: "$50k-$80k/month",
     logo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+    logoBg: "#EA4C89",
   },
   {
     id: 3,
-    title: "Interaction Designer",
-    tags: ["Featured", "Full Time"],
-    location: "New York, USA",
-    salary: "$50k-$60k/month",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Logo_Figma_2021.svg",
-  },
-  {
-    id: 4,
-    title: "Networking Engineer",
-    tags: ["Full Time"],
-    location: "Washington, USA",
-    salary: "$30k-$35k",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Uber_logo_2018.svg",
-  },
-  {
-    id: 5,
-    title: "Product Designer",
-    tags: ["Full Time"],
-    location: "Ohio, USA",
-    salary: "$50k-$60k/month",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/Uber_Logo_2018.svg",
-  },
-  {
-    id: 6,
-    title: "Junior Graphic Designer",
-    tags: ["Full Time"],
-    location: "Nature, Bangladesh",
-    salary: "$30k-$40k",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Upwork_Logo.svg/120px-Upwork_Logo.svg.png",
-  },
-  {
-    id: 7,
-    title: "Software Engineer",
-    tags: ["Part Time"],
-    location: "Moretomo, USA",
-    salary: "$30k-$33k",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Twitter_icon.svg/120px-Twitter_icon.svg.png",
-  },
-  {
-    id: 8,
-    title: "Front End Developer",
-    tags: ["Contract Base"],
-    location: "Silva, Turkey",
-    salary: "$30k-$35k",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_(2019).png",
-  },
-  {
-    id: 9,
-    title: "Technical Support Specialist",
-    tags: ["Full Time"],
-    location: "Chattogram, Bangladesh",
-    salary: "$30k-$35k",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Instagram_icon.png",
-  },
-  {
-    id: 10,
+    company: "Freepik",
     title: "Visual Designer",
-    tags: ["Full Time"],
-    location: "Konya, Turkey",
-    salary: "$20k-$25k",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3a/Instagram_icon.png",
-  },
-  {
-    id: 11,
-    title: "Marketing Officer",
-    tags: ["Temporary"],
-    location: "Penn, USA",
-    salary: "$30k-$35k",
-    daysRemaining: 4,
+    tags: ["Featured"],
+    location: "China",
+    jobType: "Full Time",
+    salary: "$10K-$15K",
     logo: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Uber_logo_2018.svg",
+    logoBg: "#0057FF",
   },
-  {
-    id: 12,
-    title: "Senior UX Designer",
-    tags: ["Full Time"],
-    location: "Mymensingh, Bangladesh",
-    salary: "$50k-$60k/month",
-    daysRemaining: 4,
-    logo: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Uber_logo_2018.svg",
-  },
+  // ...thêm các job khác tương tự
 ];
 
-const tagClassMap = {
-  Featured: styles.Featured,
-  Remote: styles.Remote,
-  "Full Time": styles.FullTime,
-  "Part Time": styles.PartTime,
-  "Contract Base": styles.ContractBase,
-  Temporary: styles.Temporary,
-};
-
-const JobCard = ({ job }) => (
-  <div className={styles.jobCard}>
-    <div className={styles.leftSide}>
-      <img src={job.logo} alt="logo" />
-      <div className={styles.jobInfo}>
-        <h3>{job.title}</h3>
-        <div className={styles.tags}>
-          {job.tags.map((tag) => (
-            <span key={tag} className={tagClassMap[tag]}>
-              {tag}
-            </span>
-          ))}
+const JobCard = ({ job, isSelected, onSelect, placeholder }) => {
+  if (placeholder) {
+    return <div className={cx("jobCard", "placeholder")} />;
+  }
+  return (
+    <div
+      className={cx("jobCard", { selected: isSelected })}
+      onClick={() => onSelect(job.id)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => e.key === "Enter" && onSelect(job.id)}
+      aria-pressed={isSelected}
+    >
+      <div
+        className={cx("logo")}
+        style={{ backgroundColor: job.logoBg || "#ddd" }}
+      >
+        <img src={job.logo} alt={`${job.company} logo`} />
+      </div>
+      <div className={cx("jobContent")}>
+        <div className={cx("companyName")}>
+          {job.company}
+          {job.tags.includes("Featured") && (
+            <span className={cx("tagFeatured")}>Featured</span>
+          )}
         </div>
-        <p>
-          {job.location} | {job.salary}
-        </p>
-        <small>{job.daysRemaining} Days Remaining</small>
+        <div className={cx("location")}>{job.location}</div>
+        <h4 className={cx("jobTitle")}>{job.title}</h4>
+        <div className={cx("jobMeta")}>
+          <span>{job.jobType}</span> • <span>{job.salary}</span>
+        </div>
       </div>
     </div>
-    <button>Apply Now</button>
-  </div>
-);
+  );
+};
 
 const FindJob = () => {
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
-  const perPage = 5;
+  const [selectedJobId, setSelectedJobId] = useState(null);
+  const [filters, setFilters] = useState(["Design", "New York"]);
+  const [sortOption, setSortOption] = useState("Latest");
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [layout, setLayout] = useState("grid");
 
-  const filteredJobs = jobData.filter(
-    (job) =>
-      job.title.toLowerCase().includes(search.toLowerCase()) &&
-      job.location.toLowerCase().includes(location.toLowerCase()) &&
-      (category === "" || job.tags.includes(category))
-  );
+  const perPage = itemsPerPage;
+
+  // Xóa filter tag
+  const removeFilter = (tag) => {
+    setFilters(filters.filter((f) => f !== tag));
+  };
+
+  // Lọc và sắp xếp jobs
+  const filteredJobs = jobData
+    .filter(
+      (job) =>
+        job.title.toLowerCase().includes(search.toLowerCase()) &&
+        job.location.toLowerCase().includes(location.toLowerCase()) &&
+        (category === "" || job.tags.includes(category)) &&
+        filters.every((f) =>
+          [job.title, job.location, ...job.tags].some((field) =>
+            field.toLowerCase().includes(f.toLowerCase())
+          )
+        )
+    )
+    .sort((a, b) => {
+      if (sortOption === "Latest") return b.id - a.id;
+      if (sortOption === "Oldest") return a.id - b.id;
+      return 0;
+    });
 
   const totalPages = Math.ceil(filteredJobs.length / perPage);
   const displayedJobs = filteredJobs.slice((page - 1) * perPage, page * perPage);
+  const placeholdersCount = perPage - displayedJobs.length;
 
   return (
-    <div className={styles.container}>
-      <h2 className={styles.header}>Find Job</h2>
-      <div className={styles.filters}>
+    <div className={cx("findJobContainer")}>
+      <h2 className={cx("pageTitle")}>Find Job</h2>
+
+      {/* Thanh filter tags và lựa chọn sắp xếp, items per page, layout */}
+      <div className={cx("filterTagsBar")}>
+        <div className={cx("tagsList")}>
+          {filters.map((filter) => (
+            <div key={filter} className={cx("filterTag")}>
+              {filter}
+              <button
+                className={cx("removeTagBtn")}
+                onClick={() => removeFilter(filter)}
+                aria-label={`Remove filter ${filter}`}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <div className={cx("sortItemsLayout")}>
+          <select
+            className={cx("sortSelect")}
+            value={sortOption}
+            onChange={(e) => setSortOption(e.target.value)}
+          >
+            <option>Latest</option>
+            <option>Oldest</option>
+          </select>
+
+          <select
+            className={cx("itemsPerPageSelect")}
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(Number(e.target.value))}
+          >
+            <option value={6}>6 per page</option>
+            <option value={12}>12 per page</option>
+            <option value={24}>24 per page</option>
+          </select>
+
+          <div className={cx("layoutToggle")}>
+            <button
+              className={cx({ active: layout === "grid" })}
+              onClick={() => setLayout("grid")}
+              aria-label="Grid view"
+              type="button"
+            >
+              &#x25A3;
+            </button>
+            <button
+              className={cx({ active: layout === "list" })}
+              onClick={() => setLayout("list")}
+              aria-label="List view"
+              type="button"
+            >
+              &#x2630;
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters tìm kiếm cơ bản */}
+      <div className={cx("filters")}>
         <input
           type="text"
           placeholder="Job title, keyword..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          className={cx("inputSearch")}
         />
         <input
           type="text"
           placeholder="Location"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+          className={cx("inputLocation")}
         />
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className={cx("selectCategory")}
+        >
           <option value="">Select Category</option>
           <option value="Featured">Featured</option>
           <option value="Remote">Remote</option>
@@ -186,22 +209,59 @@ const FindJob = () => {
           <option value="Contract Base">Contract Base</option>
           <option value="Temporary">Temporary</option>
         </select>
-        <button onClick={() => setPage(1)}>Find Job</button>
+        <button onClick={() => setPage(1)} className={cx("btnFind")}>
+          Find Job
+        </button>
       </div>
 
-      {displayedJobs.map((job) => (
-        <JobCard key={job.id} job={job} />
-      ))}
+      {/* Danh sách job */}
+      <div className={cx(layout === "grid" ? "jobGrid" : "jobList")}>
+        {displayedJobs.map((job) => (
+          <JobCard
+            key={job.id}
+            job={job}
+            isSelected={selectedJobId === job.id}
+            onSelect={setSelectedJobId}
+          />
+        ))}
 
-      <div className={styles.pagination}>
-        <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(p - 1, 1))}>
-          Prev
+        {/* Placeholder cho đủ 12 ô */}
+        {placeholdersCount > 0 &&
+          Array.from({ length: placeholdersCount }).map((_, idx) => (
+            <JobCard key={`placeholder-${idx}`} placeholder />
+          ))}
+      </div>
+
+      {/* Phân trang */}
+      <div className={cx("pagination")}>
+        <button
+          className={cx("pageArrow")}
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          aria-label="Previous page"
+        >
+          &lt;
         </button>
-        <span>
-          Page {page} of {totalPages}
-        </span>
-        <button disabled={page >= totalPages} onClick={() => setPage((p) => Math.min(p + 1, totalPages))}>
-          Next
+        {[...Array(totalPages)].map((_, idx) => {
+          const pageNum = idx + 1;
+          return (
+            <button
+              key={pageNum}
+              className={cx("pageBtn", { active: page === pageNum })}
+              onClick={() => setPage(pageNum)}
+              type="button"
+            >
+              {pageNum}
+            </button>
+          );
+        })}
+        <button
+          className={cx("pageArrow")}
+          disabled={page === totalPages}
+          onClick={() => setPage(page + 1)}
+          aria-label="Next page"
+        >
+          &gt;
         </button>
       </div>
     </div>

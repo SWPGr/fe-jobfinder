@@ -1,3 +1,4 @@
+import SeekerDetail from "~/pages/SeekerDetail/SeekerDetail";
 
 const routes = {
     home: '/',
@@ -16,6 +17,8 @@ const routes = {
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
     findJobPage: '/findJobPage',
+    jobDetails: '/jobDetails',
+    seekerDetailPage: '/seekerDetailPage',
 
 };
  
