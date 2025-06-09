@@ -1,17 +1,17 @@
 import { post } from '~/utils/httpRequest';
 
-const login = async (username, password) => {
+const login = async (email, password) => {
     try {
-        const response = await post('/login', { username, password }); // gửi trong body
+        const response = await post('auth/login', { email, password }); // gửi trong body
         return response;
     } catch (error) {
         throw error;
     }
 };
 
-const register = async (username, password, role) => {
+const register = async (email, password, roleName) => {
     try {
-        const response = await post('/register', { username, password, role }); // gửi trong body
+        const response = await post('auth/register', { email, password, roleName }); // gửi trong body
         return response;
     } catch (error) {
         throw error;

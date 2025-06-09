@@ -4,20 +4,29 @@
     flex-direction: column;
     align-items: center;
 }
-.find-job__header {
+.find-job__title {
     width: 100%;
-    height: 19rem;
     display: flex;
+    align-items: center;
     justify-content: center;
-}
-.header__container {
-    width: var(--default-layout-width);
-    padding: 2rem;
-}
-.header__title {
+    background: var(--gray-50);
+    padding-top: 2rem;
+
     h1 {
+        width: var(--default-layout-width);
+        padding: 0 2rem;
         font-size: var(--font-size-18px);
+        margin-bottom: 0;
     }
 }
-.header__filter {
+.title__container {
+    width: var(--default-layout-width);
+    padding: 2rem 2rem 0 2rem;
+    display: flex;
+    align-items: center;
+    h1 {
+        font-size: var(--font-size-18px);
+        font-weight: 500;
+        color: var(--gray-900);
+    }
 }

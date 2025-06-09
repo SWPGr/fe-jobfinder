@@ -11,6 +11,8 @@ import { LeftSideLogin } from '../components';
 import { Button } from '~/components';
 // popup phần chính sách bảo mật
 import { validator } from '~/utils';
+import { useContext } from 'react';
+import { AuthContext } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
@@ -36,11 +38,17 @@ function Register() {
         },
     });
 
+    const { register } = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle password visibility
 
-    const handleSubmitForm = (values) => {
+    const handleSubmitForm = async (values) => {
         console.log('Form submitted:', values);
+
+        const success = await register(values.email, values.password, values.userRole);
+        if (success.success) {
+            window.location.href = '/login';
+        }
     };
 
     return (

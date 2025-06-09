@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const httpRequest = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL || '', // đặt baseURL nếu có
+    baseURL: 'http://localhost:8080/api/', // đặt baseURL nếu có
     headers: {
         'Content-Type': 'application/json',
     },
@@ -9,6 +9,15 @@ const httpRequest = axios.create({
 });
 
 // Middleware có thể thêm: interceptors request/response nếu muốn
+
+httpRequest.interceptors.request.use((config) => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+        const token = JSON.parse(storedUser).token;
+        if (token) config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
 
 // Xử lý GET
 export const get = async (path, options = {}) => {

@@ -13,18 +13,20 @@ export const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null);
 
     // Hàm chung xử lý đăng nhập và đăng ký
-    const authenticate = async (type, username, password, role) => {
+    const authenticate = async (type, email, password, roleName) => {
         setLoading(true);
         setError(null);
         try {
             let response;
             if (type === 'login') {
-                response = await authService.login(username, password);
+                response = await authService.login(email, password);
             } else if (type === 'register') {
-                response = await authService.register(username, password, role);
+                response = await authService.register(email, password, roleName);
             }
-            const data = response.data;
-            const loggedInUser = { ...data.user, token: data.token };
+            const data = response;
+            console.log(data);
+
+            const loggedInUser = { role: data.role, token: data.token };
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoading(false);
@@ -57,17 +59,17 @@ export const AuthProvider = ({ children }) => {
     };
 
     // Giao diện hàm login và register gọi chung hàm authenticate
-    const login = (username, password) => authenticate('login', username, password);
-    const register = (username, password, role) => authenticate('register', username, password, role);
+    const login = (email, password) => authenticate('login', email, password);
+    const register = (email, password, role) => authenticate('register', email, password, role);
 
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
     };
 
-    user = {
-        role: 'JOB_SEEKER',
-    };
+    // user = {
+    //     role: 'JOB_SEEKER',
+    // };
     // user = null;
 
     return (
