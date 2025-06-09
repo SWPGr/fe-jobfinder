@@ -1,28 +1,63 @@
 import axios from 'axios';
 
 const httpRequest = axios.create({
+    baseURL: 'http://localhost:8080/api/', // đặt baseURL nếu có
     headers: {
         'Content-Type': 'application/json',
     },
+    timeout: 10000, // timeout 10s (tuỳ chọn)
 });
 
+// Middleware có thể thêm: interceptors request/response nếu muốn
+
+httpRequest.interceptors.request.use((config) => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+        const token = JSON.parse(storedUser).token;
+        if (token) config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+});
+
+// Xử lý GET
 export const get = async (path, options = {}) => {
-    const response = await httpRequest.get(path, options);
-    return response.data;
+    try {
+        const response = await httpRequest.get(path, options);
+        return response.data;
+    } catch (error) {
+        // Có thể xử lý lỗi ở đây hoặc throw lên trên
+        throw error.response?.data || error.message;
+    }
 };
 
-export const post = async (path, options = {}) => {
-    const response = await httpRequest.post(path, options);
-    return response.data;
-};
-export const put = async (path, options = {}) => {
-    const response = await httpRequest.put(path, options);
-    return response.data;
+// Xử lý POST
+export const post = async (path, data = {}, options = {}) => {
+    try {
+        const response = await httpRequest.post(path, data, options);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
 };
 
+// Xử lý PUT
+export const put = async (path, data = {}, options = {}) => {
+    try {
+        const response = await httpRequest.put(path, data, options);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
+};
+
+// Xử lý DELETE
 export const del = async (path, options = {}) => {
-    const response = await httpRequest.delete(path, options);
-    return response.data;
+    try {
+        const response = await httpRequest.delete(path, options);
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || error.message;
+    }
 };
 
 export default httpRequest;

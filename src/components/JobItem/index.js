@@ -45,23 +45,22 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isL
                             )}
                         </span>
                         <p className={cx('company-address')}>
-                            {/* <IconMapPin size={20} /> */}
-                            {companyAddress}
+                            <span className={cx('icon-wrapper')}>
+                                <IconMapPin />
+                            </span>
+                            <span className={cx('text')}>{companyAddress}</span>
                         </p>
                     </div>
                 </div>
                 {isLogin && (
-                    <div className={cx('save-job')}>
-                        {isLogin && (
-                            <IconComponent
-                                size={22}
-                                color="#0a65cc"
-                                onClick={() => {
-                                    setSave(!save);
-                                    console.log('save job');
-                                }}
-                            />
-                        )}
+                    <div
+                        className={cx('save-job')}
+                        onClick={() => {
+                            setSave(!save);
+                            console.log('save job');
+                        }}
+                    >
+                        {isLogin && <IconComponent size={22} color="#0a65cc" />}
                     </div>
                 )}
             </div>

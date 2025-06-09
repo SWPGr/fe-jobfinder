@@ -1,4 +1,3 @@
-
 const routes = {
     home: '/',
     profile: '/profile',
@@ -15,7 +14,9 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
-
+    findJob: '/find-job',
+    findCandidate: '/find-candidate',
+    verify: '/api/auth/verify',
 };
- 
+
 export default routes;

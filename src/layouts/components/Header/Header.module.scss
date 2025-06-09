@@ -9,8 +9,6 @@
     justify-content: center;
     align-items: center;
     border-bottom: 1px solid var(--gray-100);
-    // position: sticky;
-    // top: 4.8rem;
 }
 
 .container {
@@ -39,6 +37,7 @@
         font-size: var(--font-size-logo);
         font-weight: 700;
         line-height: 2.8rem;
+        margin: 0;
     }
 
     img {

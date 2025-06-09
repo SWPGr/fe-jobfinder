@@ -12,7 +12,6 @@ const cx = classNames.bind(styles);
 
 function Header() {
     let { user, logout } = useAuth();
-    user = true;
 
     return (
         <header className={cx('wrapper')}>
