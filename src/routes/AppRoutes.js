@@ -10,6 +10,8 @@ import {
     ServiceAndPolicyPage,
     CreateCVSeekerPage,
     SingleJobPage,
+    FindJob,
+    VerifyPage,
 } from '~/pages';
 import { HeaderOnly } from '~/layouts';
 
@@ -25,8 +27,12 @@ const publicRoutes = [
     { path: config.routes.dashboard, component: DashboardPage },
     // { path: config.routes.serviceAndPolicy, component: ServiceAndPolicyPage },
     { path: config.routes.serviceAndPolicy, component: ServiceAndPolicyPage, layout: HeaderOnly },
+    { path: config.routes.verify, component: VerifyPage, layout: null },
 ];
 
-const privateRoutes = [{ path: config.routes.dashboard, component: DashboardPage }];
+const privateRoutes = [
+    { path: config.routes.dashboard, component: DashboardPage },
+    { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
+];
 
 export { publicRoutes, privateRoutes };

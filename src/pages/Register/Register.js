@@ -11,6 +11,8 @@ import { LeftSideLogin } from '../components';
 import { Button } from '~/components';
 // popup phần chính sách bảo mật
 import { validator } from '~/utils';
+import { useContext } from 'react';
+import { AuthContext } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
@@ -22,7 +24,7 @@ function Register() {
             email: '',
             password: '',
             confirmPassword: '',
-            userRole: '', // ban đầu chưa chọn
+            userRole: 'JOB_SEEKER', // ban đầu chưa chọn
             agree: false,
         },
         validate: {
@@ -32,16 +34,21 @@ function Register() {
             password: (value) => validator.validatePassword(value),
             confirmPassword: (value, values) => validator.validateConfirmPassword(value, values.password),
             userRole: (value) => (value ? null : 'Please select your role'),
-            agree: (value) => (value === true ? null : alert('You must agree to terms')),
+            agree: (value) => (value ? null : 'You must agree to terms'),
         },
     });
 
-    const [agree, setAgree] = useState(false);
+    const { register } = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
     const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle password visibility
 
-    const handleSubmitForm = (values) => {
+    const handleSubmitForm = async (values) => {
         console.log('Form submitted:', values);
+
+        const success = await register(values.email, values.password, values.userRole);
+        if (success.success) {
+            window.location.href = '/login';
+        }
     };
 
     return (
@@ -61,33 +68,6 @@ function Register() {
                     <h2 className={cx('title')}>Create your account</h2>
 
                     <form className={cx('form')} onSubmit={formRegister.onSubmit(handleSubmitForm)}>
-                        {/* <div className={cx('name-fields')}>
-                            <TextInput
-                                label="First name"
-                                placeholder="John"
-                                {...formLogin.getInputProps('firstName')}
-                                classNames={{
-                                    wrapper: cx('text-wrapper'),
-                                    input: cx('input'),
-                                    section: cx('section'),
-                                    label: cx('label'),
-                                    error: cx('error'),
-                                }}
-                            />
-                            <TextInput
-                                label="Last name"
-                                placeholder="Doe"
-                                {...formLogin.getInputProps('lastName')}
-                                classNames={{
-                                    wrapper: cx('text-wrapper'),
-                                    input: cx('input'),
-                                    section: cx('section'),
-                                    label: cx('label'),
-                                    error: cx('error'),
-                                }}
-                            />
-                        </div> */}
-
                         <TextInput
                             label="Email address"
                             placeholder="you@example.com"
@@ -247,7 +227,11 @@ function Register() {
                             <p className={cx('description')}>Or continue with</p>
                         </div>
 
-                        <GoogleLoginButton />
+                        <GoogleLoginButton
+                            mode="register"
+                            role={formRegister.values.userRole}
+                            disabled={!formRegister.values.userRole}
+                        />
                     </div>
                 </div>
             </div>

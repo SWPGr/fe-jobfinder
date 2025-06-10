@@ -14,7 +14,12 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
+
     singleJob: '/singleJob',
+
+    findJob: '/find-job',
+    findCandidate: '/find-candidate',
+    verify: '/api/auth/verify',
 };
 
 export default routes;
