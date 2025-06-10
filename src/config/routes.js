@@ -16,6 +16,7 @@ const routes = {
     createCVSeekerPage: '/createCVSeekerPage',
     findJob: '/find-job',
     findCandidate: '/find-candidate',
+    findEmployer: '/find-employer',
     verify: '/api/auth/verify',
 };
 
