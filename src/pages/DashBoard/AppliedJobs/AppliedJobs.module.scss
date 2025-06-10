@@ -50,7 +50,16 @@
     color: #d93025;
     font-weight: 700;
 }
+.item>* {
+    border-bottom: 1px solid #ccc;
 
+}
+
+.item>*:last-child { 
+    border-bottom: none;
+    /* Bỏ đường kẻ dưới cùng của item cuối */
+    margin-bottom: 0;
+    padding-bottom: 0; }
 /* Nút View Details lớn hơn, bo tròn và nổi bật */
 .view-details-btn {
     background-color: #1a73e8;
