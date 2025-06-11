@@ -55,14 +55,18 @@ function AccountSetting() {
 
                 <h3>Privacy</h3>
                 <div className={cx('toggle-group')}>
-                    <label>
-                        <input type="checkbox" />
-                        Profile Privacy
-                    </label>
-                    <label>
-                        <input type="checkbox" />
-                        Resume Privacy
-                    </label>
+                    <div className={cx('toggle-item')}>
+                        <label>
+                            <input type="checkbox" />
+                            Profile Privacy
+                        </label>
+                    </div>
+                    <div className={cx('toggle-item')}>
+                        <label>
+                            <input type="checkbox" />
+                            Resume Privacy
+                        </label>
+                    </div>
                 </div>
 
                 <h3>Change Password</h3>
