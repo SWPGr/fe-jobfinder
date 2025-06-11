@@ -7,9 +7,9 @@ const cx = classNames.bind(styles);
 
 function FindJob() {
     const jobFilters = {
-        experience: { type: 'Radio', options: ['0-1 year', '1-3 years', '3-5 years', '5+ years'] },
-        salary: { type: 'Radio', options: ['$0 - $50k', '$50k - $100k', '$100k - $200k', '$200k+'] },
-        jobType: { type: 'Checkbox', options: ['Full-time', 'Part-time', 'Contract'] },
+        experience: { type: 'Radio', options: ['0-1 year', '1-3 years', '3-5 years', '5+ years'], grid: true },
+        salary: { type: 'Radio', options: ['$0 - $50k', '$50k - $100k', '$100k - $200k', '$200k+'], grid: true },
+        jobType: { type: 'Checkbox', options: ['Full-time', 'Part-time', 'Contract'], grid: true },
         education: { type: 'Checkbox', options: ['High School', 'Bachelor', 'Master', 'PhD'] },
         jobLevel: { type: 'Radio', options: ['Internship', 'Entry Level', 'Mid Level', 'Senior Level'] },
     };

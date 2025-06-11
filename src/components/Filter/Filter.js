@@ -265,7 +265,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                         </div>
 
                         <div className={cx('filter__content')}>
-                            {Object.entries(filters).map(([key, { type, options }]) => (
+                            {Object.entries(filters).map(([key, { type, options, grid }]) => (
                                 <div key={key} className={cx('filter__item')}>
                                     <div className={cx('filter__item-title')}>
                                         <h3>{key}</h3>
@@ -276,20 +276,31 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                                 name={key}
                                                 value={form.values[key]}
                                                 onChange={(value) => handleRadioChange(key, value)}
+                                                classNames={{
+                                                    root: cx('filter-root', {
+                                                        grid: grid,
+                                                    }),
+                                                }}
                                             >
                                                 {options.map((option) => (
                                                     <Radio key={option} value={option} label={option} />
                                                 ))}
                                             </Radio.Group>
                                         ) : (
-                                            options.map((option) => (
-                                                <Checkbox
-                                                    key={option}
-                                                    label={option}
-                                                    checked={form.values[key]?.includes(option)}
-                                                    onChange={() => toggleCheckbox(key, option)}
-                                                />
-                                            ))
+                                            <div
+                                                className={cx('checkbox-container', {
+                                                    grid: grid,
+                                                })}
+                                            >
+                                                {options.map((option) => (
+                                                    <Checkbox
+                                                        key={option}
+                                                        label={option}
+                                                        checked={form.values[key]?.includes(option)}
+                                                        onChange={() => toggleCheckbox(key, option)}
+                                                    />
+                                                ))}
+                                            </div>
                                         )}
                                     </div>
                                 </div>
