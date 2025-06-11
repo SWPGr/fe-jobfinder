@@ -12,6 +12,7 @@
     background-color: var(--white);
     border: 1px solid transparent;
     user-select: none;
+    transition: var(--transition);
 
     + .wrapper {
         margin-left: 8px;

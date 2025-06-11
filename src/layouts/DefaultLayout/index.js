@@ -10,7 +10,6 @@ import Overview1 from '~/pages/CreateCVSeeker/Overview1';
 import Footer from '../components/Footer/Footer';
 import { useAuth } from '~/context/AuthContext';
 
-
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
@@ -22,15 +21,17 @@ function DefaultLayout({ children }) {
 
     return (
         <div className={cx('wrapper')}>
-            <NavBar />
-            <Header />
+            <NavBar className={cx('nav-bar')} />
+            <Header className={cx('header')} />
             <div className={cx('container')}>
                 <div className={cx('side-bar')}>
                     <Sidebar setSelectedMenu={setSelectedMenu} />
                 </div>
+                {/* <div className={cx('side-bar__hidden')}>
+                    <Sidebar setSelectedMenu={setSelectedMenu} />
+                </div> */}
                 <div className={cx('content')}>{selectedMenu}</div>
             </div>
-            <Footer />
         </div>
     );
 }

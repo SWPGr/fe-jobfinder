@@ -6,8 +6,6 @@
     font-size: 1.4rem;
     display: flex;
     flex-direction: column;
-    position: fixed;
-    top: calc(4.8rem + 9rem);
     z-index: 900;
 }
 
@@ -31,6 +29,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
     cursor: pointer;
 
     & > span {
@@ -71,4 +70,37 @@
 .logout {
     position: relative;
     transform: translateY(-15rem);
+}
+
+// 1024px
+@media screen and (max-width: 1024px) {
+    .wrapper {
+        width: 20rem;
+    }
+}
+
+// 768px
+@media screen and (max-width: 768px) {
+    .wrapper {
+        width: 5rem;
+    }
+    .header {
+        display: none;
+    }
+    .title {
+        display: none;
+    }
+    .nav-item {
+        padding: 1rem;
+        width: 100%;
+
+        .badge {
+            position: absolute;
+            font-size: 1rem;
+            width: 1.4rem;
+            height: 1.4rem;
+            top: 7px;
+            right: 10px;
+        }
+    }
 }
