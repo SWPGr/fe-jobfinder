@@ -38,7 +38,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                 <div className={cx('job-description')}>
                     {/* Top */}
                     <div className={cx('top')}>
-                        <div className={cx('title')}>{jobTitle}</div>
+                        <p className={cx('title')}>{jobTitle}</p>
                         {isVIP && (
                             <Badge
                                 color="#ffeded"
@@ -91,7 +91,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                     </div>
 
                     <div className={cx('apply-job')}>
-                        <Button to={'#'} rightIcon={<IconArrowRight />}>
+                        <Button to={'#'} rightIcon={<IconArrowRight />} className={cx('apply-job-btn')}>
                             Apply Now
                         </Button>
                     </div>

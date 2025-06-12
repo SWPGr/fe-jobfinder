@@ -102,8 +102,7 @@
     overflow: visible; /* hoặc không đặt overflow */
 }
 .filter__container {
-    min-width: 350px;
-
+    width: 350px;
     position: sticky;
     top: 140px;
     z-index: 10;
@@ -122,7 +121,6 @@
 
     &::-webkit-scrollbar {
         width: 0.5rem;
-        background: red;
         opacity: 0; /* Ẩn thanh cuộn khi không hover */
         transition: opacity 0.3s ease; /* Thêm hiệu ứng mượt mà */
     }
@@ -166,13 +164,23 @@
 .filter__item-content,
 div[role='radiogroup'] {
     label {
-        font-size: var(--font-size-14px);
+        font-size: var(--font-size-16px);
         font-weight: 400;
     }
     input {
         width: 1.4rem;
         height: 1.4rem;
         border: 1px solid var(--gray-300);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.4rem;
+        height: 1.4rem;
     }
 }
 
@@ -199,7 +207,7 @@ div[role='radiogroup'] {
 // RESULTS
 
 .result__container {
-    width: 100%;
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -262,5 +270,44 @@ div[role='radiogroup'] {
         &[data-active='true'] {
             border-color: inherit;
         }
+    }
+}
+
+// RESPONSIVE 1024px
+
+@media (max-width: 1024px) {
+    .filter__container {
+        width: 250px;
+    }
+    .checkbox-container.grid,
+    .grid div[role='radiogroup'] {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+// RESPONSIVE 768px
+@media (max-width: 768px) {
+    .filter__container {
+        width: 220px;
+    }
+    .filter-btn,
+    .clear-filter-btn {
+        font-size: 1.4rem;
+        min-height: auto;
+        min-width: auto;
+        height: 40px;
+        width: 90px;
+    }
+    .result__container {
+        .filter__action {
+            .select-filter-input {
+                height: 40px;
+            }
+        }
+    }
+    .select-filter-section {
+        width: 40px;
+        height: 40px;
     }
 }
