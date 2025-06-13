@@ -154,3 +154,10 @@
         }
     }
 }
+
+// 480px
+@media screen and (max-width: 480px) {
+    .search {
+        display: none;
+    }
+}

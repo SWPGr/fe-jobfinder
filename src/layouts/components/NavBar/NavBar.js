@@ -11,11 +11,14 @@ import getNavItems from './ItemsNav';
 
 const cx = classNames.bind(styles);
 
-function NavBar() {
+function NavBar({ className }) {
     const location = useLocation();
     const [opened, { open, close }] = useDisclosure(false);
 
     const { user } = useAuth();
+    const classes = cx('wrapper', {
+        [className]: className,
+    });
 
     // // Đặt mặc định role nếu không có
     const role = user?.role;
@@ -38,7 +41,7 @@ function NavBar() {
     }, [currentIndex, active]);
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={classes}>
             <div className={cx('container')}>
                 <div className={cx('tabs')}>
                     {Array.isArray(navList) &&

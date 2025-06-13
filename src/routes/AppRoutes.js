@@ -12,6 +12,8 @@ import {
     SingleJobPage,
     FindJob,
     VerifyPage,
+    FindEmployer,
+    FindCandidate,
 } from '~/pages';
 import { HeaderOnly } from '~/layouts';
 
@@ -33,6 +35,8 @@ const publicRoutes = [
 const privateRoutes = [
     { path: config.routes.dashboard, component: DashboardPage },
     { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
+    { path: config.routes.findEmployer, component: FindEmployer, layout: HeaderOnly },
+    { path: config.routes.findCandidate, component: FindCandidate, layout: HeaderOnly },
 ];
 
 export { publicRoutes, privateRoutes };

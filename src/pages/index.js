@@ -10,3 +10,5 @@ export { default as ServiceAndPolicyPage } from './ServiceAndPolicy/index.js';
 export { default as SingleJobPage } from './SingleJob/JobDetailsPage.js';
 export { default as FindJob } from './FindJob/FindJobPage.js';
 export { default as VerifyPage } from './Verify/VerifyPage.js';
+export { default as FindEmployer } from './FindEmployer/FindEmployer.js';
+export { default as FindCandidate } from './FindCandidate/FindCandidate.js';

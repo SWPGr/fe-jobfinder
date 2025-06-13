@@ -7,3 +7,4 @@ export { default as JobItemApplied } from './JobItemApplied';
 export { default as CompanyItem } from './CompanyItem';
 export { default as RichTextEditor } from './RichTextEditor/RichTextEditor';
 export { default as Filter } from './Filter/Filter.js';
+export { default as CandidateItem } from './CandidateItem/CandidateItem.js';

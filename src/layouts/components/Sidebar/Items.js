@@ -31,76 +31,82 @@ import Overview1 from '~/pages/CreateCVSeeker/Overview1';
 const cx = classNames.bind(styles);
 
 export const items = {
-    EMPLOYER: [
-        {
-            title: 'Overview',
-            icon: <IconStack2 />, // Replace with actual icon component
+    EMPLOYER: {
+        header: 'CANDIDATE DASHBOARD',
+        items: [
+            {
+                title: 'Overview',
+                icon: <IconStack2 />, // Replace with actual icon component
 
-            // page: <Overview />, // Example page component
+                // page: <Overview />, // Example page component
 
-            page: <Overview1 />,
-        },
-        {
-            title: 'Employer Profile',
-            icon: <IconUserCircle />, // Replace with actual icon component
-        },
-        {
-            title: 'Post a Job',
-            icon: <IconCirclePlus />, // Replace with actual icon component
-            page: <PostJob />,
-        },
-        {
-            title: 'My Jobs',
-            icon: <IconBriefcase />, // Replace with actual icon component
-            page: <MyJob />,
-        },
-        {
-            title: 'Saved Candidates',
-            icon: <IconBookmark />, // Replace with actual icon component
-            page: <SavedCandidates />,
-        },
-        {
-            title: 'Plans & Billing',
-            icon: <IconNotebook />, // Replace with actual icon component
-            page: <PlansBilling />,
-        },
-        {
-            title: 'All Companies',
-            icon: <IconBuildingCommunity />, // Replace with actual icon component
-        },
-        {
-            title: 'Settings',
-            icon: <IconSettings />, // Replace with actual icon component
-            page: <SettingsPage />,
-        },
-    ],
+                page: <Overview1 />,
+            },
+            {
+                title: 'Employer Profile',
+                icon: <IconUserCircle />, // Replace with actual icon component
+            },
+            {
+                title: 'Post a Job',
+                icon: <IconCirclePlus />, // Replace with actual icon component
+                page: <PostJob />,
+            },
+            {
+                title: 'My Jobs',
+                icon: <IconBriefcase />, // Replace with actual icon component
+                page: <MyJob />,
+            },
+            {
+                title: 'Saved Candidates',
+                icon: <IconBookmark />, // Replace with actual icon component
+                page: <SavedCandidates />,
+            },
+            {
+                title: 'Plans & Billing',
+                icon: <IconNotebook />, // Replace with actual icon component
+                page: <PlansBilling />,
+            },
+            {
+                title: 'All Companies',
+                icon: <IconBuildingCommunity />, // Replace with actual icon component
+            },
+            {
+                title: 'Settings',
+                icon: <IconSettings />, // Replace with actual icon component
+                page: <SettingsPage />,
+            },
+        ],
+    },
 
-    JOB_SEEKER: [
-        {
-            title: 'Overview',
-            icon: <IconStack2 />, // Replace with actual icon component
-            page: <Dashboard1 />, // Example page component
-        },
-        {
-            title: 'Applied Jobs',
-            icon: <IconBriefcase />, // Replace with actual icon component
-            page: <AppliedJobs />,
-        },
-        {
-            title: 'Favorite Jobs',
-            icon: <IconBookmark />, // Replace with actual icon component
-            page: <FavoriteJobs />,
-        },
-        {
-            title: 'Job Alert',
-            icon: <IconBellRinging />, // Replace with actual icon component
-            rightSection: <span className={cx('badge')}>3</span>, // Example right section
-            page: <JobAlerts />,
-        },
-        {
-            title: 'Settings',
-            icon: <IconSettings />, // Replace with actual icon component
-            page: <Setting />,
-        },
-    ],
+    JOB_SEEKER: {
+        header: 'JOB SEEKER DASHBOARD',
+        items: [
+            {
+                title: 'Overview',
+                icon: <IconStack2 />, // Replace with actual icon component
+                page: <Dashboard1 />, // Example page component
+            },
+            {
+                title: 'Applied Jobs',
+                icon: <IconBriefcase />, // Replace with actual icon component
+                page: <AppliedJobs />,
+            },
+            {
+                title: 'Favorite Jobs',
+                icon: <IconBookmark />, // Replace with actual icon component
+                page: <FavoriteJobs />,
+            },
+            {
+                title: 'Job Alert',
+                icon: <IconBellRinging />, // Replace with actual icon component
+                rightSection: <span className={cx('badge')}>3</span>, // Example right section
+                page: <JobAlerts />,
+            },
+            {
+                title: 'Settings',
+                icon: <IconSettings />, // Replace with actual icon component
+                page: <Setting />,
+            },
+        ],
+    },
 };
