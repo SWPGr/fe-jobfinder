@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
 }
 
 .dashboard-header {
@@ -25,6 +26,7 @@
 .stats-cards {
   display: flex;
   gap: 24px;
+  font-size: x-large;
   margin-bottom: 20px;
   width: 100%;
   flex-wrap: wrap;
@@ -263,54 +265,53 @@
 
 // RESPONSIVE STYLES
 @media screen and (max-width: 1024px) {
+
+  /* Stats-cards: grid 2 cột, phần tử 3 chiếm full-width */
   .stats-cards {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+    font-size: var(--font-size-14px);
   }
 
-  .profile-warning {
-    flex-direction: column;
+  .stat-card {
+    padding: 16px;
+    flex: none;
   }
 
-  .job-list-header {
-    flex-direction: column;
+  .stat-number {
+    font-size: var(--font-size-20px);
   }
 
-  .job-table-head,
-  .job-table-row {
-    grid-template-columns: 2fr 1fr;
+  .stat-label {
+    font-size: var(--font-size-13px);
   }
 
-  .job-title-col {
-    flex-direction: column;
+  /* Cho ô thứ 3 chiếm toàn bộ hàng */
+  .stats-cards .stat-card:nth-child(3) {
+    grid-column: 1 / -1;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .dashboard-header h2 {
-    font-size: var(--font-size-24px);
-  }
 
+  /* Grid một cột, font and padding nhỏ lại */
   .stats-cards {
-    gap: 16px;
-  }
-
-  .profile-warning {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .job-table-head,
-  .job-table-row {
+    display: grid;
     grid-template-columns: 1fr;
+    gap: 12px;
+    font-size: var(--font-size-13px);
   }
 
-  .job-list-header {
-    flex-direction: column;
+  .stat-card {
+    padding: 12px;
   }
 
-  .job-title-col {
-    flex-direction: column;
-    align-items: center;
+  .stat-number {
+    font-size: var(--font-size-18px);
+  }
+
+  .stat-label {
+    font-size: var(--font-size-12px);
   }
 }

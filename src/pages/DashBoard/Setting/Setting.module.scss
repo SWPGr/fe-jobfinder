@@ -2,7 +2,10 @@
 .setting-container {
     margin: 0 auto;
     padding: 24px 40px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: 16px;
+    /* Force font */
+    max-width: 1140px;
 }
 
 /* Tiêu đề chung */
@@ -18,6 +21,7 @@ h1 {
     border-bottom: 2px solid #e5e7eb;
     margin-bottom: 24px;
     gap: 24px;
+    padding-bottom: 8px;
 }
 
 /* Nút tab */
@@ -27,25 +31,27 @@ h1 {
     border-bottom: 2px solid transparent;
     font-weight: 600;
     font-size: 16px;
-    padding: 8px 0;
+    padding: 8px 16px;
     cursor: pointer;
     color: #555;
     transition: color 0.3s, border-color 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    /* Force font */
 
     &.active {
-        border-color: #2563eb;
-        color: #2563eb;
+        border-color: #007bff;
+        color: #007bff;
         font-weight: 700;
     }
 
     &:hover:not(.active) {
-        color: #1d4ed8;
+        color: #0056b3;
     }
 }
 
 /* Nội dung tab */
 .tab-content {
-    /* bạn có thể thêm padding nếu muốn */
+    padding: 20px 0;
 }
 
 /* =================== */
@@ -54,6 +60,10 @@ h1 {
 /* Tất cả phần nội dung dùng chung max-width */
 .setting-content {
     margin: 0 auto;
+    max-width: none;
+    /* bỏ giới hạn 600px */
+    width: 100%;
+    padding: 20px;
 }
 
 /* Tiêu đề các phần nhỏ */
@@ -67,7 +77,8 @@ h1 {
 .form-row {
     display: flex;
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
 
     input,
     select,
@@ -77,6 +88,9 @@ h1 {
         font-size: 14px;
         border: 1px solid #ccc;
         border-radius: 6px;
+        min-width: 200px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        /* Force font */
     }
 
     label {
@@ -84,6 +98,9 @@ h1 {
         font-weight: 600;
         font-size: 14px;
         color: #555;
+        margin-top: 5px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        /* Force font */
     }
 
     &.biography {
@@ -147,7 +164,9 @@ h1 {
 
 /* Nút Save chung */
 .save-btn {
-    background-color: #2563eb;
+    display: block;
+    margin-left: auto;
+    background-color: #007bff;
     border: none;
     color: white;
     padding: 12px 32px;
@@ -157,10 +176,12 @@ h1 {
     cursor: pointer;
     margin-top: 20px;
     transition: background-color 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    /* Force font */
 }
 
 .save-btn:hover {
-    background-color: #1d4ed8;
+    background-color: #0056b3;
 }
 
 /* ================== */
@@ -263,6 +284,7 @@ h1 {
 
 .checkbox-group {
     margin-bottom: 24px;
+    padding-left: 10px;
 }
 
 .checkbox-group label {
@@ -270,6 +292,8 @@ h1 {
     margin-bottom: 10px;
     font-weight: 600;
     font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    /* Force font */
 }
 
 .checkbox-group label input {
@@ -281,12 +305,9 @@ h1 {
 .toggle-group {
     display: flex;
     justify-content: flex-start;
-    /* Align the toggle items to the left */
     gap: 10px;
-    /* Reduce the gap between the items */
     margin-bottom: 24px;
 
-    /* Make the items stack vertically on small screens */
     @media screen and (max-width: 768px) {
         flex-direction: column;
         gap: 12px;
@@ -303,6 +324,8 @@ h1 {
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            /* Force font */
         }
 
         input[type='checkbox'] {
@@ -350,6 +373,8 @@ h1 {
     color: #d22d2d;
     font-size: 13px;
     margin-bottom: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    /* Force font */
 }
 
 .delete-btn {
@@ -358,21 +383,87 @@ h1 {
     color: #d22d2d;
     cursor: pointer;
     font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    /* Force font */
 }
 
 .delete-btn:hover {
     text-decoration: underline;
 }
 
+/* Dropdown button and mobile items */
+.dropdown-button {
+    font-weight: 600;
+    font-size: 18px;
+    color: #555;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 8px 12px;
+    text-align: left;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    /* Force font */
+    overflow: visible;
+    /* Ensure text is not truncated */
+    white-space: normal;
+
+    /* Allow text to wrap if needed */
+    &:hover {
+        border-color: #007bff;
+        color: #007bff;
+    }
+}
+
+.mobile-dropdown {
+    display: none !important;
+    width: 100%;
+    /* full-width wrapper */
+    text-align: center;
+    /* center the button if you like */
+}
+
+.mobile-dropdown .mantine-Paper-root {
+    left: 50% !important;
+    right: auto !important;
+    transform-origin: top;
+
+    /* we need to merge in the scaleY from your Transition: */
+    &.mantine-Paper-with-transition {
+        /* this is just an example class; match whatever Mantine is outputting */
+        transform: translateX(-50%) scaleY(var(--your-scale-value));
+    }
+}
+
+.mobile-item {
+    font-size: 18px;
+    color: #555;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+
+    /* Force font */
+    &.active {
+        color: #007bff;
+        font-weight: 700;
+    }
+
+    &:hover:not(.active) {
+        color: #0056b3;
+    }
+}
+
 /* RESPONSIVE STYLES */
 @media screen and (max-width: 1024px) {
+    .mobile-dropdown {
+            display: block !important;
+        }
+    
+        .desktop-tabs {
+            display: none !important; }
     .tabs {
         flex-direction: column;
         gap: 12px;
     }
 
     .tab-button {
-        font-size: 14px;
+        font-size: 18px;
     }
 
     .setting-content h2 {
@@ -404,6 +495,11 @@ h1 {
 
     .cv-add {
         width: 100%;
+    }
+
+    /* Ensure desktop tabs are hidden */
+    .desktop-tabs {
+        display: none !important;
     }
 }
 
