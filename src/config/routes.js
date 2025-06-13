@@ -11,7 +11,13 @@ const routes = {
     dashboard: '/dashboard', // Admin or user dashboard
     applications: '/applications', // List of job applications
     applicationDetails: '/applications/:id', // Application details page
+    serviceAndPolicy: '/service-and-policy',
     error: '/error',
+    createCVSeekerPage: '/createCVSeekerPage',
+    findJob: '/find-job',
+    findCandidate: '/find-candidate',
+    findEmployer: '/find-employer',
+    verify: '/api/auth/verify',
 };
 
 export default routes;

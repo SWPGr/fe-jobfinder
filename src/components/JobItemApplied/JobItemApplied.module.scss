@@ -1,0 +1,276 @@
+.wrapper {
+    width: 100%;
+    max-height: 9.6rem;
+    padding: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.4rem;
+    border: 1px transparent;
+    transition: var(--transition);
+
+    &:hover {
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        border: 1px solid;
+        border-color: var(--blue-500);
+
+        .title {
+            color: var(--blue-500);
+        }
+    }
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    .job-description {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+.logo-company {
+    width: 5.6rem;
+    height: 5.6rem;
+    background: white;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-100);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+}
+
+// TOP
+
+.top {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    .title {
+        color: var(--gray-900);
+        font-size: 1.8rem;
+        display: -webkit-box; /* Sử dụng flexbox với WebKit */
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
+        -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
+        overflow: hidden; /* Ẩn phần nội dung tràn */
+        text-overflow: ellipsis;
+        max-width: 20rem;
+    }
+}
+
+.label-badge {
+    font-size: 1.2rem;
+    font-weight: 400;
+    text-transform: none;
+
+    &.featured {
+        color: #ff4f4f;
+    }
+    &.work-time {
+        color: var(--blue-500);
+    }
+}
+
+.isVIP {
+    background: linear-gradient(90deg, var(--orange-50), var(--white));
+
+    .logo-company {
+        border-color: transparent;
+    }
+}
+
+.root-badge {
+    width: 8.3rem;
+    height: 2.6rem;
+}
+
+// BOTTOM
+
+.bottom {
+    display: flex;
+    gap: 2rem;
+
+    & > div {
+        display: flex;
+        align-items: center;
+        font-size: 1.4rem;
+        color: var(--gray-500);
+        gap: 0.6rem;
+    }
+}
+
+// STATUS
+
+.active {
+    color: var(--green-500);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.inactive {
+    color: var(--red-500);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+// ACTION
+
+.action {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.apply-job {
+    cursor: pointer;
+}
+
+/* === Responsive: Tablet & Mobile === */
+
+@media (max-width: 1024px) {
+    .wrapper {
+        max-width: 100%;
+        flex-wrap: wrap;
+        padding: 2rem;
+        max-height: none;
+    }
+
+    .content {
+        flex: 1 1 50%;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .logo-company {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    .top {
+        flex-wrap: wrap;
+
+        .title {
+            font-size: 1.8rem;
+            max-width: 15rem;
+        }
+    }
+
+    .bottom {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .status {
+        flex: 1 1 25%;
+        display: inline-flex;
+        text-align: center;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .end-date {
+        flex: 1 1 25%;
+        margin-top: 1rem;
+        text-align: center;
+    }
+
+    .action {
+        flex: 1 1 100%;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .apply-job {
+        width: 100%;
+
+        button {
+            min-width: unset;
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 2rem;
+        font-size: 1.2rem;
+    }
+    .status,
+    .end-date {
+        margin: 0;
+    }
+    .top {
+        .title {
+            font-size: 1.6rem;
+        }
+    }
+    .apply-job {
+        a {
+            display: flex;
+            padding: 0.2rem;
+            font-size: 1.2rem;
+            width: 9rem;
+            height: 4rem;
+            min-width: auto;
+            min-height: auto;
+
+            span {
+                width: 8rem;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            & span:nth-child(2) {
+                display: none;
+            }
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .wrapper {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .logo-company {
+        width: 4rem;
+        height: 4rem;
+    }
+
+    .content {
+        flex: 1 1 100%;
+    }
+
+    .content .job-description {
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        .title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+    }
+
+    .label-badge {
+        font-size: 1rem;
+    }
+
+    .bottom > div {
+        font-size: 1.2rem;
+    }
+}

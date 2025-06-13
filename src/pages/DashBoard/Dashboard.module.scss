@@ -1,0 +1,255 @@
+.dashboard-content {
+  margin: 0 auto;
+  padding: 40px 0 0 0;
+}
+
+.dashboard-header {
+  margin-bottom: 16px;
+
+  h2 {
+    font-size: 28px;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  .desc {
+    font-size: 16px;
+    color: #858d9d;
+  }
+}
+
+.stats-cards { 
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+
+  .stat-card {
+    flex: 1;
+    padding: 24px;
+    border-radius: 12px;
+    background: #f5f8fa;
+
+    &.blue {
+      background: #e5f0fd;
+    }
+
+    &.yellow {
+      background: #fff8e5;
+    }
+
+    &.green {
+      background: #e6f5ea;
+    }
+
+    .stat-number {
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-size: 15px;
+      color: #57606f;
+    }
+  }
+}
+
+.profile-warning {
+  margin-bottom: 24px;
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  background: #ffe5e5;
+  border-radius: 12px;
+  padding: 20px;
+
+  .warning-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .warning-title {
+    color: #e53535;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .warning-desc {
+    color: #e53535;
+    font-size: 13px;
+  }
+
+  .edit-profile-btn {
+    background: #e53535;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #d22d2d;
+    }
+  }
+}
+
+.job-list-container {
+  margin-top: 28px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #f0f2f5;
+
+}
+
+.job-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  b {
+    font-size: 18px;
+  }
+
+  .view-all-btn {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 15px;
+    cursor: pointer;
+  }
+}
+
+.job-table-head,
+.job-table-row { //chỉnh lại phần hàng ngang ở trên component
+  display: grid;
+  grid-template-columns: 4fr 1.2fr 0.95fr 1.1fr;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.job-table-head {
+  font-size: 18px;
+  font-weight: 600;
+  color: #858d9d;
+  border-bottom: 1px solid #f2f3f5;
+}
+
+.job-table-row {
+  border-bottom: 1px solid #f7f7fa;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.job-title-col {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  .company-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #f1f3f6;
+
+    // Demo icon
+    &.upwork {
+      background: #19e07c;
+    }
+
+    &.dribbble {
+      background: #f43f5e;
+    }
+
+    &.apple {
+      background: #353535;
+    }
+
+    &.microsoft {
+      background: #4785ff;
+    }
+  }
+
+  .main-title {
+    font-weight: 500;
+    font-size: 16px;
+  }
+
+  .job-badge {
+    display: inline-block;
+    background: #e5f0fd;
+    color: #2563eb;
+    font-size: 12px;
+    border-radius: 6px;
+    margin-left: 8px;
+    padding: 2px 10px;
+
+    &.remote {
+      background: #e6f6fc;
+      color: #1d9fd6;
+    }
+
+    &.fulltime {
+      background: #e9edff;
+      color: #5161ce;
+    }
+
+    &.temporary {
+      background: #fff7e6;
+      color: #d9a441;
+    }
+
+    &.contractbase {
+      background: #f5eaff;
+      color: #8a4de8;
+    }
+  }
+
+  .meta {
+    font-size: 13px;
+    color: #858d9d;
+    margin-top: 4px;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+}
+
+.job-date-applied {
+  font-size: 14px;
+  color: #858d9d;
+}
+
+.job-status {
+  font-size: 14px;
+  font-weight: 500;
+
+  &.active {
+    color: #30be6b;
+  }
+
+  &.inactive {
+    color: #e53535;
+  }
+}
+
+.job-detail-btn {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #1e4fd7;
+  }
+}

@@ -1,55 +1,30 @@
-import { useDisclosure } from '@mantine/hooks';
-import { Modal, Button } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import classNames from 'classnames/bind';
+import styles from './Home.module.scss';
+import { JobItem, JobItemList, JobItemOwner, JobItemApplied } from '~/components';
+import { Images } from '~/assets';
+import { Button } from '~/components';
+import { LandingPage } from '../components';
+import PopularVacancy from './PopularVacancy';
+import Instruction from './Instruction';
+import PopularCategory from './PopularCategory';
+import FeaturedJob from './FeaturedJob';
+import TopCompanies from './TopCompanies';
+import CTA from './CTA';
 
-import { IconAt } from '@tabler/icons-react';
-
-import TextInputCustom from '../../components/TextInputCustom';
+const cx = classNames.bind(styles);
 
 function Home() {
-    const formLogin = useForm({
-        initialValues: {
-            email: '',
-            password: '',
-        },
-
-        validate: {
-            email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-            password: (value) => (value.length < 6 ? 'Password must include at least 6 characters' : null),
-        },
-    });
-
     return (
         <>
-            <formLogin>
-                <TextInputCustom
-                    label="Email"
-                    placeholder="Enter your email"
-                    key={formLogin.key.email}
-                    {...formLogin.getInputProps('email')}
-                />
-                <TextInputCustom
-                    label="Password"
-                    placeholder="Enter your password"
-                    key={formLogin.key.password}
-                    {...formLogin.getInputProps('password')}
-                    type="password"
-                />
-                <Button
-                    type="submit"
-                    onClick={() => {
-                        if (formLogin.validate().hasErrors) {
-                            return;
-                        }
-                        console.log('Form submitted:', formLogin.values);
-                    }}
-                    leftIcon={<IconAt size={16} />}
-                    fullWidth
-                    mt="md"
-                >
-                    Submit
-                </Button>
-            </formLogin>
+            <div className={cx('wrapper')}>
+                <LandingPage />
+                <PopularVacancy />
+                <Instruction />
+                <PopularCategory />
+                <FeaturedJob />
+                <TopCompanies />
+                <CTA />
+            </div>
         </>
     );
 }

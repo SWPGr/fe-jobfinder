@@ -1,11 +1,11 @@
 @import 'normalize.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 :root {
     --primary-color: #2563eb;
     --primary-color-light: #3b82f6;
     --primary-color-dark: #1d4ed8;
     --text-color: #374151;
-    --white: #fff;
     --black: #000;
     --background-color: #f8f9fa;
     --border-color: #ced4da;
@@ -16,15 +16,89 @@
     --disabled-color: #6b7280;
     --placeholder-color: #6b7280;
 
-    --font-family: 'Poppins', sans-serif;
+    /* Nhóm đỏ */
+    --red-900: #2d1010;
+    --red-800: #5a2020;
+    --red-700: #863131;
+    --red-600: #b34141;
+    --red-500: #e05151;
+    --red-400: #e67474;
+    --red-300: #ec9797;
+    --red-200: #f3b9b9;
+    --red-100: #f9dcdc;
+    --red-50: #fceeee;
 
-    --font-size: 1.6rem;
+    /* Nhóm xám */
+    --gray-900: #18191c;
+    --gray-800: #2f3338;
+    --gray-700: #474c54;
+    --gray-600: #5e6670;
+    --gray-500: #767f8c;
+    --gray-400: #9199a3;
+    --gray-300: #adb2ba;
+    --gray-200: #c8ccd1;
+    --gray-100: #e4e5e8;
+    --gray-50: #f1f2f4;
+
+    /* Nhóm trắng */
+    --white: #ffffff;
+
+    /* Nhóm xanh dương */
+    --blue-900: #021429;
+    --blue-800: #042852;
+    --blue-700: #063d7a;
+    --blue-600: #0851a3;
+    --blue-500: #0a65cc;
+    --blue-400: #3b84d6;
+    --blue-300: #6ca3e0;
+    --blue-200: #9dc1eb;
+    --blue-100: #cee0f5;
+    --blue-50: #e7f0fa;
+
+    /* Nhóm xanh lá */
+    --green-900: #022009;
+    --green-800: #044012;
+    --green-700: #07601a;
+    --green-600: #098023;
+    --green-500: #0ba02c;
+    --green-400: #3cb356;
+    --green-300: #6dc680;
+    --green-200: #9dd9ab;
+    --green-100: #ceecd5;
+    --green-50: #e7f6ea;
+
+    /* Nhóm vàng cam */
+    --orange-900: #332100;
+    --orange-800: #664200;
+    --orange-700: #996300;
+    --orange-600: #cc8400;
+    --orange-500: #ffa500;
+    --orange-400: #ffb733;
+    --orange-300: #ffc966;
+    --orange-200: #ffdb99;
+    --orange-100: #ffedcc;
+    --orange-50: #fff6e6;
+
+    --font-family: 'Inter', sans-serif;
+
+    --font-size-banner: 5.6rem;
+    --font-size-50px: 5rem;
+    --font-size-header: 4rem;
+    --font-size-logo: 2.4rem;
+    --font-size-20px: 2rem;
+    --font-size-18px: 1.8rem;
+    --font-size-16px: 1.6rem;
+    --font-size-14px: 1.4rem;
+    --font-size-12px: 1.2rem;
+    --font-size-10px: 1rem;
+
     --line-height: 1.5rem;
-    --border-radius: 0.5rem;
-    --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    --border-radius: 0.6rem;
+    --box-shadow: 0px 12px 48px 0px #002c6d1a;
+
     --transition: all 0.3s ease-in-out;
 
-    --default-layout-width: 120rem;
+    --default-layout-width: 135rem;
 }
 
 * {
@@ -36,7 +110,7 @@ html {
     font-size: 62.5%;
 }
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-family);
     font-size: 1.6rem;
     line-height: 1.5rem;
     text-rendering: optimizeSpeed;
@@ -49,10 +123,35 @@ a {
     text-decoration: none;
 }
 
-.mantine-Checkbox-icon {
-    display: none;
+@media screen and (max-width: 1024px) {
+    :root {
+        --default-layout-width: 998px;
+
+        --font-size-banner: 4.5rem;
+        --font-size-50px: 4rem;
+        --font-size-header: 3rem;
+        --font-size-logo: 2rem;
+        --font-size-18px: 1.6rem;
+        --font-size-16px: 1.4rem;
+        --font-size-14px: 1.2rem;
+        --font-size-12px: 1rem;
+        --font-size-10px: 0.9rem;
+    }
 }
-.mantine-Checkbox-body {
-    display: flex;
-    gap: 1rem;
+
+/* Khi màn hình <= 768px */
+@media screen and (max-width: 768px) {
+    :root {
+        --default-layout-width: 100%;
+
+        --font-size-banner: 3.5rem;
+        --font-size-50px: 3rem;
+        --font-size-header: 2.5rem;
+        --font-size-logo: 1.8rem;
+        --font-size-18px: 1.4rem;
+        --font-size-16px: 1.2rem;
+        --font-size-14px: 1rem;
+        --font-size-12px: 0.9rem;
+        --font-size-10px: 0.8rem;
+    }
 }
