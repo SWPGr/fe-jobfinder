@@ -292,7 +292,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                                         key={option}
                                                         value={option}
                                                         label={option}
-                                                        classNames={{ inner: cx('inner') }}
+                                                        classNames={{ inner: cx('inner'), body: cx('body') }}
                                                     />
                                                 ))}
                                             </Radio.Group>
@@ -308,7 +308,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                                         label={option}
                                                         checked={form.values[key]?.includes(option)}
                                                         onChange={() => toggleCheckbox(key, option)}
-                                                        classNames={{ inner: cx('inner') }}
+                                                        classNames={{ inner: cx('inner'), body: cx('body') }}
                                                     />
                                                 ))}
                                             </div>
