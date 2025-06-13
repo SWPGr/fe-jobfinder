@@ -256,10 +256,15 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                 <div className={cx('body__container')}>
                     <div className={cx('filter__container')}>
                         <div className={cx('filter__action')}>
-                            <Button leftIcon={<IconAdjustments />} onClick={handleSearch}>
+                            <Button leftIcon={<IconAdjustments />} onClick={handleSearch} className={cx('filter-btn')}>
                                 Filter
                             </Button>
-                            <Button red_white leftIcon={<IconAdjustmentsOff />} onClick={resetExceptCategory}>
+                            <Button
+                                red_white
+                                leftIcon={<IconAdjustmentsOff />}
+                                onClick={resetExceptCategory}
+                                className={cx('clear-filter-btn')}
+                            >
                                 Clear
                             </Button>
                         </div>
@@ -283,7 +288,12 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                                 }}
                                             >
                                                 {options.map((option) => (
-                                                    <Radio key={option} value={option} label={option} />
+                                                    <Radio
+                                                        key={option}
+                                                        value={option}
+                                                        label={option}
+                                                        classNames={{ inner: cx('inner'), body: cx('body') }}
+                                                    />
                                                 ))}
                                             </Radio.Group>
                                         ) : (
@@ -298,6 +308,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                                         label={option}
                                                         checked={form.values[key]?.includes(option)}
                                                         onChange={() => toggleCheckbox(key, option)}
+                                                        classNames={{ inner: cx('inner'), body: cx('body') }}
                                                     />
                                                 ))}
                                             </div>
@@ -328,7 +339,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                         <div className={cx('result__content')}>
                             {/* Bạn có thể render danh sách kết quả thực tế ở đây */}
                             {currentJobs.map((job) => (
-                                <JobItemList key={job.id} jobDescription={job} isVIP={job.isVIP} />
+                                <JobItemList key={job.id} jobDescription={job} isVIP={job.isVIP} isLogin />
                             ))}
                         </div>
                         <div className={cx('pagination')}>
