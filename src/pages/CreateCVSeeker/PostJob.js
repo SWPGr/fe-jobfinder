@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import classNames from 'classnames/bind';
 import styles from './PostJob.module.scss';
+
+const cx = classNames.bind(styles);
 
 const PostJob = () => {
   const [jobTitle, setJobTitle] = useState('');
@@ -24,10 +27,10 @@ const PostJob = () => {
   };
 
   return (
-    <form className={styles.postJobTab} onSubmit={handleSubmit}>
+    <form className={cx('postJobTab')} onSubmit={handleSubmit}>
       <h2>Post a job</h2>
 
-      <div className={styles.formGroup}>
+      <div className={cx('formGroup')}>
         <label>Job Title</label>
         <input
           type="text"
@@ -38,8 +41,8 @@ const PostJob = () => {
         />
       </div>
 
-      <div className={styles.row}>
-        <div className={styles.inputGroup}>
+      <div className={cx('row')}>
+        <div className={cx('inputGroup')}>
           <label>Tags</label>
           <input
             type="text"
@@ -48,7 +51,7 @@ const PostJob = () => {
             onChange={(e) => setTags(e.target.value)}
           />
         </div>
-        <div className={styles.inputGroup}>
+        <div className={cx('inputGroup')}>
           <label>Job Role</label>
           <select value={jobRole} onChange={(e) => setJobRole(e.target.value)}>
             <option value="">Select...</option>
@@ -59,8 +62,8 @@ const PostJob = () => {
       </div>
 
       <h3>Salary</h3>
-      <div className={styles.row}>
-        <div className={styles.inputGroup} style={{ position: 'relative' }}>
+      <div className={cx('row')}>
+        <div className={cx('inputGroup')} style={{ position: 'relative' }}>
           <label>Min Salary</label>
           <input
             type="number"
@@ -68,9 +71,9 @@ const PostJob = () => {
             value={minSalary}
             onChange={(e) => setMinSalary(e.target.value)}
           />
-          <span className={styles.currency}>USD</span>
+          <span className={cx('currency')}>USD</span>
         </div>
-        <div className={styles.inputGroup} style={{ position: 'relative' }}>
+        <div className={cx('inputGroup')} style={{ position: 'relative' }}>
           <label>Max Salary</label>
           <input
             type="number"
@@ -78,9 +81,9 @@ const PostJob = () => {
             value={maxSalary}
             onChange={(e) => setMaxSalary(e.target.value)}
           />
-          <span className={styles.currency}>USD</span>
+          <span className={cx('currency')}>USD</span>
         </div>
-        <div className={styles.inputGroup}>
+        <div className={cx('inputGroup')}>
           <label>Salary Type</label>
           <select value={salaryType} onChange={(e) => setSalaryType(e.target.value)}>
             <option value="">Select...</option>
@@ -91,8 +94,8 @@ const PostJob = () => {
       </div>
 
       <h3>Advance Information</h3>
-      <div className={styles.row}>
-        <div className={styles.inputGroup}>
+      <div className={cx('row')}>
+        <div className={cx('inputGroup')}>
           <label>Education</label>
           <select value={education} onChange={(e) => setEducation(e.target.value)}>
             <option value="">Select...</option>
@@ -101,7 +104,7 @@ const PostJob = () => {
             <option value="master">Master</option>
           </select>
         </div>
-        <div className={styles.inputGroup}>
+        <div className={cx('inputGroup')}>
           <label>Experience</label>
           <select value={experience} onChange={(e) => setExperience(e.target.value)}>
             <option value="">Select...</option>
@@ -110,7 +113,7 @@ const PostJob = () => {
             <option value="3+">3+ years</option>
           </select>
         </div>
-        <div className={styles.inputGroup}>
+        <div className={cx('inputGroup')}>
           <label>Job Type</label>
           <select value={jobType} onChange={(e) => setJobType(e.target.value)}>
             <option value="">Select...</option>
@@ -121,8 +124,8 @@ const PostJob = () => {
         </div>
       </div>
 
-      <div className={styles.row}>
-        <div className={styles.inputGroup}>
+      <div className={cx('row')}>
+        <div className={cx('inputGroup')}>
           <label>Vacancies</label>
           <select value={vacancies} onChange={(e) => setVacancies(e.target.value)}>
             <option value="">Select...</option>
@@ -131,7 +134,7 @@ const PostJob = () => {
             <option value="5+">5+</option>
           </select>
         </div>
-        <div className={styles.inputGroup}>
+        <div className={cx('inputGroup')}>
           <label>Expiration Date</label>
           <input
             type="date"
@@ -139,7 +142,7 @@ const PostJob = () => {
             onChange={(e) => setExpirationDate(e.target.value)}
           />
         </div>
-        <div className={styles.inputGroup}>
+        <div className={cx('inputGroup')}>
           <label>Job Level</label>
           <select value={jobLevel} onChange={(e) => setJobLevel(e.target.value)}>
             <option value="">Select...</option>
@@ -150,11 +153,9 @@ const PostJob = () => {
         </div>
       </div>
 
-      <fieldset className={styles.applyJobOn}>
+      <fieldset className={cx('applyJobOn')}>
         <legend>Apply Job on:</legend>
-        <label
-          className={applyJobOn === 'onJobpilot' ? styles.activeRadioLabel : ''}
-        >
+        <label className={cx({ activeRadioLabel: applyJobOn === 'onJobpilot' })}>
           <input
             type="radio"
             name="applyJob"
@@ -165,9 +166,7 @@ const PostJob = () => {
           <strong>On Jobpilot</strong>
           <p>Candidate will apply job using jobpilot & all application will show on your dashboard.</p>
         </label>
-        <label
-          className={applyJobOn === 'externalPlatform' ? styles.activeRadioLabel : ''}
-        >
+        <label className={cx({ activeRadioLabel: applyJobOn === 'externalPlatform' })}>
           <input
             type="radio"
             name="applyJob"
@@ -178,9 +177,7 @@ const PostJob = () => {
           <strong>External Platform</strong>
           <p>Candidate apply job on your website, all application on your own website.</p>
         </label>
-        <label
-          className={applyJobOn === 'onYourEmail' ? styles.activeRadioLabel : ''}
-        >
+        <label className={cx({ activeRadioLabel: applyJobOn === 'onYourEmail' })}>
           <input
             type="radio"
             name="applyJob"
@@ -194,7 +191,7 @@ const PostJob = () => {
       </fieldset>
 
       <h3>Description & Responsibility</h3>
-      <div className={styles.formGroup}>
+      <div className={cx('formGroup')}>
         <label>Description</label>
         <textarea
           placeholder="Add your job description..."
@@ -203,7 +200,7 @@ const PostJob = () => {
           onChange={(e) => setDescription(e.target.value)}
         />
         {/* Thanh công cụ bên dưới */}
-        <div className={styles.textEditorIcons}>
+        <div className={cx('textEditorIcons')}>
           <button type="button"><b>B</b></button>
           <button type="button"><i>I</i></button>
           <button type="button"><u>U</u></button>
@@ -213,7 +210,7 @@ const PostJob = () => {
           <button type="button">1.</button>
         </div>
       </div>
-      <div className={styles.formGroup}>
+      <div className={cx('formGroup')}>
         <label>Responsibilities</label>
         <textarea
           placeholder="Add your job responsibilities..."
@@ -221,7 +218,7 @@ const PostJob = () => {
           value={responsibilities}
           onChange={(e) => setResponsibilities(e.target.value)}
         />
-        <div className={styles.textEditorIcons}>
+        <div className={cx('textEditorIcons')}>
           <button type="button"><b>B</b></button>
           <button type="button"><i>I</i></button>
           <button type="button"><u>U</u></button>
@@ -232,8 +229,8 @@ const PostJob = () => {
         </div>
       </div>
 
-      <button type="submit" className={styles.saveNextBtn}>
-        Post Job <span className={styles.arrow}>&rarr;</span>
+      <button type="submit" className={cx('saveNextBtn')}>
+        Post Job <span className={cx('arrow')}>&rarr;</span>
       </button>
     </form>
   );

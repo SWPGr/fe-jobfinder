@@ -102,7 +102,8 @@
     overflow: visible; /* hoặc không đặt overflow */
 }
 .filter__container {
-    width: 350px;
+
+    min-width: 350px;
     position: sticky;
     top: 140px;
     z-index: 10;
@@ -110,20 +111,28 @@
     overflow-y: hidden;
 }
 .filter__content {
+
     position: relative;
+
     display: flex;
     flex-direction: column;
     border: 1px solid var(--gray-100);
     border-radius: var(--border-radius);
     margin-top: 2rem;
     max-height: 80vh;
+
+    overflow-y: scroll; /* Luôn luôn có thanh cuộn, nhưng không hiển thị */
+    padding-right: 16px; /* Dự phòng không gian cho thanh cuộn bên phải */
+
     overflow: overlay;
     padding-left: 4px;
+
 
     &::-webkit-scrollbar {
         border-radius: var(--border-radius);
         position: absolute;
         width: 0.5rem;
+        background: red;
         opacity: 0; /* Ẩn thanh cuộn khi không hover */
         transition: opacity 0.3s ease; /* Thêm hiệu ứng mượt mà */
     }
@@ -171,6 +180,14 @@
 .filter__item-content,
 div[role='radiogroup'] {
     label {
+        font-size: var(--font-size-14px);
+        font-weight: 400;
+    }
+    input {
+        width: 1.4rem;
+        height: 1.4rem;
+        border: 1px solid var(--gray-300);
+
         font-size: 1.4rem;
         font-weight: 500;
         cursor: pointer !important;

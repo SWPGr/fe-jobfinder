@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
+import classNames from 'classnames/bind';
 import styles from './CreateJob.module.scss';
 import MyJob from './MyJob';
 import SettingsPage from './SettingsPage';
 import PostJob from './PostJob';
 import PlansBilling from './PlansBilling';
-import { IconH1 } from '@tabler/icons-react';
 import Overview1 from './Overview1';
 
+const cx = classNames.bind(styles);
 
 // Dữ liệu danh sách ứng viên đã lưu
 const candidatesData = [
@@ -31,47 +32,45 @@ const SavedCandidates = () => {
   };
 
   return (
-    <div className={styles.savedCandidatesContainer}>
-      <div className={styles.header}>
+    <div className={cx('savedCandidatesContainer')}>
+      <div className={cx('header')}>
         <h2>Saved Candidates</h2>
-        <div className={styles.info}>
+        <div className={cx('info')}>
           <span>ⓘ</span> All of the candidates are visible until 24 March, 2021
         </div>
       </div>
 
-      <ul className={styles.candidateList}>
+      <ul className={cx('candidateList')}>
         {candidatesData.map((candidate) => (
           <li
             key={candidate.id}
-            className={`${styles.candidateItem} ${
-              activeDropdownId === candidate.id ? styles.active : ''
-            }`}
+            className={cx('candidateItem', { active: activeDropdownId === candidate.id })}
           >
-            <div className={styles.candidateInfo}>
-              <div className={styles.avatar}></div>
+            <div className={cx('candidateInfo')}>
+              <div className={cx('avatar')}></div>
               <div>
-                <div className={styles.name}>{candidate.name}</div>
-                <div className={styles.role}>{candidate.role}</div>
+                <div className={cx('name')}>{candidate.name}</div>
+                <div className={cx('role')}>{candidate.role}</div>
               </div>
             </div>
-            <div className={styles.actions}>
-              <button className={styles.bookmarkBtn} title="Bookmark">
+            <div className={cx('actions')}>
+              <button className={cx('bookmarkBtn')} title="Bookmark">
                 🔖
               </button>
-              <button className={styles.viewProfileBtn}>
+              <button className={cx('viewProfileBtn')}>
                 View Profile <span>→</span>
               </button>
               <button
-                className={styles.moreBtn}
+                className={cx('moreBtn')}
                 onClick={() => toggleDropdown(candidate.id)}
                 aria-label="More options"
               >
                 ⋮
               </button>
               {activeDropdownId === candidate.id && (
-                <div className={styles.dropdownMenu}>
-                  <button className={styles.dropdownItem}>📧 Send Email</button>
-                  <button className={styles.dropdownItem}>📄 Download CV</button>
+                <div className={cx('dropdownMenu')}>
+                  <button className={cx('dropdownItem')}>📧 Send Email</button>
+                  <button className={cx('dropdownItem')}>📄 Download CV</button>
                 </div>
               )}
             </div>
@@ -94,6 +93,7 @@ const CreateJob = () => {
     'Plans & Billing',
     'All Companies',
     'Settings',
+    'Payment',
   ];
 
   const handleClick = (item) => {
@@ -101,14 +101,14 @@ const CreateJob = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.sidebar}>
+    <div className={cx('container')}>
+      <div className={cx('sidebar')}>
         <h2>MyJob</h2>
         <ul>
           {menuItems.map((item) => (
             <li
               key={item}
-              className={activePage === item ? styles.active : ''}
+              className={cx({ active: activePage === item })}
               onClick={() => handleClick(item)}
               style={{ cursor: 'pointer' }}
             >
@@ -116,25 +116,24 @@ const CreateJob = () => {
             </li>
           ))}
         </ul>
-        <button className={styles.logoutBtn}>Log-out</button>
+        <button className={cx('logoutBtn')}>Log-out</button>
       </div>
 
-      <div className={styles.main}>
+      <div className={cx('main')}>
         {activePage === 'Settings' ? (
           <SettingsPage />
         ) : activePage === 'Post a Job' ? (
           <PostJob />
         ) : activePage === 'Save Candidate' ? (
           <SavedCandidates />
-          
         ) : activePage === 'My Jobs' ? (
           <MyJob />
         ) : activePage === 'Plans & Billing' ? (
           <PlansBilling />
         ) : activePage === 'Overview' ? (
           <Overview1 />
-        )
-         : null }
+        ) 
+         : null}
       </div>
     </div>
   );
