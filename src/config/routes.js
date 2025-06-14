@@ -19,6 +19,11 @@ const routes = {
     findJobPage: '/findJobPage',
     jobDetails: '/jobDetails',
     seekerDetailPage: '/seekerDetailPage',
+
+
+    singleJob: '/singleJob',
+
+
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',

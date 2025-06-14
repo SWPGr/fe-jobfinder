@@ -8,7 +8,6 @@ function AccountSetting() {
     return (
         <div className={cx('setting-content')}>
             <h2>Account Setting</h2>
-
             <form className={cx('account-setting-form')}>
                 <h3>Contact Info</h3>
                 <div className={cx('form-row')}>
@@ -33,7 +32,7 @@ function AccountSetting() {
                         <input type="checkbox" /> Notify me when employers saved my profile
                     </label>
                     <label>
-                        <input type="checkbox" /> Notify me when my applied jobs are expire
+                        <input type="checkbox" /> Notify me when my applied jobs expire
                     </label>
                     <label>
                         <input type="checkbox" /> Notify me when employers rejected me
@@ -55,14 +54,16 @@ function AccountSetting() {
 
                 <h3>Privacy</h3>
                 <div className={cx('toggle-group')}>
-                    <label>
-                        <input type="checkbox" />
-                        Profile Privacy
-                    </label>
-                    <label>
-                        <input type="checkbox" />
-                        Resume Privacy
-                    </label>
+                    <div className={cx('toggle-item')}>
+                        <label>
+                            <input type="checkbox" /> Profile Privacy
+                        </label>
+                    </div>
+                    <div className={cx('toggle-item')}>
+                        <label>
+                            <input type="checkbox" /> Resume Privacy
+                        </label>
+                    </div>
                 </div>
 
                 <h3>Change Password</h3>
@@ -82,16 +83,12 @@ function AccountSetting() {
                 <h3>Delete Your Account</h3>
                 <p className={cx('delete-desc')}>
                     If you delete your Jobpilot account, you will no longer be able to get information about matched
-                    jobs, following employers, and job alert, shortlisted jobs and more. You will be abandoned from all
+                    jobs, following employers, and job alerts, shortlisted jobs and more. You will be abandoned from all
                     the services of Jobpilot.com.
                 </p>
                 <button type="submit" className={cx('save-btn')}>
                     Save Changes
                 </button>
-                <br />
-                <br />
-                <br />
-                <br />
                 <button className={cx('delete-btn')}>Close Account</button>
             </form>
         </div>

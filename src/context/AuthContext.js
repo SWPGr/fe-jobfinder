@@ -69,13 +69,11 @@ export const AuthProvider = ({ children }) => {
 
     user = {
         role: 'EMPLOYER',
+      //role: 'JOB_SEEKER',
+      
     };
 
 
-    // user = {
-    //     role: 'JOB_SEEKER',
-    // };
-    // user = null;
 
     return (
         <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading, error }}>
