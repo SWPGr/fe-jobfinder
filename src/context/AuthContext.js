@@ -67,9 +67,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-    // user = {
-    //     role: 'JOB_SEEKER',
-    // };
+    user = {
+        role: 'JOB_SEEKER',
+    };
     // user = null;
 
     return (

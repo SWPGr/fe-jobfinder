@@ -84,7 +84,7 @@ const jobsData = [
     <JobItemList
         image={Images.google_image}
         jobDescription={{
-            companyName: 'Google',
+            companyName: 'Google', 
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
             workTime: 'Full-time',
@@ -127,8 +127,13 @@ function JobAlerts() {
                 <button className={cx('edit-btn')}>Edit Job Alerts</button>
             </div>
 
-            <div className={cx('job-list')}>{currentJobs}</div>
-
+            <div className={cx('job-list')}>
+                {currentJobs.map((jobComponent, index) => (
+                    <div key={index} className={cx('job-item')}>
+                        {jobComponent}
+                    </div>
+                ))}
+            </div>
             {/* Phân trang Mantine */}
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
                 <Pagination total={totalPages} value={page} onChange={setPage} />

@@ -6,39 +6,53 @@ import Personal from './Personal/Personal';
 import Profile from './Profile/Profile';
 import SocialLinks from './SocialLinks/SocialLinks';
 import AccountSetting from './AccountSetting/AccountSetting';
+
 const cx = classNames.bind(styles);
 
-function Setting() {
+export default function Setting() {
     const tabs = [
-        { id: 'personal', label: 'Personal', component: Personal },
-        { id: 'profile', label: 'Profile', component: Profile },
-        { id: 'socialLinks', label: 'Social Links', component: SocialLinks },
-        { id: 'accountSetting', label: 'Account Setting', component: AccountSetting },
+        { id: 'personal', label: 'Personal', icon: '👤' },
+        { id: 'profile', label: 'Profile', icon: '📋' },
+        { id: 'Social Media Profile', label: 'Social Media Profile', icon: '🔗' },
+        { id: 'accountSetting', label: 'Account Setting', icon: '⚙️' },
     ];
 
-    const [activeTab, setActiveTab] = useState('personal');
+    const [activeTab, setActiveTab] = useState('Social Media Profile'); // Mặc định là Social Media Profile
+    const tabComponents = {
+        personal: Personal,
+        profile: Profile,
+        'Social Media Profile': SocialLinks,
+        accountSetting: AccountSetting,
+    };
+    const ActiveComponent = tabComponents[activeTab];
 
-    const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component;
+    const goToNextTab = () => {
+        const currentIndex = tabs.findIndex((tab) => tab.id === activeTab);
+        if (currentIndex < tabs.length - 1) {
+            setActiveTab(tabs[currentIndex + 1].id);
+        }
+    };
+
+    const handleSave = (data) => {
+        console.log('Saved data:', data); // Logic lưu dữ liệu (có thể thay bằng API call)
+    };
 
     return (
         <div className={cx('setting-container')}>
-            <h1>Setting</h1>
-
             <div className={cx('tabs')}>
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        className={cx('tab-button', { active: activeTab === tab.id })}
+                        className={cx('tab-button', { active: tab.id === activeTab })}
                         onClick={() => setActiveTab(tab.id)}
                     >
-                        {tab.label}
+                        {tab.icon} {tab.label}
                     </button>
                 ))}
             </div>
-
-            <div className={cx('tab-content')}>{ActiveComponent && <ActiveComponent />}</div>
+            <div className={cx('tab-content')}>
+                {ActiveComponent && <ActiveComponent key={activeTab} onSave={handleSave} goToNextTab={goToNextTab} />}
+            </div>
         </div>
     );
 }
-
-export default Setting;

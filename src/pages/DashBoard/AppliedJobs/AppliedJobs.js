@@ -5,159 +5,153 @@ import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './AppliedJobs.module.scss';
 import JobItemApplied from '~/components/JobItemApplied';
+import { Pagination } from '@mantine/core';
+
 const cx = classNames.bind(styles);
-
+const allJobs = React.Children.toArray([
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    // ... gọi tiếp các JobItemApplied khác tương tự
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    // tiếp tục ...
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+    <JobItemApplied
+        image={Images.google_image}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+    />,
+]);
 function AppliedJobs() {
-    const [currentPage, setCurrentPage] = useState(1);
-    const jobsPerPage = 5;
-    const [scroll, scrollTo] = useWindowScroll();
+    const itemsPerPage = 5;
+    const [page, setPage] = useState(1);
+    const totalPages = Math.ceil(allJobs.length / itemsPerPage);
+    const startIdx = (page - 1) * itemsPerPage;
+    const currentJobs = allJobs.slice(startIdx, startIdx + itemsPerPage);
+
     // Lấy tất cả children JobItemApplied dưới dạng mảng
-    const allJobs = React.Children.toArray([
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        // ... gọi tiếp các JobItemApplied khác tương tự
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        // tiếp tục ...
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-        <JobItemApplied
-            image={Images.google_image}
-            jobDescription={{
-                companyName: 'Google',
-                companyAddress: '1600 Amphitheatre Parkway Mountain',
-                jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-                workTime: 'Full-time',
-                salary: '$100 - $200',
-                dueDate: 'June 15, 2021',
-            }}
-        />,
-    ]);
-
-    // Tính index để phân trang
-    const indexOfLastJob = currentPage * jobsPerPage;
-    const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-
-    // Lấy phần JobItemApplied thuộc trang hiện tại
-    //const currentJobs = allJobs.slice(indexOfFirstJob, indexOfLastJob);
-
-    // Tính tổng số trang
-    //const totalPages = Math.ceil(allJobs.length / jobsPerPage);
 
     return (
         <div className={cx('applied-jobs-wrapper')}>
@@ -169,22 +163,17 @@ function AppliedJobs() {
                 <span>ACTION</span>
             </div>
             {/* {currentJobs} */}
-            {allJobs}
-            {/* Nút phân trang đơn giản
-            <div className={cx('pagination')}>
-                <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}>
-                    Prev
-                </button>
-                <span>
-                    {currentPage} / {totalPages}
-                </span>
-                <button
-                    onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                >
-                    Next
-                </button>
-            </div> */}
+            <div className={cx('job-list')}>
+                {currentJobs.map((jobComponent, index) => (
+                    <div key={index} className={cx('job-item')}>
+                        {jobComponent}
+                    </div>
+                ))}
+            </div>
+            {/* Phân trang Mantine */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
+                <Pagination total={totalPages} value={page} onChange={setPage} />
+            </div>
         </div>
     );
 }
