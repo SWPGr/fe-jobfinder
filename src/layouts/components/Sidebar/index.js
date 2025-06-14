@@ -20,7 +20,7 @@ function Sidebar({ setSelectedMenu }) {
             <div className={cx('header')}>{itemList.header}</div>
             <div className={cx('body')}>
                 <div className={cx('top')}>
-                    {itemList.map((item, index) => (
+                    {itemList.items.map((item, index) => (
                         <div
                             key={index}
                             className={cx('nav-item', {
@@ -33,7 +33,7 @@ function Sidebar({ setSelectedMenu }) {
                         >
                             <span>
                                 {item.icon}
-                                {item.title}
+                                <div className={cx('title')}>{item.title}</div>
                             </span>
                             {item.rightSection && item.rightSection}
                         </div>
@@ -45,7 +45,7 @@ function Sidebar({ setSelectedMenu }) {
                     <div className={cx('nav-item', 'logout')}>
                         <span>
                             <IconLogout />
-                            Logout
+                            <div className={cx('title')}>Logout</div>
                         </span>
                     </div>
                 </div>

@@ -10,11 +10,15 @@ import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
-function Header() {
+function Header({ className }) {
     let { user, logout } = useAuth();
 
+    const classes = cx('wrapper', {
+        [className]: className,
+    });
+
     return (
-        <header className={cx('wrapper')}>
+        <header className={classes}>
             <div className={cx('container')}>
                 <div className={cx('left-side')}>
                     <div className={cx('logo')}>

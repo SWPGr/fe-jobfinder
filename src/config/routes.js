@@ -21,6 +21,7 @@ const routes = {
     seekerDetailPage: '/seekerDetailPage',
     findJob: '/find-job',
     findCandidate: '/find-candidate',
+    findEmployer: '/find-employer',
     verify: '/api/auth/verify',
     single: '/single',
 };

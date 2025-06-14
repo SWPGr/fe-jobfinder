@@ -13,3 +13,5 @@ export { default as SeekerDetailPage } from './SeekerDetail/SeekerDetail.js';
 export { default as FindJob } from './FindJob/FindJobPage.js';
 export { default as VerifyPage } from './Verify/VerifyPage.js';
 export { default as Single } from './Single/Single.js';
+export { default as FindEmployer } from './FindEmployer/FindEmployer.js';
+export { default as FindCandidate } from './FindCandidate/FindCandidate.js';
