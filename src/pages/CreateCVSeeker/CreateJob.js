@@ -93,6 +93,7 @@ const CreateJob = () => {
     'Plans & Billing',
     'All Companies',
     'Settings',
+    'Payment',
   ];
 
   const handleClick = (item) => {
@@ -131,7 +132,8 @@ const CreateJob = () => {
           <PlansBilling />
         ) : activePage === 'Overview' ? (
           <Overview1 />
-        ) : null}
+        ) 
+         : null}
       </div>
     </div>
   );

@@ -1,33 +1,56 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useState, useContext } from 'react';
 import { authService } from '~/services';
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     let [user, setUser] = useState(() => {
-        // Load user from localStorage on initialization
         const storedUser = localStorage.getItem('user');
         return storedUser ? JSON.parse(storedUser) : null;
     });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const login = async (username, password) => {
+    // Hàm chung xử lý đăng nhập và đăng ký
+    const authenticate = async (type, email, password, roleName) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await authService.postUser(username, password); // Axios call
-            // Axios automatically parses JSON, so you can directly access response.data
-            const data = response.data;
+            let response;
+            if (type === 'login') {
+                response = await authService.login(email, password);
+            } else if (type === 'register') {
+                response = await authService.register(email, password, roleName);
+            }
+            const data = response;
+            console.log(data);
 
-            // Assuming API returns { user: {}, token: '' }
+            const loggedInUser = { role: data.role, token: data.token };
+            setUser(loggedInUser);
+            localStorage.setItem('user', JSON.stringify(loggedInUser));
+            setLoading(false);
+            return { success: true };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
+            setError(errorMessage);
+            setLoading(false);
+            return { success: false, message: errorMessage };
+        }
+    };
+    const loginWithGoogle = async (token, role) => {
+        setLoading(true);
+        setError(null);
+        try {
+            // Giả sử authService có api googleLogin nhận token và role
+            const response = await authService.googleLogin(token, role);
+            const data = response.data;
             const loggedInUser = { ...data.user, token: data.token };
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoading(false);
             return { success: true };
         } catch (error) {
-            // Axios errors can be accessed via error.response
             const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
             setError(errorMessage);
             setLoading(false);
@@ -35,15 +58,30 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Giao diện hàm login và register gọi chung hàm authenticate
+    const login = (email, password) => authenticate('login', email, password);
+    const register = (email, password, role) => authenticate('register', email, password, role);
+
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
     };
+
     user = {
         role: 'EMPLOYER',
     };
 
-    return <AuthContext.Provider value={{ user, login, logout, loading, error }}>{children}</AuthContext.Provider>;
+
+    // user = {
+    //     role: 'JOB_SEEKER',
+    // };
+    // user = null;
+
+    return (
+        <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading, error }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export const useAuth = () => useContext(AuthContext);

@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 
 function CTA() {
     const { user } = useAuth();
-    const role = user.role;
+    const role = user?.role || 'JOB_SEEKER';
     const isEmployer = role === 'EMPLOYER';
 
     const quotes = {

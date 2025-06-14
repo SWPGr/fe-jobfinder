@@ -1,5 +1,5 @@
-import SeekerDetail from "~/pages/SeekerDetail/SeekerDetail";
 
+import SeekerDetail from "~/pages/SeekerDetail/SeekerDetail";
 const routes = {
     home: '/',
     profile: '/profile',
@@ -19,7 +19,10 @@ const routes = {
     findJobPage: '/findJobPage',
     jobDetails: '/jobDetails',
     seekerDetailPage: '/seekerDetailPage',
-
+    findJob: '/find-job',
+    findCandidate: '/find-candidate',
+    verify: '/api/auth/verify',
+    single: '/single',
 };
- 
+
 export default routes;

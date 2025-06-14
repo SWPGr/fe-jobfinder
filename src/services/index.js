@@ -1,2 +1,2 @@
 //services
-export { default as authService } from './AuthSerice';
+export { default as authService } from './AuthService';

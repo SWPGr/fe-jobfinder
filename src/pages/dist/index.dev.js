@@ -63,6 +63,24 @@ Object.defineProperty(exports, "SeekerDetailPage", {
     return _SeekerDetail["default"];
   }
 });
+Object.defineProperty(exports, "FindJob", {
+  enumerable: true,
+  get: function get() {
+    return _FindJobPage["default"];
+  }
+});
+Object.defineProperty(exports, "VerifyPage", {
+  enumerable: true,
+  get: function get() {
+    return _VerifyPage["default"];
+  }
+});
+Object.defineProperty(exports, "Single", {
+  enumerable: true,
+  get: function get() {
+    return _Single["default"];
+  }
+});
 
 var _Login = _interopRequireDefault(require("./Login/Login.js"));
 
@@ -83,5 +101,11 @@ var _FindJob = _interopRequireDefault(require("./FindJob/FindJob.js"));
 var _JobDetail = _interopRequireDefault(require("./JobDetail/JobDetail.js"));
 
 var _SeekerDetail = _interopRequireDefault(require("./SeekerDetail/SeekerDetail.js"));
+
+var _FindJobPage = _interopRequireDefault(require("./FindJob/FindJobPage.js"));
+
+var _VerifyPage = _interopRequireDefault(require("./Verify/VerifyPage.js"));
+
+var _Single = _interopRequireDefault(require("./Single/Single.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

@@ -11,6 +11,8 @@ var _pages = require("~/pages");
 
 var _layouts = require("~/layouts");
 
+var _Single = _interopRequireDefault(require("~/pages/Single/Single"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 //routes
@@ -56,10 +58,22 @@ var publicRoutes = [{
   path: _config["default"].routes.seekerDetailPage,
   component: _pages.SeekerDetailPage,
   layout: _layouts.HeaderOnly
+}, {
+  path: _config["default"].routes.verify,
+  component: _pages.VerifyPage,
+  layout: null
+}, {
+  path: _config["default"].routes.single,
+  component: _Single["default"],
+  layout: _layouts.HeaderOnly
 }];
 exports.publicRoutes = publicRoutes;
 var privateRoutes = [{
   path: _config["default"].routes.dashboard,
   component: _pages.DashboardPage
+}, {
+  path: _config["default"].routes.findJob,
+  component: _pages.FindJob,
+  layout: _layouts.HeaderOnly
 }];
 exports.privateRoutes = privateRoutes;

@@ -7,15 +7,18 @@ import { Checkbox, ActionIcon, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import ResetPassword from './ResetPassword';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { LeftSideLogin } from '../components';
 import { validator } from '~/utils';
 import { Button, GoogleLoginButton } from '~/components';
+import { useContext } from 'react';
+import { AuthContext } from '~/context/AuthContext';
 
 // Bind styles for conditional class names
 const cx = classNames.bind(styles);
 
 function Login() {
+    const { login } = useContext(AuthContext);
     // State variables for form fields and UI logic
     const formLogin = useForm({
         initialValues: {
@@ -27,14 +30,22 @@ function Login() {
             password: (value) => validator.validatePassword(value),
         },
     });
-
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [checked, setChecked] = useState(false); // Remember me checkbox
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
 
     // Handler for form submission (currently empty)
-    const handleSubmitForm = (values) => {
+    const handleSubmitForm = async (values) => {
         console.log('Form submitted:', values);
+        const data = await login(values.email, values.password);
+
+        console.log(data);
+
+        if (data.success) {
+            setLoading(false);
+            navigate('/');
+        }
     };
 
     return (

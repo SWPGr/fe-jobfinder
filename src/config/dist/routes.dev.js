@@ -40,6 +40,6 @@ var routes = (_routes = {
   error: '/error',
   createCVSeekerPage: '/createCVSeekerPage',
   findJobPage: '/findJobPage'
-}, _defineProperty(_routes, "jobDetails", '/jobDetails'), _defineProperty(_routes, "seekerDetailPage", '/seekerDetailPage'), _routes);
+}, _defineProperty(_routes, "jobDetails", '/jobDetails'), _defineProperty(_routes, "seekerDetailPage", '/seekerDetailPage'), _defineProperty(_routes, "findJob", '/find-job'), _defineProperty(_routes, "findCandidate", '/find-candidate'), _defineProperty(_routes, "verify", '/api/auth/verify'), _defineProperty(_routes, "single", '/single'), _routes);
 var _default = routes;
 exports["default"] = _default;

@@ -1,0 +1,296 @@
+@charset "UTF-8";
+.container {
+  font-family: Arial, sans-serif;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+  color: #333;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.companyInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.companyLogo {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  font-size: 28px;
+}
+
+.companyDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.companyName {
+  font-weight: 600;
+  font-size: 2.4rem;
+  margin-bottom: 4px;
+}
+
+.industry {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.btnOpenPosition {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 14px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.3rem;
+}
+
+.btnOpenPosition:hover {
+  background-color: #0056b3;
+}
+
+.section {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.leftColumn {
+  flex: 3;
+}
+
+h3 {
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+
+.description {
+  line-height: 1.6;
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 30px;
+}
+
+.benefitsList {
+  list-style: disc;
+  margin-left: 20px;
+  margin-bottom: 30px;
+  color: #444;
+  font-size: 1.1rem;
+}
+
+.companyVision {
+  margin-bottom: 20px;
+  color: #444;
+  font-size: 1.1rem;
+}
+
+.shareProfile {
+  display: flex;
+  gap: 15px;
+}
+
+.shareProfile button {
+  background: none;
+  border: none;
+  color: #3b5998;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.shareProfile button:nth-child(3) {
+  color: #c8232c;
+}
+
+.rightColumn {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 20px;
+  font-size: 1.1rem;
+  color: #444;
+  background: #fff;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cardLabel {
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}
+
+.cardValue {
+  color: #777;
+  text-align: right;
+  font-size: 1.1rem;
+}
+
+.contactRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+.contactIcon {
+  width: 20px;
+  height: 20px;
+  fill: #007bff;
+}
+
+.followUs {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.socialLinks {
+  margin-top: 8px;
+  display: flex;
+  gap: 18px;
+}
+
+.socialLink {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.openPositions {
+  margin-top: 40px;
+}
+
+.openPositionsHeader {
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.jobsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.jobCard {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 8px;
+  border: 1px solid #e1e1e1;
+  padding: 16px;
+  background: white;
+  font-size: 1.1rem;
+  color: #444;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.jobCard:hover {
+  border-color: #ff4d4d;
+  background-color: #fff5f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.jobCard.featured {
+  background: white;
+  border-color: #ff4d4d;
+}
+
+.jobCard.featured:hover {
+  background-color: #fff5f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.jobHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.jobCompany {
+  font-weight: 600;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.featuredTag {
+  background: #ff4d4d;
+  color: white;
+  padding: 4px 12px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.jobLocation {
+  font-size: 1.05rem;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.jobTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1.3rem;
+}
+
+.jobTypeSalary {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.wrapperBox {
+  border: 1.5px solid #ccc;
+  /* Viền xám nhạt */
+  border-radius: 12px;
+  padding: 30px 40px;
+  background-color: #fff;
+  box-sizing: border-box;
+}
