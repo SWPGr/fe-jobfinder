@@ -19,7 +19,7 @@
 
     transition: var(--transition);
     display: flex;
-    border: 1px solid var(--gray-100);
+    // border: 1px solid var(--gray-100);
 }
 
 .side-bar {
@@ -29,4 +29,44 @@
 
 .content {
     width: 100%;
+}
+
+.nav-bar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+.header {
+    position: sticky;
+    top: 4.8rem;
+    left: 0;
+    right: 0;
+    z-index: 100;
+}
+
+// 1024px
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 0 1rem;
+    }
+
+    .side-bar {
+        width: 30rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .side-bar {
+        // display: none;
+        width: 10rem;
+    }
+}
+
+// 480px
+@media screen and (max-width: 480px) {
+    .side-bar {
+        display: none;
+    }
 }

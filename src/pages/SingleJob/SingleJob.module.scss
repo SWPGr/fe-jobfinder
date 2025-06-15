@@ -1,0 +1,168 @@
+.wrapper {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.job-details {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.left {
+    flex: 2;
+}
+
+.right {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.job-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    margin-left: 8px;
+    border-radius: 6px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.featured {
+    background-color: #ff5a5f;
+    color: white;
+}
+
+.part-time {
+    background-color: #007aff;
+    color: white;
+}
+
+.contact-info {
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.contact-link {
+    color: #007aff;
+    text-decoration: none;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+}
+
+.description p {
+    margin-bottom: 12px;
+    line-height: 1.5;
+    color: #333;
+}
+
+.responsibilities h3 {
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+.responsibilities ul {
+    margin-left: 20px;
+    color: #444;
+}
+
+.share {
+    margin-top: 20px;
+}
+
+.share span {
+    margin-right: 12px;
+    font-weight: 600;
+}
+
+.btn-social {
+    margin-right: 10px;
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.btn-social:hover {
+    background-color: #004494;
+}
+
+.job-overview h2 {
+    margin-bottom: 16px;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.job-overview ul {
+    list-style: none;
+    padding: 0;
+    color: #444;
+}
+
+.job-overview ul li {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.company-info {
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #444;
+}
+
+.company-logo {
+    width: 80px;
+    margin-bottom: 16px;
+}
+
+.company-info h3 {
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.btn-apply {
+    margin-top: 20px;
+    width: 100%;
+    font-weight: 700;
+    padding: 12px;
+}
+
+.deadline {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.related-jobs h2 {
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.related-jobs-list {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.related-job-item {
+    flex: 1 1 30%;
+    min-width: 280px;
+}

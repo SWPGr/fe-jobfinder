@@ -12,9 +12,9 @@ function Profile() {
                 <div className={cx('form-row')}>
                     <label>Nationality</label>
                     <select>
-                        <option>Select...</option>
-                        <option>Vietnamese</option>
-                        <option>American</option>
+                        <option value="">Select...</option>
+                        <option value="vietnamese">Vietnamese</option>
+                        <option value="american">American</option>
                     </select>
                 </div>
                 <div className={cx('form-row')}>
@@ -24,33 +24,33 @@ function Profile() {
                 <div className={cx('form-row')}>
                     <label>Gender</label>
                     <select>
-                        <option>Select...</option>
-                        <option>Male</option>
-                        <option>Female</option>
+                        <option value="">Select...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                     </select>
                 </div>
                 <div className={cx('form-row')}>
                     <label>Marital Status</label>
                     <select>
-                        <option>Select...</option>
-                        <option>Single</option>
-                        <option>Married</option>
+                        <option value="">Select...</option>
+                        <option value="single">Single</option>
+                        <option value="married">Married</option>
                     </select>
                 </div>
                 <div className={cx('form-row')}>
                     <label>Education</label>
                     <select>
-                        <option>Select...</option>
-                        <option>High school</option>
-                        <option>Bachelor</option>
+                        <option value="">Select...</option>
+                        <option value="highschool">High School</option>
+                        <option value="bachelor">Bachelor</option>
                     </select>
                 </div>
                 <div className={cx('form-row')}>
                     <label>Experience</label>
                     <select>
-                        <option>Select...</option>
-                        <option>1 year</option>
-                        <option>2 years</option>
+                        <option value="">Select...</option>
+                        <option value="1">1 year</option>
+                        <option value="2">2 years</option>
                     </select>
                 </div>
                 <div className={cx('form-row', 'biography')}>

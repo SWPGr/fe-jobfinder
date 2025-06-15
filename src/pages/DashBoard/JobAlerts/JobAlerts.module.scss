@@ -20,7 +20,8 @@
         }
     }
 
-    .edit-btn { //chỉnh độ to của chữ ở phần trên 
+    .edit-btn {
+        //chỉnh độ to của chữ ở phần trên 
         background: none;
         border: none;
         color: #2563eb;
@@ -37,28 +38,20 @@
 .job-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
     background: white;
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
 .job-item {
-    display: grid;
-    grid-template-columns: 48px 1fr 30px 120px;
-    align-items: center;
-    padding: 14px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
-    gap: 12px;
+    padding: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #ccc;
+}
 
-    &:hover {
-        box-shadow: 0 0 10px #d2d9f2;
-    }
-
-    &.selected {
-        border: 2px solid #2563eb;
-        box-shadow: 0 0 12px #a2b4ff;
-    }
+.job-item:last-child {
+    border-bottom: none;
 }
 
 .logo img {
@@ -156,5 +149,79 @@
             cursor: not-allowed;
             opacity: 0.5;
         }
+    }
+}
+
+/* RESPONSIVE STYLES */
+@media screen and (max-width: 1024px) {
+    .header h3 {
+        font-size: 24px;
+    }
+
+    .job-info .title {
+        font-size: 14px;
+    }
+
+    .apply-btn {
+        font-size: 12px;
+        padding: 8px 14px;
+    }
+
+    .pagination button {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .header h3 {
+        font-size: 22px;
+    }
+
+    .job-info .title {
+        font-size: 13px;
+    }
+
+    .apply-btn {
+        font-size: 12px;
+        padding: 7px 14px;
+    }
+
+    .pagination button {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .job-item {
+        padding: 12px 0;
+    }
+
+    .job-meta {
+        font-size: 12px;
+        gap: 8px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+
+    .job-info .title {
+        font-size: 12px;
+    }
+
+    .apply-btn {
+        font-size: 11px;
+        padding: 6px 12px;
+    }
+
+    .pagination button {
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
     }
 }

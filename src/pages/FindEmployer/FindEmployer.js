@@ -1,15 +1,15 @@
 import React from 'react';
 import { Filter } from '~/components';
 import classNames from 'classnames/bind';
-import styles from './FindJob.module.scss';
+import styles from './FindEmployer.module.scss';
 
 const cx = classNames.bind(styles);
 
-function FindJob() {
+function FindEmployer() {
     const jobFilters = {
-        experience: { type: 'Radio', options: ['0-1 year', '1-3 years', '3-5 years', '5+ years'], grid: true },
-        salary: { type: 'Radio', options: ['$0 - $50k', '$50k - $100k', '$100k - $200k', '$200k+'], grid: true },
-        jobType: { type: 'Checkbox', options: ['Full-time', 'Part-time', 'Contract'], grid: true },
+        experience: { type: 'Radio', options: ['0-1 year', '1-3 years', '3-5 years', '5+ years'] },
+        salary: { type: 'Radio', options: ['$0 - $50k', '$50k - $100k', '$100k - $200k', '$200k+'] },
+        jobType: { type: 'Checkbox', options: ['Full-time', 'Part-time', 'Contract'] },
         education: { type: 'Checkbox', options: ['High School', 'Bachelor', 'Master', 'PhD'] },
         jobLevel: { type: 'Radio', options: ['Internship', 'Entry Level', 'Mid Level', 'Senior Level'] },
     };
@@ -37,4 +37,4 @@ function FindJob() {
     );
 }
 
-export default FindJob;
+export default FindEmployer;

@@ -11,7 +11,7 @@ const itemsNav = {
         JOB_SEEKER: [
             { name: 'Home', link: '/' },
             { name: 'Find Job', link: '/find-job' },
-            { name: 'Find Employers', link: '/find-employers' },
+            { name: 'Find Employers', link: '/find-employer' },
             { name: 'Dashboard', link: '/dashboard' },
             { name: 'Job Alerts', link: '/job-alerts' },
             { name: 'Customer Supports', link: '/customer-supports' },
