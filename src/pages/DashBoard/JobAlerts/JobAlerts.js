@@ -84,7 +84,7 @@ const jobsData = [
     <JobItemList
         image={Images.google_image}
         jobDescription={{
-            companyName: 'Google', 
+            companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
             workTime: 'Full-time',
@@ -135,8 +135,8 @@ function JobAlerts() {
                 ))}
             </div>
             {/* Phân trang Mantine */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-                <Pagination total={totalPages} value={page} onChange={setPage} />
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
+                <Pagination total={totalPages} value={page} onChange={setPage} size="xl" />
             </div>
         </div>
     );
