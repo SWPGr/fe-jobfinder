@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SettingsPage.module.scss';
+import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 
 const cx = classNames.bind(styles);
 
@@ -199,109 +200,90 @@ function SettingsPage() {
 )}
 
 
-      {activeTab === 'Founding Info' && (
-        <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
-          <div className={cx('row')}>
-            <div className={cx('inputGroup')}>
-              <label>Organization Type</label>
-              <select name="organizationType" value={form.organizationType} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Private">Private</option>
-                <option value="Public">Public</option>
-                <option value="Government">Government</option>
-                <option value="Non-profit">Non-profit</option>
-              </select>
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>Industry Types</label>
-              <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Education">Education</option>
-              </select>
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>Team Size</label>
-              <select name="teamSize" value={form.teamSize} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="1-10">1-10</option>
-                <option value="11-50">11-50</option>
-                <option value="51-200">51-200</option>
-                <option value="201-500">201-500</option>
-                <option value="500+">500+</option>
-              </select>
-            </div>
-          </div>
+{activeTab === 'Founding Info' && (
+  <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
+    <div className={cx('row')}>
+      <div className={cx('inputGroup')}>
+        <label>Organization Type</label>
+        <select name="organizationType" value={form.organizationType} onChange={handleChange}>
+          <option value="">Select...</option>
+          <option value="Private">Private</option>
+          <option value="Public">Public</option>
+          <option value="Government">Government</option>
+          <option value="Non-profit">Non-profit</option>
+        </select>
+      </div>
+      <div className={cx('inputGroup')}>
+        <label>Industry Types</label>
+        <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
+          <option value="">Select...</option>
+          <option value="Technology">Technology</option>
+          <option value="Finance">Finance</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Education">Education</option>
+        </select>
+      </div>
+      <div className={cx('inputGroup')}>
+        <label>Team Size</label>
+        <select name="teamSize" value={form.teamSize} onChange={handleChange}>
+          <option value="">Select...</option>
+          <option value="1-10">1-10</option>
+          <option value="11-50">11-50</option>
+          <option value="51-200">51-200</option>
+          <option value="201-500">201-500</option>
+          <option value="500+">500+</option>
+        </select>
+      </div>
+    </div>
 
-          <div className={cx('row')}>
-            <div className={cx('inputGroup')}>
-              <label>Year of Establishment</label>
-              <input
-                type="date"
-                name="yearOfEstablishment"
-                value={form.yearOfEstablishment}
-                onChange={handleChange}
-                placeholder="dd/mm/yyyy"
-              />
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>Company Website</label>
-              <input
-                type="url"
-                name="companyWebsite"
-                value={form.companyWebsite}
-                onChange={handleChange}
-                placeholder="Website url..."
-              />
-            </div>
-          </div>
+    <div className={cx('row')}>
+      <div className={cx('inputGroup')}>
+        <label>Year of Establishment</label>
+        <input
+          type="date"
+          name="yearOfEstablishment"
+          value={form.yearOfEstablishment}
+          onChange={handleChange}
+          placeholder="dd/mm/yyyy"
+        />
+      </div>
+      <div className={cx('inputGroup')}>
+        <label>Company Website</label>
+        <input
+          type="url"
+          name="companyWebsite"
+          value={form.companyWebsite}
+          onChange={handleChange}
+          placeholder="Website url..."
+        />
+      </div>
+    </div>
 
-          <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
-            <label>Company Vision</label>
-            <textarea
-              name="companyVision"
-              rows="5"
-              placeholder="Tell us about your company vision..."
-              value={form.companyVision}
-              onChange={handleChange}
-              className={cx('textareaVision')}
-            />
-            <div className={cx('textEditorIcons')}>
-              <button type="button">
-                <b>B</b>
-              </button>
-              <button type="button">
-                <i>I</i>
-              </button>
-              <button type="button">
-                <u>U</u>
-              </button>
-              <button type="button">S</button>
-              <button type="button">🔗</button>
-              <button type="button">•</button>
-              <button type="button">1.</button>
-            </div>
-          </div>
+    <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
+      <label>Company Vision</label>
+      <SimpleRichTextEditor
+        placeholder="Tell us about your company vision..."
+        onChange={(value) => setForm((prev) => ({ ...prev, companyVision: value }))}
+      />
+    </div>
 
-          <div>
-            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
-              Previous
-            </button>
-            <button
-              type="submit"
-              className={cx('saveNextBtn')}
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            >
-              Save & Next →
-            </button>
-          </div>
-        </form>
-      )}
+    <div>
+      <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
+        Previous
+      </button>
+      <button
+        type="submit"
+        className={cx('saveNextBtn')}
+        onClick={() => {
+          handleSave();
+          goToNextTab();
+        }}
+      >
+        Save & Next →
+      </button>
+    </div>
+  </form>
+)}
 
       {activeTab === 'Social Media Profile' && (
         <div className={cx('socialLinksContainer')}>

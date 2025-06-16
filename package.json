@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "@mantine/core": "^8.0.2",
-        "@mantine/dropzone": "^8.0.2",
+        "@mantine/dropzone": "^8.1.0",
         "@mantine/form": "^8.0.1",
         "@mantine/hooks": "^8.0.2",
         "@mantine/tiptap": "^8.0.2",
