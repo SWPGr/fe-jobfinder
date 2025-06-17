@@ -1,0 +1,113 @@
+.paymentContainer {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.paymentContainer h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.paymentContainer p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.plans {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.plan {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  width: 250px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative; /* Để label có thể đặt tuyệt đối */
+}
+
+.plan h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.price {
+  font-size: 24px;
+  color: #007bff;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.plan ul {
+  list-style: none;
+  text-align: left;
+  padding: 0;
+  margin-bottom: 15px;
+}
+
+.plan ul li {
+  color: #666;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.plan ul li svg {
+  margin-right: 6px;
+}
+
+.plan button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.plan button:hover {
+  background-color: #0056b3;
+}
+
+/* STANDARD sẽ không có gì nổi bật hơn ngoài label */
+.recommended {
+  position: relative;
+}
+
+.recommended span {
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 18px;
+  border-radius: 3px;
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  z-index: 2;
+  letter-spacing: 1px;
+}
+
+/* Responsive nếu cần */
+@media (max-width: 800px) {
+  .plans {
+    flex-direction: column;
+    align-items: center;
+  }
+  .plan {
+    width: 90vw;
+    max-width: 360px;
+    margin-bottom: 24px;
+  }
+}

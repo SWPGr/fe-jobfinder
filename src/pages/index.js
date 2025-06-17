@@ -16,3 +16,5 @@ export { default as Single } from './Single/Single.js';
 export { default as SingleJobPage } from './SingleJob/JobDetailsPage.js';
 export { default as FindEmployer } from './FindEmployer/FindEmployer.js';
 export { default as FindCandidate } from './FindCandidate/FindCandidate.js';
+export { default as Term } from './Term/Term.js';
+export { default as Payment} from './Payment/Payment.js';
