@@ -1,5 +1,4 @@
 
-import SeekerDetail from "~/pages/SeekerDetail/SeekerDetail";
 const routes = {
     home: '/',
     profile: '/profile',
@@ -16,19 +15,18 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
+
     findJobPage: '/findJobPage',
     jobDetails: '/jobDetails',
     seekerDetailPage: '/seekerDetailPage',
-
-
     singleJob: '/singleJob',
-
-
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',
     verify: '/api/auth/verify',
     single: '/single',
+    term: '/term',
+    payment: '/payment',
 };
 
 export default routes;

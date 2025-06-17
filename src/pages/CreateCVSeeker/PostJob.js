@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './PostJob.module.scss';
-
+import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 const cx = classNames.bind(styles);
 
-const PostJob = () => {
+function PostJob() {
   const [jobTitle, setJobTitle] = useState('');
   const [tags, setTags] = useState('');
   const [jobRole, setJobRole] = useState('');
@@ -20,16 +20,37 @@ const PostJob = () => {
   const [applyJobOn, setApplyJobOn] = useState('onJobpilot');
   const [description, setDescription] = useState('');
   const [responsibilities, setResponsibilities] = useState('');
+  const [salaryError, setSalaryError] = useState('');
+
+  const handleMinSalaryChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    setMinSalary(value);
+    if (maxSalary && value !== '' && Number(value) >= Number(maxSalary)) {
+      setSalaryError('Min Salary phải nhỏ hơn Max Salary!');
+    } else {
+      setSalaryError('');
+    }
+  };
+
+  const handleMaxSalaryChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, '');
+    setMaxSalary(value);
+    if (minSalary && value !== '' && Number(minSalary) >= Number(value)) {
+      setSalaryError('Max Salary phải lớn hơn Min Salary!');
+    } else {
+      setSalaryError('');
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (salaryError) return;
     alert('Job posted successfully!');
   };
 
   return (
     <form className={cx('postJobTab')} onSubmit={handleSubmit}>
       <h2>Post a job</h2>
-
       <div className={cx('formGroup')}>
         <label>Job Title</label>
         <input
@@ -37,10 +58,8 @@ const PostJob = () => {
           placeholder="Add job title, role, vacancies etc"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
-          required
-        />
+          required />
       </div>
-
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
           <label>Tags</label>
@@ -48,8 +67,7 @@ const PostJob = () => {
             type="text"
             placeholder="Job keyword, tags etc..."
             value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
+            onChange={(e) => setTags(e.target.value)} />
         </div>
         <div className={cx('inputGroup')}>
           <label>Job Role</label>
@@ -60,27 +78,28 @@ const PostJob = () => {
           </select>
         </div>
       </div>
-
       <h3>Salary</h3>
       <div className={cx('row')}>
         <div className={cx('inputGroup')} style={{ position: 'relative' }}>
           <label>Min Salary</label>
           <input
             type="number"
+            min="0"
             placeholder="Minimum salary..."
             value={minSalary}
-            onChange={(e) => setMinSalary(e.target.value)}
-          />
+            onChange={handleMinSalaryChange}
+            required />
           <span className={cx('currency')}>USD</span>
         </div>
         <div className={cx('inputGroup')} style={{ position: 'relative' }}>
           <label>Max Salary</label>
           <input
             type="number"
+            min="0"
             placeholder="Maximum salary..."
             value={maxSalary}
-            onChange={(e) => setMaxSalary(e.target.value)}
-          />
+            onChange={handleMaxSalaryChange}
+            required />
           <span className={cx('currency')}>USD</span>
         </div>
         <div className={cx('inputGroup')}>
@@ -92,7 +111,9 @@ const PostJob = () => {
           </select>
         </div>
       </div>
-
+      {salaryError && (
+        <div style={{ color: 'red', marginBottom: 10 }}>{salaryError}</div>
+      )}
       <h3>Advance Information</h3>
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
@@ -123,7 +144,6 @@ const PostJob = () => {
           </select>
         </div>
       </div>
-
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
           <label>Vacancies</label>
@@ -139,8 +159,7 @@ const PostJob = () => {
           <input
             type="date"
             value={expirationDate}
-            onChange={(e) => setExpirationDate(e.target.value)}
-          />
+            onChange={(e) => setExpirationDate(e.target.value)} />
         </div>
         <div className={cx('inputGroup')}>
           <label>Job Level</label>
@@ -152,7 +171,6 @@ const PostJob = () => {
           </select>
         </div>
       </div>
-
       <fieldset className={cx('applyJobOn')}>
         <legend>Apply Job on:</legend>
         <label className={cx({ activeRadioLabel: applyJobOn === 'onJobpilot' })}>
@@ -161,8 +179,7 @@ const PostJob = () => {
             name="applyJob"
             value="onJobpilot"
             checked={applyJobOn === 'onJobpilot'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
+            onChange={(e) => setApplyJobOn(e.target.value)} />
           <strong>On Jobpilot</strong>
           <p>Candidate will apply job using jobpilot & all application will show on your dashboard.</p>
         </label>
@@ -172,8 +189,7 @@ const PostJob = () => {
             name="applyJob"
             value="externalPlatform"
             checked={applyJobOn === 'externalPlatform'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
+            onChange={(e) => setApplyJobOn(e.target.value)} />
           <strong>External Platform</strong>
           <p>Candidate apply job on your website, all application on your own website.</p>
         </label>
@@ -183,57 +199,33 @@ const PostJob = () => {
             name="applyJob"
             value="onYourEmail"
             checked={applyJobOn === 'onYourEmail'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
+            onChange={(e) => setApplyJobOn(e.target.value)} />
           <strong>On Your Email</strong>
           <p>Candidate apply job on your email address, and all application in your email.</p>
         </label>
       </fieldset>
-
       <h3>Description & Responsibility</h3>
       <div className={cx('formGroup')}>
         <label>Description</label>
-        <textarea
+        <SimpleRichTextEditor
           placeholder="Add your job description..."
-          rows={5}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        {/* Thanh công cụ bên dưới */}
-        <div className={cx('textEditorIcons')}>
-          <button type="button"><b>B</b></button>
-          <button type="button"><i>I</i></button>
-          <button type="button"><u>U</u></button>
-          <button type="button">S</button>
-          <button type="button">🔗</button>
-          <button type="button">•</button>
-          <button type="button">1.</button>
-        </div>
+          onChange={setDescription} />
       </div>
       <div className={cx('formGroup')}>
         <label>Responsibilities</label>
-        <textarea
+        <SimpleRichTextEditor
           placeholder="Add your job responsibilities..."
-          rows={5}
-          value={responsibilities}
-          onChange={(e) => setResponsibilities(e.target.value)}
-        />
-        <div className={cx('textEditorIcons')}>
-          <button type="button"><b>B</b></button>
-          <button type="button"><i>I</i></button>
-          <button type="button"><u>U</u></button>
-          <button type="button">S</button>
-          <button type="button">🔗</button>
-          <button type="button">•</button>
-          <button type="button">1.</button>
-        </div>
+          onChange={setResponsibilities} />
       </div>
-
-      <button type="submit" className={cx('saveNextBtn')}>
+      <button
+        type="submit"
+        className={cx('saveNextBtn')}
+        disabled={!!salaryError}
+      >
         Post Job <span className={cx('arrow')}>&rarr;</span>
       </button>
     </form>
   );
-};
+}
 
 export default PostJob;

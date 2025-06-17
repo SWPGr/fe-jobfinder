@@ -2,20 +2,21 @@
 .setting-container {
     margin: 0 auto;
     padding: 24px 40px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-    font-size: 16px;
+    font-family: var(--font-family) !important;
+    font-size: var(--font-size-16px);
     max-width: 1140px;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--gray-200);
 }
 
 /* Tiêu đề chung */
-h1 {
+.setting-container h1 {
     font-weight: 700;
-    font-size: 28px;
+    font-size: var(--font-size-header);
     margin-bottom: 24px;
-    color: #333;
+    color: var(--text-color);
 }
 
 /* Thanh tab */
@@ -24,8 +25,8 @@ h1 {
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    gap: 8px;
-    border-bottom: 2px solid #e5e7eb;
+    gap: 0;
+    border-bottom: 2px solid var(--gray-100);
     margin-bottom: 24px;
     padding-bottom: 8px;
     overflow-x: auto;
@@ -36,32 +37,33 @@ h1 {
     display: none;
 }
 
-/* Nút tab */
 .tab-button {
+    display: flex;
+    gap: 8px;
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
     font-weight: 600;
-    font-size: 14px;
+    font-size: var(--font-size-14px);
     padding: 6px 10px;
     cursor: pointer;
-    color: #555;
-    transition: color 0.3s, border-color 0.3s;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    color: var(--gray-600);
+    transition: color var(--transition), border-color var(--transition);
+    font-family: var(--font-family) !important;
     white-space: nowrap;
     min-width: 80px;
     border-radius: 4px 4px 0 0;
+}
 
-    &.active {
-        border-color: #007bff;
-        color: #007bff;
-        font-weight: 700;
-    }
+.tab-button.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 700;
+}
 
-    &:hover:not(.active) {
-        color: #0056b3;
-        background: #f1f5f9;
-    }
+.tab-button:hover:not(.active) {
+    color: var(--primary-color-dark);
+    background: var(--gray-50);
 }
 
 /* Nội dung tab */
@@ -75,23 +77,22 @@ h1 {
     max-width: none;
     width: 100%;
     padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background: var(--white);
+    border-radius: var(--border-radius);
 }
 
 .setting-content h2 {
     font-weight: 700;
-    font-size: 22px;
+    font-size: var(--font-size-20px);
     margin-bottom: 24px;
-    color: #333;
+    color: var(--text-color);
 }
 
 .setting-content h3 {
     font-weight: 600;
-    font-size: 18px;
+    font-size: var(--font-size-18px);
     margin-bottom: 16px;
-    color: #333;
+    color: var(--text-color);
 }
 
 /* Căn chỉnh form-row */
@@ -100,93 +101,94 @@ h1 {
     gap: 16px;
     margin-bottom: 20px;
     align-items: flex-start;
-
-    input,
-    select,
-    textarea {
-        flex: 1;
-        padding: 10px 14px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        min-width: 200px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-        transition: border-color 0.2s ease;
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-        border-color: #007bff;
-        outline: none;
-    }
-
-    label {
-        width: 140px;
-        font-weight: 600;
-        font-size: 14px;
-        color: #555;
-        margin-top: 5px;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-    }
-
-    &.biography {
-        flex-direction: column;
-
-        label {
-            width: 100%;
-            margin-bottom: 6px;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-    }
 }
 
+.form-row input,
+.form-row select,
+.form-row textarea {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: var(--font-size-14px);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    min-width: 200px;
+    font-family: var(--font-family) !important;
+    transition: border-color var(--transition);
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.form-row label {
+    width: 140px;
+    font-weight: 600;
+    font-size: var(--font-size-14px);
+    color: var(--gray-700);
+    margin-top: 5px;
+    font-family: var(--font-family) !important;
+}
+
+.form-row.biography {
+    flex-direction: column;
+}
+
+.form-row.biography label {
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.form-row.biography textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Profile Pic */
 .profile-pic {
     width: 180px;
     height: 180px;
-    border: 2px dashed #bbb;
-    border-radius: 8px;
+    border: 2px dashed var(--gray-400);
+    border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: #666;
-    font-size: 14px;
+    color: var(--gray-600);
+    font-size: var(--font-size-14px);
     cursor: pointer;
     text-align: center;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition: border-color var(--transition), color var(--transition);
+}
 
-    .upload-icon {
-        font-size: 36px;
-        font-weight: 700;
-        margin-bottom: 8px;
-    }
+.profile-pic .upload-icon {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
 
-    p {
-        font-weight: 600;
-        margin: 0;
-    }
+.profile-pic p {
+    font-weight: 600;
+    margin: 0;
+}
 
-    small {
-        font-size: 12px;
-        color: #999;
-    }
+.profile-pic small {
+    font-size: var(--font-size-12px);
+    color: var(--gray-400);
+}
 
-    &:hover {
-        border-color: #2563eb;
-        color: #2563eb;
-    }
+.profile-pic:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
 
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 6px;
-    }
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--border-radius) - 2px);
 }
 
 /* Lưới 2 cột cho fields */
@@ -198,24 +200,26 @@ h1 {
 }
 
 /* Nút Save chung */
-.save-btn {
+.save-btn,
+.saveNextBtn {
     display: block;
     margin-left: auto;
-    background-color: #007bff;
+    background-color: var(--primary-color);
     border: none;
-    color: white;
+    color: var(--white);
     padding: 12px 32px;
     font-weight: 700;
-    font-size: 15px;
-    border-radius: 8px;
+    font-size: var(--font-size-16px);
+    border-radius: var(--border-radius);
     cursor: pointer;
     margin-top: 20px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-family: var(--font-family) !important;
+    transition: background-color var(--transition), transform var(--transition);
 }
 
-.save-btn:hover {
-    background-color: #0056b3;
+.save-btn:hover,
+.saveNextBtn:hover {
+    background-color: var(--primary-color-dark);
     transform: translateY(-2px);
 }
 
@@ -229,99 +233,100 @@ h1 {
 }
 
 .cv-item {
-    background: #f9fafb;
+    background: var(--gray-50);
     padding: 16px;
-    border-radius: 10px;
+    border-radius: var(--border-radius);
     width: 180px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
     position: relative;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .cv-icon {
-        font-size: 24px;
-        color: #2563eb;
-    }
-
-    .cv-title {
-        font-weight: 600;
-        font-size: 14px;
-        color: #333;
-        margin: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        width: 100%;
-    }
-
-    .cv-size {
-        font-size: 12px;
-        color: #666;
-        margin: 0;
-    }
-
-    .cv-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: auto;
-
-        button {
-            background: none;
-            border: none;
-            color: #2563eb;
-            font-size: 12px;
-            cursor: pointer;
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: background-color 0.2s ease;
-
-            &:hover {
-                background-color: #e6f0fa;
-                text-decoration: none;
-            }
-        }
-    }
+    box-shadow: var(--box-shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
 }
 
+.cv-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(2, 20, 41, 0.07);
+}
+
+.cv-item .cv-icon {
+    font-size: 24px;
+    color: var(--primary-color-dark);
+}
+
+.cv-item .cv-title {
+    font-weight: 600;
+    font-size: var(--font-size-14px);
+    color: var(--text-color);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.cv-item .cv-size {
+    font-size: var(--font-size-12px);
+    color: var(--gray-700);
+    margin: 0;
+}
+
+.cv-item .cv-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.cv-item .cv-actions button {
+    background: none;
+    border: none;
+    color: var(--primary-color-dark);
+    font-size: var(--font-size-12px);
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: background-color var(--transition);
+}
+
+.cv-item .cv-actions button:hover {
+    background-color: var(--blue-50);
+    text-decoration: none;
+}
+
+/* Add CV */
 .cv-add {
-    border: 2px dashed #bbb;
-    border-radius: 10px;
+    border: 2px dashed var(--gray-400);
+    border-radius: var(--border-radius);
     width: 180px;
     padding: 20px;
     text-align: center;
     cursor: pointer;
-    color: #666;
-    transition: border-color 0.2s ease, color 0.2s ease;
+    color: var(--gray-600);
+    transition: border-color var(--transition), color var(--transition);
+}
 
-    .cv-add-icon {
-        font-size: 24px;
-        margin-bottom: 10px;
-        color: #2563eb;
-    }
+.cv-add .cv-add-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--primary-color-dark);
+}
 
-    p {
-        font-weight: 600;
-        margin: 0;
-        font-size: 14px;
-    }
+.cv-add p {
+    font-weight: 600;
+    margin: 0;
+    font-size: var(--font-size-14px);
+}
 
-    small {
-        font-size: 12px;
-        color: #999;
-    }
+.cv-add small {
+    font-size: var(--font-size-12px);
+    color: var(--gray-400);
+}
 
-    &:hover {
-        border-color: #2563eb;
-        color: #2563eb;
-    }
+.cv-add:hover {
+    border-color: var(--primary-color-dark);
+    color: var(--primary-color-dark);
 }
 
 /* Social Links */
@@ -331,108 +336,88 @@ h1 {
 
 .socialLinkRow {
     margin-bottom: 16px;
+}
 
-    label {
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-        color: #333;
-    }
+.socialLinkRow label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+    color: var(--text-color);
+    font-size: var(--font-size-14px);
+}
 
-    .socialLinkInputs {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+.socialLinkInputs {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .socialSelect {
     width: 160px;
     padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-14px);
     cursor: pointer;
     appearance: none;
-    background: white;
-    color: #222;
-    transition: border-color 0.2s;
+    background: var(--white);
+    color: var(--text-color);
+    transition: border-color var(--transition);
+}
 
-    &:focus {
-        border-color: #1677ff;
-        outline: none;
-        box-shadow: 0 0 6px #a4c8ff;
-    }
+.socialSelect:focus,
+.socialInput:focus {
+    border-color: var(--primary-color-light);
+    outline: none;
+    box-shadow: 0 0 6px var(--blue-100);
 }
 
 .socialInput {
     flex: 1;
     padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: border-color 0.2s;
-
-    &:focus {
-        border-color: #1677ff;
-        outline: none;
-        box-shadow: 0 0 6px #a4c8ff;
-    }
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-14px);
+    transition: border-color var(--transition);
 }
 
 .removeBtn {
-    background: #f0f0f0;
+    background: var(--gray-400);
     border: none;
-    font-size: 18px;
+    font-size: var(--font-size-18px);
     padding: 4px 12px;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    color: #666;
-    transition: background-color 0.2s, color 0.2s;
-
-    &:hover {
-        background: #ff4d4d;
-        color: white;
-    }
+    color: var(--gray-700);
+    transition: background-color var(--transition), color var(--transition);
 }
 
-.saveNextBtn {
-    background-color: #1677ff;
-    border: none;
-    color: white;
-    padding: 10px 25px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-        background-color: #005ecb;
-    }
+.removeBtn:hover {
+    background: var(--error-color);
+    color: var(--white);
 }
 
 .addSocialBtn {
     width: 100%;
     padding: 14px 0;
     border: none;
-    background: #f7f7f7;
+    background: var(--gray-200);
     font-weight: 600;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     cursor: pointer;
     margin-top: 10px;
-    color: #444;
-    font-size: 14px;
-    transition: background-color 0.2s;
-
+    color: var(--gray-800);
+    font-size: var(--font-size-14px);
+    transition: background-color var(--transition);
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
+}
 
-    &:hover {
-        background: #e2e2e2;
-    }
+.addSocialBtn:hover {
+    background: var(--gray-600);
+    color: var(--white);
 }
 
 /* Checkbox nhóm */
@@ -445,8 +430,9 @@ h1 {
     display: block;
     margin-bottom: 10px;
     font-weight: 600;
-    font-size: 14px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-size: var(--font-size-14px);
+    font-family: var(--font-family) !important;
+    color: var(--gray-700);
 }
 
 .checkbox-group label input {
@@ -460,82 +446,79 @@ h1 {
     justify-content: flex-start;
     gap: 10px;
     margin-bottom: 24px;
-
-    .toggle-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 600;
-        font-size: 14px;
-
-        label {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-        }
-
-        input[type='checkbox'] {
-            width: 30px;
-            height: 16px;
-            position: relative;
-            -webkit-appearance: none;
-            background: #c6c6c6;
-            outline: none;
-            border-radius: 16px;
-            transition: 0.4s;
-            cursor: pointer;
-        }
-
-        input[type='checkbox']:checked {
-            background: #2563eb;
-        }
-
-        input[type='checkbox']:checked::before {
-            left: 14px;
-        }
-
-        input[type='checkbox']::before {
-            content: '';
-            position: absolute;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            top: 1px;
-            left: 1px;
-            background: white;
-            transition: 0.4s;
-        }
-    }
 }
 
-.toggle-group label {
-    margin-left: 8px;
+.toggle-group .toggle-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: var(--font-size-14px);
+}
+
+.toggle-group .toggle-item label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-family) !important;
+}
+
+.toggle-group .toggle-item input[type='checkbox'] {
+    width: 30px;
+    height: 16px;
+    position: relative;
+    -webkit-appearance: none;
+    background: var(--gray-400);
+    outline: none;
+    border-radius: 16px;
+    transition: 0.4s;
+    cursor: pointer;
+}
+
+.toggle-group .toggle-item input[type='checkbox']:checked {
+    background: var(--primary-color-dark);
+}
+
+.toggle-group .toggle-item input[type='checkbox']:checked::before {
+    left: 14px;
+}
+
+.toggle-group .toggle-item input[type='checkbox']::before {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    top: 1px;
+    left: 1px;
+    background: var(--white);
+    transition: 0.4s;
 }
 
 /* Delete account */
 .delete-desc {
-    color: #d22d2d;
-    font-size: 13px;
+    color: var(--error-color);
+    font-size: var(--font-size-12px);
     margin-bottom: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-family: var(--font-family) !important;
 }
 
 .delete-btn {
     background: none;
     border: none;
-    color: #d22d2d;
+    color: var(--error-color);
     cursor: pointer;
     font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    font-family: var(--font-family) !important;
     margin-top: 10px;
     padding: 8px 16px;
     border-radius: 4px;
-    transition: background-color 0.2s ease;
+    font-size: var(--font-size-14px);
+    transition: background-color var(--transition);
 }
 
 .delete-btn:hover {
-    background-color: #fee2e2;
+    background-color: var(--red-100);
     text-decoration: underline;
 }
 
@@ -550,7 +533,7 @@ h1 {
     }
 
     .tab-button {
-        font-size: 12px;
+        font-size: var(--font-size-12px);
         padding: 4px 8px;
     }
 
@@ -599,15 +582,15 @@ h1 {
     }
 
     .cv-item .cv-title {
-        font-size: 13px;
+        font-size: var(--font-size-12px);
     }
 
     .cv-item .cv-size {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-item .cv-actions button {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
         padding: 2px 4px;
     }
 
@@ -616,11 +599,11 @@ h1 {
     }
 
     .cv-add p {
-        font-size: 13px;
+        font-size: var(--font-size-12px);
     }
 
     .cv-add small {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
     }
 }
 
@@ -634,7 +617,7 @@ h1 {
     }
 
     .tab-button {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
         padding: 3px 6px;
     }
 
@@ -645,11 +628,11 @@ h1 {
     .socialLinksContainer .socialSelect,
     .socialLinksContainer .socialInput {
         padding: 6px 10px;
-        font-size: 13px;
+        font-size: var(--font-size-10px);
     }
 
     .socialLinksContainer .removeBtn {
-        font-size: 16px;
+        font-size: var(--font-size-12px);
     }
 
     .cv-list {
@@ -663,15 +646,15 @@ h1 {
     }
 
     .cv-item .cv-title {
-        font-size: 12px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-item .cv-size {
-        font-size: 10px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-item .cv-actions button {
-        font-size: 10px;
+        font-size: var(--font-size-10px);
         padding: 1px 3px;
     }
 
@@ -680,19 +663,15 @@ h1 {
     }
 
     .cv-add p {
-        font-size: 12px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-add small {
-        font-size: 10px;
+        font-size: var(--font-size-10px);
     }
 }
 
 @media screen and (max-width: 480px) {
-    h1 {
-        font-size: 20px;
-    }
-
     .setting-container {
         padding: 12px;
     }
@@ -702,7 +681,7 @@ h1 {
     }
 
     .tab-button {
-        font-size: 10px;
+        font-size: var(--font-size-10px);
         padding: 2px 4px;
     }
 
@@ -710,14 +689,8 @@ h1 {
         padding: 4px;
     }
 
-    .socialLinksContainer .socialSelect,
-    .socialLinksContainer .socialInput {
-        padding: 4px 8px;
-        font-size: 12px;
-    }
-
-    .socialLinksContainer .removeBtn {
-        font-size: 14px;
+    .fields {
+        gap: 8px;
     }
 
     .cv-list {
@@ -732,15 +705,15 @@ h1 {
     }
 
     .cv-item .cv-title {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-item .cv-size {
-        font-size: 9px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-item .cv-actions button {
-        font-size: 9px;
+        font-size: var(--font-size-10px);
         padding: 1px 2px;
     }
 
@@ -749,10 +722,10 @@ h1 {
     }
 
     .cv-add p {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
     }
 
     .cv-add small {
-        font-size: 9px;
+        font-size: var(--font-size-10px);
     }
 }

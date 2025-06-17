@@ -1,6 +1,8 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from '../Setting.module.scss';
+import '@mantine/tiptap/styles.css';
+import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 
 const cx = classNames.bind(styles);
 
@@ -51,11 +53,15 @@ function Profile() {
                         <option value="">Select...</option>
                         <option value="1">1 year</option>
                         <option value="2">2 years</option>
+                        <option value="3">3 years</option>
                     </select>
                 </div>
                 <div className={cx('form-row', 'biography')}>
                     <label>Biography</label>
-                    <textarea placeholder="Write down your biography here..." />
+                    <SimpleRichTextEditor
+                        placeholder="Write down your biography here..."
+                        onChange={(content) => console.log(content)}
+                    />
                 </div>
                 <button type="submit" className={cx('save-btn')}>
                     Save Changes
