@@ -1,6 +1,5 @@
 import classNames from 'classnames/bind';
 import styles from './Dashboard.module.scss';
-import JobItemList from '~/components/JobItemOwner';
 import JobItemApplied from '~/components/JobItemApplied';
 import { Images } from '~/assets';
 import { Pagination } from '@mantine/core';
@@ -9,7 +8,19 @@ const cx = classNames.bind(styles);
 
 const jobList = [
     <JobItemApplied
-        image={'asdasd'}
+        image={Images}
+        jobDescription={{
+            companyName: 'Google',
+            companyAddress: '1600 Amphitheatre Parkway Mountain ',
+            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
+            workTime: 'Full-time',
+            salary: '$100 - $200',
+            dueDate: 'June 15, 2021',
+        }}
+        isVIP
+    />,
+    <JobItemApplied
+        image={Images}
         jobDescription={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
@@ -33,7 +44,7 @@ const jobList = [
         isVIP
     />,
     <JobItemApplied
-        image={'asdasd'}
+        image={Images}
         jobDescription={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
@@ -57,19 +68,7 @@ const jobList = [
         isVIP
     />,
     <JobItemApplied
-        image={'asdasd'}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain ',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-        isVIP
-    />,
-    <JobItemApplied
-        image={'asdasd'}
+        image={Images}
         jobDescription={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
@@ -309,8 +308,8 @@ function Dashboard1() {
                     ))}
                 </div>
                 {/* Phân trang Mantine */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-                    <Pagination total={totalPages} value={page} onChange={setPage} />
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
+                    <Pagination total={totalPages} value={page} onChange={setPage} size="xl" />
                 </div>
             </div>
         </div>

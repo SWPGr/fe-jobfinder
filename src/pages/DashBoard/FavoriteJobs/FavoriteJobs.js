@@ -118,8 +118,8 @@ function FavoriteJobs() {
                 ))}
             </div>
             {/* Phân trang Mantine */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 20 }}>
-                <Pagination total={totalPages} value={page} onChange={setPage} />
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
+                <Pagination total={totalPages} value={page} onChange={setPage} size="xl" />
             </div>
         </div>
     );
