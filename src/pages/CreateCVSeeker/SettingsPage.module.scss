@@ -1,5 +1,5 @@
 .main {
-  max-width: 90rem; /* tương đương 900px */
+  max-width: 90rem; /* 900px */
   margin: 3rem auto; /* 30px */
   font-family: var(--font-family);
   color: var(--gray-900);
@@ -63,9 +63,32 @@ h1 {
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      min-height: 180px;
 
       &:nth-child(2) {
         flex: 2;
+      }
+
+      /* Mantine Dropzone overrides */
+      .mantine-Dropzone-root {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        padding: 0 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .mantine-Dropzone-inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.8rem;
+        width: 100%;
+        height: 100%;
       }
 
       .uploadLabel {
@@ -93,8 +116,8 @@ h1 {
 
       .previewImage {
         width: 100%;
-        height: 10rem;
-        object-fit: cover;
+        max-height: 10rem;
+        object-fit: contain;
         margin-bottom: 0.6rem;
         border-radius: 0.4rem;
       }
@@ -178,8 +201,6 @@ h1 {
   }
 }
 
-/* Áp dụng tương tự cho các tab khác và nút */
-
 .form {
   max-width: 80rem;
 
@@ -201,8 +222,8 @@ h1 {
     }
 
     select,
-    input[type="date"],
-    input[type="url"],
+    input[type='date'],
+    input[type='url'],
     textarea {
       padding: 0.8rem 1.2rem;
       border: 0.1rem solid var(--border-color);
@@ -222,60 +243,79 @@ h1 {
 
 .socialLinksContainer {
   max-width: 70rem;
-}
 
-.socialSelect,
-.socialInput {
-  font-family: var(--font-family);
-  font-size: 1.4rem;
-  border-radius: 0.6rem;
-  border: 0.1rem solid var(--border-color);
-  padding: 0.8rem 1.2rem;
-  transition: border-color 0.2s;
-  color: var(--gray-900);
+  .socialLinkRow {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
 
-  &:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0.6rem #a4c8ff;
+    label {
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--gray-800);
+    }
+
+    .socialLinkInputs {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+
+      select.socialSelect,
+      input.socialInput {
+        font-family: var(--font-family);
+        font-size: 1.4rem;
+        border-radius: 0.6rem;
+        border: 0.1rem solid var(--border-color);
+        padding: 0.8rem 1.2rem;
+        transition: border-color 0.2s;
+        color: var(--gray-900);
+        flex: 1;
+
+        &:focus {
+          border-color: var(--primary-color);
+          outline: none;
+          box-shadow: 0 0 0.6rem #a4c8ff;
+        }
+      }
+
+      button.removeBtn {
+        background: var(--gray-100);
+        border: none;
+        font-size: 1.8rem;
+        padding: 0.4rem 1.2rem;
+        border-radius: 0.6rem;
+        cursor: pointer;
+        color: var(--gray-600);
+        transition: background-color 0.2s, color 0.2s;
+
+        &:hover {
+          background: #ff4d4d;
+          color: white;
+        }
+      }
+    }
   }
-}
 
-.removeBtn {
-  background: var(--gray-100);
-  border: none;
-  font-size: 1.8rem;
-  padding: 0.4rem 1.2rem;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  color: var(--gray-600);
-  transition: background-color 0.2s, color 0.2s;
+  button.addSocialBtn {
+    width: 100%;
+    padding: 1.4rem 0;
+    border: none;
+    background: var(--gray-100);
+    font-weight: 600;
+    border-radius: 0.6rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    color: var(--gray-700);
+    font-size: 1.4rem;
+    transition: background-color 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
 
-  &:hover {
-    background: #ff4d4d;
-    color: white;
-  }
-}
-
-.addSocialBtn {
-  width: 100%;
-  padding: 1.4rem 0;
-  border: none;
-  background: var(--gray-100);
-  font-weight: 600;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  color: var(--gray-700);
-  font-size: 1.4rem;
-  transition: background-color 0.2s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.8rem;
-
-  &:hover {
-    background: var(--gray-200);
+    &:hover {
+      background: var(--gray-200);
+    }
   }
 }
 
@@ -300,9 +340,9 @@ h1 {
       color: var(--gray-700);
     }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="tel"] {
+    input[type='text'],
+    input[type='email'],
+    input[type='tel'] {
       width: 100%;
       padding: 0.8rem 1.2rem;
       border-radius: 0.4rem;
@@ -339,7 +379,7 @@ h1 {
         color: var(--gray-900);
       }
 
-      input[type="tel"] {
+      input[type='tel'] {
         flex: 1;
         padding: 0.8rem 1.2rem;
         border-radius: 0.4rem;

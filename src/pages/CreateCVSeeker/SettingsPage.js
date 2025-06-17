@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 
 const cx = classNames.bind(styles);
 
-// Các tab trong settings
 const tabsOrder = ['Company Info', 'Founding Info', 'Social Media Profile', 'Contact'];
 
-// Các lựa chọn mạng xã hội
 const socialOptions = [
   { label: 'Facebook', value: 'facebook', icon: '📘' },
   { label: 'Twitter', value: 'twitter', icon: '🐦' },
@@ -44,16 +44,25 @@ function SettingsPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleLogoChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size <= 5 * 1024 * 1024) setLogoFile(file);
-    else alert('File quá lớn hoặc không hợp lệ');
+  // Dropzone handlers for logo and banner
+  const handleLogoChange = (files) => {
+    if (files.length === 0) return;
+    const file = files[0];
+    if (file.size <= 5 * 1024 * 1024) {
+      setLogoFile(file);
+    } else {
+      alert('Logo file too large. Max size is 5 MB.');
+    }
   };
 
-  const handleBannerChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size <= 5 * 1024 * 1024) setBannerFile(file);
-    else alert('File quá lớn hoặc không hợp lệ');
+  const handleBannerChange = (files) => {
+    if (files.length === 0) return;
+    const file = files[0];
+    if (file.size <= 5 * 1024 * 1024) {
+      setBannerFile(file);
+    } else {
+      alert('Banner file too large. Max size is 5 MB.');
+    }
   };
 
   const handleSave = () => {
@@ -75,7 +84,7 @@ function SettingsPage() {
     }
   };
 
-  // Xử lý social links
+  // Social links handlers...
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
       prev.map((link) => (link.id === id ? { ...link, type: newType } : link))
@@ -117,65 +126,126 @@ function SettingsPage() {
         <div className={cx('companyInfoTab')}>
           <h3>Logo & Banner Image</h3>
           <div className={cx('uploadSection')}>
-            {/* Giữ nguyên phần upload logo và banner */}
+            {/* Logo Dropzone */}
             <div className={cx('uploadBox')}>
-              <label htmlFor="logo-upload" className={cx('uploadLabel')}>
-                {logoFile ? (
-                  <img
-                    src={URL.createObjectURL(logoFile)}
-                    alt="logo"
-                    className={cx('previewImage')}
-                  />
-                ) : (
-                  <>
-                    <div className={cx('uploadIcon')}>⬆️</div>
-                    <div>
-                      <b>Browse photo</b> or drop here
-                    </div>
-                    <small>
-                      A photo larger than 400 pixels work best. Max photo size 5 MB.
-                    </small>
-                  </>
-                )}
-              </label>
-              <input
-                id="logo-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
-                className={cx('uploadInput')}
-              />
-              <div className={cx('uploadTitle')}>Upload document</div>
+              <Dropzone
+                onDrop={handleLogoChange}
+                onReject={() => alert('Only image files under 5MB are accepted for logo.')}
+                maxSize={5 * 1024 ** 2}
+                accept={IMAGE_MIME_TYPE}
+                multiple={false}
+                styles={(theme) => ({
+                  root: {
+                    border: `2px dashed ${theme.colors.blue[6]}`,
+                    borderRadius: theme.radius.md,
+                    padding: theme.spacing.xl,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 180,
+                    position: 'relative',
+                  },
+                  inner: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: theme.spacing.sm,
+                  },
+                  icon: {
+                    width: 48,
+                    height: 48,
+                  },
+                })}
+              >
+                {(status) =>
+                  logoFile ? (
+                    <img
+                      src={URL.createObjectURL(logoFile)}
+                      alt="logo preview"
+                      className={cx('previewImage')}
+                      style={{ maxHeight: 150, maxWidth: '100%', objectFit: 'contain' }}
+                    />
+                  ) : status.accepted ? (
+                    <IconUpload size={48} color="#1c7ed6" />
+                  ) : status.rejected ? (
+                    <IconX size={48} color="#fa5252" />
+                  ) : (
+                    <>
+                      <IconPhoto size={48} color="#868e96" />
+                      <div>
+                        <b>Browse photo</b> or drop here
+                      </div>
+                      <small>A photo larger than 400 pixels works best. Max photo size 5 MB.</small>
+                    </>
+                  )
+                }
+              </Dropzone>
+              <div className={cx('uploadTitle')}>Upload Logo</div>
             </div>
 
+            {/* Banner Dropzone */}
             <div className={cx('uploadBox')}>
-              <label htmlFor="banner-upload" className={cx('uploadLabel')}>
-                {bannerFile ? (
-                  <img
-                    src={URL.createObjectURL(bannerFile)}
-                    alt="banner"
-                    className={cx('previewImage')}
-                  />
-                ) : (
-                  <>
-                    <div className={cx('uploadIcon')}>⬆️</div>
-                    <div>
-                      <b>Browse photo</b> or drop here
-                    </div>
-                    <small>
-                      Banner images optical dimension 1520×400. Supported format JPEG,
-                      PNG. Max photo size 5 MB.
-                    </small>
-                  </>
-                )}
-              </label>
-              <input
-                id="banner-upload"
-                type="file"
-                accept="image/jpeg, image/png"
-                onChange={handleBannerChange}
-                className={cx('uploadInput')}
-              />
+              <Dropzone
+                onDrop={handleBannerChange}
+                onReject={() =>
+                  alert('Only JPEG or PNG banner images under 5MB are accepted.')
+                }
+                maxSize={5 * 1024 ** 2}
+                accept={['image/jpeg', 'image/png']}
+                multiple={false}
+                styles={(theme) => ({
+                  root: {
+                    border: `2px dashed ${theme.colors.blue[6]}`,
+                    borderRadius: theme.radius.md,
+                    padding: theme.spacing.xl,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: 180,
+                    position: 'relative',
+                  },
+                  inner: {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: theme.spacing.sm,
+                  },
+                  icon: {
+                    width: 48,
+                    height: 48,
+                  },
+                })}
+              >
+                {(status) =>
+                  bannerFile ? (
+                    <img
+                      src={URL.createObjectURL(bannerFile)}
+                      alt="banner preview"
+                      className={cx('previewImage')}
+                      style={{ maxHeight: 150, maxWidth: '100%', objectFit: 'contain' }}
+                    />
+                  ) : status.accepted ? (
+                    <IconUpload size={48} color="#1c7ed6" />
+                  ) : status.rejected ? (
+                    <IconX size={48} color="#fa5252" />
+                  ) : (
+                    <>
+                      <IconPhoto size={48} color="#868e96" />
+                      <div>
+                        <b>Browse photo</b> or drop here
+                      </div>
+                      <small>
+                        Banner image optimal dimension 1520×400. Supported format JPEG, PNG. Max 5
+                        MB.
+                      </small>
+                    </>
+                  )
+                }
+              </Dropzone>
               <div className={cx('uploadTitle')}>Banner Image</div>
             </div>
           </div>
@@ -209,7 +279,6 @@ function SettingsPage() {
           </div>
         </div>
       )}
-
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
