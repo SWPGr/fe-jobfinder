@@ -309,7 +309,17 @@ function Dashboard1() {
                 </div>
                 {/* Phân trang Mantine */}
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
-                    <Pagination total={totalPages} value={page} onChange={setPage} size="xl" />
+                    <Pagination
+                        total={totalPages}
+                        value={page}
+                        onChange={setPage}
+                        size="xl"
+                        radius="xl"
+                        classNames={{
+                            root: cx('pagination-root'),
+                            control: cx('control'),
+                        }}
+                    />
                 </div>
             </div>
         </div>

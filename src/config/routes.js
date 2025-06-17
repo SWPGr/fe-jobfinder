@@ -14,9 +14,7 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
-
     singleJob: '/singleJob',
-
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',

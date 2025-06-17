@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     user = {
-        role: 'JOB_SEEKER',
+        role: 'JOB_SEEKER', // Giả sử mặc định là JOB_SEEKER, có thể thay đổi tùy theo logic ứng dụng
     };
     // user = null;
 
