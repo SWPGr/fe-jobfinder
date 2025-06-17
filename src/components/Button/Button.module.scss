@@ -29,6 +29,12 @@
     margin-left: 8px;
 }
 
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .icon {
     display: inline-flex;
     align-items: center;
@@ -264,13 +270,13 @@
 // Button sizes
 .medium {
     min-width: 11rem;
-    min-height: 4.8rem;
+    height: 4.8rem;
     padding: 4px 16px;
 }
 
 .large {
     min-width: 15rem;
-    min-height: 5.6rem;
+    height: 5.6rem;
     padding: 14px 16px;
 }
 
@@ -296,5 +302,14 @@
         display: flex;
         justify-content: center;
         height: fit-content;
+    }
+}
+
+// RESPONSIVE
+
+// Responsive cho màn hình <= 1024px
+@media (max-width: 1024px) {
+    .icon {
+        display: none;
     }
 }

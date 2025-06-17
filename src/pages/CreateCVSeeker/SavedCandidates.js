@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import classNames from 'classnames/bind';
 import styles from './SavedCandidates.module.scss';
+
+const cx = classNames.bind(styles);
 
 const candidatesData = [
     {
@@ -32,26 +35,26 @@ const SavedCandidates = () => {
     const closeProfile = () => setSelectedCandidate(null);
 
     return (
-        <div className={styles.savedCandidatesContainer}>
-            <div className={styles.header}>
+        <div className={cx('savedCandidatesContainer')}>
+            <div className={cx('header')}>
                 <h2>Saved Candidates</h2>
-                <div className={styles.info}>
+                <div className={cx('info')}>
                     <span>ⓘ</span> All of the candidates are visible until 24 March, 2021
                 </div>
             </div>
 
-            <ul className={styles.candidateList}>
+            <ul className={cx('candidateList')}>
                 {candidatesData.map((candidate) => (
-                    <li key={candidate.id} className={styles.candidateItem}>
-                        <div className={styles.candidateInfo}>
-                            <div className={styles.avatar}></div>
+                    <li key={candidate.id} className={cx('candidateItem')}>
+                        <div className={cx('candidateInfo')}>
+                            <div className={cx('avatar')}></div>
                             <div>
-                                <div className={styles.name}>{candidate.name}</div>
-                                <div className={styles.role}>{candidate.role}</div>
+                                <div className={cx('name')}>{candidate.name}</div>
+                                <div className={cx('role')}>{candidate.role}</div>
                             </div>
                         </div>
-                        <div className={styles.actions}>
-                            <button className={styles.viewProfileBtn} onClick={() => openProfile(candidate)}>
+                        <div className={cx('actions')}>
+                            <button className={cx('viewProfileBtn')} onClick={() => openProfile(candidate)}>
                                 View Profile <span>→</span>
                             </button>
                         </div>
@@ -60,37 +63,37 @@ const SavedCandidates = () => {
             </ul>
 
             {selectedCandidate && (
-                <div className={styles.modalBackdrop} onClick={closeProfile} role="dialog" aria-modal="true">
-                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                        <button className={styles.closeBtn} onClick={closeProfile} aria-label="Close modal">
+                <div className={cx('modalBackdrop')} onClick={closeProfile} role="dialog" aria-modal="true">
+                    <div className={cx('modalContent')} onClick={(e) => e.stopPropagation()}>
+                        <button className={cx('closeBtn')} onClick={closeProfile} aria-label="Close modal">
                             ×
                         </button>
 
-                        <div className={styles.headerModal}>
-                            <div className={styles.avatarLarge}></div>
-                            <div className={styles.infoHeader}>
+                        <div className={cx('headerModal')}>
+                            <div className={cx('avatarLarge')}></div>
+                            <div className={cx('infoHeader')}>
                                 <h2>{selectedCandidate.name}</h2>
                                 <p>{selectedCandidate.role}</p>
                             </div>
-                            <div className={styles.actionButtons}>
+                            <div className={cx('actionButtons')}>
                                 <button>☆</button>
                                 <button>Send Mail</button>
                                 <button>Hire Candidates</button>
                             </div>
                         </div>
 
-                        <section className={styles.bioSection}>
+                        <section className={cx('bioSection')}>
                             <h3>Biography</h3>
                             <p>{selectedCandidate.biography}</p>
                         </section>
 
-                        <section className={styles.coverLetterSection}>
+                        <section className={cx('coverLetterSection')}>
                             <h3>Cover Letter</h3>
                             <p style={{ whiteSpace: 'pre-wrap' }}>{selectedCandidate.coverLetter}</p>
                         </section>
 
-                        <section className={styles.detailsSection}>
-                            <div className={styles.detailsColumn}>
+                        <section className={cx('detailsSection')}>
+                            <div className={cx('detailsColumn')}>
                                 <div>
                                     <strong>Date of Birth</strong>
                                     <br />
@@ -123,12 +126,12 @@ const SavedCandidates = () => {
                                 </div>
                             </div>
 
-                            <div className={styles.downloadResume}>
+                            <div className={cx('downloadResume')}>
                                 <h4>Download My Resume</h4>
                                 <button>Esther Howard PDF ⬇</button>
                             </div>
 
-                            <div className={styles.contactInfo}>
+                            <div className={cx('contactInfo')}>
                                 <h4>Contact Information</h4>
                                 <p>
                                     <strong>Website:</strong> {selectedCandidate.website}
@@ -148,9 +151,9 @@ const SavedCandidates = () => {
                             </div>
                         </section>
 
-                        <section className={styles.socialMedia}>
+                        <section className={cx('socialMedia')}>
                             <h4>Follow me Social Media</h4>
-                            <div className={styles.socialIcons}>
+                            <div className={cx('socialIcons')}>
                                 {/* Bạn có thể dùng icon hoặc hình ảnh */}
                                 <a href="#" aria-label="Facebook">
                                     📘
