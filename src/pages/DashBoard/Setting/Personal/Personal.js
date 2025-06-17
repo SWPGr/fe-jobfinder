@@ -220,11 +220,26 @@ function Personal() {
                             <button>Delete</button>
                         </div>
                     </div>
-                    <div className={cx('cv-add')}>
-                        <span className={cx('cv-add-icon')}>＋</span>
-                        <p>Add CV/Resume</p>
-                        <small>Browse file or drop here. Only pdf</small>
-                    </div>
+
+                    {/* ✅ Đây là phần đã thêm Dropzone */}
+                    <Dropzone
+                        onDrop={(files) => {
+                            const file = files[0];
+                            if (file) {
+                                alert(`Selected CV: ${file.name}, size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+                            }
+                        }}
+                        onReject={() => alert('Only PDF files under 10MB are accepted.')}
+                        accept={{ 'application/pdf': [] }}
+                        maxSize={10 * 1024 ** 2}
+                        multiple={false}
+                    >
+                        <div className={cx('cv-add')}>
+                            <span className={cx('cv-add-icon')}>＋</span>
+                            <p>Add CV/Resume</p>
+                            <small>Browse file or drop here. Only pdf</small>
+                        </div>
+                    </Dropzone>
                 </div>
             </section>
         </div>
