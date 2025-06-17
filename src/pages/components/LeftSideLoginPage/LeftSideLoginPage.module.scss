@@ -46,10 +46,11 @@
     .title {
         font-size: 3rem;
         font-weight: 600;
+        color: var(--white);
     }
     .description {
         font-size: 1.6rem;
-        font-weight: lighter;
+        font-weight: 400;
         color: var(--white);
         line-height: 2.4rem;
         margin-top: 1rem;
@@ -78,6 +79,10 @@
             height: 4rem;
             background-color: var(--primary-color-light);
             border-radius: 50%;
+        }
+
+        .description {
+            font-weight: 400;
         }
     }
 }
