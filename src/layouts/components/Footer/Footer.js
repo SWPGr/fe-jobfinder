@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Footer.module.scss';
+import Term from '~/pages/Term/Term';
 import {
     IconBrandFacebookFilled,
     IconBrandYoutubeFilled,
@@ -26,15 +27,30 @@ function Footer({ dark }) {
         },
         {
             title: 'Candidate',
-            items: ['Browse Jobs', 'Browse Employers', 'Candidate Dashboard', 'Saved Jobs'],
+            items: [
+                ['Browse Jobs', '/jobs'],
+                ['Browse Employers', '/employers'],
+                ['Candidate Dashboard', '/candidate-dashboard'],
+                ['Saved Jobs', '/saved-jobs'],
+            ],
         },
         {
             title: 'Employer',
-            items: ['Post a Job', 'Browse Candidates', 'Employer Dashboard', 'Applications'],
+            items: [
+                ['Post a Job', '/post-job'],
+                ['Browse Candidates', '/candidates'],
+                ['Employer Dashboard', '/employer-dashboard'],
+                ['Applications', '/applications'],
+            ],
         },
         {
             title: 'Support',
-            items: ['Help Center', 'Privacy Policy', 'Terms of Use', 'Contact Us'],
+            items: [
+                ['Help Center', '/help'],
+                ['Privacy Policy', '/privacy'],
+                ['Terms of Use', '/term'],
+                ['Contact Us', '/contact'],
+            ],
         },
     ];
 
@@ -64,29 +80,23 @@ function Footer({ dark }) {
                             <div className={cx('footer__top-right-items')} key={index}>
                                 <h3>{item.title}</h3>
                                 <div className={cx('items')}>
-                                    {item.items.map((subItem, subIndex) => {
-                                        if (Array.isArray(subItem)) {
-                                            return (
-                                                <Link to={subItem[1]} className={cx('item', 'link')} key={subIndex}>
-                                                    {subItem[0]}
-                                                </Link>
-                                            );
-                                        } else {
-                                            return (
-                                                <p className={cx('item')} key={subIndex}>
-                                                    {subItem}
-                                                </p>
-                                            );
-                                        }
-                                    })}
+                                    {item.items.map((subItem, subIndex) => (
+                                        Array.isArray(subItem) ? (
+                                            <Link to={subItem[1]} className={cx('item', 'link')} key={subIndex}>
+                                                {subItem[0]}
+                                            </Link>
+                                        ) : (
+                                            <p className={cx('item')} key={subIndex}>
+                                                {subItem}
+                                            </p>
+                                        )
+                                    ))}
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-            {/* TOP */}
-
             {/* BOTTOM */}
             <div className={cx('footer__bottom')}>
                 <div className={cx('footer__bottom-container')}>

@@ -2,16 +2,17 @@
 import config from '~/config';
 
 
-import { LoginPage, RegisterPage, HomePage, ErrorPage, DashboardPage, ServiceAndPolicyPage,CreateCVSeekerPage, FindJobPage, JobDetail, SeekerDetailPage, single,     FindJob,
+import { LoginPage, RegisterPage, HomePage, ErrorPage, DashboardPage, ServiceAndPolicyPage,CreateCVSeekerPage, FindJobPage, JobDetail, SeekerDetailPage, single,FindJob,
     VerifyPage,
     FindEmployer,
     FindCandidate,
-       SingleJobPage,} from '~/pages';
+       SingleJobPage,Term,} from '~/pages';
 
 
 
 import { HeaderOnly } from '~/layouts';
 import Single from '~/pages/Single/Single';
+import Payment from '~/pages/Payment/Payment';
 
 
 
@@ -34,14 +35,15 @@ const publicRoutes = [
 
     { path: config.routes.verify, component: VerifyPage, layout: null },
     { path: config.routes.single, component: Single, layout: HeaderOnly },
- 
+    { path: config.routes.term, component: Term, layout: null },
+    { path: config.routes.payment, component: Payment, layout: HeaderOnly },
 ];
 
 const privateRoutes = [
     { path: config.routes.dashboard, component: DashboardPage },
     { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
     { path: config.routes.findEmployer, component: FindEmployer, layout: HeaderOnly },
-    { path: config.routes.findCandidate, component: FindCandidate, layout: HeaderOnly },
+    { path: config.routes.findCandidate, component: FindCandidate, layout: null },   
 ];
 
 export { publicRoutes, privateRoutes };

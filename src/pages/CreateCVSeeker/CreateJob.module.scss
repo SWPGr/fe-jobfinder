@@ -1,61 +1,61 @@
 .container {
   display: flex;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-family);
   height: 100vh;
-  background: #fff;
+  background: var(--white);
 }
 
 .sidebar {
   width: 220px;
-  border-right: 1px solid #eaeaea;
-  padding: 20px;
+  border-right: 1px solid var(--border-color);
+  padding: 2rem;
   box-sizing: border-box;
 
   h2 {
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
     font-weight: 700;
   }
 
   ul {
     list-style: none;
     padding-left: 0;
-    margin-bottom: 50px;
+    margin-bottom: 5rem;
 
     li {
-      padding: 10px 0;
+      padding: 1rem 0;
       cursor: pointer;
-      color: #555;
+      color: var(--gray-600);
       position: relative;
       font-weight: 500;
       transition: color 0.2s;
 
       &:hover {
-        color: #0066f5;
+        color: var(--primary-color);
       }
 
       &.active {
-        color: #0066f5;
+        color: var(--primary-color);
         font-weight: 700;
       }
     }
   }
 
   .alertCount {
-    background: #0066f5;
-    color: white;
-    border-radius: 12px;
-    font-size: 12px;
-    padding: 2px 8px;
-    margin-left: 6px;
+    background: var(--primary-color);
+    color: var(--white);
+    border-radius: 1.2rem;
+    font-size: 1.2rem;
+    padding: 0.2rem 0.8rem;
+    margin-left: 0.6rem;
     font-weight: 600;
   }
 
   .logoutBtn {
     border: none;
     background: none;
-    color: #888;
+    color: var(--gray-400);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 1.4rem;
     display: flex;
     align-items: center;
     font-weight: 600;
@@ -65,37 +65,36 @@
 
 .main {
   flex: 1;
-  padding: 40px 50px;
+  padding: 4rem 5rem;
   box-sizing: border-box;
   overflow-y: auto;
 
   h1 {
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 2rem;
   }
 
-  // Tabs dùng chung cho Settings
   .tabs {
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
 
     button {
       background: none;
       border: none;
-      margin-right: 20px;
+      margin-right: 2rem;
       font-weight: 500;
-      color: #777;
+      color: var(--gray-600);
       cursor: pointer;
-      padding-bottom: 6px;
-      border-bottom: 2px solid transparent;
+      padding-bottom: 0.6rem;
+      border-bottom: 0.2rem solid transparent;
       transition: border-color 0.2s, color 0.2s;
 
       &:hover {
-        color: #0066f5;
+        color: var(--primary-color);
       }
 
       &.active {
-        color: #0066f5;
-        border-color: #0066f5;
+        color: var(--primary-color);
+        border-color: var(--primary-color);
         font-weight: 700;
       }
     }
