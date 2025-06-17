@@ -16,14 +16,13 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
+
     findJobPage: '/findJobPage',
     jobDetails: '/jobDetails',
     seekerDetailPage: '/seekerDetailPage',
 
 
     singleJob: '/singleJob',
-
-
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',
