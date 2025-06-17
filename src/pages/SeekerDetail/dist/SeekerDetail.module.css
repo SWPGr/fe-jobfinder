@@ -81,19 +81,17 @@
 .btnSendMail {
   background-color: var(--blue-100);
   color: var(--blue-700);
-
-  &:hover {
-    background-color: var(--blue-200);
-  }
+}
+.btnSendMail:hover {
+  background-color: var(--blue-200);
 }
 
 .btnHire {
   background-color: var(--blue-700);
   color: var(--white);
-
-  &:hover {
-    background-color: var(--blue-800);
-  }
+}
+.btnHire:hover {
+  background-color: var(--blue-800);
 }
 
 .section {
@@ -131,10 +129,9 @@
   font-size: 1.8rem;
   color: var(--gray-600);
   transition: color 0.3s ease;
-
-  &:hover {
-    color: var(--primary-color);
-  }
+}
+.socialIcon:hover {
+  color: var(--primary-color);
 }
 
 .right {
@@ -205,10 +202,9 @@
   cursor: pointer;
   color: var(--primary-color);
   transition: color 0.3s ease;
-
-  &:hover {
-    color: var(--primary-color-dark);
-  }
+}
+.downloadBtn:hover {
+  color: var(--primary-color-dark);
 }
 
 .contactTitle {
@@ -243,7 +239,7 @@
   }
 
   .left,
-  .right {
+.right {
     flex: none;
     min-width: 100%;
   }

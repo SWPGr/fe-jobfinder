@@ -16,8 +16,8 @@ const socialOptions = [
   { label: 'Youtube', value: 'youtube', icon: '▶️' },
 ];
 
-const SaveNextButton = ({ onClick }) => (
-  <button type="button" className={cx('saveNextBtn')} onClick={onClick}>
+const SaveNextButton = ({ onClick, style }) => (
+  <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
     Save & Next →
   </button>
 );
@@ -114,176 +114,198 @@ function SettingsPage() {
       </div>
 
       {activeTab === 'Company Info' && (
-  <div className={cx('companyInfoTab')}>
-    <h3>Logo & Banner Image</h3>
-    <div className={cx('uploadSection')}>
-      <div className={cx('uploadBox')}>
-        <label htmlFor="logo-upload" className={cx('uploadLabel')}>
-          {logoFile ? (
-            <img src={URL.createObjectURL(logoFile)} alt="logo" className={cx('previewImage')} />
-          ) : (
-            <>
-              <div className={cx('uploadIcon')}>⬆️</div>
-              <div>
-                <b>Browse photo</b> or drop here
-              </div>
-              <small>A photo larger than 400 pixels work best. Max photo size 5 MB.</small>
-            </>
-          )}
-        </label>
-        <input
-          id="logo-upload"
-          type="file"
-          accept="image/*"
-          onChange={handleLogoChange}
-          className={cx('uploadInput')}
-        />
-        <div className={cx('uploadTitle')}>Upload document</div>
-      </div>
+        <div className={cx('companyInfoTab')}>
+          <h3>Logo & Banner Image</h3>
+          <div className={cx('uploadSection')}>
+            {/* Giữ nguyên phần upload logo và banner */}
+            <div className={cx('uploadBox')}>
+              <label htmlFor="logo-upload" className={cx('uploadLabel')}>
+                {logoFile ? (
+                  <img
+                    src={URL.createObjectURL(logoFile)}
+                    alt="logo"
+                    className={cx('previewImage')}
+                  />
+                ) : (
+                  <>
+                    <div className={cx('uploadIcon')}>⬆️</div>
+                    <div>
+                      <b>Browse photo</b> or drop here
+                    </div>
+                    <small>
+                      A photo larger than 400 pixels work best. Max photo size 5 MB.
+                    </small>
+                  </>
+                )}
+              </label>
+              <input
+                id="logo-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                className={cx('uploadInput')}
+              />
+              <div className={cx('uploadTitle')}>Upload document</div>
+            </div>
 
-      <div className={cx('uploadBox')}>
-        <label htmlFor="banner-upload" className={cx('uploadLabel')}>
-          {bannerFile ? (
-            <img src={URL.createObjectURL(bannerFile)} alt="banner" className={cx('previewImage')} />
-          ) : (
-            <>
-              <div className={cx('uploadIcon')}>⬆️</div>
-              <div>
-                <b>Browse photo</b> or drop here
-              </div>
-              <small>Banner images optical dimension 1520×400. Supported format JPEG, PNG. Max photo size 5 MB.</small>
-            </>
-          )}
-        </label>
-        <input
-          id="banner-upload"
-          type="file"
-          accept="image/jpeg, image/png"
-          onChange={handleBannerChange}
-          className={cx('uploadInput')}
-        />
-        <div className={cx('uploadTitle')}>Banner Image</div>
-      </div>
-    </div>
+            <div className={cx('uploadBox')}>
+              <label htmlFor="banner-upload" className={cx('uploadLabel')}>
+                {bannerFile ? (
+                  <img
+                    src={URL.createObjectURL(bannerFile)}
+                    alt="banner"
+                    className={cx('previewImage')}
+                  />
+                ) : (
+                  <>
+                    <div className={cx('uploadIcon')}>⬆️</div>
+                    <div>
+                      <b>Browse photo</b> or drop here
+                    </div>
+                    <small>
+                      Banner images optical dimension 1520×400. Supported format JPEG,
+                      PNG. Max photo size 5 MB.
+                    </small>
+                  </>
+                )}
+              </label>
+              <input
+                id="banner-upload"
+                type="file"
+                accept="image/jpeg, image/png"
+                onChange={handleBannerChange}
+                className={cx('uploadInput')}
+              />
+              <div className={cx('uploadTitle')}>Banner Image</div>
+            </div>
+          </div>
 
-    <div className={cx('formGroup')}>
-      <label htmlFor="company-name">Company name</label>
-      <input
-        id="company-name"
-        type="text"
-        value={companyName}
-        onChange={(e) => setCompanyName(e.target.value)}
-        placeholder=""
-      />
-    </div>
+          <div className={cx('formGroup')}>
+            <label htmlFor="company-name">Company name</label>
+            <input
+              id="company-name"
+              type="text"
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder=""
+            />
+          </div>
 
-    <div className={cx('formGroup')}>
-      <label htmlFor="about-us">About Us</label>
-      <textarea
-        id="about-us"
-        value={aboutUs}
-        onChange={(e) => setAboutUs(e.target.value)}
-        rows={5}
-        placeholder="Write down about your company here. Let the candidate know who we are..."
-      />
-    </div>
+          <div className={cx('formGroup')}>
+            <label htmlFor="about-us">About Us</label>
+            <SimpleRichTextEditor
+              placeholder="Write down about your company here. Let the candidate know who we are..."
+              onChange={(html) => setAboutUs(html)}
+            />
+          </div>
 
-    <div style={{ marginTop: 20 }}>
-      <SaveNextButton
-        onClick={() => {
-          handleSave();
-          goToNextTab();
-        }}
-      />
-    </div>
-  </div>
-)}
+          <div className={cx('btnGroup')}>
+            <SaveNextButton
+              onClick={() => {
+                handleSave();
+                goToNextTab();
+              }}
+            />
+          </div>
+        </div>
+      )}
 
+      {activeTab === 'Founding Info' && (
+        <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
+          <div className={cx('row')}>
+            <div className={cx('inputGroup')}>
+              <label>Organization Type</label>
+              <select
+                name="organizationType"
+                value={form.organizationType}
+                onChange={handleChange}
+              >
+                <option value="">Select...</option>
+                <option value="Private">Private</option>
+                <option value="Public">Public</option>
+                <option value="Government">Government</option>
+                <option value="Non-profit">Non-profit</option>
+              </select>
+            </div>
+            <div className={cx('inputGroup')}>
+              <label>Industry Types</label>
+              <select
+                name="industryTypes"
+                value={form.industryTypes}
+                onChange={handleChange}
+              >
+                <option value="">Select...</option>
+                <option value="Technology">Technology</option>
+                <option value="Finance">Finance</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Education">Education</option>
+              </select>
+            </div>
+            <div className={cx('inputGroup')}>
+              <label>Team Size</label>
+              <select name="teamSize" value={form.teamSize} onChange={handleChange}>
+                <option value="">Select...</option>
+                <option value="1-10">1-10</option>
+                <option value="11-50">11-50</option>
+                <option value="51-200">51-200</option>
+                <option value="201-500">201-500</option>
+                <option value="500+">500+</option>
+              </select>
+            </div>
+          </div>
 
-{activeTab === 'Founding Info' && (
-  <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
-    <div className={cx('row')}>
-      <div className={cx('inputGroup')}>
-        <label>Organization Type</label>
-        <select name="organizationType" value={form.organizationType} onChange={handleChange}>
-          <option value="">Select...</option>
-          <option value="Private">Private</option>
-          <option value="Public">Public</option>
-          <option value="Government">Government</option>
-          <option value="Non-profit">Non-profit</option>
-        </select>
-      </div>
-      <div className={cx('inputGroup')}>
-        <label>Industry Types</label>
-        <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
-          <option value="">Select...</option>
-          <option value="Technology">Technology</option>
-          <option value="Finance">Finance</option>
-          <option value="Healthcare">Healthcare</option>
-          <option value="Education">Education</option>
-        </select>
-      </div>
-      <div className={cx('inputGroup')}>
-        <label>Team Size</label>
-        <select name="teamSize" value={form.teamSize} onChange={handleChange}>
-          <option value="">Select...</option>
-          <option value="1-10">1-10</option>
-          <option value="11-50">11-50</option>
-          <option value="51-200">51-200</option>
-          <option value="201-500">201-500</option>
-          <option value="500+">500+</option>
-        </select>
-      </div>
-    </div>
+          <div className={cx('row')}>
+            <div className={cx('inputGroup')}>
+              <label>Year of Establishment</label>
+              <input
+                type="date"
+                name="yearOfEstablishment"
+                value={form.yearOfEstablishment}
+                onChange={handleChange}
+                placeholder="dd/mm/yyyy"
+              />
+            </div>
+            <div className={cx('inputGroup')}>
+              <label>Company Website</label>
+              <input
+                type="url"
+                name="companyWebsite"
+                value={form.companyWebsite}
+                onChange={handleChange}
+                placeholder="Website url..."
+              />
+            </div>
+          </div>
 
-    <div className={cx('row')}>
-      <div className={cx('inputGroup')}>
-        <label>Year of Establishment</label>
-        <input
-          type="date"
-          name="yearOfEstablishment"
-          value={form.yearOfEstablishment}
-          onChange={handleChange}
-          placeholder="dd/mm/yyyy"
-        />
-      </div>
-      <div className={cx('inputGroup')}>
-        <label>Company Website</label>
-        <input
-          type="url"
-          name="companyWebsite"
-          value={form.companyWebsite}
-          onChange={handleChange}
-          placeholder="Website url..."
-        />
-      </div>
-    </div>
+          <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
+            <label>Company Vision</label>
+            <SimpleRichTextEditor
+              placeholder="Tell us about your company vision..."
+              onChange={(value) => setForm((prev) => ({ ...prev, companyVision: value }))}
+            />
+          </div>
 
-    <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
-      <label>Company Vision</label>
-      <SimpleRichTextEditor
-        placeholder="Tell us about your company vision..."
-        onChange={(value) => setForm((prev) => ({ ...prev, companyVision: value }))}
-      />
-    </div>
-
-    <div>
-      <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
-        Previous
-      </button>
-      <button
-        type="submit"
-        className={cx('saveNextBtn')}
-        onClick={() => {
-          handleSave();
-          goToNextTab();
-        }}
-      >
-        Save & Next →
-      </button>
-    </div>
-  </form>
-)}
+          <div className={cx('btnGroup')}>
+            <button
+              type="button"
+              className={cx('previousBtn')}
+              onClick={() => setActiveTab('Company Info')}
+            >
+              Previous
+            </button>
+            <button
+              type="submit"
+              className={cx('saveNextBtn')}
+              onClick={() => {
+                handleSave();
+                goToNextTab();
+              }}
+            >
+              Save & Next →
+            </button>
+          </div>
+        </form>
+      )}
 
       {activeTab === 'Social Media Profile' && (
         <div className={cx('socialLinksContainer')}>
@@ -324,7 +346,14 @@ function SettingsPage() {
             + Add New Social Link
           </button>
 
-          <div style={{ marginTop: 20 }}>
+          <div className={cx('btnGroup')}>
+            <button
+              type="button"
+              className={cx('previousBtn')}
+              onClick={() => setActiveTab('Founding Info')}
+            >
+              Previous
+            </button>
             <SaveNextButton
               onClick={() => {
                 handleSave();
