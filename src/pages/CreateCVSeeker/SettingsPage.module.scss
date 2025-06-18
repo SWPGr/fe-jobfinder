@@ -1,5 +1,5 @@
 .main {
-<<<<<<< HEAD
+
   max-width: 90rem; /* 900px */
   margin: 3rem auto; /* 30px */
   font-family: var(--font-family);
@@ -9,20 +9,21 @@
 
   /* bổ sung từ phần tách */
   padding: 20px;
-=======
+
     max-width: 90rem; /* 900px */
     margin: 3rem auto; /* 30px */
     font-family: var(--font-family);
     color: var(--gray-900);
-    // padding-left: 7rem; /* 70px */
     box-sizing: border-box;
->>>>>>> 2ec0e2724332240690af1b823e912024c4cebe18
+    margin-left: 1rem;
+
 }
 
-h1 {
-    font-weight: 600;
+h6 {
+    font-weight: 90rem;
     margin-bottom: 3rem; /* 30px */
     color: var(--gray-900);
+    font-size: 4rem;
 }
 
 .tabs {
