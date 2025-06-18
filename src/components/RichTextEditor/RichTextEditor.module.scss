@@ -4,20 +4,27 @@
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 .my-content {
     min-height: 250px;
     font-size: 1.6rem;
 }
+.my-control {
+    width: 3rem;
+    height: auto;
+    padding: 1px;
+}
 .my-toolbar {
-    height: 50px;
+    height: fit-content;
     font-size: 2rem;
     display: flex;
     align-items: center;
-    gap: 2rem;
+    padding: 1rem;
 
     button {
+        // background: red;
         svg {
             width: 2rem;
             height: 2rem;
@@ -27,9 +34,6 @@
     .controls-group {
         display: flex;
         align-items: center;
-        gap: 1rem;
-        padding: 0 2rem 0 0;
-        border-right: 1px solid var(--gray-200);
     }
 
     .controls-group:last-child {

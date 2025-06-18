@@ -13,7 +13,7 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 
 // use rich text editor css
-import '@mantine/tiptap/styles.css';
+import '@mantine/core/styles.css';
 
 const cx = classNames.bind(styles);
 
@@ -51,6 +51,7 @@ function SimpleRichTextEditor({ placeholder = 'Enter something here', onChange =
                 root: cx('my-root'), // root container
                 toolbar: cx('my-toolbar'), // thanh toolbar
                 content: cx('my-content'), // vùng soạn thảo nội dung
+                control: cx('my-control'), // các nút điều khiển
                 controlsGroup: cx('controls-group'),
             }}
         >
