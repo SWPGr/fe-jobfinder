@@ -1,10 +1,10 @@
 import routes from './routes';
-import { ROLES } from './roles';
+import { roles } from './roles';
 
 //Config
 const config = {
     routes,
-    ROLES,
+    roles,
 };
 
 export default config;

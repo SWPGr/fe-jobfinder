@@ -13,12 +13,14 @@ import { validator } from '~/utils';
 import { Button, GoogleLoginButton } from '~/components';
 import { useContext } from 'react';
 import { AuthContext } from '~/context/AuthContext';
+import config from '~/config';
 
 // Bind styles for conditional class names
 const cx = classNames.bind(styles);
 
 function Login() {
-    const { login } = useContext(AuthContext);
+    const { user, login } = useContext(AuthContext);
+
     // State variables for form fields and UI logic
     const formLogin = useForm({
         initialValues: {
@@ -40,11 +42,16 @@ function Login() {
         console.log('Form submitted:', values);
         const data = await login(values.email, values.password);
 
-        console.log(data);
+        console.log(data.data.role);
 
         if (data.success) {
             setLoading(false);
             navigate('/');
+            // if (data.data.role === config.roles.ADMIN) {
+            //     navigate('/admin');
+            // } else {
+            //     navigate('/');
+            // }
         }
     };
 

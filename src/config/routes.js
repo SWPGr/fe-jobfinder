@@ -1,5 +1,5 @@
-
 const routes = {
+    admin: '/admin', // Admin dashboard
     home: '/',
     profile: '/profile',
     jobs: '/jobs', // List of all jobs

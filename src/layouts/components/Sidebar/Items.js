@@ -30,6 +30,28 @@ import Single from '~/pages/Single/Single';
 const cx = classNames.bind(styles);
 
 export const items = {
+    ADMIN: {
+        header: 'ADMIN DASHBOARD',
+        items: [
+            {
+                title: 'Overview',
+                icon: <IconStack2 />, // Replace with actual icon component
+            },
+            {
+                title: 'Manage Employers',
+                icon: <IconUserCircle />, // Replace with actual icon component
+            },
+            {
+                title: 'Manage Job Seekers',
+                icon: <IconUserCircle />, // Replace with actual icon component
+            },
+            {
+                title: 'Settings',
+                icon: <IconSettings />, // Replace with actual icon component
+            },
+        ],
+    },
+
     EMPLOYER: {
         header: 'CANDIDATE DASHBOARD',
         items: [

@@ -8,6 +8,14 @@ const itemsNav = {
         { name: 'Customer Supports', link: '/customer-supports' },
     ],
     true: {
+        ADMIN: [
+            { name: 'Home', link: '/' },
+            { name: 'Dashboard', link: '/dashboard' },
+            { name: 'Manage Users', link: '/manage-users' },
+            { name: 'Manage Jobs', link: '/manage-jobs' },
+            { name: 'Reports', link: '/reports' },
+            { name: 'Settings', link: '/settings' },
+        ],
         JOB_SEEKER: [
             { name: 'Home', link: '/' },
             { name: 'Find Job', link: '/find-job' },

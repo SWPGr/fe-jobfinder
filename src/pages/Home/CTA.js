@@ -13,15 +13,26 @@ function CTA() {
     const isEmployer = role === 'EMPLOYER';
 
     const quotes = {
+        ADMIN: {
+            title: 'Welcome to Your Admin Dashboard',
+            description:
+                'Manage your platform efficiently with powerful tools and insights. Monitor activities, manage users, and ensure a smooth operation.',
+            link: '/dashboard',
+            linkText: 'Go to Admin Dashboard',
+        },
         EMPLOYER: {
             title: 'Build Your Dream Team Today',
             description:
                 'Find and attract top talent quickly and efficiently. Post your job openings, connect with qualified candidates, and grow your business.',
+            link: '/post-job',
+            linkText: 'Post a Job Now',
         },
         JOB_SEEKER: {
             title: 'Create A Better Future For Yourself',
             description:
                 'Discover thousands of job opportunities tailored to your skills and passions. Take the next step in your career with confidence and support.',
+            link: '/find-job',
+            linkText: 'Find Your Dream Job',
         },
     };
 
@@ -33,8 +44,8 @@ function CTA() {
                         <h1 className={cx('CTA__title')}>{quotes[role].title}</h1>
                         <p className={cx('CTA__description')}>{quotes[role].description}</p>
                     </div>
-                    <Button to={isEmployer ? '/post-job' : '/find-job'} className={cx('CTA__button')}>
-                        {isEmployer ? 'Post a Job' : 'Find a Job'}
+                    <Button to={quotes[role].link} className={cx('CTA__button')}>
+                        {quotes[role].linkText}
                     </Button>
                 </div>
                 {/*  */}

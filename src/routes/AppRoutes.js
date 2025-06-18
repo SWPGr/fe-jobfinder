@@ -19,6 +19,7 @@ import {
     FindCandidate,
     SingleJobPage,
     Term,
+    AdminPage,
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';

@@ -9,7 +9,7 @@ import { items } from './Items';
 
 const cx = classNames.bind(styles);
 
-function Sidebar({ setSelectedMenu }) {
+function Sidebar({ setSelectedMenu, className }) {
     const [active, setActive] = useState('Overview');
     const navigate = useNavigate();
 
@@ -29,8 +29,11 @@ function Sidebar({ setSelectedMenu }) {
         return <div>Error: No items available for the role: {role}</div>;
     }
 
+    const classes = cx('wrapper', {
+        [className]: className,
+    });
     return (
-        <div className={cx('wrapper')}>
+        <div className={classes}>
             <div className={cx('header')}>{itemList?.header}</div>
             <div className={cx('body')}>
                 <div className={cx('top')}>
@@ -58,8 +61,8 @@ function Sidebar({ setSelectedMenu }) {
                     <div
                         className={cx('nav-item', 'logout')}
                         onClick={() => {
-                            navigate('/');
                             logout();
+                            navigate('/');
                         }}
                     >
                         <span>
