@@ -130,7 +130,7 @@ function SettingsPage() {
 
     return (
         <div className={cx('main')}>
-            <h6>Settings</h6>
+            <title>Settings</title>
             <div className={cx('tabs')}>
                 {tabsOrder.map((tab) => (
                     <button
