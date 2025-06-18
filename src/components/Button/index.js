@@ -41,7 +41,7 @@ function Button({
 
     children,
     className,
-    onClick,
+    onClick = () => {},
     ...passProps
 }) {
     let Comp = 'button';
@@ -49,7 +49,7 @@ function Button({
 
     if (disabled) {
         Object.keys(props).forEach((key) => {
-            console.log(key, ' : ', typeof props[key]);
+            // console.log(key, ' : ', typeof props[key]);
             if (key.startsWith('on') || typeof props[key] === 'function') {
                 delete props[key];
             }

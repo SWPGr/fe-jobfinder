@@ -6,6 +6,7 @@ import GlobalStyles from './components/GlobalStyles';
 import { AuthContext } from './context';
 import { MantineProvider } from '@mantine/core'; // Import MantineProvider
 import '@mantine/core/styles.css';
+import 'tippy.js/dist/tippy.css'; // optional for styling
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

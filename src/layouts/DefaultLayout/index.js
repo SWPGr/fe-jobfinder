@@ -6,17 +6,11 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header/Header';
 import NavBar from '../components/NavBar/NavBar';
 import Sidebar from '../components/Sidebar';
-import Overview1 from '~/pages/CreateCVSeeker/Overview1';
-import Footer from '../components/Footer/Footer';
-import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
-    const { user } = useAuth();
-    const role = user.role;
-    const isEmployer = role === 'EMPLOYER';
-    const [selectedMenu, setSelectedMenu] = useState(isEmployer ? <Overview1 /> : <Overview1 />);
+    const [selectedMenu, setSelectedMenu] = useState(null);
     //hiển thị nội dung theo actors
 
     return (

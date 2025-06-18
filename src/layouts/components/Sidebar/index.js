@@ -1,23 +1,37 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import { IconLogout } from '@tabler/icons-react';
 
 import { useAuth } from '~/context/AuthContext';
 import { items } from './Items';
+
 const cx = classNames.bind(styles);
 
 function Sidebar({ setSelectedMenu }) {
-    let { user } = useAuth();
     const [active, setActive] = useState('Overview');
+    const navigate = useNavigate();
 
-    const role = user?.role || 'JOB_SEEKER'; // Default to JOB_SEEKER if user or role is not defined
+    const { user, logout } = useAuth();
+    const role = user?.role;
+    const itemList = role ? items[role] : null; // Ensure itemList is set conditionally
 
-    const itemList = items[role];
+    // Use effect should always be called, and it's safe to access itemList only inside this effect
+    useEffect(() => {
+        if (itemList && itemList.items.length > 0) {
+            setSelectedMenu(itemList.items[0].page);
+        }
+    }, [itemList, setSelectedMenu]); // `itemList` is now a dependency
+
+    // If itemList is not available, we can return an error message or loading state
+    if (!itemList) {
+        return <div>Error: No items available for the role: {role}</div>;
+    }
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('header')}>{itemList.header}</div>
+            <div className={cx('header')}>{itemList?.header}</div>
             <div className={cx('body')}>
                 <div className={cx('top')}>
                     {itemList.items.map((item, index) => (
@@ -39,10 +53,15 @@ function Sidebar({ setSelectedMenu }) {
                         </div>
                     ))}
                 </div>
-                {/* TOP */}
 
                 <div className={cx('bottom')}>
-                    <div className={cx('nav-item', 'logout')}>
+                    <div
+                        className={cx('nav-item', 'logout')}
+                        onClick={() => {
+                            navigate('/');
+                            logout();
+                        }}
+                    >
                         <span>
                             <IconLogout />
                             <div className={cx('title')}>Logout</div>

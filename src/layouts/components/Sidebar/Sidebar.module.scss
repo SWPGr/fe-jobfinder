@@ -6,7 +6,9 @@
     font-size: 1.4rem;
     display: flex;
     flex-direction: column;
-    z-index: 900;
+    position: fixed;
+    top: 140px;
+    z-index: 10;
 }
 
 .header {

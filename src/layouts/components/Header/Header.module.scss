@@ -9,6 +9,7 @@
     justify-content: center;
     align-items: center;
     border-bottom: 1px solid var(--gray-100);
+    z-index: 1000;
 }
 
 .container {
@@ -72,12 +73,6 @@
 }
 
 .user {
-    .avatar {
-        width: 5rem;
-        height: 5rem;
-        border-radius: 50%;
-        cursor: pointer;
-    }
     .notification {
         position: relative;
         cursor: pointer;
