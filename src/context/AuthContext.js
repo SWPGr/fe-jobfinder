@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoading(false);
-            return { success: true };
+            return { success: true, data: data };
         } catch (error) {
             const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
             setError(errorMessage);
@@ -68,16 +68,9 @@ export const AuthProvider = ({ children }) => {
     };
 
     // user = {
-
-
-    user = {
-
-
-        role: 'EMPLOYER',
-        //role: 'JOB_SEEKER',
-    };
-
-
+    //     role: 'ADMIN',
+    //     //role: 'JOB_SEEKER',
+    // };
 
     return (
         <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading, error }}>

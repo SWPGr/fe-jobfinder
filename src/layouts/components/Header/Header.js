@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { TextInput, Avatar } from '@mantine/core';
@@ -13,6 +14,7 @@ const cx = classNames.bind(styles);
 
 function Header({ className }) {
     let { user, logout } = useAuth();
+    const navigate = useNavigate();
     // console.log('user in header', user.role);
 
     const classes = cx('wrapper', {
@@ -23,7 +25,7 @@ function Header({ className }) {
         <header className={classes}>
             <div className={cx('container')}>
                 <div className={cx('left-side')}>
-                    <div className={cx('logo')}>
+                    <div className={cx('logo')} onClick={() => navigate('/')}>
                         <img src={images.logo} alt="logo" />
                         <h1>JobFinder</h1>
                     </div>
