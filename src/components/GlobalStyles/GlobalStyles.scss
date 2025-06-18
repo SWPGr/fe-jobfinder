@@ -110,7 +110,8 @@ html {
     font-size: 62.5%;
 }
 body {
-    font-family: var(--font-family);
+
+    font-family: var(--font-family) !important;
     font-size: 1.6rem;
     line-height: 1.5rem;
     text-rendering: optimizeSpeed;

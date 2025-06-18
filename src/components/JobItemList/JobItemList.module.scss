@@ -9,6 +9,7 @@
     border-radius: var(--border-radius);
     transition: var(--transition);
     background: linear-gradient(90deg, var(--blue-50), var(--white), var(--blue-50));
+    position: relative;
 
     &:hover {
         box-shadow: var(--box-shadow);
@@ -27,6 +28,7 @@
 .content {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 2rem;
 
     .job-description {
@@ -64,12 +66,13 @@
     .title {
         color: var(--gray-900);
         font-size: 1.8rem;
-        // display: -webkit-box; /* Sử dụng flexbox với WebKit */
-        // -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
-        // -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
-        // overflow: hidden; /* Ẩn phần nội dung tràn */
-        // text-overflow: ellipsis;
-        // max-width: 25rem;
+        white-space: nowrap;
+        display: -webkit-box; /* Sử dụng flexbox với WebKit */
+        -webkit-line-clamp: 1; /* Hiển thị tối đa 2 dòng */
+        -webkit-box-orient: vertical; /* Định hướng nội dung dọc */
+        overflow: hidden; /* Ẩn phần nội dung tràn */
+        text-overflow: ellipsis;
+        max-width: 25rem;
     }
 }
 
@@ -154,7 +157,7 @@
 // Responsive cho màn hình <= 1024px
 @media (max-width: 1024px) {
     .wrapper {
-        padding: 2.5rem;
+        padding: 2rem;
         height: auto;
     }
 
@@ -182,6 +185,33 @@
             height: 20px;
         }
     }
+    .apply-job {
+        position: absolute;
+        right: 1rem;
+        bottom: 12px;
+
+        .apply-job-btn {
+            height: 25px;
+            font-size: 1.2rem;
+            border-radius: 9000px;
+            background: var(--white);
+            color: var(--blue-500);
+            border: 1px solid var(--blue-500);
+            padding: 0;
+
+            span {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+    .save-job {
+        position: absolute;
+        width: 4rem;
+        height: 4rem;
+        top: 12px;
+        right: 5px;
+    }
 }
 
 // Responsive cho màn hình <= 768px
@@ -189,21 +219,24 @@
     .wrapper {
         flex-direction: row;
         align-items: flex-start;
-        padding: 2rem;
-        height: auto;
+        padding: 1.6rem;
+        height: 12rem;
     }
 
     .content {
-        width: 70%;
-        flex-direction: row;
-        flex-wrap: 100%;
+        // width: 84%;
+        // flex-direction: row;
         gap: 1.5rem;
         align-items: flex-start;
     }
 
     .logo-company {
-        width: 4.8rem;
         height: 4.8rem;
+        width: 4.8rem;
+
+        img {
+            width: 4.8rem;
+        }
     }
 
     .top {
@@ -235,9 +268,12 @@
         }
     }
 
+    .job-description {
+        width: 300px;
+    }
+
     .action {
         margin-top: 1rem;
-        width: 30%;
         justify-content: flex-end;
 
         span {
