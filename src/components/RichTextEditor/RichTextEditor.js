@@ -13,7 +13,7 @@ import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
 
 // use rich text editor css
-import '@mantine/core/styles.css';
+// import '@mantine/tiptap/styles.css';
 
 const cx = classNames.bind(styles);
 
