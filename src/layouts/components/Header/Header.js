@@ -4,6 +4,7 @@ import styles from './Header.module.scss';
 import { TextInput, Avatar } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import { IconBellRinging } from '@tabler/icons-react';
+import '@mantine/tiptap/styles.css';
 
 import images from '~/assets/Images/index';
 import { useAuth } from '~/context/AuthContext';
