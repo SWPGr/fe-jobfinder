@@ -1,6 +1,6 @@
 .job-alerts-wrapper {
     padding: 20px 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-family);
 }
 
 .header {
@@ -8,38 +8,39 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
 
-    h3 {
-        font-weight: 600;
-        font-size: 28px;
+.header h3 {
+    font-weight: 600;
+    font-size: var(--font-size-28px, 2.8rem);
+    /* fallback nếu thiếu biến */
+}
 
-        span {
-            font-weight: normal;
-            color: #666;
-            margin-left: 8px;
-        }
-    }
+.header h3 span {
+    font-weight: normal;
+    color: var(--gray-600);
+    margin-left: 8px;
+}
 
-    .edit-btn {
-        //chỉnh độ to của chữ ở phần trên 
-        background: none;
-        border: none;
-        color: #2563eb;
-        font-weight: 600;
-        font-size: 15px;
-        cursor: pointer;
+.header .edit-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: var(--font-size-16px);
+    cursor: pointer;
+    transition: text-decoration var(--transition);
+}
 
-        &:hover {
-            text-decoration: underline;
-        }
-    }
+.header .edit-btn:hover {
+    text-decoration: underline;
 }
 
 .job-list {
     display: flex;
     flex-direction: column;
     gap: 0;
-    background: white;
+    background: var(--white);
     padding-bottom: 0;
     margin-bottom: 0;
 }
@@ -47,7 +48,7 @@
 .job-item {
     padding: 0;
     border-radius: 0;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--gray-300);
 }
 
 .job-item:last-child {
@@ -57,7 +58,7 @@
 .logo img {
     width: 48px;
     height: 48px;
-    border-radius: 8px;
+    border-radius: var(--border-radius);
     object-fit: contain;
 }
 
@@ -65,57 +66,58 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
 
-    .title {
-        font-weight: 600;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
+.job-info .title {
+    font-weight: 600;
+    font-size: var(--font-size-16px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-    .worktime-badge {
-        background-color: #dbeafe;
-        color: #2563eb;
-        font-size: 12px;
-        border-radius: 12px;
-        text-transform: capitalize;
-        white-space: nowrap;
-    }
+.job-info .worktime-badge {
+    background-color: var(--blue-100);
+    color: var(--primary-color);
+    font-size: var(--font-size-12px);
+    border-radius: 12px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
 
-    .job-meta {
-        font-size: 14px;
-        color: #666;
-        display: flex;
-        gap: 14px;
-    }
+.job-info .job-meta {
+    font-size: var(--font-size-14px);
+    color: var(--gray-600);
+    display: flex;
+    gap: 14px;
 }
 
 .bookmark {
-    font-size: 20px;
-    color: #999;
+    font-size: var(--font-size-20px, 2rem);
+    color: var(--gray-400);
     cursor: pointer;
     user-select: none;
+    transition: color var(--transition);
+}
 
-    &:hover {
-        color: #2563eb;
-    }
+.bookmark:hover {
+    color: var(--primary-color);
 }
 
 .apply-btn {
-    background-color: #2563eb;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--white);
     font-weight: 600;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     padding: 8px 18px;
     cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
+    font-size: var(--font-size-14px);
+    transition: background-color var(--transition);
+}
 
-    &:hover {
-        background-color: #1d4ed8;
-    }
+.apply-btn:hover {
+    background-color: var(--primary-color-dark);
 }
 
 .pagination {
@@ -123,75 +125,76 @@
     display: flex;
     justify-content: center;
     gap: 8px;
+}
 
-    button {
-        background-color: #f3f4f6;
-        border: none;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        cursor: pointer;
-        font-weight: 600;
-        color: #666;
-        transition: background-color 0.3s ease;
+.pagination button {
+    background-color: var(--gray-100);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--gray-600);
+    font-size: var(--font-size-14px);
+    transition: background-color var(--transition), color var(--transition);
+}
 
-        &:hover:not(:disabled) {
-            background-color: #bfdbfe;
-            color: #1e40af;
-        }
+.pagination button:hover:not(:disabled) {
+    background-color: var(--blue-200);
+    color: var(--blue-900);
+}
 
-        &.active {
-            background-color: #2563eb;
-            color: white;
-        }
+.pagination button.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
 
-        &:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-    }
+.pagination button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
 }
 
 /* RESPONSIVE STYLES */
 @media screen and (max-width: 1024px) {
     .header h3 {
-        font-size: 24px;
+        font-size: var(--font-size-20px);
     }
 
     .job-info .title {
-        font-size: 14px;
+        font-size: var(--font-size-14px);
     }
 
     .apply-btn {
-        font-size: 12px;
+        font-size: var(--font-size-12px);
         padding: 8px 14px;
     }
 
     .pagination button {
         width: 28px;
         height: 28px;
-        font-size: 0.85rem;
+        font-size: var(--font-size-12px);
     }
 }
 
 @media screen and (max-width: 768px) {
     .header h3 {
-        font-size: 22px;
+        font-size: var(--font-size-18px);
     }
 
     .job-info .title {
-        font-size: 13px;
+        font-size: var(--font-size-13px, 1.3rem);
     }
 
     .apply-btn {
-        font-size: 12px;
+        font-size: var(--font-size-12px);
         padding: 7px 14px;
     }
 
     .pagination button {
         width: 28px;
         height: 28px;
-        font-size: 0.8rem;
+        font-size: var(--font-size-10px);
     }
 
     .job-item {
@@ -199,29 +202,29 @@
     }
 
     .job-meta {
-        font-size: 12px;
+        font-size: var(--font-size-12px);
         gap: 8px;
     }
 }
 
 @media screen and (max-width: 480px) {
     .header h3 {
-        font-size: 20px;
+        font-size: var(--font-size-16px);
         margin-bottom: 12px;
     }
 
     .job-info .title {
-        font-size: 12px;
+        font-size: var(--font-size-12px);
     }
 
     .apply-btn {
-        font-size: 11px;
+        font-size: var(--font-size-10px);
         padding: 6px 12px;
     }
 
     .pagination button {
         width: 24px;
         height: 24px;
-        font-size: 0.75rem;
+        font-size: var(--font-size-10px);
     }
 }

@@ -5,61 +5,60 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
 
 .dashboard-header {
   margin-bottom: 16px;
+}
 
-  h2 {
-    font-size: var(--font-size-header);
-    margin-bottom: 2px;
-    font-weight: 600;
-  }
+.dashboard-header h2 {
+  font-size: var(--font-size-header);
+  margin-bottom: 2px;
+  font-weight: 600;
+}
 
-  .desc {
-    font-size: var(--font-size-16px);
-    color: #858d9d;
-  }
+.dashboard-header .desc {
+  font-size: var(--font-size-16px);
+  color: var(--gray-400);
 }
 
 .stats-cards {
   display: flex;
   gap: 24px;
-  font-size: x-large;
+  font-size: var(--font-size-20px);
   margin-bottom: 20px;
   width: 100%;
   flex-wrap: wrap;
   justify-content: space-between;
+}
 
-  .stat-card {
-    flex: 1 1 20rem;
-    padding: 24px;
-    border-radius: 12px;
-    background: #f5f8fa;
+.stats-cards .stat-card {
+  flex: 1 1 20rem;
+  padding: 24px;
+  border-radius: var(--border-radius);
+  background: var(--gray-100);
+}
 
-    &.blue {
-      background: #e5f0fd;
-    }
+.stats-cards .stat-card.blue {
+  background: var(--blue-100);
+}
 
-    &.yellow {
-      background: #fff8e5;
-    }
+.stats-cards .stat-card.yellow {
+  background: var(--orange-100);
+}
 
-    &.green {
-      background: #e6f5ea;
-    }
+.stats-cards .stat-card.green {
+  background: var(--green-100);
+}
 
-    .stat-number {
-      font-size: var(--font-size-26px);
-      font-weight: bold;
-    }
+.stats-cards .stat-card .stat-number {
+  font-size: var(--font-size-20px);
+  font-weight: bold;
+}
 
-    .stat-label {
-      font-size: var(--font-size-15px);
-      color: #57606f;
-    }
-  }
+.stats-cards .stat-card .stat-label {
+  font-size: var(--font-size-15px);
+  color: var(--gray-600);
 }
 
 .profile-warning {
@@ -67,47 +66,45 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffe5e5;
-  border-radius: 12px;
+  background: var(--red-100);
+  border-radius: var(--border-radius);
   padding: 20px;
   width: 100%;
+}
 
-  .warning-text {
-    display: flex;
-    flex-direction: column;
-  }
+.profile-warning .warning-title,
+.profile-warning .warning-desc {
+  color: var(--error-color);
+}
 
-  .warning-title {
-    color: #e53535;
-    font-weight: 600;
-    font-size: var(--font-size-16px);
-  }
+.profile-warning .warning-title {
+  font-weight: 600;
+  font-size: var(--font-size-16px);
+}
 
-  .warning-desc {
-    color: #e53535;
-    font-size: var(--font-size-13px);
-  }
+.profile-warning .warning-desc {
+  font-size: var(--font-size-13px);
+}
 
-  .edit-profile-btn {
-    background: #e53535;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: 600;
-    font-size: var(--font-size-15px);
-    cursor: pointer;
-    transition: background 0.2s;
+.profile-warning .edit-profile-btn {
+  background: var(--error-color);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: var(--font-size-15px);
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
-    &:hover {
-      background: #d22d2d;
-    }
-  }
+.profile-warning .edit-profile-btn:hover {
+  background: var(--red-700);
 }
 
 .job-list-container {
   margin-top: 28px;
-  background: #fff;
+  background: var(--white);
   width: 100%;
   padding: 2rem;
 }
@@ -117,18 +114,18 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+}
 
-  b {
-    font-size: var(--font-size-18px);
-  }
+.job-list-header b {
+  font-size: var(--font-size-18px);
+}
 
-  .view-all-btn {
-    background: none;
-    border: none;
-    color: #2563eb;
-    font-size: var(--font-size-15px);
-    cursor: pointer;
-  }
+.job-list-header .view-all-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: var(--font-size-15px);
+  cursor: pointer;
 }
 
 .job-table-head,
@@ -142,131 +139,129 @@
 .job-table-head {
   font-size: var(--font-size-18px);
   font-weight: 600;
-  color: #858d9d;
-  border-bottom: 1px solid #f2f3f5;
+  color: var(--gray-400);
+  border-bottom: 1px solid var(--gray-200);
 }
 
 .job-table-row {
-  border-bottom: 1px solid #f7f7fa;
+  border-bottom: 1px solid var(--gray-100);
+}
 
-  &:last-child {
-    border-bottom: none;
-  }
+.job-table-row:last-child {
+  border-bottom: none;
 }
 
 .job-title-col {
   display: flex;
   align-items: center;
   gap: 14px;
+}
 
-  .company-logo {
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    background: #f1f3f6;
+.job-title-col .company-logo {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--border-radius);
+  background: var(--gray-200);
+}
 
-    // Demo icon styles
-    &.upwork {
-      background: #19e07c;
-    }
+/* Demo icon styles */
+.job-title-col .company-logo.upwork {
+  background: var(--green-400);
+}
 
-    &.dribbble {
-      background: #f43f5e;
-    }
+.job-title-col .company-logo.dribbble {
+  background: var(--red-500);
+}
 
-    &.apple {
-      background: #353535;
-    }
+.job-title-col .company-logo.apple {
+  background: var(--gray-800);
+}
 
-    &.microsoft {
-      background: #4785ff;
-    }
-  }
+.job-title-col .company-logo.microsoft {
+  background: var(--blue-400);
+}
 
-  .main-title {
-    font-weight: 500;
-    font-size: var(--font-size-16px);
-  }
+.job-title-col .main-title {
+  font-weight: 500;
+  font-size: var(--font-size-16px);
+}
 
-  .job-badge {
-    display: inline-block;
-    background: #e5f0fd;
-    color: #2563eb;
-    font-size: var(--font-size-12px);
-    border-radius: 6px;
-    margin-left: 8px;
-    padding: 2px 10px;
+.job-title-col .job-badge {
+  display: inline-block;
+  background: var(--blue-100);
+  color: var(--primary-color);
+  font-size: var(--font-size-12px);
+  border-radius: 6px;
+  margin-left: 8px;
+  padding: 2px 10px;
+}
 
-    &.remote {
-      background: #e6f6fc;
-      color: #1d9fd6;
-    }
+.job-title-col .job-badge.remote {
+  background: var(--blue-50);
+  color: var(--blue-400);
+}
 
-    &.fulltime {
-      background: #e9edff;
-      color: #5161ce;
-    }
+.job-title-col .job-badge.fulltime {
+  background: var(--blue-100);
+  color: var(--blue-600);
+}
 
-    &.temporary {
-      background: #fff7e6;
-      color: #d9a441;
-    }
+.job-title-col .job-badge.temporary {
+  background: var(--orange-100);
+  color: var(--orange-600);
+}
 
-    &.contractbase {
-      background: #f5eaff;
-      color: #8a4de8;
-    }
-  }
+.job-title-col .job-badge.contractbase {
+  background: var(--purple-100, #f5eaff);
+  color: var(--purple-400, #8a4de8);
+}
 
-  .meta {
-    font-size: var(--font-size-13px);
-    color: #858d9d;
-    margin-top: 4px;
+.job-title-col .meta {
+  font-size: var(--font-size-13px);
+  color: var(--gray-400);
+  margin-top: 4px;
+}
 
-    span {
-      margin-right: 10px;
-    }
-  }
+.job-title-col .meta span {
+  margin-right: 10px;
 }
 
 .job-date-applied {
   font-size: var(--font-size-14px);
-  color: #858d9d;
+  color: var(--gray-400);
 }
 
 .job-status {
   font-size: var(--font-size-14px);
   font-weight: 500;
+}
 
-  &.active {
-    color: #30be6b;
-  }
+.job-status.active {
+  color: var(--green-500);
+}
 
-  &.inactive {
-    color: #e53535;
-  }
+.job-status.inactive {
+  color: var(--error-color);
 }
 
 .job-detail-btn {
-  background: #2563eb;
-  color: #fff;
+  background: var(--primary-color);
+  color: var(--white);
   border: none;
   border-radius: 7px;
   padding: 7px 18px;
   font-size: var(--font-size-14px);
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #1e4fd7;
-  }
+  transition: background var(--transition);
 }
 
-// RESPONSIVE STYLES
-@media screen and (max-width: 1024px) {
+.job-detail-btn:hover {
+  background: var(--primary-color-dark);
+}
 
-  /* Stats-cards: grid 2 cột, phần tử 3 chiếm full-width */
+/* RESPONSIVE STYLES */
+@media screen and (max-width: 1024px) {
   .stats-cards {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -287,15 +282,12 @@
     font-size: var(--font-size-13px);
   }
 
-  /* Cho ô thứ 3 chiếm toàn bộ hàng */
   .stats-cards .stat-card:nth-child(3) {
     grid-column: 1 / -1;
   }
 }
 
 @media screen and (max-width: 768px) {
-
-  /* Grid một cột, font and padding nhỏ lại */
   .stats-cards {
     display: grid;
     grid-template-columns: 1fr;
@@ -314,6 +306,7 @@
   .stat-label {
     font-size: var(--font-size-12px);
   }
+
   .job-table-head {
     font-size: var(--font-size-11px);
     gap: 8px;
