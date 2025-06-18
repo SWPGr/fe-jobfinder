@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
+import { IconUpload, IconX, IconPhoto } from '@tabler/icons-react';
+import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 
@@ -39,34 +40,60 @@ function SettingsPage() {
   const [companyName, setCompanyName] = useState('');
   const [aboutUs, setAboutUs] = useState('');
 
+  // Modal states
+  const [modalOpened, setModalOpened] = useState(false);
+  const [imageName, setImageName] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [error, setError] = useState('');
+  const [uploadTarget, setUploadTarget] = useState(''); // 'logo' or 'banner'
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Dropzone handlers for logo and banner
-  const handleLogoChange = (files) => {
-    if (files.length === 0) return;
-    const file = files[0];
-    if (file.size <= 5 * 1024 * 1024) {
-      setLogoFile(file);
-    } else {
-      alert('Logo file too large. Max size is 5 MB.');
-    }
+  // Open modal for uploading logo or banner
+  const openUploadModal = (target) => {
+    setUploadTarget(target);
+    setModalOpened(true);
+    setImageName('');
+    setImageFile(null);
+    setImagePreview(null);
+    setError('');
   };
 
-  const handleBannerChange = (files) => {
+  const handleImageChange = (files) => {
     if (files.length === 0) return;
     const file = files[0];
-    if (file.size <= 5 * 1024 * 1024) {
-      setBannerFile(file);
-    } else {
-      alert('Banner file too large. Max size is 5 MB.');
+    if (file.size > 12 * 1024 * 1024) {
+      setError('File size exceeds 12 MB');
+      return;
     }
+    setImageFile(file);
+    setError('');
+    const previewURL = URL.createObjectURL(file);
+    setImagePreview(previewURL);
+  };
+
+  const handleAddImage = () => {
+    if (!imageFile || !imageName.trim()) {
+      setError('Please provide image and image name');
+      return;
+    }
+    if (uploadTarget === 'logo') {
+      setLogoFile(imageFile);
+    } else if (uploadTarget === 'banner') {
+      setBannerFile(imageFile);
+    }
+    setModalOpened(false);
+    setImageName('');
+    setImageFile(null);
+    setImagePreview(null);
+    setError('');
   };
 
   const handleSave = () => {
-    // xử lý lưu dữ liệu
     console.log({
       companyName,
       aboutUs,
@@ -84,7 +111,6 @@ function SettingsPage() {
     }
   };
 
-  // Social links handlers...
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
       prev.map((link) => (link.id === id ? { ...link, type: newType } : link))
@@ -126,126 +152,85 @@ function SettingsPage() {
         <div className={cx('companyInfoTab')}>
           <h3>Logo & Banner Image</h3>
           <div className={cx('uploadSection')}>
-            {/* Logo Dropzone */}
-            <div className={cx('uploadBox')}>
-              <Dropzone
-                onDrop={handleLogoChange}
-                onReject={() => alert('Only image files under 5MB are accepted for logo.')}
-                maxSize={5 * 1024 ** 2}
-                accept={IMAGE_MIME_TYPE}
-                multiple={false}
-                styles={(theme) => ({
-                  root: {
-                    border: `2px dashed ${theme.colors.blue[6]}`,
-                    borderRadius: theme.radius.md,
-                    padding: theme.spacing.xl,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 180,
-                    position: 'relative',
-                  },
-                  inner: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: theme.spacing.sm,
-                  },
-                  icon: {
-                    width: 48,
-                    height: 48,
-                  },
-                })}
-              >
-                {(status) =>
-                  logoFile ? (
-                    <img
-                      src={URL.createObjectURL(logoFile)}
-                      alt="logo preview"
-                      className={cx('previewImage')}
-                      style={{ maxHeight: 150, maxWidth: '100%', objectFit: 'contain' }}
-                    />
-                  ) : status.accepted ? (
-                    <IconUpload size={48} color="#1c7ed6" />
-                  ) : status.rejected ? (
-                    <IconX size={48} color="#fa5252" />
-                  ) : (
-                    <>
-                      <IconPhoto size={48} color="#868e96" />
-                      <div>
-                        <b>Browse photo</b> or drop here
-                      </div>
-                      <small>A photo larger than 400 pixels works best. Max photo size 5 MB.</small>
-                    </>
-                  )
-                }
-              </Dropzone>
+            <div className={cx('uploadBox')} onClick={() => openUploadModal('logo')}>
+              {logoFile ? (
+                <img
+                  src={URL.createObjectURL(logoFile)}
+                  alt="logo preview"
+                  className={cx('previewImage')}
+                  style={{ maxHeight: 140, objectFit: 'contain' }}
+                />
+              ) : (
+                <>
+                  <div
+                    style={{
+                      fontSize: 56,
+                      fontWeight: 'bold',
+                      color: '#6b7280',
+                      marginBottom: 8,
+                      userSelect: 'none',
+                    }}
+                  >
+                    +
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 18, color: '#374151' }}>Add Image</div>
+                  <small
+                    style={{
+                      color: '#6b7280',
+                      fontSize: 14,
+                      marginTop: 2,
+                      userSelect: 'none',
+                      lineHeight: '1.3em',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Browse image or drop here.
+                    <br />
+                    Only png, jpg, jpeg
+                  </small>
+                </>
+              )}
               <div className={cx('uploadTitle')}>Upload Logo</div>
             </div>
 
-            {/* Banner Dropzone */}
-            <div className={cx('uploadBox')}>
-              <Dropzone
-                onDrop={handleBannerChange}
-                onReject={() =>
-                  alert('Only JPEG or PNG banner images under 5MB are accepted.')
-                }
-                maxSize={5 * 1024 ** 2}
-                accept={['image/jpeg', 'image/png']}
-                multiple={false}
-                styles={(theme) => ({
-                  root: {
-                    border: `2px dashed ${theme.colors.blue[6]}`,
-                    borderRadius: theme.radius.md,
-                    padding: theme.spacing.xl,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: 180,
-                    position: 'relative',
-                  },
-                  inner: {
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: theme.spacing.sm,
-                  },
-                  icon: {
-                    width: 48,
-                    height: 48,
-                  },
-                })}
-              >
-                {(status) =>
-                  bannerFile ? (
-                    <img
-                      src={URL.createObjectURL(bannerFile)}
-                      alt="banner preview"
-                      className={cx('previewImage')}
-                      style={{ maxHeight: 150, maxWidth: '100%', objectFit: 'contain' }}
-                    />
-                  ) : status.accepted ? (
-                    <IconUpload size={48} color="#1c7ed6" />
-                  ) : status.rejected ? (
-                    <IconX size={48} color="#fa5252" />
-                  ) : (
-                    <>
-                      <IconPhoto size={48} color="#868e96" />
-                      <div>
-                        <b>Browse photo</b> or drop here
-                      </div>
-                      <small>
-                        Banner image optimal dimension 1520×400. Supported format JPEG, PNG. Max 5
-                        MB.
-                      </small>
-                    </>
-                  )
-                }
-              </Dropzone>
+            <div className={cx('uploadBox')} onClick={() => openUploadModal('banner')}>
+              {bannerFile ? (
+                <img
+                  src={URL.createObjectURL(bannerFile)}
+                  alt="banner preview"
+                  className={cx('previewImage')}
+                  style={{ maxHeight: 140, objectFit: 'contain' }}
+                />
+              ) : (
+                <>
+                  <div
+                    style={{
+                      fontSize: 56,
+                      fontWeight: 'bold',
+                      color: '#6b7280',
+                      marginBottom: 8,
+                      userSelect: 'none',
+                    }}
+                  >
+                    +
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: 18, color: '#374151' }}>Add Image</div>
+                  <small
+                    style={{
+                      color: '#6b7280',
+                      fontSize: 14,
+                      marginTop: 2,
+                      userSelect: 'none',
+                      lineHeight: '1.3em',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Browse image or drop here.
+                    <br />
+                    Only jpeg, png
+                  </small>
+                </>
+              )}
               <div className={cx('uploadTitle')}>Banner Image</div>
             </div>
           </div>
@@ -279,16 +264,13 @@ function SettingsPage() {
           </div>
         </div>
       )}
+
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
             <div className={cx('inputGroup')}>
               <label>Organization Type</label>
-              <select
-                name="organizationType"
-                value={form.organizationType}
-                onChange={handleChange}
-              >
+              <select name="organizationType" value={form.organizationType} onChange={handleChange}>
                 <option value="">Select...</option>
                 <option value="Private">Private</option>
                 <option value="Public">Public</option>
@@ -298,11 +280,7 @@ function SettingsPage() {
             </div>
             <div className={cx('inputGroup')}>
               <label>Industry Types</label>
-              <select
-                name="industryTypes"
-                value={form.industryTypes}
-                onChange={handleChange}
-              >
+              <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
                 <option value="">Select...</option>
                 <option value="Technology">Technology</option>
                 <option value="Finance">Finance</option>
@@ -502,6 +480,108 @@ function SettingsPage() {
           <button className={cx('deleteBtn')}>❌ Close Account</button>
         </div>
       )}
+
+      {/* Modal for Upload Image */}
+      <Modal
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Add Image"
+        centered
+        overlayBlur={3}
+        overlayOpacity={0.55}
+        closeButtonLabel="Close modal"
+        size="sm"
+      >
+        <TextInput
+          label="Image Name"
+          placeholder="Enter image name"
+          value={imageName}
+          onChange={(event) => setImageName(event.currentTarget.value)}
+          mb="md"
+          required
+          error={error && !imageName.trim() ? error : null}
+        />
+        {imagePreview ? (
+          <Image
+            src={imagePreview}
+            alt="Preview"
+            radius="md"
+            mb="md"
+            style={{ maxHeight: 200, objectFit: 'contain', width: '100%' }}
+            withPlaceholder
+            onClick={() => {
+              setImageFile(null);
+              setImagePreview(null);
+              setError('');
+            }}
+            sx={{ cursor: 'pointer' }}
+          />
+        ) : (
+          <Dropzone
+            onDrop={handleImageChange}
+            onReject={() => setError('File type not accepted')}
+            maxSize={12 * 1024 ** 2}
+            accept={IMAGE_MIME_TYPE}
+            multiple={false}
+            styles={(theme) => ({
+              root: {
+                border: `2px dashed ${theme.colors.blue[6]}`,
+                borderRadius: theme.radius.md,
+                padding: theme.spacing.xl,
+                transition: 'border-color 150ms ease, background-color 150ms ease',
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: theme.colors.blue[0],
+                  borderColor: theme.colors.blue[7],
+                },
+              },
+              inner: {
+                minHeight: 140,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: theme.spacing.sm,
+              },
+              icon: {
+                width: 48,
+                height: 48,
+              },
+            })}
+          >
+            {(status) => (
+              <>
+                {status.accepted ? (
+                  <IconUpload size={48} color="#1c7ed6" />
+                ) : status.rejected ? (
+                  <IconX size={48} color="#fa5252" />
+                ) : (
+                  <IconPhoto size={48} color="#868e96" />
+                )}
+                <Text size="md" color="dimmed" align="center">
+                  Drag image here or click to select (PNG, JPG, JPEG). Max 12 MB.
+                </Text>
+              </>
+            )}
+          </Dropzone>
+        )}
+        <Text size="sm" color="red" mt="sm" mb="md">
+          {error}
+        </Text>
+        <Group position="right" spacing="md">
+          <Button variant="outline" onClick={() => setModalOpened(false)}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleAddImage}
+            color="blue"
+            radius="md"
+            disabled={!imageFile || !imageName.trim()}
+          >
+            Add Image
+          </Button>
+        </Group>
+      </Modal>
     </div>
   );
 }
