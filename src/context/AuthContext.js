@@ -32,7 +32,9 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
             return { success: true, data: data };
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
+            console.log(error);
+
+            const errorMessage = error.message;
             setError(errorMessage);
             setLoading(false);
             return { success: false, message: errorMessage };
@@ -60,7 +62,7 @@ export const AuthProvider = ({ children }) => {
 
     // Giao diện hàm login và register gọi chung hàm authenticate
     const login = (email, password) => authenticate('login', email, password);
-    const register = (email, password, role) => authenticate('register', email, password, role);
+    const register = (email, password, roleName) => authenticate('register', email, password, roleName);
 
     const logout = () => {
         setUser(null);

@@ -7,6 +7,8 @@ import { AuthContext } from './context';
 import { MantineProvider } from '@mantine/core'; // Import MantineProvider
 import '@mantine/core/styles.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,6 +16,7 @@ root.render(
         <GlobalStyles>
             <AuthContext.AuthProvider>
                 <MantineProvider withGlobalStyles withNormalizeCSS>
+                    <Notifications />
                     <App />
                 </MantineProvider>
             </AuthContext.AuthProvider>
