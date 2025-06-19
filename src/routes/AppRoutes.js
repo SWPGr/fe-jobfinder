@@ -12,22 +12,29 @@ import {
     FindJobPage,
     JobDetail,
     SeekerDetailPage,
+
     single,
+
     FindJob,
     VerifyPage,
     FindEmployer,
     FindCandidate,
+
+    DashboardOverview,
+
     SingleJobPage,
     Term,
     AdminPage,
+
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
 import Single from '~/pages/Single/Single';
+
 import Payment from '~/pages/Payment/Payment';
 
+
 const publicRoutes = [
-    { path: config.routes.singleJob, component: SingleJobPage, layout: HeaderOnly },
     { path: config.routes.login, component: LoginPage, layout: null },
     { path: config.routes.register, component: RegisterPage, layout: null },
     { path: config.routes.home, component: HomePage, layout: HeaderOnly },
@@ -44,8 +51,12 @@ const publicRoutes = [
 
     { path: config.routes.verify, component: VerifyPage, layout: null },
     { path: config.routes.single, component: Single, layout: HeaderOnly },
+
+    { path: config.routes.dashboardOverview, component: DashboardOverview, layout: HeaderOnly },
+
     { path: config.routes.term, component: Term, layout: null },
     { path: config.routes.payment, component: Payment, layout: HeaderOnly },
+
 ];
 
 const privateRoutes = [

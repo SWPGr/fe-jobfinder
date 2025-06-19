@@ -33,7 +33,12 @@
     border-bottom: 1px solid var(--gray-200);
     margin-bottom: 10px;
 }
-
+.job-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    /* Khoảng cách giữa các item, chỉnh tuỳ ý */
+}
 /* Các dòng job */
 .job-row {
     display: grid;

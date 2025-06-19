@@ -36,20 +36,14 @@
     text-decoration: underline;
 }
 
+
 .job-list {
     display: flex;
     flex-direction: column;
-    gap: 0;
-    background: var(--white);
-    padding-bottom: 0;
-    margin-bottom: 0;
+    gap: 2px;
+    /* Khoảng cách giữa các item, chỉnh tuỳ ý */
 }
 
-.job-item {
-    padding: 0;
-    border-radius: 0;
-    border-bottom: 1px solid var(--gray-300);
-}
 
 .job-item:last-child {
     border-bottom: none;

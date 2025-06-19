@@ -1,3 +1,4 @@
+
 const routes = {
     admin: '/admin', // Admin dashboard
     home: '/',
@@ -15,18 +16,23 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
-
     findJobPage: '/findJobPage',
     jobDetails: '/jobDetails',
     seekerDetailPage: '/seekerDetailPage',
+
     singleJob: '/singleJob',
+
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',
     verify: '/api/auth/verify',
     single: '/single',
+
+    dashboardOverview: '/dashboard-overview',
+
     term: '/term',
     payment: '/payment',
+
 };
 
 export default routes;
