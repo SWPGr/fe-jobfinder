@@ -1,11 +1,12 @@
 .main {
 
-  max-width: 90rem; /* 900px */
+  max-width: 110rem; /* 900px */
   margin: 3rem auto; /* 30px */
   font-family: var(--font-family);
   color: var(--gray-900);
   padding-left: 7rem; /* 70px */
   box-sizing: border-box;
+  
 
   /* bổ sung từ phần tách */
   padding: 20px;
@@ -18,16 +19,12 @@
     margin-left: 1rem;
 
 }
-
-<<<<<<< HEAD
-title{
-=======
 .title {
->>>>>>> develop
-    font-weight: 90rem;
     margin-bottom: 3rem; /* 30px */
     color: var(--gray-900);
-    font-size: 4rem;
+    font-size: 3.4rem;
+    margin-top: -2rem;
+    margin-left: 2.4rem;
 }
 
 .tabs {

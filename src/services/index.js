@@ -1,2 +1,2 @@
 //services
-export { default as authService } from './AuthService';
+export { default as authService } from './AuthService.js';
