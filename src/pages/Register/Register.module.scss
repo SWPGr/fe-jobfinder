@@ -81,6 +81,7 @@
     }
     .error {
         font-size: 1.2rem;
+        color: var(--red-500);
     }
 }
 
@@ -173,6 +174,7 @@
         font-size: 1.2rem;
         display: flex;
         gap: 1rem;
+        font-weight: 400;
 
         .link {
             color: var(--primary-color);
@@ -193,6 +195,10 @@
     }
     .checkbox-icon {
         font-size: 1.6rem;
+    }
+
+    .error {
+        font-weight: 400;
     }
 }
 
