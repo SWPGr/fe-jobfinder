@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { TextInput, Avatar } from '@mantine/core';
@@ -6,12 +8,14 @@ import { IconBellRinging } from '@tabler/icons-react';
 
 import images from '~/assets/Images/index';
 import { useAuth } from '~/context/AuthContext';
-import { Button } from '~/components';
+import { Button, AvatarButton } from '~/components';
 
 const cx = classNames.bind(styles);
 
 function Header({ className }) {
     let { user, logout } = useAuth();
+    const navigate = useNavigate();
+    // console.log('user in header', user.role);
 
     const classes = cx('wrapper', {
         [className]: className,
@@ -21,7 +25,7 @@ function Header({ className }) {
         <header className={classes}>
             <div className={cx('container')}>
                 <div className={cx('left-side')}>
-                    <div className={cx('logo')}>
+                    <div className={cx('logo')} onClick={() => navigate('/')}>
                         <img src={images.logo} alt="logo" />
                         <h1>JobFinder</h1>
                     </div>
@@ -42,17 +46,11 @@ function Header({ className }) {
                                 <IconBellRinging size={24} />
                                 <span className={cx('badge')}></span>
                             </div>
-                            <Avatar
-                                src={user?.avatar}
-                                alt="avatar"
-                                // radius={'xl'}
-                                // size={'lg'}
-                                classNames={{ root: cx('avatar') }}
-                            />
+                            <AvatarButton avatar={user.avatar} />
                         </div>
                     ) : (
                         <div className={cx('actions')}>
-                            <Button blue_white classNames={cx('login')}>
+                            <Button blue_white to={'/login'}>
                                 Sign in
                             </Button>
                             <Button classNames={cx('post-job')}>Post A Job</Button>

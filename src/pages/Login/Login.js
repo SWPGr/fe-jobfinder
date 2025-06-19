@@ -13,12 +13,14 @@ import { validator } from '~/utils';
 import { Button, GoogleLoginButton } from '~/components';
 import { useContext } from 'react';
 import { AuthContext } from '~/context/AuthContext';
+import { useNotification } from '~/hooks';
 
 // Bind styles for conditional class names
 const cx = classNames.bind(styles);
 
 function Login() {
-    const { login } = useContext(AuthContext);
+    const { user, login } = useContext(AuthContext);
+
     // State variables for form fields and UI logic
     const formLogin = useForm({
         initialValues: {
@@ -34,17 +36,20 @@ function Login() {
     const [loading, setLoading] = useState(false);
     const [checked, setChecked] = useState(false); // Remember me checkbox
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+    const { showError, showSuccess } = useNotification();
 
     // Handler for form submission (currently empty)
     const handleSubmitForm = async (values) => {
         console.log('Form submitted:', values);
         const data = await login(values.email, values.password);
 
-        console.log(data);
-
         if (data.success) {
             setLoading(false);
             navigate('/');
+            showSuccess('Login successful!');
+        } else {
+            setLoading(false);
+            showError(data.message);
         }
     };
 

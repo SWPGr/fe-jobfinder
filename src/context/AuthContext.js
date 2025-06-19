@@ -30,9 +30,11 @@ export const AuthProvider = ({ children }) => {
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoading(false);
-            return { success: true };
+            return { success: true, data: data };
         } catch (error) {
-            const errorMessage = error.response?.data?.message || 'An unexpected error occurred';
+            console.log(error);
+
+            const errorMessage = error.message;
             setError(errorMessage);
             setLoading(false);
             return { success: false, message: errorMessage };
@@ -60,18 +62,17 @@ export const AuthProvider = ({ children }) => {
 
     // Giao diện hàm login và register gọi chung hàm authenticate
     const login = (email, password) => authenticate('login', email, password);
-    const register = (email, password, role) => authenticate('register', email, password, role);
+    const register = (email, password, roleName) => authenticate('register', email, password, roleName);
 
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
     };
 
-    user = {
-
-        // role: 'EMPLOYER',
-        role: 'JOB_SEEKER',
-    };
+    // user = {
+    //     role: 'ADMIN',
+    //     //role: 'JOB_SEEKER',
+    // };
 
     return (
         <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading, error }}>

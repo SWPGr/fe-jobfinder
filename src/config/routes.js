@@ -1,5 +1,6 @@
-import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
+
 const routes = {
+    admin: '/admin', // Admin dashboard
     home: '/',
     profile: '/profile',
     jobs: '/jobs', // List of all jobs
@@ -18,12 +19,20 @@ const routes = {
     findJobPage: '/findJobPage',
     jobDetails: '/jobDetails',
     seekerDetailPage: '/seekerDetailPage',
+
+    singleJob: '/singleJob',
+
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',
     verify: '/api/auth/verify',
     single: '/single',
+
     dashboardOverview: '/dashboard-overview',
+
+    term: '/term',
+    payment: '/payment',
+
 };
 
 export default routes;

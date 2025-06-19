@@ -110,12 +110,11 @@ html {
     font-size: 62.5%;
 }
 body {
-
     font-family: var(--font-family) !important;
     font-size: 1.6rem;
     line-height: 1.5rem;
     text-rendering: optimizeSpeed;
-    color: var(--text-color); 
+    color: var(--text-color);
     // overflow-y: hidden;
 }
 
@@ -154,5 +153,53 @@ a {
         --font-size-14px: 1rem;
         --font-size-12px: 0.9rem;
         --font-size-10px: 0.8rem;
+    }
+}
+
+.mantine-Notifications-root {
+    min-width: 320px !important;
+    max-width: 400px !important;
+    width: fit-content !important;
+}
+
+.mantine-Notifications-notification {
+    background: var(--white) !important;
+    padding: 1.4rem !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--box-shadow) !important;
+
+    .mantine-Notification-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.2rem;
+        height: 2.2rem;
+
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
+    }
+    // .notification-body {
+    //     background: red;
+    //     max-width: none !important;
+    //     width: 400px !important;
+    // }
+
+    .mantine-Notification-title {
+        font-size: var(--font-size-16px);
+        font-weight: 600;
+        color: var(--text-color);
+    }
+    .mantine-Notification-description {
+        font-size: var(--font-size-14px);
+        color: var(--text-color);
+    }
+    .mantine-Notification-closeButton {
+        svg {
+            width: 2rem !important;
+            height: 2rem !important;
+            fill: var(--text-color);
+        }
     }
 }

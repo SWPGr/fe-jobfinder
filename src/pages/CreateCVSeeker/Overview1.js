@@ -19,15 +19,78 @@ const jobs = [
 // Hàm chuyển chuỗi "27 days remaining" thành số 27
 function parseRemainDay(remainStr) {
   const match = remainStr.match(/\d+/);
-  return match ? Number(match[0]) : 0; // Nếu không tìm thấy, trả về 0
+  return match ? Number(match[0]) : 0;
 }
 
 const Overview1 = () => {
   return (
     <div className={cx("container")}>
+      {/* Header */}
+      <div className={cx("overview-header")}>
+        <h2>Hello, Instagram</h2>
+        <p className={cx("desc")}>Here is your daily activities and applications</p>
+      </div>
+
+      {/* Info cards */}
+      <div className={cx("info-cards")}>
+        <div className={cx("info-card", "blue")}>
+          <div className={cx("info-number")}>589</div>
+          <div className={cx("info-label")}>Open Jobs</div>
+          <div className={cx("info-icon")}>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#2F80ED"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="7" width="18" height="14" rx="2" ry="2"></rect>
+              <path d="M16 3h-8v4h8V3z"></path>
+            </svg>
+          </div>
+        </div>
+        <div className={cx("info-card", "yellow")}>
+          <div className={cx("info-number")}>2,517</div>
+          <div className={cx("info-label")}>Saved Candidates</div>
+          <div className={cx("info-icon")}>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              stroke="#F2C94C"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M7 21v-2a4 4 0 0 1 3-3.87"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* Job list header */}
+      <div className={cx("job-list-header")}>
+        <h3>Recently Posted Jobs</h3>
+        <button className={cx("view-all-btn")}>
+          View all <span aria-hidden="true">→</span>
+        </button>
+      </div>
+
+      {/* Table header row */}
+      <div className={cx("job-table-head")}>
+        <span>JOBS</span>
+        <span>STATUS</span>
+        <span>APPLICATIONS</span>
+        <span>ACTIONS</span>
+      </div>
+
+      {/* Job list */}
       <div className={cx("job-list")}>
         {jobs.map((job, idx) => {
-          // Chuyển đổi dữ liệu
           const jobDescription = {
             jobTitle: job.title,
             workTime: job.type,

@@ -1,8 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 
-import { CreateCVSeekerPage } from '~/pages';
-
 import {
     IconStack2,
     IconSettings,
@@ -27,10 +25,33 @@ import SavedCandidates from '~/pages/CreateCVSeeker/SavedCandidates';
 import MyJob from '~/pages/CreateCVSeeker/MyJob';
 import PlansBilling from '~/pages/CreateCVSeeker/PlansBilling';
 import Overview1 from '~/pages/CreateCVSeeker/Overview1';
+import Single from '~/pages/Single/Single';
 
 const cx = classNames.bind(styles);
 
 export const items = {
+    ADMIN: {
+        header: 'ADMIN DASHBOARD',
+        items: [
+            {
+                title: 'Overview',
+                icon: <IconStack2 />, // Replace with actual icon component
+            },
+            {
+                title: 'Manage Employers',
+                icon: <IconUserCircle />, // Replace with actual icon component
+            },
+            {
+                title: 'Manage Job Seekers',
+                icon: <IconUserCircle />, // Replace with actual icon component
+            },
+            {
+                title: 'Settings',
+                icon: <IconSettings />, // Replace with actual icon component
+            },
+        ],
+    },
+
     EMPLOYER: {
         header: 'CANDIDATE DASHBOARD',
         items: [
@@ -45,6 +66,7 @@ export const items = {
             {
                 title: 'Employer Profile',
                 icon: <IconUserCircle />, // Replace with actual icon component
+                page: <Single />,
             },
             {
                 title: 'Post a Job',

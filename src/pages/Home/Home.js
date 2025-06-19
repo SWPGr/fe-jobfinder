@@ -1,8 +1,8 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
-import { JobItem, JobItemList, JobItemOwner, JobItemApplied } from '~/components';
-import { Images } from '~/assets';
-import { Button } from '~/components';
+import { useEffect } from 'react';
+import { useWindowScroll } from '@mantine/hooks';
+
 import { LandingPage } from '../components';
 import PopularVacancy from './PopularVacancy';
 import Instruction from './Instruction';
@@ -14,6 +14,12 @@ import CTA from './CTA';
 const cx = classNames.bind(styles);
 
 function Home() {
+    const [scroll, scrollTo] = useWindowScroll();
+
+    useEffect(() => {
+        scrollTo({ y: 0 });
+    }, []);
+
     return (
         <>
             <div className={cx('wrapper')}>

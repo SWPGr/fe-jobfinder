@@ -1,6 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from '@mantine/form';
+import { useWindowScroll } from '@mantine/hooks';
 import { TextInput, Checkbox, Radio, Pagination, Select } from '@mantine/core';
 import { IconSearch, IconMapPin, IconStack2, IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 import classNames from 'classnames/bind';
@@ -136,12 +137,94 @@ const fakeJobs = [
         salary: '$110,000 - $160,000',
         dueDate: '2025-07-22',
     },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
+    {
+        id: 15,
+        jobTitle: 'Software Engineer',
+        companyName: 'LinkedIn',
+        companyAddress: 'Sunnyvale, CA',
+        salary: '$110,000 - $160,000',
+        dueDate: '2025-07-22',
+    },
 ];
 
 function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', onSearch = () => {} }) {
     const { user } = useAuth();
+    const [scroll, scrollTo] = useWindowScroll();
     const [additionalFilter, setAdditionalFilter] = useState('None');
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
+    const resultRef = useRef(null); // This will hold the location of the search result
     const [page, setActivePage] = useState(1);
     const pageSize = 12; // Số lượng công việc mỗi trang
     const totalPages = Math.ceil(fakeJobs.length / pageSize);
@@ -336,16 +419,19 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                 }}
                             />
                         </div>
-                        <div className={cx('result__content')}>
+                        <div className={cx('result__content')} ref={resultRef}>
                             {/* Bạn có thể render danh sách kết quả thực tế ở đây */}
-                            {currentJobs.map((job) => (
-                                <JobItemList key={job.id} jobDescription={job} isVIP={job.isVIP} isLogin />
+                            {currentJobs.map((job, index) => (
+                                <JobItemList key={index} jobDescription={job} isVIP={job.isVIP} isLogin />
                             ))}
                         </div>
                         <div className={cx('pagination')}>
                             <Pagination
                                 total={totalPages}
-                                onChange={(page) => setActivePage(page)}
+                                onChange={(page) => {
+                                    setActivePage(page);
+                                    scrollTo({ y: resultRef.current.getBoundingClientRect().top - 210 });
+                                }}
                                 radius="xl"
                                 classNames={{ root: cx('pagination-root'), control: cx('control') }}
                             />

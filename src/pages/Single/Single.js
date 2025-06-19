@@ -3,7 +3,6 @@ import styles from "./Single.module.scss";
 import classNames from "classnames/bind";
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 import { AiOutlineCalendar, AiOutlineLink, AiOutlinePhone, AiOutlineMail } from "react-icons/ai";
-import { Link } from "react-router-dom";
 
 const cx = classNames.bind(styles);
 
@@ -38,90 +37,6 @@ const companyInfo = {
   }
 };
 
-const openPositions = [
-  {
-    id: 1,
-    company: "Freepik",
-    location: "China",
-    role: "Visual Designer",
-    type: "Full Time",
-    salary: "$109-$15K",
-    featured: true,
-    icon: (
-      <svg width="16" height="16" fill="#1877F2" viewBox="0 0 24 24">
-        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm5 13h-3v3h-4v-3H7v-4h3V8h4v3h3v4z" />
-      </svg>
-    )
-  },
-  {
-    id: 2,
-    company: "Instagram",
-    location: "Australia",
-    role: "Front End Developer",
-    type: "Contract Base",
-    salary: "$90K-$60K",
-    icon: (
-      <svg width="16" height="16" fill="#E4405F" viewBox="0 0 24 24">
-        <path d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm5 3a5 5 0 110 10 5 5 0 010-10zm5-.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3z" />
-      </svg>
-    )
-  },
-  {
-    id: 3,
-    company: "Upwork",
-    location: "France",
-    role: "Technical Support Specialist",
-    type: "Full Time",
-    salary: "$35K-$40K",
-    icon: (
-      <svg width="16" height="16" fill="#7AC70C" viewBox="0 0 24 24">
-        <path d="M21.78 3.22a1.75 1.75 0 00-2.474 0l-8.132 8.13-4.32-4.32a1.75 1.75 0 00-2.475 2.475l6.017 6.018a1.75 1.75 0 002.474 0l9.27-9.27a1.75 1.75 0 000-2.473z" />
-      </svg>
-    )
-  },
-  {
-    id: 4,
-    company: "Facebook",
-    location: "United Kingdom of Great Britain",
-    role: "Software Engineer",
-    type: "Part Time",
-    salary: "$19K-$20K",
-    icon: <FaFacebookF color="#1877F2" />
-  },
-  {
-    id: 5,
-    company: "Microsoft",
-    location: "Australia",
-    role: "Product Designer",
-    type: "Full Time",
-    salary: "$40K-$50K",
-    icon: (
-      <svg width="16" height="16" fill="#f25022" viewBox="0 0 24 24">
-        <path d="M0 0h10v10H0V0zm12 0h10v10h-10V0zM0 12h10v10H0v-10zm12 0h10v10h-10v-10z" />
-      </svg>
-    )
-  }
-];
-
-function JobCard({ job }) {
-  return (
-    <Link to={`/job/${job.id}`} className={cx("jobCard", { featured: job.featured })}>
-      <div className={cx("jobHeader")}>
-        <div className={cx("jobCompany")}>
-          {job.icon}
-          {job.company}
-        </div>
-        {job.featured && <div className={cx("featuredTag")}>Featured</div>}
-      </div>
-      <div className={cx("jobLocation")}>{job.location}</div>
-      <div className={cx("jobTitle")}>{job.role}</div>
-      <div className={cx("jobTypeSalary")}>
-        {job.type} • {job.salary}
-      </div>
-    </Link>
-  );
-}
-
 export default function Single() {
   return (
     <div className={cx("container")}>
@@ -137,11 +52,10 @@ export default function Single() {
               <div className={cx("industry")}>{companyInfo.industry}</div>
             </div>
           </div>
-          <button className={cx("btnOpenPosition")}>
-            View Open Position <span style={{ marginLeft: 6 }}>→</span>
-          </button>
+          {/* Nút "View Open Position" đã bị xóa */}
         </div>
 
+        {/* Main Section */}
         <div className={cx("section")}>
           {/* Left Column */}
           <div className={cx("leftColumn")}>
@@ -212,16 +126,6 @@ export default function Single() {
             </div>
           </div>
         </div>
-
-        {/* Open Positions */}
-        <section className={cx("openPositions")}>
-          <div className={cx("openPositionsHeader")}>Open Position ({openPositions.length})</div>
-          <div className={cx("jobsGrid")}>
-            {openPositions.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-        </section>
       </div>
     </div>
   );

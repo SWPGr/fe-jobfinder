@@ -4,7 +4,7 @@ import styles from './PostJob.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 const cx = classNames.bind(styles);
 
-const PostJob = () => {
+function PostJob() {
   const [jobTitle, setJobTitle] = useState('');
   const [tags, setTags] = useState('');
   const [jobRole, setJobRole] = useState('');
@@ -58,8 +58,7 @@ const PostJob = () => {
           placeholder="Add job title, role, vacancies etc"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
-          required
-        />
+          required />
       </div>
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
@@ -68,8 +67,7 @@ const PostJob = () => {
             type="text"
             placeholder="Job keyword, tags etc..."
             value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
+            onChange={(e) => setTags(e.target.value)} />
         </div>
         <div className={cx('inputGroup')}>
           <label>Job Role</label>
@@ -90,8 +88,7 @@ const PostJob = () => {
             placeholder="Minimum salary..."
             value={minSalary}
             onChange={handleMinSalaryChange}
-            required
-          />
+            required />
           <span className={cx('currency')}>USD</span>
         </div>
         <div className={cx('inputGroup')} style={{ position: 'relative' }}>
@@ -102,8 +99,7 @@ const PostJob = () => {
             placeholder="Maximum salary..."
             value={maxSalary}
             onChange={handleMaxSalaryChange}
-            required
-          />
+            required />
           <span className={cx('currency')}>USD</span>
         </div>
         <div className={cx('inputGroup')}>
@@ -163,8 +159,7 @@ const PostJob = () => {
           <input
             type="date"
             value={expirationDate}
-            onChange={(e) => setExpirationDate(e.target.value)}
-          />
+            onChange={(e) => setExpirationDate(e.target.value)} />
         </div>
         <div className={cx('inputGroup')}>
           <label>Job Level</label>
@@ -184,8 +179,7 @@ const PostJob = () => {
             name="applyJob"
             value="onJobpilot"
             checked={applyJobOn === 'onJobpilot'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
+            onChange={(e) => setApplyJobOn(e.target.value)} />
           <strong>On Jobpilot</strong>
           <p>Candidate will apply job using jobpilot & all application will show on your dashboard.</p>
         </label>
@@ -195,8 +189,7 @@ const PostJob = () => {
             name="applyJob"
             value="externalPlatform"
             checked={applyJobOn === 'externalPlatform'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
+            onChange={(e) => setApplyJobOn(e.target.value)} />
           <strong>External Platform</strong>
           <p>Candidate apply job on your website, all application on your own website.</p>
         </label>
@@ -206,8 +199,7 @@ const PostJob = () => {
             name="applyJob"
             value="onYourEmail"
             checked={applyJobOn === 'onYourEmail'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
+            onChange={(e) => setApplyJobOn(e.target.value)} />
           <strong>On Your Email</strong>
           <p>Candidate apply job on your email address, and all application in your email.</p>
         </label>
@@ -217,15 +209,13 @@ const PostJob = () => {
         <label>Description</label>
         <SimpleRichTextEditor
           placeholder="Add your job description..."
-          onChange={setDescription}
-        />
+          onChange={setDescription} />
       </div>
       <div className={cx('formGroup')}>
         <label>Responsibilities</label>
         <SimpleRichTextEditor
           placeholder="Add your job responsibilities..."
-          onChange={setResponsibilities}
-        />
+          onChange={setResponsibilities} />
       </div>
       <button
         type="submit"
@@ -236,6 +226,6 @@ const PostJob = () => {
       </button>
     </form>
   );
-};
+}
 
 export default PostJob;
