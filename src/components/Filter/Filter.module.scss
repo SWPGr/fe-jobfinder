@@ -6,7 +6,7 @@
     background: var(--gray-50);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 2;
 }
 .search__container {
     width: var(--default-layout-width);
@@ -102,16 +102,14 @@
     overflow: visible; /* hoặc không đặt overflow */
 }
 .filter__container {
-
     min-width: 350px;
     position: sticky;
     top: 140px;
-    z-index: 10;
+    z-index: 1;
     height: fit-content;
     overflow-y: hidden;
 }
 .filter__content {
-
     position: relative;
 
     display: flex;
@@ -126,7 +124,6 @@
 
     overflow: overlay;
     padding-left: 4px;
-
 
     &::-webkit-scrollbar {
         border-radius: var(--border-radius);

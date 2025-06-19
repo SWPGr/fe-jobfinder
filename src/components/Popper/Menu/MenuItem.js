@@ -17,7 +17,7 @@ function MenuItem({ data, onClick }) {
             rightIcon={data.iconRight}
             to={data.to}
             className={classes}
-            onClick={onClick}
+            onClick={data.onClick || onClick}
         >
             {data.title}
         </Button>
