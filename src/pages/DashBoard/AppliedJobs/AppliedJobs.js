@@ -131,6 +131,7 @@ const allJobs = React.Children.toArray([
             salary: '$100 - $200',
             dueDate: 'June 15, 2021',
         }}
+        isVIP
     />,
     <JobItemApplied
         image={Images.google_image}
@@ -142,6 +143,7 @@ const allJobs = React.Children.toArray([
             salary: '$100 - $200',
             dueDate: 'June 15, 2021',
         }}
+        isVIP
     />,
 ]);
 function AppliedJobs() {

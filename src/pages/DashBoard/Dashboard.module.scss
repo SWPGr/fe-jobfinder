@@ -102,6 +102,12 @@
   background: var(--red-700);
 }
 
+.job-list {
+  display: flex;
+    flex-direction: column;
+    gap: 2px;
+    /* Khoảng cách giữa các item, chỉnh tuỳ ý */}
+
 .job-list-container {
   margin-top: 28px;
   background: var(--white);
