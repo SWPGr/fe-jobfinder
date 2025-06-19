@@ -3,6 +3,7 @@ import classNames from "classnames/bind";
 import styles from "./Overview1.module.scss";
 import { JobItemOwner } from "~/components";
 
+
 const cx = classNames.bind(styles);
 
 const jobs = [
@@ -103,7 +104,7 @@ const Overview1 = () => {
             <JobItemOwner
               key={idx}
               jobDescription={jobDescription}
-              isVIP={false}
+              isVIP={true}
             />
           );
         })}
