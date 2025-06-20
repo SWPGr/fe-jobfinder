@@ -24,7 +24,6 @@
     color: var(--gray-900);
     font-size: 3.4rem;
     margin-top: -2rem;
-    margin-left: 2.4rem;
 }
 
 .tabs {
@@ -224,7 +223,7 @@
 }
 
 .form {
-    max-width: 80rem;
+    max-width: 100rem;
 
     .row {
         display: flex;
@@ -264,7 +263,7 @@
 }
 
 .socialLinksContainer {
-    max-width: 70rem;
+    max-width: 100rem;
 
     .socialLinkRow {
         display: flex;
@@ -342,7 +341,7 @@
 }
 
 .contactTab {
-    max-width: 70rem;
+    max-width: 80rem;
 
     h2 {
         margin-top: 2rem;

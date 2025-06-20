@@ -10,15 +10,26 @@
 }
 
 .header {
+  position: relative; /* cho phép vị trí tuyệt đối bên trong */
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: var(--white);
-  padding: 1.4rem 2.4rem;
+  padding: 10rem 2rem 1rem;
   border-radius: 0.8rem;
-  box-shadow: 0 0.1rem 0.4rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
 }
+.header .instagramIcon {
+  position: absolute;
+  bottom: 1rem;  /* cách đáy 1rem */
+  right: 1rem;   /* cách phải 1rem */
+  width: 40px;
+  height: 40px;
+  color: #E4405F; /* màu Instagram */
+  z-index: 10;
+}
+
 
 .companyInfo {
   display: flex;
@@ -68,7 +79,8 @@
   min-width: 300px;
 }
 
-h3 {
+
+.title1 {
   font-weight: 600;
   font-size: 2.2rem;
   margin-bottom: 1.8rem;
@@ -120,6 +132,14 @@ h3 {
   flex-direction: column;
   gap: 2.5rem;
   min-width: 240px;
+}
+
+/* Thay h4 bằng .title2 cho Contact Information */
+.title2 {
+  font-weight: 600;
+  font-size: 1.8rem; /* Điều chỉnh kích thước font phù hợp, có thể thay đổi theo ý muốn */
+  margin-bottom: 1.4rem;
+  color: var(--gray-900);
 }
 
 .card {

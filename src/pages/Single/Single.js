@@ -42,7 +42,7 @@ export default function Single() {
     <div className={cx("container")}>
       <div className={cx("wrapperBox")}>
         {/* Header */}
-        <div className={cx("header")}>
+        <div className={cx("header")} style={{ position: "relative" }}>
           <div className={cx("companyInfo")}>
             <div className={cx("companyLogo")}>
               <FaInstagram size={28} />
@@ -52,24 +52,37 @@ export default function Single() {
               <div className={cx("industry")}>{companyInfo.industry}</div>
             </div>
           </div>
-          {/* Nút "View Open Position" đã bị xóa */}
+
+          {/* Icon Instagram góc dưới bên phải */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "1rem",
+              right: "1rem",
+              width: "40px",
+              height: "40px",
+              color: "#E4405F", // màu Instagram
+            }}
+          >
+            <FaInstagram size={40} />
+          </div>
         </div>
 
         {/* Main Section */}
         <div className={cx("section")}>
           {/* Left Column */}
           <div className={cx("leftColumn")}>
-            <h3>Description</h3>
+            <h3 className={cx("title1")}>Description</h3>
             <p className={cx("description")}>{companyInfo.description}</p>
 
-            <h4>Company Benefits</h4>
+            <h4 className={cx("title2")}>Company Benefits</h4>
             <ul className={cx("benefitsList")}>
               {companyInfo.benefits.map((item, i) => (
                 <li key={i}>{item}</li>
               ))}
             </ul>
 
-            <h4>Company Vision</h4>
+            <h4 className={cx("title2")}>Company Vision</h4>
             <p className={cx("companyVision")}>{companyInfo.vision}</p>
 
             <div className={cx("shareProfile")}>
