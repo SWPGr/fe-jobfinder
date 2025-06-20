@@ -6,19 +6,14 @@ import { useForm } from '@mantine/form';
 import styles from './Login.module.scss';
 import { validator } from '~/utils';
 import { Button } from '~/components';
+import { useState, useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
-function ResetPassword({
-    children,
-    content,
-    title,
-
-    className,
-
-    ...props
-}) {
+function ResetPassword({ children, content, title, className, ...props }) {
     const [opened, { open, close }] = useDisclosure(false);
+    const [showResendEmail, setShowResendEmail] = useState(false);
+    const [countdown, setCountdown] = useState(0);
     const formResetPassword = useForm({
         initialValues: {
             email: '',
@@ -28,8 +23,27 @@ function ResetPassword({
         },
     });
 
+    useEffect(() => {
+        let timer;
+        if (countdown > 0) {
+            timer = setInterval(() => {
+                setCountdown((prev) => prev - 1);
+            }, 1000);
+        }
+        return () => clearInterval(timer);
+    }, [countdown]);
+
     const handleSubmitForm = (values) => {
         console.log('Form submitted:', values);
+    };
+
+    const handleResendEmail = () => {
+        if (countdown === 0) {
+            setShowResendEmail(true);
+            setCountdown(10); // Start 10-second countdown
+            // Add resend email logic here
+            console.log('Resending email to:', formResetPassword.values.email);
+        }
     };
 
     return (
@@ -52,12 +66,8 @@ function ResetPassword({
                     opacity: 0.55,
                     blur: 3,
                 }}
-                // closeButtonProps={{
-                //     icon: <IconXboxX size={20} stroke={1.5} />,
-                // }}
                 {...props}
             >
-                {/* Nội dung form */}
                 <form
                     className={cx('form', 'reset-password-form')}
                     onSubmit={formResetPassword.onSubmit((values) => handleSubmitForm(values))}
@@ -75,12 +85,35 @@ function ResetPassword({
                             error: cx('error'),
                         }}
                         rightSection={
-                            <Button yellow disabled={formResetPassword.values.email === ''} className={cx('send-otp')}>
-                                Send OTP
+                            <Button
+                                yellow
+                                disabled={formResetPassword.values.email === '' || countdown > 0}
+                                className={cx('send-email')}
+                                onClick={() => {
+                                    setShowResendEmail(true);
+                                    setCountdown(10);
+                                }}
+                            >
+                                Send
                             </Button>
                         }
                     />
                 </form>
+
+                {showResendEmail && formResetPassword.values.email !== '' && (
+                    <p className={cx('resend-email-message')}>
+                        Please check your email for the reset password link or{' '}
+                        <Button
+                            text
+                            black_white
+                            className={cx('resend-email-btn')}
+                            disabled={countdown > 0}
+                            onClick={handleResendEmail}
+                        >
+                            Resend Email! {countdown > 0 && `(${countdown}s)`}
+                        </Button>
+                    </p>
+                )}
             </Modal>
 
             <Button blue_white onClick={open} className={cx('forgot-password')}>

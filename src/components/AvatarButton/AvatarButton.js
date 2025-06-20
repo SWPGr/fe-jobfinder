@@ -1,25 +1,40 @@
 import { useState } from 'react';
 import { Avatar, Title } from '@mantine/core';
-import { IconChevronDown, IconSettingsFilled } from '@tabler/icons-react';
+import { IconChevronDown, IconSettingsFilled, IconArrowAutofitRightFilled } from '@tabler/icons-react';
 import classNames from 'classnames/bind';
 import styles from './Avatar.module.scss';
 
 import Menu from '~/components/Popper/Menu';
+import { useAuth } from '~/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-const MENU_ITEMS = [
-    {
-        title: 'Settings',
-        iconLeft: <IconSettingsFilled />,
-        iconRight: null,
-        to: '/profile',
-        separate: false,
-    },
-];
-
 function AvatarButton({ avatar }) {
     let [visible, setVisible] = useState(false);
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const MENU_ITEMS = [
+        {
+            title: 'Settings',
+            iconLeft: <IconSettingsFilled />,
+            iconRight: null,
+            to: '/profile',
+            separate: false,
+        },
+        {
+            title: 'Logout',
+            iconLeft: <IconArrowAutofitRightFilled />,
+            iconRight: null,
+            separate: true,
+            onClick: () => {
+                console.log('Logout clicked');
+                logout();
+                navigate('/login');
+            },
+        },
+    ];
 
     return (
         <>

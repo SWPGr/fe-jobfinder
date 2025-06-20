@@ -1,15 +1,16 @@
 .container {
-  font-family: var(--font-family);
-  max-width: 10000px;
-  padding: 0 2rem;
-  color: var(--gray-900);
-  font-size: 2.4rem;
-  line-height: 1.8;
-  box-sizing: border-box;
-  margin-left: -2rem;
+    font-family: var(--font-family);
+    max-width: 10000px;
+    padding: 0 2rem;
+    color: var(--gray-900);
+    font-size: 2.4rem;
+    line-height: 1.8;
+    box-sizing: border-box;
+    margin-left: -2rem;
 }
 
 .header {
+
   position: relative; /* cho phép vị trí tuyệt đối bên trong */
   display: flex;
   justify-content: space-between;
@@ -32,51 +33,51 @@
 
 
 .companyInfo {
-  display: flex;
-  align-items: center;
-  gap: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
 }
 
 .companyLogo {
-  width: 5.2rem;
-  height: 5.2rem;
-  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-  border-radius: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--white);
-  font-weight: 700;
-  font-size: 3rem;
+    width: 5.2rem;
+    height: 5.2rem;
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 3rem;
 }
 
 .companyDetails {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .companyName {
-  font-weight: 600;
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
-  color: var(--gray-900);
+    font-weight: 600;
+    font-size: 2.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--gray-900);
 }
 
 .industry {
-  color: var(--gray-600);
-  font-size: 1.3rem;
+    color: var(--gray-600);
+    font-size: 1.3rem;
 }
 
 .section {
-  display: flex;
-  gap: 4.5rem;
-  margin-bottom: 4rem;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 4.5rem;
+    margin-bottom: 4rem;
+    flex-wrap: wrap;
 }
 
 .leftColumn {
-  flex: 3;
-  min-width: 300px;
+    flex: 3;
+    min-width: 300px;
 }
 
 
@@ -88,50 +89,50 @@
 }
 
 .description {
-  line-height: 1.8;
-  font-size: 1.3rem;
-  color: var(--gray-700);
-  margin-bottom: 3rem;
+    line-height: 1.8;
+    font-size: 1.3rem;
+    color: var(--gray-700);
+    margin-bottom: 3rem;
 }
 
 .benefitsList {
-  list-style: disc;
-  margin-left: 2rem;
-  margin-bottom: 3rem;
-  color: var(--gray-700);
-  font-size: 1.3rem;
+    list-style: disc;
+    margin-left: 2rem;
+    margin-bottom: 3rem;
+    color: var(--gray-700);
+    font-size: 1.3rem;
 }
 
 .companyVision {
-  margin-bottom: 2rem;
-  color: var(--gray-700);
-  font-size: 1.3rem;
+    margin-bottom: 2rem;
+    color: var(--gray-700);
+    font-size: 1.3rem;
 }
 
 .shareProfile {
-  display: flex;
-  gap: 1.8rem;
+    display: flex;
+    gap: 1.8rem;
 }
 
 .shareProfile button {
-  background: none;
-  border: none;
-  color: #3b5998;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1.3rem;
+    background: none;
+    border: none;
+    color: #3b5998;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.3rem;
 }
 
 .shareProfile button:nth-child(3) {
-  color: #c8232c;
+    color: #c8232c;
 }
 
 .rightColumn {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  min-width: 240px;
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    min-width: 240px;
 }
 
 .title2 {
@@ -142,68 +143,68 @@
 }
 
 .card {
-  border: 0.1rem solid var(--gray-200);
-  border-radius: 0.8rem;
-  padding: 2.4rem 2.8rem;
-  font-size: 1.3rem;
-  color: var(--gray-700);
-  background: var(--white);
-  box-sizing: border-box;
+    border: 0.1rem solid var(--gray-200);
+    border-radius: 0.8rem;
+    padding: 2.4rem 2.8rem;
+    font-size: 1.3rem;
+    color: var(--gray-700);
+    background: var(--white);
+    box-sizing: border-box;
 }
 
 .cardRow {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.4rem;
 }
 
 .cardLabel {
-  font-weight: 600;
-  color: var(--gray-500);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.3rem;
 }
 
 .cardValue {
-  color: var(--gray-400);
-  text-align: right;
-  font-size: 1.3rem;
+    color: var(--gray-400);
+    text-align: right;
+    font-size: 1.3rem;
 }
 
 .contactRow {
-  display: flex;
-  align-items: center;
-  gap: 1.4rem;
-  margin-bottom: 1.4rem;
-  color: var(--gray-500);
-  font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    margin-bottom: 1.4rem;
+    color: var(--gray-500);
+    font-size: 1.3rem;
 }
 
 .contactIcon {
-  width: 2.4rem;
-  height: 2.4rem;
-  fill: var(--blue-500);
+    width: 2.4rem;
+    height: 2.4rem;
+    fill: var(--blue-500);
 }
 
 .followUs {
-  margin-top: 1.4rem;
-  font-size: 1.3rem;
-  color: var(--gray-600);
+    margin-top: 1.4rem;
+    font-size: 1.3rem;
+    color: var(--gray-600);
 }
 
 .socialLinks {
-  margin-top: 1rem;
-  display: flex;
-  gap: 2rem;
+    margin-top: 1rem;
+    display: flex;
+    gap: 2rem;
 }
 
 .socialLink {
-  color: var(--blue-500);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1.7rem;
+    color: var(--blue-500);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.7rem;
 }
 
 .wrapperBox {
@@ -212,3 +213,4 @@
   background-color: var(--white);
   box-sizing: border-box;
 }
+
