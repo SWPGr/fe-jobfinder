@@ -13,9 +13,9 @@
   align-items: center;
   margin-bottom: 2rem;
   font-size: 2rem;
-  margin-left: 3rem;
+  margin-left: 2rem;
 
-  h2 {
+  &__title {
     margin: 0;
   }
 
@@ -138,8 +138,16 @@
     border-radius: 50%;
   }
 
-  h2 {
+  .modalName {
+    font-size: 2rem;
+    font-weight: 700;
     margin: 0;
+  }
+
+  .modalRole {
+    font-size: 1.3rem;
+    color: var(--gray-600);
+    margin-top: 0.2rem;
   }
 
   .infoHeader {
@@ -173,10 +181,10 @@
 .socialMedia {
   margin-top: 2rem;
 
-  h3,
-  h4 {
+  .sectionTitle {
     font-weight: 600;
     margin-bottom: 1rem;
+    font-size: 1.5rem;
   }
 
   p {
@@ -205,6 +213,12 @@
   padding: 1.5rem;
   border-radius: 0.6rem;
 
+  .sectionTitle {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+
   button {
     cursor: pointer;
     background: var(--blue-100);
@@ -219,8 +233,10 @@
 .contactInfo {
   flex: 1;
 
-  h4 {
+  .sectionTitle {
     margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.5rem;
   }
 
   p {
@@ -235,12 +251,14 @@
   }
 }
 
-.socialMedia .socialIcons {
-  display: flex;
-  gap: 1rem;
+.socialMedia {
+  .socialIcons {
+    display: flex;
+    gap: 1rem;
 
-  a {
-    font-size: 1.8rem;
-    text-decoration: none;
+    a {
+      font-size: 1.8rem;
+      text-decoration: none;
+    }
   }
 }
