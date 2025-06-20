@@ -17,9 +17,30 @@ const register = async (email, password, roleName) => {
         throw error;
     }
 };
+
+const forgotPassword = async (email) => {
+    try {
+        const response = await post('auth/forgot-password', { email }); // gửi trong body
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const resetPassword = async (token, newPassword) => {
+    try {
+        const response = await post('auth/reset-password', { token, newPassword }); // gửi trong body
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const AuthService = {
     login,
     register,
+    forgotPassword,
+    resetPassword,
 };
 
 export default AuthService;

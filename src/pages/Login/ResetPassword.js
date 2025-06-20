@@ -7,6 +7,7 @@ import styles from './Login.module.scss';
 import { validator } from '~/utils';
 import { Button } from '~/components';
 import { useState, useEffect } from 'react';
+import { authService } from '~/services';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,7 @@ function ResetPassword({ children, content, title, className, ...props }) {
     const [opened, { open, close }] = useDisclosure(false);
     const [showResendEmail, setShowResendEmail] = useState(false);
     const [countdown, setCountdown] = useState(0);
+
     const formResetPassword = useForm({
         initialValues: {
             email: '',
@@ -33,16 +35,23 @@ function ResetPassword({ children, content, title, className, ...props }) {
         return () => clearInterval(timer);
     }, [countdown]);
 
-    const handleSubmitForm = (values) => {
-        console.log('Form submitted:', values);
+    const handleSubmitForm = async (values) => {
+        try {
+            setShowResendEmail(true);
+            setCountdown(10);
+            await authService.forgotPassword(values.email);
+        } catch (error) {
+            const errorMsg = error?.response?.data?.message || error?.message || 'Something went wrong';
+            // Optionally show error to user
+            console.error('Error during password reset:', errorMsg);
+        }
     };
 
-    const handleResendEmail = () => {
-        if (countdown === 0) {
+    const handleResendEmail = async () => {
+        if (countdown === 0 && formResetPassword.values.email && !formResetPassword.errors.email) {
             setShowResendEmail(true);
-            setCountdown(10); // Start 10-second countdown
-            // Add resend email logic here
-            console.log('Resending email to:', formResetPassword.values.email);
+            setCountdown(10);
+            await handleSubmitForm(formResetPassword.values);
         }
     };
 
@@ -70,7 +79,7 @@ function ResetPassword({ children, content, title, className, ...props }) {
             >
                 <form
                     className={cx('form', 'reset-password-form')}
-                    onSubmit={formResetPassword.onSubmit((values) => handleSubmitForm(values))}
+                    // onSubmit={formResetPassword.onSubmit(handleSubmitForm)}
                 >
                     <TextInput
                         label="Email address"
@@ -87,12 +96,10 @@ function ResetPassword({ children, content, title, className, ...props }) {
                         rightSection={
                             <Button
                                 yellow
+                                type="submit"
                                 disabled={formResetPassword.values.email === '' || countdown > 0}
                                 className={cx('send-email')}
-                                onClick={() => {
-                                    setShowResendEmail(true);
-                                    setCountdown(10);
-                                }}
+                                onClick={formResetPassword.onSubmit(handleSubmitForm)}
                             >
                                 Send
                             </Button>
@@ -100,7 +107,7 @@ function ResetPassword({ children, content, title, className, ...props }) {
                     />
                 </form>
 
-                {showResendEmail && formResetPassword.values.email !== '' && (
+                {showResendEmail && !formResetPassword.errors.email && formResetPassword.values.email !== '' && (
                     <p className={cx('resend-email-message')}>
                         Please check your email for the reset password link or{' '}
                         <Button
