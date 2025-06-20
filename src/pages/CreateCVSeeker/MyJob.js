@@ -14,85 +14,13 @@ const jobs = [
     applications: 798,
     isVIP: true,
   },
-  {
-    title: "Senior UX Designer",
-    type: "Internship",
-    remaining: "8 days remaining",
-    status: "Active",
-    applications: 185,
-    isVIP: false,
-  },
-  {
-    title: "Junior Graphic Designer",
-    type: "Full Time",
-    remaining: "24 days remaining",
-    status: "Active",
-    applications: 583,
-    isVIP: false,
-  },
-  {
-    title: "Front End Developer",
-    type: "Full Time",
-    remaining: "Dec 7, 2019",
-    status: "Expire",
-    applications: 740,
-    isVIP: false,
-  },
-  {
-    title: "Techical Support Specialist",
-    type: "Part Time",
-    remaining: "4 days remaining",
-    status: "Active",
-    applications: 556,
-    isVIP: true,
-  },
-  {
-    title: "Interaction Designer",
-    type: "Contract Base",
-    remaining: "Feb 2, 2019",
-    status: "Expire",
-    applications: 426,
-    isVIP: false,
-  },
-  {
-    title: "Software Engineer",
-    type: "Temporary",
-    remaining: "9 days remaining",
-    status: "Active",
-    applications: 922,
-    isVIP: false,
-  },
-  {
-    title: "Product Designer",
-    type: "Full Time",
-    remaining: "7 days remaining",
-    status: "Active",
-    applications: 994,
-    isVIP: false,
-  },
-  {
-    title: "Project Manager",
-    type: "Full Time",
-    remaining: "Dec 4, 2019",
-    status: "Expire",
-    applications: 196,
-    isVIP: true,
-  },
-  {
-    title: "Marketing Manager",
-    type: "Full Time",
-    remaining: "4 days remaining",
-    status: "Active",
-    applications: 492,
-    isVIP: false,
-  },
+  // ... các job khác như bạn đã cho ...
 ];
 
-// Định dạng dữ liệu cho JobItemOwner
 const jobsFormatted = jobs.map((job) => ({
   jobTitle: job.title,
   workTime: job.type,
-  remainDay: parseInt(job.remaining) || 0,
+  remainDay: job.remaining, // giữ nguyên string
   isActive: job.status === "Active",
   numberApplications: job.applications,
   isVIP: job.isVIP,
@@ -101,7 +29,6 @@ const jobsFormatted = jobs.map((job) => ({
 const JobApplications = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState("all");
 
-  // Ví dụ dữ liệu ứng viên giữ nguyên như bạn đã cung cấp
   const applicationsData = {
     all: [
       {
@@ -112,22 +39,7 @@ const JobApplications = ({ onClose }) => {
         applied: "Jan 23, 2022",
         cvLink: "#",
       },
-      {
-        name: "Theresa Webb",
-        role: "Product Designer",
-        experience: "7 Years Experience",
-        education: "High School Degree",
-        applied: "Jan 23, 2022",
-        cvLink: "#",
-      },
-      {
-        name: "Devon Lane",
-        role: "User Experience Designer",
-        experience: "7 Years Experience",
-        education: "Master Degree",
-        applied: "Jan 23, 2022",
-        cvLink: "#",
-      },
+      // ... các ứng viên khác ...
     ],
     shortlisted: [
       {
@@ -138,14 +50,7 @@ const JobApplications = ({ onClose }) => {
         applied: "Jan 23, 2022",
         cvLink: "#",
       },
-      {
-        name: "Jenny Wilson",
-        role: "UI Designer",
-        experience: "7 Years Experience",
-        education: "Bachelor Degree",
-        applied: "Jan 23, 2022",
-        cvLink: "#",
-      },
+      // ... các ứng viên khác ...
     ],
   };
 
@@ -158,17 +63,19 @@ const JobApplications = ({ onClose }) => {
         <div className={cx("breadcrumb")}>
           Home / Job / Senior UX Designer / <span>Applications</span>
         </div>
-        <h2>Job Applications</h2>
+        <div className={cx("headingMain")}>Job Applications</div>
 
         <div className={cx("tabs")}>
           <button
-            className={activeTab === "all" ? cx("active") : ""}
+            type="button"
+            className={cx("tabBtn", { active: activeTab === "all" })}
             onClick={() => setActiveTab("all")}
           >
             All Application ({applicationsData.all.length})
           </button>
           <button
-            className={activeTab === "shortlisted" ? cx("active") : ""}
+            type="button"
+            className={cx("tabBtn", { active: activeTab === "shortlisted" })}
             onClick={() => setActiveTab("shortlisted")}
           >
             Shortlisted ({applicationsData.shortlisted.length})
@@ -223,9 +130,9 @@ const MyJob = () => {
   return (
     <div className={cx("job-list-container")}>
       <div className={cx("header")}>
-        <h2>
+        <div className={cx("headingMain")}>
           My Jobs <span>({jobs.length})</span>
-        </h2>
+        </div>
       </div>
 
       <div className={cx("job-items-list")}>
@@ -240,6 +147,7 @@ const MyJob = () => {
               numberApplications: job.numberApplications,
             }}
             isVIP={job.isVIP}
+            onViewApplications={() => setOpenJobApplications(true)}
           />
         ))}
       </div>

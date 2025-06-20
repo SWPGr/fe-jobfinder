@@ -50,7 +50,8 @@ function PostJob() {
 
   return (
     <form className={cx('postJobTab')} onSubmit={handleSubmit}>
-      <h2>Post a job</h2>
+      <div className={cx('pageTitle')}>Post a job</div>
+
       <div className={cx('formGroup')}>
         <label>Job Title</label>
         <input
@@ -58,8 +59,10 @@ function PostJob() {
           placeholder="Add job title, role, vacancies etc"
           value={jobTitle}
           onChange={(e) => setJobTitle(e.target.value)}
-          required />
+          required
+        />
       </div>
+
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
           <label>Tags</label>
@@ -67,7 +70,8 @@ function PostJob() {
             type="text"
             placeholder="Job keyword, tags etc..."
             value={tags}
-            onChange={(e) => setTags(e.target.value)} />
+            onChange={(e) => setTags(e.target.value)}
+          />
         </div>
         <div className={cx('inputGroup')}>
           <label>Job Role</label>
@@ -78,7 +82,8 @@ function PostJob() {
           </select>
         </div>
       </div>
-      <h3>Salary</h3>
+
+      <div className={cx('sectionTitle')}>Salary</div>
       <div className={cx('row')}>
         <div className={cx('inputGroup')} style={{ position: 'relative' }}>
           <label>Min Salary</label>
@@ -88,7 +93,8 @@ function PostJob() {
             placeholder="Minimum salary..."
             value={minSalary}
             onChange={handleMinSalaryChange}
-            required />
+            required
+          />
           <span className={cx('currency')}>USD</span>
         </div>
         <div className={cx('inputGroup')} style={{ position: 'relative' }}>
@@ -99,7 +105,8 @@ function PostJob() {
             placeholder="Maximum salary..."
             value={maxSalary}
             onChange={handleMaxSalaryChange}
-            required />
+            required
+          />
           <span className={cx('currency')}>USD</span>
         </div>
         <div className={cx('inputGroup')}>
@@ -114,7 +121,8 @@ function PostJob() {
       {salaryError && (
         <div style={{ color: 'red', marginBottom: 10 }}>{salaryError}</div>
       )}
-      <h3>Advance Information</h3>
+
+      <div className={cx('sectionTitle')}>Advance Information</div>
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
           <label>Education</label>
@@ -144,6 +152,7 @@ function PostJob() {
           </select>
         </div>
       </div>
+
       <div className={cx('row')}>
         <div className={cx('inputGroup')}>
           <label>Vacancies</label>
@@ -159,7 +168,8 @@ function PostJob() {
           <input
             type="date"
             value={expirationDate}
-            onChange={(e) => setExpirationDate(e.target.value)} />
+            onChange={(e) => setExpirationDate(e.target.value)}
+          />
         </div>
         <div className={cx('inputGroup')}>
           <label>Job Level</label>
@@ -171,6 +181,7 @@ function PostJob() {
           </select>
         </div>
       </div>
+
       <fieldset className={cx('applyJobOn')}>
         <legend>Apply Job on:</legend>
         <label className={cx({ activeRadioLabel: applyJobOn === 'onJobpilot' })}>
@@ -179,7 +190,8 @@ function PostJob() {
             name="applyJob"
             value="onJobpilot"
             checked={applyJobOn === 'onJobpilot'}
-            onChange={(e) => setApplyJobOn(e.target.value)} />
+            onChange={(e) => setApplyJobOn(e.target.value)}
+          />
           <strong>On Jobpilot</strong>
           <p>Candidate will apply job using jobpilot & all application will show on your dashboard.</p>
         </label>
@@ -189,7 +201,8 @@ function PostJob() {
             name="applyJob"
             value="externalPlatform"
             checked={applyJobOn === 'externalPlatform'}
-            onChange={(e) => setApplyJobOn(e.target.value)} />
+            onChange={(e) => setApplyJobOn(e.target.value)}
+          />
           <strong>External Platform</strong>
           <p>Candidate apply job on your website, all application on your own website.</p>
         </label>
@@ -199,29 +212,30 @@ function PostJob() {
             name="applyJob"
             value="onYourEmail"
             checked={applyJobOn === 'onYourEmail'}
-            onChange={(e) => setApplyJobOn(e.target.value)} />
+            onChange={(e) => setApplyJobOn(e.target.value)}
+          />
           <strong>On Your Email</strong>
           <p>Candidate apply job on your email address, and all application in your email.</p>
         </label>
       </fieldset>
-      <h3>Description & Responsibility</h3>
+
+      <div className={cx('sectionTitle')}>Description & Responsibility</div>
       <div className={cx('formGroup')}>
         <label>Description</label>
         <SimpleRichTextEditor
           placeholder="Add your job description..."
-          onChange={setDescription} />
+          onChange={setDescription}
+        />
       </div>
       <div className={cx('formGroup')}>
         <label>Responsibilities</label>
         <SimpleRichTextEditor
           placeholder="Add your job responsibilities..."
-          onChange={setResponsibilities} />
+          onChange={setResponsibilities}
+        />
       </div>
-      <button
-        type="submit"
-        className={cx('saveNextBtn')}
-        disabled={!!salaryError}
-      >
+
+      <button type="submit" className={cx('saveNextBtn')} disabled={!!salaryError}>
         Post Job <span className={cx('arrow')}>&rarr;</span>
       </button>
     </form>

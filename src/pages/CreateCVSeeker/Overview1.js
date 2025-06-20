@@ -3,7 +3,6 @@ import classNames from "classnames/bind";
 import styles from "./Overview1.module.scss";
 import { JobItemOwner } from "~/components";
 
-
 const cx = classNames.bind(styles);
 
 const jobs = [
@@ -28,7 +27,7 @@ const Overview1 = () => {
     <div className={cx("container")}>
       {/* Header */}
       <div className={cx("overview-header")}>
-        <h2>Hello, Instagram</h2>
+        <div className={cx("titleMain")}>Hello, Instagram</div>
         <p className={cx("desc")}>Here is your daily activities and applications</p>
       </div>
 
@@ -75,7 +74,7 @@ const Overview1 = () => {
 
       {/* Job list header */}
       <div className={cx("job-list-header")}>
-        <h3>Recently Posted Jobs</h3>
+        <div className={cx("sectionTitle")}>Recently Posted Jobs</div>
         <button className={cx("view-all-btn")}>
           View all <span aria-hidden="true">→</span>
         </button>
