@@ -29,7 +29,7 @@ function Button({
     yellow = false,
     yellow_lighter = false,
     yellow_white = false,
-    
+
     rounded = false,
     text,
 
@@ -41,7 +41,7 @@ function Button({
 
     children,
     className,
-    onClick = () => {null},
+    onClick = () => {},
     ...passProps
 }) {
     let Comp = 'button';

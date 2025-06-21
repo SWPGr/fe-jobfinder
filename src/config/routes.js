@@ -1,4 +1,3 @@
-
 const routes = {
     admin: '/admin', // Admin dashboard
     home: '/',
@@ -27,12 +26,12 @@ const routes = {
     findEmployer: '/find-employer',
     verify: '/api/auth/verify',
     single: '/single',
-
     dashboardOverview: '/dashboard-overview',
 
     term: '/term',
     payment: '/payment',
 
+    resetPassword: 'api/auth/reset-password', // Reset password page
 };
 
 export default routes;

@@ -21,3 +21,4 @@ export { default as DashboardOverview } from './Admin/DashboardOverview.js';
 export { default as Term } from './Term/Term.js';
 export { default as Payment } from './Payment/Payment.js';
 export { default as AdminPage } from './Admin/Admin.js';
+export { default as ResetPassword } from './ResetPassword/ResetPassword.js';

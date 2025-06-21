@@ -17,9 +17,40 @@ const register = async (email, password, roleName) => {
         throw error;
     }
 };
+
+const forgotPassword = async (email) => {
+    try {
+        const response = await post('auth/forgot-password', { email }); // gửi trong body
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const resetPassword = async (token, password) => {
+    try {
+        const response = await post('auth/reset-password', { token, password }); // gửi trong body
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const googleLogin = async (email) => {
+    try {
+        const response = await post('oauth2/authorization/google', { email }); // gửi trong body
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const AuthService = {
     login,
     register,
+    forgotPassword,
+    resetPassword,
+    googleLogin,
 };
 
 export default AuthService;

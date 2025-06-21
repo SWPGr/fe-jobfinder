@@ -7,11 +7,11 @@ import { AuthContext } from './context';
 import { MantineProvider } from '@mantine/core'; // Import MantineProvider
 import '@mantine/core/styles.css';
 
-import './index.css'; // Import your custom styles
-
+// import './index.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
+import { LoadingProvider } from '~/context/LoadingContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,8 +19,10 @@ root.render(
         <GlobalStyles>
             <AuthContext.AuthProvider>
                 <MantineProvider withGlobalStyles withNormalizeCSS>
-                    <Notifications />
-                    <App />
+                    <LoadingProvider>
+                        <Notifications />
+                        <App />
+                    </LoadingProvider>
                 </MantineProvider>
             </AuthContext.AuthProvider>
         </GlobalStyles>

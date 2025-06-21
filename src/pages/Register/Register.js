@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Register.module.scss';
 import { useState } from 'react';
 import { IconMail, IconBrandSamsungpass, IconEyeOff, IconEye } from '@tabler/icons-react';
-import { Checkbox, TextInput, ActionIcon, Radio, Group, PasswordInput } from '@mantine/core';
+import { Checkbox, TextInput, ActionIcon, Radio, Group } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 
@@ -90,7 +90,7 @@ function Register() {
                             }}
                         />
 
-                        <PasswordInput
+                        <TextInput
                             type={showPassword ? 'text' : 'password'}
                             label="Password"
                             placeholder="Enter at least 8 characters"

@@ -23,9 +23,7 @@ export const AuthProvider = ({ children }) => {
             } else if (type === 'register') {
                 response = await authService.register(email, password, roleName);
             }
-            const data = response;
-            console.log(data);
-
+            const data = response.result;
             const loggedInUser = { role: data.role, token: data.token };
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
@@ -33,20 +31,18 @@ export const AuthProvider = ({ children }) => {
             return { success: true, data: data };
         } catch (error) {
             console.log(error);
-
-            const errorMessage = error.message;
-            setError(errorMessage);
+            setError(error);
             setLoading(false);
-            return { success: false, message: errorMessage };
+            return { success: false, message: error };
         }
     };
-    const loginWithGoogle = async (token, role) => {
+    const loginWithGoogle = async (email) => {
         setLoading(true);
         setError(null);
         try {
             // Giả sử authService có api googleLogin nhận token và role
-            const response = await authService.googleLogin(token, role);
-            const data = response.data;
+            const response = await authService.googleLogin(email);
+            const data = response;
             const loggedInUser = { ...data.user, token: data.token };
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
@@ -69,11 +65,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-     user = {
-         //role: 'ADMIN',
-         //role: 'JOB_SEEKER',
-         role: 'EMPLOYER',
-     };
+    //  user = {
+    //      //role: 'ADMIN',
+    //      //role: 'JOB_SEEKER',
+    //      role: 'EMPLOYER',
+    //  };
 
     return (
         <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading, error }}>
