@@ -77,8 +77,6 @@ export const post = async (path, data = {}, options = {}) => {
         const response = await httpRequest.post(path, data, options);
         return response.data;
     } catch (error) {
-        console.log(error);
-
         throw error;
     }
 };

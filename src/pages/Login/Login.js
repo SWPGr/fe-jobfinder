@@ -44,12 +44,15 @@ function Login() {
         console.log('Form submitted:', values);
         const data = await login(values.email, values.password);
 
+        console.log(data);
+
         if (data.success) {
             setLoading(false);
             navigate('/');
-            showSuccess('Login successful!');
+            showSuccess(data.message);
         } else {
             setLoading(false);
+            console.log(data);
             showError(data.message);
             setError(data.message);
         }

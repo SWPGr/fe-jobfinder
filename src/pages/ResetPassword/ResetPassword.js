@@ -43,7 +43,6 @@ function ResetPassword() {
         try {
             showLoading();
             console.log(token, values.password);
-
             const response = await authService.resetPassword(token, values.password);
             // const response = {
             //     success: true,
@@ -53,7 +52,7 @@ function ResetPassword() {
             console.log('Response data:', response);
             hideLoading();
 
-            if (response?.success) {
+            if (response) {
                 showSuccess('Password has been reset successfully!');
                 setTimeout(() => {
                     navigate('/login');
@@ -66,7 +65,6 @@ function ResetPassword() {
         } catch (error) {
             hideLoading();
             const errorMessage = error?.message || 'Unexpected error!';
-            console.error('Reset Password Error:', errorMessage);
             showError(errorMessage);
         }
     };
@@ -150,11 +148,7 @@ function ResetPassword() {
 
                     {/* Submit button */}
                     <div className={cx('btn-submit')}>
-                        <Button
-                            type="submit"
-                            className={cx('submit')}
-                            disabled={formResetPassword.isSubmitting || !formResetPassword.isValid()}
-                        >
+                        <Button type="submit" className={cx('submit')} disabled={formResetPassword.isSubmitting}>
                             Reset Password
                         </Button>
                     </div>
