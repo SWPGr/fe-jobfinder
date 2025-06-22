@@ -1,0 +1,164 @@
+.container {
+    padding: 3.2rem;
+    background: var(--background-color);
+    min-height: 100vh;
+}
+
+.header {
+    margin-bottom: 1.8rem;
+
+    h1 {
+        font-size: var(--font-size-header);
+        font-weight: 700;
+        color: var(--text-color);
+        line-height: 1.2;
+    }
+}
+
+.subtitle {
+    font-size: var(--font-size-18px);
+    color: var(--gray-500);
+    margin-top: 0.8rem;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2.4rem;
+    margin-bottom: 2.8rem;
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.4rem;
+    margin-bottom: 2.8rem;
+
+    @media (min-width: 1024px) {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.chartsRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    @media (min-width: 1024px) {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.card {
+    background: var(--white);
+    border-radius: 1.6rem;
+    box-shadow: var(--box-shadow);
+    padding: 3.2rem 3.2rem;
+    min-height: 36rem;
+
+    h2 {
+        font-size: var(--font-size-20px);
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 2rem;
+    }
+
+    .recharts-wrapper {
+        width: 100% !important;
+        height: 34rem !important;
+        max-width: 100% !important;
+    }
+}
+
+.selectRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.8rem;
+
+    select {
+        font-size: var(--font-size-16px);
+        padding: 0.5rem 1.2rem;
+        color: var(--text-color);
+        border-radius: var(--border-radius);
+        border: 1px solid var(--gray-200);
+        background: var(--white);
+    }
+}
+
+/* StatCard custom lớn hơn */
+.statCard {
+    .textGreen{
+        color: green;
+    }
+    .textRed{
+        color: red;
+    }
+    .statTitle {
+        font-size: 1.3rem; // hoặc 28px, to lên tùy ý
+        font-weight: 500;
+        color: var(--gray-500);
+        margin-bottom: 0.5rem;
+    }
+
+    .statValue {
+        font-size: 2rem; // hoặc 36px, càng lớn càng nổi bật
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 0.2rem;
+    }
+
+    .statChange {
+        font-size: 1.8rem; // to hơn mặc định
+        font-weight: 500;
+        margin-right: 0.5rem;
+    }
+
+    .statDesc {
+        font-size: 1.5rem; // hoặc 15px
+        color: var(--gray-500);
+        margin-left: 0.7rem;
+    }
+
+    .statIcon {
+        width: 5.2rem; // tăng size icon cho cân đối
+        height: 5.2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--blue-50);
+        color: var(--primary-color-light);
+        font-size: 2.6rem; // icon cũng nên to hơn xíu
+    }
+}
+
+// Chart text & legend font-size override
+.recharts-text {
+    font-size: var(--font-size-16px) !important;
+    font-weight: 500;
+    fill: var(--primary-color-dark) !important;
+}
+
+.recharts-legend-item-text {
+    font-size: var(--font-size-16px) !important;
+    color: var(--primary-color) !important;
+}
+
+.recharts-default-legend {
+    margin-top: 1.4rem !important;
+}
+
+.recharts-tooltip-label {
+    font-size: var(--font-size-14px) !important;
+    color: var(--primary-color-dark) !important;
+}
