@@ -8,7 +8,7 @@ import { IconBellRinging } from '@tabler/icons-react';
 
 import images from '~/assets/Images/index';
 import { useAuth } from '~/context/AuthContext';
-import { Button, AvatarButton } from '~/components';
+import { Button, AvatarButton, NotificationButtonButton } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -42,10 +42,7 @@ function Header({ className }) {
                 <div className={cx('right-side')}>
                     {user ? (
                         <div className={cx('user')}>
-                            <div className={cx('notification')}>
-                                <IconBellRinging size={24} />
-                                <span className={cx('badge')}></span>
-                            </div>
+                            <NotificationButtonButton />
                             <AvatarButton avatar={user.avatar} />
                         </div>
                     ) : (

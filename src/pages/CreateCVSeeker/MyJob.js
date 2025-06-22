@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./MyJob.module.scss";
+import JobItemOwner from "~/components/JobItemOwner";
 
 const cx = classNames.bind(styles);
 
@@ -11,121 +12,47 @@ const jobs = [
     remaining: "27 days remaining",
     status: "Active",
     applications: 798,
+    isVIP: true,
   },
-  {
-    title: "Senior UX Designer",
-    type: "Internship",
-    remaining: "8 days remaining",
-    status: "Active",
-    applications: 185,
-  },
-  {
-    title: "Junior Graphic Designer",
-    type: "Full Time",
-    remaining: "24 days remaining",
-    status: "Active",
-    applications: 583,
-  },
-  {
-    title: "Front End Developer",
-    type: "Full Time",
-    remaining: "Dec 7, 2019",
-    status: "Expire",
-    applications: 740,
-  },
-  {
-    title: "Techical Support Specialist",
-    type: "Part Time",
-    remaining: "4 days remaining",
-    status: "Active",
-    applications: 556,
-  },
-  {
-    title: "Interaction Designer",
-    type: "Contract Base",
-    remaining: "Feb 2, 2019",
-    status: "Expire",
-    applications: 426,
-  },
-  {
-    title: "Software Engineer",
-    type: "Temporary",
-    remaining: "9 days remaining",
-    status: "Active",
-    applications: 922,
-  },
-  {
-    title: "Product Designer",
-    type: "Full Time",
-    remaining: "7 days remaining",
-    status: "Active",
-    applications: 994,
-  },
-  {
-    title: "Project Manager",
-    type: "Full Time",
-    remaining: "Dec 4, 2019",
-    status: "Expire",
-    applications: 196,
-  },
-  {
-    title: "Marketing Manager",
-    type: "Full Time",
-    remaining: "4 days remaining",
-    status: "Active",
-    applications: 492,
-  },
+  // ... các job khác như bạn đã cho ...
 ];
 
-const applicationsData = {
-  all: [
-    {
-      name: "Ronald Richards",
-      role: "UI/UX Designer",
-      experience: "7 Years Experience",
-      education: "Master Degree",
-      applied: "Jan 23, 2022",
-      cvLink: "#",
-    },
-    {
-      name: "Theresa Webb",
-      role: "Product Designer",
-      experience: "7 Years Experience",
-      education: "High School Degree",
-      applied: "Jan 23, 2022",
-      cvLink: "#",
-    },
-    {
-      name: "Devon Lane",
-      role: "User Experience Designer",
-      experience: "7 Years Experience",
-      education: "Master Degree",
-      applied: "Jan 23, 2022",
-      cvLink: "#",
-    },
-  ],
-  shortlisted: [
-    {
-      name: "Darren Elder",
-      role: "UI/UX Designer",
-      experience: "7 Years Experience",
-      education: "Intermediate Degree",
-      applied: "Jan 23, 2022",
-      cvLink: "#",
-    },
-    {
-      name: "Jenny Wilson",
-      role: "UI Designer",
-      experience: "7 Years Experience",
-      education: "Bachelor Degree",
-      applied: "Jan 23, 2022",
-      cvLink: "#",
-    },
-  ],
-};
+const jobsFormatted = jobs.map((job) => ({
+  jobTitle: job.title,
+  workTime: job.type,
+  remainDay: job.remaining, // giữ nguyên string
+  isActive: job.status === "Active",
+  numberApplications: job.applications,
+  isVIP: job.isVIP,
+}));
 
 const JobApplications = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState("all");
+
+  const applicationsData = {
+    all: [
+      {
+        name: "Ronald Richards",
+        role: "UI/UX Designer",
+        experience: "7 Years Experience",
+        education: "Master Degree",
+        applied: "Jan 23, 2022",
+        cvLink: "#",
+      },
+      // ... các ứng viên khác ...
+    ],
+    shortlisted: [
+      {
+        name: "Darren Elder",
+        role: "UI/UX Designer",
+        experience: "7 Years Experience",
+        education: "Intermediate Degree",
+        applied: "Jan 23, 2022",
+        cvLink: "#",
+      },
+      // ... các ứng viên khác ...
+    ],
+  };
 
   return (
     <div className={cx("overlay")}>
@@ -136,17 +63,19 @@ const JobApplications = ({ onClose }) => {
         <div className={cx("breadcrumb")}>
           Home / Job / Senior UX Designer / <span>Applications</span>
         </div>
-        <h2>Job Applications</h2>
+        <div className={cx("headingMain")}>Job Applications</div>
 
         <div className={cx("tabs")}>
           <button
-            className={activeTab === "all" ? cx("active") : ""}
+            type="button"
+            className={cx("tabBtn", { active: activeTab === "all" })}
             onClick={() => setActiveTab("all")}
           >
             All Application ({applicationsData.all.length})
           </button>
           <button
-            className={activeTab === "shortlisted" ? cx("active") : ""}
+            type="button"
+            className={cx("tabBtn", { active: activeTab === "shortlisted" })}
             onClick={() => setActiveTab("shortlisted")}
           >
             Shortlisted ({applicationsData.shortlisted.length})
@@ -196,93 +125,32 @@ const JobApplications = ({ onClose }) => {
 };
 
 const MyJob = () => {
-  const [activeDropdownId, setActiveDropdownId] = useState(null);
   const [openJobApplications, setOpenJobApplications] = useState(false);
-
-  const toggleDropdown = (idx) => {
-    setActiveDropdownId((prev) => (prev === idx ? null : idx));
-  };
 
   return (
     <div className={cx("job-list-container")}>
       <div className={cx("header")}>
-        <h2>
-          My Jobs <span>(589)</span>
-        </h2>
-        <div className={cx("job-status-filter")}>
-          <label>Job status</label>
-          <select>
-            <option>All Jobs</option>
-            <option>Active</option>
-            <option>Expired</option>
-          </select>
+        <div className={cx("headingMain")}>
+          My Jobs <span>({jobs.length})</span>
         </div>
       </div>
 
-      <table className={cx("job-table")}>
-        <thead>
-          <tr>
-            <th>JOBS</th>
-            <th>STATUS</th>
-            <th>APPLICATIONS</th>
-            <th>ACTIONS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {jobs.map((job, idx) => (
-            <tr
-              key={idx}
-              className={cx("job-row", {
-                expire: job.status === "Expire",
-                active: job.status === "Active",
-                hoverable: true,
-              })}
-            >
-              <td className={cx("job-info")}>
-                <div className={cx("job-title")}>{job.title}</div>
-                <div className={cx("job-subtitle")}>
-                  {job.type} • {job.remaining}
-                </div>
-              </td>
-              <td
-                className={cx("status", {
-                  active: job.status === "Active",
-                  expire: job.status === "Expire",
-                })}
-              >
-                {job.status === "Active" ? "✓ Active" : "✗ Expire"}
-              </td>
-              <td className={cx("applications")}>
-                {job.applications} Applications
-              </td>
-              <td className={cx("actions")}>
-                <button
-                  className={cx("view-btn")}
-                  onClick={() => setOpenJobApplications(true)}
-                >
-                  View Applications
-                </button>
-                <div className={cx("dropdown")}>
-                  <button
-                    className={cx("more-btn")}
-                    onClick={() => toggleDropdown(idx)}
-                    aria-label="More options"
-                  >
-                    ⋮
-                  </button>
-                  {activeDropdownId === idx && (
-                    <div className={cx("dropdown-content")}>
-                      <a href="#">Promote Job</a>
-                      <a href="#">View Detail</a>
-                      <a href="#">Make it Expire</a>
-                    </div>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className={cx("job-items-list")}>
+        {jobsFormatted.map((job, idx) => (
+          <JobItemOwner
+            key={idx}
+            jobDescription={{
+              jobTitle: job.jobTitle,
+              workTime: job.workTime,
+              remainDay: job.remainDay,
+              isActive: job.isActive,
+              numberApplications: job.numberApplications,
+            }}
+            isVIP={job.isVIP}
+            onViewApplications={() => setOpenJobApplications(true)}
+          />
+        ))}
+      </div>
 
       <div className={cx("pagination")}>
         <button disabled>{"<"}</button>

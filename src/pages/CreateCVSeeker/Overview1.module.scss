@@ -2,12 +2,13 @@
   padding: 2.4rem;
   font-family: var(--font-family);
   color: var(--gray-900);
+  max-width: 1500rem;
 }
 
 .overview-header {
   margin-bottom: 1.6rem;
 
-  h2 {
+  .titleMain {
     margin: 0 0 0.8rem 0;
     font-weight: 700;
     font-size: 2.8rem;
@@ -75,7 +76,7 @@
   align-items: center;
   margin-bottom: 1.2rem;
 
-  h3 {
+  .sectionTitle {
     margin: 0;
     font-weight: 600;
   }

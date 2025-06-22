@@ -10,4 +10,5 @@ export { default as Filter } from './Filter/Filter.js';
 export { default as CandidateItem } from './CandidateItem/CandidateItem.js';
 export { default as PopperWrapper } from './Popper/Wrapper';
 export { default as AvatarButton } from './AvatarButton/AvatarButton.js';
-
+export { default as NotificationItem } from './NotificationItem/NotificationItem.js';
+export { default as NotificationButtonButton } from './NotificationButton/NotificationButton.js';

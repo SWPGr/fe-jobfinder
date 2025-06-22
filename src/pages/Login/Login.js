@@ -37,19 +37,24 @@ function Login() {
     const [checked, setChecked] = useState(false); // Remember me checkbox
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
     const { showError, showSuccess } = useNotification();
+    const [error, setError] = useState(null);
 
     // Handler for form submission (currently empty)
     const handleSubmitForm = async (values) => {
         console.log('Form submitted:', values);
         const data = await login(values.email, values.password);
 
+        console.log(data);
+
         if (data.success) {
             setLoading(false);
             navigate('/');
-            showSuccess('Login successful!');
+            showSuccess(data.message);
         } else {
             setLoading(false);
+            console.log(data);
             showError(data.message);
+            setError(data.message);
         }
     };
 
@@ -103,6 +108,8 @@ function Login() {
                             type={showPassword ? 'text' : 'password'}
                             key={formLogin.key.password}
                             {...formLogin.getInputProps('password')}
+                            error={formLogin.errors.password || error}
+                            onInput={() => setError(null)} // Clear error on input
                             leftSectionPointerEvents="none"
                             leftSection={<IconBrandSamsungpass size={20} />}
                             rightSection={

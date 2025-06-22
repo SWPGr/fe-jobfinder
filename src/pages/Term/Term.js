@@ -8,7 +8,7 @@ const Term = () => {
   return (
     <div className={cx('termsContainer')}>
       <div className={cx('content')}>
-        <h1>01. Terms & Condition</h1>
+        <div className={cx('pageTitle')}>01. Terms & Condition</div>
         <p>
           Praesent placerat dictum eleifend. Nam pulvinar urna vel tellus maximus, eget faucibus
           turpis hendrerit. Sed lacinia molestie arcu, et accumsan nisi. Quisque molestie velit vitae
@@ -29,7 +29,7 @@ const Term = () => {
           <li>Integer feugiat lacinia ut efficitur mattis. Sed quis molestie velit.</li>
         </ul>
 
-        <h1>02. Limitations</h1>
+        <div className={cx('pageTitle')}>02. Limitations</div>
         <p>
           In pretium est sit amet diam feugiat eleifend. Curabitur consectetur fringilla metus. Morbi
           hendrerit facilisis odio, Sed condimentum lacinia arcu. Ut ut lacinia metus. Lorem ipsum
@@ -47,14 +47,14 @@ const Term = () => {
           <li>Vivamus nec neque a libero sodales aliquet a et dolor.</li>
         </ul>
 
-        <h1>03. Security</h1>
+        <div className={cx('pageTitle')}>03. Security</div>
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ex neque, elementum eu
           blandit in, pharetra ac elit. Phasellus id pellentesque nulla. Cras erat nisi, mattis
           facilisis ut, lacinia a lacinia. Fusce gravida augue ut leo facilisis.
         </p>
 
-        <h1>04. Privacy Policy</h1>
+        <div className={cx('pageTitle')}>04. Privacy Policy</div>
         <p>
           Praesent non sem facilisis, hendrerit nisi vitae, volutpat quam. Aliquam metus mauris, sem
           eu eros vitae, blandit tristique metus. Vestibulum maximus nec justo sed maximus. Vivamus
@@ -75,7 +75,7 @@ const Term = () => {
         </ul>
       </div>
       <div className={cx('tableOfContents')}>
-        <h3>TABLE OF CONTENTS</h3>
+        <div className={cx('sectionTitle')}>TABLE OF CONTENTS</div>
         <ul>
           <li>01. Terms & Condition</li>
           <li>02. Limitations</li>

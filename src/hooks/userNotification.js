@@ -19,7 +19,7 @@ const useNotification = () => {
     };
 
     // Hàm cho thông báo thành công
-    const showSuccess = (message, title = 'Success') => {
+    const showSuccess = (message = 'Success', title = 'Success') => {
         showNotification({
             message,
             title,
@@ -29,7 +29,7 @@ const useNotification = () => {
     };
 
     // Hàm cho thông báo thông tin
-    const showInfo = (message, title = 'Info') => {
+    const showInfo = (message = 'Info', title = 'Info') => {
         showNotification({
             message,
             title,
@@ -39,7 +39,7 @@ const useNotification = () => {
     };
 
     // Hàm cho thông báo cảnh báo
-    const showWarning = (message, title = 'Warning') => {
+    const showWarning = (message = 'Warning', title = 'Warning') => {
         showNotification({
             message,
             title,
@@ -49,7 +49,7 @@ const useNotification = () => {
     };
 
     // Hàm cho thông báo lỗi
-    const showError = (message, title = 'Error') => {
+    const showError = (message = 'Error', title = 'Error') => {
         showNotification({
             message,
             title,

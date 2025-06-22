@@ -10,17 +10,17 @@ const Payment = () => {
   return (
     <div className={cx('paymentContainer')}>
       <img src={images} alt="Job Posting Illustration" className={cx('illustration')} />
-      <h2>Buy Premium Subscription to Post a Job</h2>
-      <p>
+      <div className={cx('paymentContainer__title')}>Buy Premium Subscription to Post a Job</div>
+      <p className={cx('paymentContainer__description')}>
         Donec eu dui ut dolor commodo ornare. Sed ac libero, malesuada quis
         justo sit amet, varius tempor neque. Quisque ultricies mi sed lorem
         condimentum, vel tempus lectus ultricies.
       </p>
       <div className={cx('plans')}>
         <div className={cx('plan')}>
-          <h3>BASIC</h3>
+          <div className={cx('plan__title')}>BASIC</div>
           <p className={cx('price')}>$19 /Monthly</p>
-          <ul>
+          <ul className={cx('plan__features')}>
             <li><FaCheck /> Post 1 Job</li>
             <li><FaCheck /> Urgents & Featured Jobs</li>
             <li><FaCheck /> Highlights Job with Colors</li>
@@ -31,9 +31,9 @@ const Payment = () => {
           <button><FaArrowRight /> Choose Plan</button>
         </div>
         <div className={cx('plan', 'recommended')}>
-          <h3>STANDARD</h3>
+          <div className={cx('plan__title')}>STANDARD</div>
           <p className={cx('price')}>$39 /Monthly</p>
-          <ul>
+          <ul className={cx('plan__features')}>
             <li><FaCheck /> 3 Active Jobs</li>
             <li><FaCheck /> Urgents & Featured Jobs</li>
             <li><FaCheck /> Highlights Job with Colors</li>
@@ -45,9 +45,9 @@ const Payment = () => {
           <button><FaArrowRight /> Choose Plan</button>
         </div>
         <div className={cx('plan')}>
-          <h3>PREMIUM</h3>
+          <div className={cx('plan__title')}>PREMIUM</div>
           <p className={cx('price')}>$59 /Monthly</p>
-          <ul>
+          <ul className={cx('plan__features')}>
             <li><FaCheck /> 6 Active Jobs</li>
             <li><FaCheck /> Urgents & Featured Jobs</li>
             <li><FaCheck /> Highlights Job with Colors</li>
