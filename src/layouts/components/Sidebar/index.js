@@ -1,9 +1,9 @@
+// Sidebar.js
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import { IconLogout } from '@tabler/icons-react';
-
 import { useAuth } from '~/context/AuthContext';
 import { items } from './Items';
 
@@ -15,23 +15,20 @@ function Sidebar({ setSelectedMenu, className }) {
 
     const { user, logout } = useAuth();
     const role = user?.role;
-    const itemList = role ? items[role] : null; // Ensure itemList is set conditionally
+    const itemList = role ? items[role] : null;
 
-    // Use effect should always be called, and it's safe to access itemList only inside this effect
     useEffect(() => {
         if (itemList && itemList.items.length > 0) {
-            setSelectedMenu(itemList.items[0].page);
+            setSelectedMenu(itemList.items[0].page, itemList.items[0].title);
         }
-    }, [itemList, setSelectedMenu]); // `itemList` is now a dependency
+    }, [itemList, setSelectedMenu]);
 
-    // If itemList is not available, we can return an error message or loading state
     if (!itemList) {
         return <div>Error: No items available for the role: {role}</div>;
     }
 
-    const classes = cx('wrapper', {
-        [className]: className,
-    });
+    const classes = cx('wrapper', { [className]: className });
+
     return (
         <div className={classes}>
             <div className={cx('header')}>{itemList?.header}</div>
@@ -40,12 +37,10 @@ function Sidebar({ setSelectedMenu, className }) {
                     {itemList.items.map((item, index) => (
                         <div
                             key={index}
-                            className={cx('nav-item', {
-                                active: active === item.title,
-                            })}
+                            className={cx('nav-item', { active: active === item.title })}
                             onClick={() => {
                                 setActive(item.title);
-                                setSelectedMenu(item.page);
+                                setSelectedMenu(item.page, item.title);
                             }}
                         >
                             <span>
@@ -56,7 +51,6 @@ function Sidebar({ setSelectedMenu, className }) {
                         </div>
                     ))}
                 </div>
-
                 <div className={cx('bottom')}>
                     <div
                         className={cx('nav-item', 'logout')}
@@ -75,5 +69,4 @@ function Sidebar({ setSelectedMenu, className }) {
         </div>
     );
 }
-
 export default Sidebar;
