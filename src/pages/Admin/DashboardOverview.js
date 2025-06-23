@@ -51,7 +51,7 @@ const DashboardOverview = () => {
     }, [activityData, selectedRange]);
 
     const filteredActivityData = activityData.slice(-selectedRange);
-
+    console.log('filteredActivityData', filteredActivityData);
     return (
         <div className={cx('container')}>
             <div className={cx('header')}>

@@ -1,0 +1,136 @@
+.managementWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.headerRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.8rem;
+
+    h2 {
+        font-size: 1.55rem;
+        font-weight: 700;
+        color: #1a2341;
+        letter-spacing: -0.5px;
+        margin: 0;
+    }
+}
+
+.actionGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.44rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    padding: 0.54rem 1.15rem;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #324264;
+    box-shadow: 0 1px 3px 0 rgba(22, 28, 45, 0.06);
+    transition: all 0.15s;
+
+    &:hover {
+        background: #f6fafd;
+        border-color: #b2cdfd;
+        color: #0c63e4;
+    }
+
+    &.primary {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #fff;
+        font-weight: 600;
+
+        &:hover {
+            background: #1747a7;
+            border-color: #1747a7;
+        }
+    }
+}
+
+.tableWrapper {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 1.5px 8px 0 rgba(22, 28, 45, 0.06);
+    overflow-x: auto;
+}
+
+.dataTable {
+    min-width: 900px;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.dataTable thead {
+    background: #f8fafc;
+
+    th {
+        padding: 1rem 1.3rem;
+        font-size: 0.96rem;
+        font-weight: 700;
+        color: #789;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-bottom: 2px solid #e5e7eb;
+        user-select: none;
+        cursor: pointer;
+
+        &.sortable:hover {
+            background: #e8f0fe;
+            color: #2065e4;
+        }
+    }
+}
+
+.dataTable tbody tr {
+    transition: background 0.15s;
+
+    &:hover {
+        background: #f3f7fb;
+    }
+}
+
+.dataTable td {
+    padding: 1rem 1.3rem;
+    font-size: 1rem;
+    color: #2e3654;
+    white-space: nowrap;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dataTable td:last-child {
+    text-align: right;
+}
+
+.statusText {
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.3rem 0.85rem;
+    border-radius: 0.8rem;
+    background: #e0f2fe;
+    color: #0891b2;
+    display: inline-block;
+}
+
+.iconBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #7b809a;
+    transition: color 0.18s;
+
+    &:hover {
+        color: #1a2341;
+    }
+}
