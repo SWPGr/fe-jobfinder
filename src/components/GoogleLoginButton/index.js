@@ -1,20 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './GoogleLoginButton.module.scss';
 
-import { useNotification } from '~/hooks';
-import { useLoading } from '~/context/LoadingContext';
 import { authService } from '~/services';
+import { useNotification } from '~/hooks';
+import { useAuth } from '~/context/AuthContext';
+import { useLoading } from '~/context/LoadingContext';
 
 const cx = classNames.bind(styles);
 const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
-if (!clientId) {
-    console.error('Google Client ID is not defined. Please set REACT_APP_GOOGLE_CLIENT_ID in .env');
-}
 
 function CustomGoogleButton({ onClick, disabled, children }) {
     return (
@@ -44,33 +41,37 @@ function CustomGoogleButton({ onClick, disabled, children }) {
 }
 
 function GoogleLoginButton({ disabled = false }) {
+    const [errorMsg, setErrorMsg] = useState('');
     const { showSuccess, showError } = useNotification();
-    const { showLoading, hideLoading } = useLoading();
     const navigate = useNavigate();
+    const { showLoading, hideLoading } = useLoading();
+    let { setUser } = useAuth();
 
     const handleSuccess = async (credentialResponse) => {
         try {
             showLoading();
-            const credential = credentialResponse.credential;
-            const user = jwtDecode(credential);
-
-            // Gửi credential tới BE thay vì giải mã
-            // const response = await authService.googleLogin(user.email);
-
-            window.location.href = 'http://localhost:8080/api/auth/google/callback';
-        } catch (error) {
+            const token = credentialResponse.credential;
+            const response = await authService.googleLogin({ credential: token });
+            console.log(response.result);
+            localStorage.setItem('user', JSON.stringify(response.result));
             hideLoading();
-            showError(error.message || 'Đăng nhập Google thất bại');
+            setUser({
+                role: response.result.role,
+                token: response.result.token,
+            });
+
+            showSuccess(response.message);
+
+            navigate('/');
+        } catch (error) {
+            setErrorMsg('Authentication failed');
+            showError(error.message);
         }
     };
 
     const handleError = () => {
-        showError('Không thể kết nối với Google');
+        setErrorMsg('Google login failed');
     };
-
-    if (!clientId) {
-        return <p className={cx('error')}>Lỗi cấu hình Google Sign-In. Vui lòng liên hệ hỗ trợ.</p>;
-    }
 
     return (
         <GoogleOAuthProvider clientId={clientId}>
@@ -80,10 +81,11 @@ function GoogleLoginButton({ disabled = false }) {
                 disabled={disabled}
                 render={({ onClick, disabled: internalDisabled }) => (
                     <CustomGoogleButton onClick={onClick} disabled={disabled || internalDisabled}>
-                        Đăng nhập với Google
+                        Login with Google
                     </CustomGoogleButton>
                 )}
             />
+            {errorMsg && <p style={{ color: 'red', marginTop: 8 }}>{errorMsg}</p>}
         </GoogleOAuthProvider>
     );
 }

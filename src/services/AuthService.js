@@ -36,9 +36,9 @@ const resetPassword = async (token, password) => {
     }
 };
 
-const googleLogin = async (email) => {
+const googleLogin = async ({ credential }) => {
     try {
-        const response = await post('oauth2/authorization/google', { email }); // gửi trong body
+        const response = await post('auth/google', { credential }); // gửi credential trong body
         return response;
     } catch (error) {
         throw error;

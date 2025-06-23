@@ -50,7 +50,7 @@ function Header({ className }) {
                             <Button blue_white to={'/login'}>
                                 Sign in
                             </Button>
-                            <Button classNames={cx('post-job')}>Post A Job</Button>
+                            <Button className={cx('post-job')}>Post A Job</Button>
                         </div>
                     )}
                 </div>
