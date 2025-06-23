@@ -1,0 +1,133 @@
+import { get, post, put, del } from '~/utils/httpRequest';
+
+const listAllJobs = async () => {
+    try {
+        const response = await get('job');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getJobById = async (id) => {
+    try {
+        const response = await get(`job/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+const createJob = async (data) => {
+    try {
+        const response = await post('job', data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+const delJobById = async (id) => {
+    try {
+        const response = await del(`job/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const unSavedJob = async (id) => {
+    try {
+        const response = await put(`saved-jobs/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const saveJob = async (id) => {
+    try {
+        const response = await put(`saved-jobs/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getSavedJob = async (id) => {
+    try {
+        const response = await get(`save/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const updateJobById = async (id, data) => {
+    try {
+        const response = await put(`job/${id}`, data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const applyJob = async (id) => {
+    try {
+        const response = await post(`apply/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getAppliedJob = async (id) => {
+    try {
+        const response = await get(`apply/my-applied-jobs/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const updateApplyStatus = async (id, data) => {
+    try {
+        const response = await put(`apply/${id}`, data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getAllCandidateAppliedJobId = async (id) => {
+    try {
+        const response = await get(`candidates/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const trackViewdJob = async (id) => {
+    try {
+        const response = await post(`job-views/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const jobService = {
+    listAllJobs,
+    getJobById,
+    createJob,
+    delJobById,
+    unSavedJob,
+    saveJob,
+    getSavedJob,
+    updateJobById,
+    applyJob,
+    getAppliedJob,
+    updateApplyStatus,
+    getAllCandidateAppliedJobId,
+};
+
+export default jobService;
