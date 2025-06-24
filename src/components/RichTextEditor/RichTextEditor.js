@@ -63,7 +63,6 @@ function SimpleRichTextEditor({ placeholder = 'Enter something here', onChange =
                     <RichTextEditor.Strikethrough />
                     <RichTextEditor.ClearFormatting />
                     <RichTextEditor.Highlight />
-                    <RichTextEditor.Code />
                 </RichTextEditor.ControlsGroup>
 
                 <RichTextEditor.ControlsGroup>
@@ -78,8 +77,6 @@ function SimpleRichTextEditor({ placeholder = 'Enter something here', onChange =
                     <RichTextEditor.Hr />
                     <RichTextEditor.BulletList />
                     <RichTextEditor.OrderedList />
-                    <RichTextEditor.Subscript />
-                    <RichTextEditor.Superscript />
                 </RichTextEditor.ControlsGroup>
 
                 <RichTextEditor.ControlsGroup>
