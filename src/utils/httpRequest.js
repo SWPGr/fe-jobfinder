@@ -14,7 +14,7 @@ httpRequest.interceptors.response.use(
     (response) => response, // Trả về response nếu thành công
     (error) => {
         const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
-
+        // const errorMessage = error;
         // Xử lý lỗi cụ thể
         if (error.response) {
             switch (error.response.status) {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState, useRef } from 'react';
 import { useForm } from '@mantine/form';
 import { useWindowScroll } from '@mantine/hooks';
@@ -228,6 +228,10 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
     const [page, setActivePage] = useState(1);
     const pageSize = 12; // Số lượng công việc mỗi trang
     const totalPages = Math.ceil(fakeJobs.length / pageSize);
+
+    useEffect(() => {
+        scrollTo({ y: 0 });
+    }, []);
 
     // Tính toán dữ liệu trên mỗi trang
     const startIndex = (page - 1) * pageSize;
