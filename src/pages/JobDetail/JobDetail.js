@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./JobDetail.module.scss";
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import PostJob from "../CreateCVSeeker/PostJob";
 
 const cx = classNames.bind(styles);
 

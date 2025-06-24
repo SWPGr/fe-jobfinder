@@ -15,6 +15,7 @@ import { Images } from '~/assets';
 import { Button } from '~/components';
 import { EyeIcon } from 'lucide-react';
 import  JobDetail  from '~/pages/JobDetail/JobDetail';// import đúng đường dẫn
+import PostJob from '~/pages/CreateCVSeeker/PostJob';
 
 const cx = classNames.bind(styles);
 

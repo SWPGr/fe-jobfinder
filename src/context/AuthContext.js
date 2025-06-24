@@ -65,11 +65,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-    //  user = {
-    //      //role: 'ADMIN',
-    //      //role: 'JOB_SEEKER',
-    //      role: 'EMPLOYER',
-    //  };
+      user = {
+          //role: 'ADMIN',
+          //role: 'JOB_SEEKER',
+          role: 'EMPLOYER',
+      };
 
     return (
         <AuthContext.Provider value={{ user, login, register, loginWithGoogle, logout, loading, error }}>
