@@ -22,7 +22,7 @@ function NavBar({ className }) {
 
     // // Đặt mặc định role nếu không có
     const role = user?.role;
-    const isAuthenticated = Boolean(user);
+    const isAuthenticated = Boolean(user?.token);
 
     // Lấy danh sách menu theo trạng thái đăng nhập và role
     const navList = getNavItems(isAuthenticated, role);

@@ -1,42 +1,14 @@
-import React, { useState } from 'react';
-import { Search, Filter, MoreHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
+import React from 'react';
+import classNames from 'classnames/bind';
+import styles from './JobTableManagement.module.scss';
+import { Filter, MoreHorizontal, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { useJobSeekers } from '~/context/JobSeekerContext';
 
-export const JobSeekersManagement = () => {
-    const [sortConfig, setSortConfig] = useState(null);
-    const jobSeekers = [
-        {
-            id: 1,
-            name: 'John Smith',
-            position: 'Frontend Developer',
-            applications: 4,
-            joined: '2022-01-08',
-            status: 'Active',
-        },
-        {
-            id: 2,
-            name: 'Sarah Johnson',
-            position: 'UI/UX Designer',
-            applications: 2,
-            joined: '2022-02-15',
-            status: 'Inactive',
-        },
-        {
-            id: 3,
-            name: 'Emily Brown',
-            position: 'Backend Developer',
-            applications: 5,
-            joined: '2021-12-10',
-            status: 'Active',
-        },
-        {
-            id: 4,
-            name: 'Michael Lee',
-            position: 'Fullstack Developer',
-            applications: 1,
-            joined: '2022-03-01',
-            status: 'Active',
-        },
-    ];
+const cx = classNames.bind(styles);
+
+const JobSeekersManagement = () => {
+    const { jobSeekers, loading, error, reloadJobSeekers } = useJobSeekers();
+    const [sortConfig, setSortConfig] = React.useState(null);
 
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -46,40 +18,44 @@ export const JobSeekersManagement = () => {
         setSortConfig({ key, direction });
     };
 
-    const sortedJobSeekers = [...jobSeekers].sort((a, b) => {
-        if (!sortConfig) return 0;
-        if (a[sortConfig.key] < b[sortConfig.key]) {
-            return sortConfig.direction === 'ascending' ? -1 : 1;
-        }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
-            return sortConfig.direction === 'ascending' ? 1 : -1;
-        }
-        return 0;
-    });
+    const sortedJobSeekers = React.useMemo(() => {
+        const arr = [...jobSeekers];
+        if (!sortConfig) return arr;
+        return arr.sort((a, b) => {
+            if ((a[sortConfig.key] || '') < (b[sortConfig.key] || '')) {
+                return sortConfig.direction === 'ascending' ? -1 : 1;
+            }
+            if ((a[sortConfig.key] || '') > (b[sortConfig.key] || '')) {
+                return sortConfig.direction === 'ascending' ? 1 : -1;
+            }
+            return 0;
+        });
+    }, [jobSeekers, sortConfig]);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">Job Seekers</h2>
-                <div className="flex items-center space-x-2">
-                    <button className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-white hover:bg-gray-50">
-                        <Filter className="h-5 w-5 mr-1" /> Filters
+        <div className={cx('managementWrapper')}>
+            <div className={cx('headerRow')}>
+                <h2>Job Seekers</h2>
+                <div className={cx('actionGroup')}>
+                    <button onClick={reloadJobSeekers} className={cx('btn')} title="Reload list">
+                        <RotateCcw size={18} /> Reload
                     </button>
-                    <button className="inline-flex items-center px-3 py-2 border border-blue-600 rounded-md shadow-sm text-sm font-medium bg-blue-600 text-white hover:bg-blue-700">
-                        Add Seeker
+                    <button className={cx('btn')}>
+                        <Filter size={18} /> Filters
                     </button>
+                    <button className={cx('btn', 'primary')}>Add Seeker</button>
                 </div>
             </div>
-            <div className="bg-white rounded-lg shadow overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
+            <div className={cx('tableWrapper')}>
+                <table className={cx('dataTable')}>
                     <thead>
                         <tr>
-                            <th
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
-                                onClick={() => requestSort('name')}
-                            >
-                                Name{' '}
-                                {sortConfig?.key === 'name' ? (
+                            <th className={cx('sortable')} onClick={() => requestSort('id')}>
+                                ID
+                                {sortConfig?.key === 'id' ? (
                                     sortConfig.direction === 'ascending' ? (
                                         <ChevronUp size={14} />
                                     ) : (
@@ -87,27 +63,25 @@ export const JobSeekersManagement = () => {
                                     )
                                 ) : null}
                             </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Position
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Applications
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Joined
-                            </th>
-                            <th className="px-6 py-3"></th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Location</th>
+                            <th>Joined</th>
+                            <th></th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody>
                         {sortedJobSeekers.map((seeker) => (
                             <tr key={seeker.id}>
-                                <td className="px-6 py-4 whitespace-nowrap">{seeker.name}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{seeker.position}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{seeker.applications}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{seeker.joined}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-right">
-                                    <button className="text-gray-500 hover:text-gray-900">
+                                <td>{seeker.id}</td>
+                                <td>{seeker.fullName || '--'}</td>
+                                <td>{seeker.email}</td>
+                                <td>{seeker.phone || '--'}</td>
+                                <td>{seeker.location || '--'}</td>
+                                <td>{seeker.createdAt?.slice(0, 10)}</td>
+                                <td>
+                                    <button className={cx('iconBtn')}>
                                         <MoreHorizontal size={18} />
                                     </button>
                                 </td>
@@ -119,3 +93,5 @@ export const JobSeekersManagement = () => {
         </div>
     );
 };
+
+export default JobSeekersManagement;

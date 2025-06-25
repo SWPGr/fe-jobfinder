@@ -38,7 +38,7 @@ function AvatarButton({ avatar }) {
 
     return (
         <>
-            <Menu visible={visible} items={MENU_ITEMS} hideOnClick={true} onClickOutside={() => setVisible(false)}>
+            <Menu visible={visible} items={MENU_ITEMS} onClickOutside={() => setVisible(false)}>
                 <div className={cx('avatar-button')}>
                     <Avatar
                         src={avatar}

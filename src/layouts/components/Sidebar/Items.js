@@ -26,7 +26,12 @@ import MyJob from '~/pages/CreateCVSeeker/MyJob';
 import PlansBilling from '~/pages/CreateCVSeeker/PlansBilling';
 import Overview1 from '~/pages/CreateCVSeeker/Overview1';
 import Single from '~/pages/Single/Single';
-
+import DashboardOverview from '~/pages/Admin/DashboardOverview';
+import EmployersManagement from '~/pages/Admin/EmployersManagement';
+import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
+import EmployerProvider from '~/context/EmployerContext';
+import { JobSeekerProvider } from '~/context/JobSeekerContext';
+import DashboardLayout from '~/pages/Admin/DashboardLayout';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -35,19 +40,34 @@ export const items = {
         items: [
             {
                 title: 'Overview',
-                icon: <IconStack2 />, // Replace with actual icon component
+                icon: <IconStack2 />,
+                page: (chartKey = 0) => <DashboardOverview chartKey={chartKey} />,
+            },
+            {
+                title: 'Manage Jobs',
+                icon: <IconBriefcase />,
             },
             {
                 title: 'Manage Employers',
-                icon: <IconUserCircle />, // Replace with actual icon component
+                icon: <IconUserCircle />,
+                page: (
+                    <EmployerProvider>
+                        <EmployersManagement />
+                    </EmployerProvider>
+                ),
             },
             {
                 title: 'Manage Job Seekers',
-                icon: <IconUserCircle />, // Replace with actual icon component
+                icon: <IconUserCircle />,
+                page: (
+                    <JobSeekerProvider>
+                        <JobSeekersManagement />
+                    </JobSeekerProvider>
+                ),
             },
             {
                 title: 'Settings',
-                icon: <IconSettings />, // Replace with actual icon component
+                icon: <IconSettings />,
             },
         ],
     },

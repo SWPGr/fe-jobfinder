@@ -16,7 +16,7 @@ function Menu({
     children,
     items = [],
     visible = false,
-    hideOnClick = false,
+    // hideOnClick = false,
     onChange = defaultFn,
     onClickOutside = defaultFn,
 }) {
@@ -47,7 +47,7 @@ function Menu({
             visible={visible}
             interactive
             offset={[16, 8]}
-            hideOnClick={hideOnClick}
+            // hideOnClick={hideOnClick}
             onClickOutside={onClickOutside}
             placement="bottom-end"
             render={(attrs) => {
