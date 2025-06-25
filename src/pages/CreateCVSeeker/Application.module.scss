@@ -68,7 +68,7 @@
 
 .filterPanel {
   position: absolute;
-  top: -420%; 
+  top: -350%; 
   margin-left: -35rem;
   padding: 20px;
   border-radius: 8px;
@@ -79,7 +79,6 @@
 .filterHeader {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
   flex-wrap: wrap;
 
   input,
