@@ -29,9 +29,7 @@ import Single from '~/pages/Single/Single';
 import DashboardOverview from '~/pages/Admin/DashboardOverview';
 import EmployersManagement from '~/pages/Admin/EmployersManagement';
 import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
-import EmployerProvider from '~/context/EmployerContext';
-import { JobSeekerProvider } from '~/context/JobSeekerContext';
-import DashboardLayout from '~/pages/Admin/DashboardLayout';
+
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -50,20 +48,12 @@ export const items = {
             {
                 title: 'Manage Employers',
                 icon: <IconUserCircle />,
-                page: (
-                    <EmployerProvider>
-                        <EmployersManagement />
-                    </EmployerProvider>
-                ),
+                page: <EmployersManagement />,
             },
             {
                 title: 'Manage Job Seekers',
                 icon: <IconUserCircle />,
-                page: (
-                    <JobSeekerProvider>
-                        <JobSeekersManagement />
-                    </JobSeekerProvider>
-                ),
+                page: <JobSeekersManagement />,
             },
             {
                 title: 'Settings',

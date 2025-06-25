@@ -1,4 +1,4 @@
-import { post } from '~/utils/httpRequest';
+import { get, post } from '~/utils/httpRequest';
 
 const login = async (email, password) => {
     try {
@@ -44,6 +44,15 @@ const googleLogin = async (email) => {
         throw error;
     }
 };
+const fetchAllEmployers = async () => {
+    const data = await get('/users/employers');
+    return data.result || [];
+};
+
+const fetchAllJobSeekers = async () => {
+    const data = await get('/users/jobseekers');
+    return data.result || [];
+};
 
 const AuthService = {
     login,
@@ -51,6 +60,8 @@ const AuthService = {
     forgotPassword,
     resetPassword,
     googleLogin,
+    fetchAllEmployers,
+    fetchAllJobSeekers,
 };
 
 export default AuthService;

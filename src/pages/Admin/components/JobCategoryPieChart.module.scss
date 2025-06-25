@@ -1,0 +1,188 @@
+// /* Container chính của biểu đồ */
+// .pieChartContainer {
+//     height: 300px;
+//     width: 420px;
+//     margin: 0 auto;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     padding: 0;
+// }
+
+// /* Wrapper chứa PieChart */
+// .recharts-container {
+//     width: 100%;
+//     height: 100%;
+// }
+
+// /* Tooltip */
+// .recharts-tooltip {
+//     background-color: white;
+//     border: none;
+//     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+//     border-radius: 6px;
+//     font-size: 12px;
+// }
+
+// /* Legend */
+// .recharts-legend-wrapper {
+//     font-size: 12px;
+//     padding-top: 2px;
+//     width: 100%;
+//     display: flex;
+//     flex-wrap: wrap;
+//     justify-content: center;
+//     gap: 15px 14px;
+//     line-height: 1.6;
+// }
+
+// .recharts-legend-item-text {
+//     white-space: normal;
+//     /* Cho phép xuống dòng */
+//     word-break: break-word;
+//     /* Cắt từ khi dài quá */
+//     max-width: 140px;
+//     /* Giới hạn chiều rộng */
+// }
+
+// /* Card chứa biểu đồ */
+// .card {
+//     background: var(--white);
+//     border-radius: 1.6rem;
+//     box-shadow: var(--box-shadow);
+//     padding: 4.2rem 3.2rem 0rem 1rem;
+//     min-height: 36rem;
+//     transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+
+//     /* Tạo hiệu ứng hover cho card */
+//     &:hover {
+//         transform: translateY(-10px);
+//         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+//     }
+
+//     h2 {
+//         font-size: var(--font-size-20px);
+//         font-weight: 600;
+//         color: var(--text-color);
+//         margin-bottom: 2rem;
+//         text-align: center;
+//     }
+
+//     .recharts-wrapper {
+//         width: 100% !important;
+//         height: 34rem !important;
+//         white-space: normal !important;
+//         word-break: break-word;
+//         max-width: 140px;
+//     }
+// }
+
+// /* Customizing select row */
+// .selectRow {
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+//     margin-bottom: 1.8rem;
+// }
+
+// select {
+//     font-size: var(--font-size-16px);
+//     padding: 0.5rem 1.2rem;
+//     color: var(--text-color);
+//     border-radius: var(--border-radius);
+//     border: 1px solid var(--gray-200);
+//     background: var(--white);
+//     cursor: pointer;
+
+//     &:focus {
+//         border-color: var(--primary-color-light);
+//         outline: none;
+//     }
+// }
+
+// /* Card thống kê (StatCard) */
+// .statCard {
+//     background: var(--white);
+//     border-radius: 1.6rem;
+//     box-shadow: var(--box-shadow);
+//     padding: 2rem;
+//     margin: 0 auto;
+//     text-align: center;
+//     transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+
+//     &:hover {
+//         transform: translateY(-10px);
+//         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+//     }
+
+//     .statTitle {
+//         font-size: 1.3rem;
+//         font-weight: 500;
+//         color: var(--gray-500);
+//         margin-bottom: 0.5rem;
+//     }
+
+//     .statValue {
+//         font-size: 2rem;
+//         font-weight: 600;
+//         color: var(--text-color);
+//         margin-bottom: 0.2rem;
+//     }
+
+//     .statChange {
+//         font-size: 1.8rem;
+//         font-weight: 500;
+//         margin-right: 0.5rem;
+//     }
+
+//     .statDesc {
+//         font-size: 1.5rem;
+//         color: var(--gray-500);
+//         margin-left: 0.7rem;
+//     }
+
+//     .statIcon {
+//         width: 2.2rem;
+//         height: 2.2rem;
+//         border-radius: 50%;
+//         display: flex;
+//         align-items: center;
+//         justify-content: center;
+//         background: var(--blue-50);
+//         color: var(--primary-color-light);
+//         font-size: 2.6rem;
+//     }
+// }
+
+// /* Adjusting the layout of the grid */
+// .statsGrid {
+//     display: grid;
+//     grid-template-columns: repeat(1, minmax(0, 1fr));
+//     gap: 2.4rem;
+//     margin-bottom: 2.8rem;
+
+//     @media (min-width: 768px) {
+//         grid-template-columns: repeat(2, minmax(0, 1fr));
+//     }
+
+//     @media (min-width: 1024px) {
+//         grid-template-columns: repeat(4, minmax(0, 1fr));
+//     }
+// }
+
+// /* Pie chart text and label override */
+// .recharts-text {
+//     font-size: var(--font-size-16px) !important;
+//     font-weight: 500;
+//     fill: var(--primary-color-dark) !important;
+// }
+
+// .recharts-legend-item-text {
+//     font-size: var(--font-size-16px) !important;
+//     color: var(--primary-color) !important;
+// }
+
+// .recharts-tooltip-label {
+//     font-size: var(--font-size-14px) !important;
+//     color: var(--primary-color-dark) !important;
+// }

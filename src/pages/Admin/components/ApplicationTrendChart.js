@@ -22,7 +22,6 @@ export const ApplicationTrendChart = () => {
     return (
         <div className={styles.chartCard}>
             <div className={styles.headerRow}>
-                <h2>Applications Submitted Over Time</h2>
                 <div className={styles.btnGroup}>
                     <button
                         onClick={() => setTimeRange('week')}
