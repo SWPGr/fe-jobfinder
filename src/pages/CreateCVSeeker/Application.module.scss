@@ -1,162 +1,211 @@
 .container {
-    padding: 20px;
+  padding: 20px;
+}
+
+.title {
+  margin: 0 0 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: none;
+    cursor: pointer;
+
+    &.active {
+      background: #1da1f2;
+      color: white;
+      border-color: #1da1f2;
+    }
+  }
+}
+
+.sort {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  button,
+  select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: none;
+    //cursor: pointer;
+    border-radius: 4px;
   }
 
-  .title {
-    margin: 0 0 20px;
-    font-size: 24px;
+  select {
+    appearance: none;
+    background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23333"><path d="M7.293 4.707a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1-1.414 1.414L8 6.414l-2.293 2.293a1 1 0 0 1-1.414-1.414l3-3z"/></svg>') no-repeat right 8px center;
+    padding-right: 25px;
+  }
+
+  .downloadAll {
+    padding: 5px 10px;
+    border: 1px solid #1da1f2;
+    background: #1da1f2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: #1991da;
+    }
+  }
+}
+
+.filterWrapper {
+  position: relative;
+}
+
+.filterPanel {
+  position: absolute;
+  top: -420%; 
+  margin-left: -35rem;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 10;
+  width: 550px;
+}
+
+.filterHeader {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  input,
+  select {
+    flex: 1;
+    min-width: 120px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+}
+
+.filterActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+
+  button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: none;
+    cursor: pointer;
+    border-radius: 4px;
+
+    &:hover {
+      background: #1da1f2;
+      color: white;
+    }
+  }
+}
+
+.applications {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.application {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  background: #f5f8fa;
+
+  .profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      background: #d3d8de;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .name {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a1a1a;
+    }
+
+    .title {
+      margin: 5px 0 0;
+      color: #657786;
+    }
+  }
+
+  .details {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px;
+
+    li {
+      margin: 5px 0;
+      color: #1a1a1a;
+      font-size: 14px;
+    }
+  }
+
+  .download {
+    padding: 5px 10px;
+    border: 1px solid #1da1f2;
+    background: #1da1f2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
     font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: inline-block;
+
+    &:hover {
+      background: #1991da;
+    }
   }
 
-  .tabs {
+  .actions {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
 
     button {
       padding: 5px 10px;
-      border: 1px solid #ccc;
-      background: none;
-      cursor: pointer;
-
-      &.active {
-        background: #1da1f2;
-        color: white;
-        border-color: #1da1f2;
-      }
-    }
-  }
-
-  .sort {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-bottom: 20px;
-
-    button,
-    select {
-      padding: 5px 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #ccd6dd;
       background: none;
       cursor: pointer;
       border-radius: 4px;
-    }
+      font-size: 12px;
 
-    select {
-      appearance: none;
-      background: white url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="%23333"><path d="M7.293 4.707a1 1 0 0 1 1.414 0l3 3a1 1 0 0 1-1.414 1.414L8 6.414l-2.293 2.293a1 1 0 0 1-1.414-1.414l3-3z"/></svg>') no-repeat right 8px center;
-      padding-right: 25px;
-    }
+      &.edit {
+        color: #1da1f2;
+      }
 
-    .downloadAll {
-      padding: 5px 10px;
-      border: 1px solid #1da1f2;
-      background: #1da1f2;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &:hover {
-        background: #1991da;
+      &.delete {
+        color: #e0245e;
       }
     }
   }
+}
 
-  .applications {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .application {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    border: 1px solid #e1e8ed;
-    border-radius: 8px;
-    background: #f5f8fa;
-
-    .profile {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-
-      .avatar {
-        width: 40px;
-        height: 40px;
-        background: #d3d8de;
-        border-radius: 50%;
-        margin-right: 10px;
-      }
-
-      .name {
-        margin: 0;
-        font-size: 16px;
-        font-weight: bold;
-        color: #1a1a1a;
-      }
-
-      .title {
-        margin: 5px 0 0;
-        color: #657786;
-      }
-    }
-
-    .details {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 10px;
-
-      li {
-        margin: 5px 0;
-        color: #1a1a1a;
-        font-size: 14px;
-      }
-    }
-
-    .download {
-      padding: 5px 10px;
-      border: 1px solid #1da1f2;
-      background: #1da1f2;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 10px;
-      display: inline-block;
-
-      &:hover {
-        background: #1991da;
-      }
-    }
-
-    .actions {
-      display: flex;
-      gap: 10px;
-
-      button {
-        padding: 5px 10px;
-        border: 1px solid #ccd6dd;
-        background: none;
-        cursor: pointer;
-        border-radius: 4px;
-        font-size: 12px;
-
-        &.edit {
-          color: #1da1f2;
-        }
-
-        &.delete {
-          color: #e0245e;
-        }
-      }
-    }
-  }
-
-  .noResults {
-    text-align: center;
-    color: #657786;
-    padding: 20px;
-  }
+.noResults {
+  text-align: center;
+  color: #657786;
+  padding: 20px;
+}

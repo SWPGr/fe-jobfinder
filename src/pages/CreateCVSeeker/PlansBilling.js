@@ -11,7 +11,6 @@ const plansBenefits = [
   { icon: "✓", text: "Urgents & Featured Jobs", type: "active" },
   { icon: "✓", text: "Access & Saved 20 Candidates", type: "active" },
   { icon: "✓", text: "24/7 Critical Support", type: "active" },
-
   { icon: "✗", text: "9 Resume Access", type: "inactive" },
   { icon: "✗", text: "4 Active Jobs", type: "inactive" },
   { icon: "✗", text: "21 Days resume visibility", type: "inactive" },
@@ -30,11 +29,36 @@ const ITEMS_PER_PAGE = 7;
 
 const PlansBilling = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  const totalPages = Math.ceil(latestInvoices.length / ITEMS_PER_PAGE);
+  // Hàm chuyển đổi định dạng ngày để so sánh
+  const parseDate = (dateStr) => {
+    return new Date(dateStr);
+  };
+
+  // Lọc invoices dựa trên khoảng thời gian
+  const filteredInvoices = latestInvoices.filter(({ date }) => {
+    const invoiceDate = parseDate(date);
+    const start = startDate ? parseDate(startDate) : null;
+    const end = endDate ? parseDate(endDate) : null;
+
+    if (start && end) {
+      return invoiceDate >= start && invoiceDate <= end;
+    }
+    if (start) {
+      return invoiceDate >= start;
+    }
+    if (end) {
+      return invoiceDate <= end;
+    }
+    return true;
+  });
+
+  const totalPages = Math.ceil(filteredInvoices.length / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentInvoices = latestInvoices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentInvoices = filteredInvoices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
@@ -107,6 +131,32 @@ const PlansBilling = () => {
 
       <div className={cx("latest-invoices")}>
         <h3>Latest Invoices</h3>
+        <div className={cx("filter-section")}>
+          <div className={cx("filter-group")}>
+            <label htmlFor="startDate">From Date:</label>
+            <input
+              type="date"
+              id="startDate"
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
+              }}
+            />
+          </div>
+          <div className={cx("filter-group")}>
+            <label htmlFor="endDate">To Date:</label>
+            <input
+              type="date"
+              id="endDate"
+              value={endDate}
+              onChange={(e) => {
+                setEndDate(e.target.value);
+                setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
+              }}
+            />
+          </div>
+        </div>
         <table>
           <thead>
             <tr>
