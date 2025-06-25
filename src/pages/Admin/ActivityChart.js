@@ -1,16 +1,29 @@
 import React from 'react';
+import classNames from 'classnames/bind';
+import styles from './DashboardOverview.module.scss';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-export const ActivityChart = ({ data, height = 320 }) => {
-    // Chuẩn hóa data cho chart
-    const chartData = (data || []).map((item, idx) => ({
-        name: `Day ${idx + 1}`,
-        'Job Seekers': item.totalJobSeekers ?? 0,
-        Employers: item.totalEmployers ?? 0,
-        Applications: item.totalAppliedJobs ?? 0,
-    }));
+const cx = classNames.bind(styles);
 
-    // Lấy mã màu từ biến CSS
+export const ActivityChart = ({ data, height = 320 }) => {
+    const chartData = (data || []).map((item) => {
+        // Lấy ngày/tháng từ chuỗi date
+        let label = 'N/A';
+        if (item.date) {
+            // Hỗ trợ cả dạng "YYYY-MM-DD" và "YYYY-MM-DDTHH:mm:ssZ"
+            const d = new Date(item.date);
+            const day = d.getDate().toString().padStart(2, '0');
+            const month = (d.getMonth() + 1).toString().padStart(2, '0');
+            label = `${day}/${month}`;
+        }
+        return {
+            name: label,
+            'Job Seekers': item.totalJobSeekers ?? 0,
+            Employers: item.totalEmployers ?? 0,
+            Applications: item.totalAppliedJobs ?? 0,
+        };
+    });
+
     const getVar = (name, fallback) => {
         const val = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
         return val || fallback;
@@ -20,7 +33,7 @@ export const ActivityChart = ({ data, height = 320 }) => {
     const colorApplications = getVar('--green-500', '#0ba02c');
 
     return (
-        <div className="h-80">
+        <div className={cx('activityChart-wrapper')}>
             <ResponsiveContainer width="100%" height={height}>
                 <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--gray-100)" vertical={false} />
@@ -31,10 +44,10 @@ export const ActivityChart = ({ data, height = 320 }) => {
                         tickLine={false}
                         axisLine={{ stroke: 'var(--gray-200)' }}
                         interval={data.length > 14 ? Math.ceil(data.length / 7) : 0}
-                        tickFormatter={(value, idx) => {
-                            if (idx === data.length - 1) return `Day ${data.length}`;
-                            return value;
-                        }}
+                        // tickFormatter={(value, idx) => {
+                        //     if (idx === data.length - 1) return `Day ${data.length}`;
+                        //     return value;
+                        // }}
                     />
                     <YAxis
                         stroke="var(--gray-400)"
