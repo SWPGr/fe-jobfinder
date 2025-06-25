@@ -3,23 +3,19 @@ import styles from './DashboardOverview.module.scss';
 import React from 'react';
 const cx = classNames.bind(styles);
 
-export const StatCard = ({ title, value, icon, change, isPositive }) => {
+export const StatCard = ({ title, value, icon, change, isPositive, desc }) => {
     return (
-        <div className={cx('statCard', 'bg-white', 'rounded-lg', 'shadow', 'p-6')}>
-            <div className="flex items-center justify-between">
-                <div className={cx('statIcon')}>{icon}</div>
-                <div>
-                    <p className={cx('statTitle')}>{title}</p>
-                    <p className={cx('statValue')}>{value}</p>
-                </div>
-            </div>
+        <div className={cx('statCard')}>
+            <div className={cx('statIcon')}>{icon}</div>
+            <div className={cx('statTitle')}>{title}</div>
+            <div className={cx('statValue')}>{value}</div>
             {change && (
-                <div className="mt-4">
-                    <span className={cx('statChange', isPositive ? 'textGreen' : 'textRed')}>
-                        {isPositive ? '+' : ''}
+                <div className={cx('statRow')}>
+                    <span className={cx('statChange', isPositive ? 'positive' : 'negative')}>
+                        {isPositive ? '+' : '-'}
                         {change}
                     </span>
-                    <span className={cx('statDesc')}>from last month</span>
+                    <span className={cx('statDesc')}>{desc}</span>
                 </div>
             )}
         </div>

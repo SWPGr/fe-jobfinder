@@ -4,11 +4,46 @@ import styles from './DashboardOverview.module.scss';
 import { Users, Briefcase, FileText, CheckCircle } from 'lucide-react';
 import { StatCard } from './StatCard';
 import { ActivityChart } from './ActivityChart';
-import { fetchDailyTrends } from '~/services/statisticsService';
-import { JobCategoryPieChart } from './components/JobCategoryChart';
+import statisticsService from '~/services/statisticsService';
 import { ApplicationTrendChart } from './components/ApplicationTrendChart';
+import JobCategoryPieChart from './components/JobCategoryChart';
 
 const cx = classNames.bind(styles);
+
+const statCardsConfig = [
+    {
+        title: 'Total Job Seekers',
+        icon: <Users size={24} />,
+        key: 'totalJobSeekers',
+        change: '12%',
+        isPositive: true,
+        desc: 'from last month',
+    },
+    {
+        title: 'Total Employers',
+        icon: <Briefcase size={24} />,
+        key: 'totalEmployers',
+        change: '8%',
+        isPositive: true,
+        desc: 'from last month',
+    },
+    {
+        title: 'Active Jobs',
+        icon: <FileText size={24} />,
+        key: 'totalJobs',
+        change: '5%',
+        isPositive: false,
+        desc: 'from last month',
+    },
+    {
+        title: 'Successful Matches',
+        icon: <CheckCircle size={24} />,
+        key: 'totalAppliedJobs',
+        change: '15%',
+        isPositive: true,
+        desc: 'from last month',
+    },
+];
 
 const DashboardOverview = () => {
     const [stats, setStats] = useState({
@@ -24,17 +59,22 @@ const DashboardOverview = () => {
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('user'))?.token;
         if (!token) return;
-        fetchDailyTrends(token)
-            .then((arr) => {
-                if (!arr || !arr.length) return;
-                setActivityData(arr);
-                const lastDay = arr[arr.length - 1];
+
+        Promise.all([
+            statisticsService.fetchAllJobSeekers(token),
+            statisticsService.fetchAllEmployers(token),
+            statisticsService.fetchTotalJobs(token),
+            statisticsService.fetchTotalAppliedJobs(token),
+            statisticsService.fetchDailyTrends(token),
+        ])
+            .then(([jobSeekersArr, employersArr, totalJobs, totalAppliedJobs, trendsArr]) => {
                 setStats({
-                    totalJobSeekers: lastDay.totalJobSeekers ?? 0,
-                    totalEmployers: lastDay.totalEmployers ?? 0,
-                    totalJobs: lastDay.totalJobs ?? 0,
-                    totalAppliedJobs: lastDay.totalAppliedJobs ?? 0,
+                    totalJobSeekers: jobSeekersArr?.length ?? 0,
+                    totalEmployers: employersArr?.length ?? 0,
+                    totalJobs: totalJobs ?? 0,
+                    totalAppliedJobs: totalAppliedJobs ?? 0,
                 });
+                setActivityData(trendsArr || []);
             })
             .catch(() => {
                 setStats({
@@ -51,7 +91,7 @@ const DashboardOverview = () => {
     }, [activityData, selectedRange]);
 
     const filteredActivityData = activityData.slice(-selectedRange);
-    console.log('filteredActivityData', filteredActivityData);
+
     return (
         <div className={cx('container')}>
             <div className={cx('header')}>
@@ -61,37 +101,20 @@ const DashboardOverview = () => {
                 </div>
             </div>
             <div className={cx('statsGrid')}>
-                <StatCard
-                    title="Total Job Seekers"
-                    value={stats.totalJobSeekers}
-                    icon={<Users size={24} />}
-                    change="12%"
-                    isPositive={true}
-                />
-                <StatCard
-                    title="Total Employers"
-                    value={stats.totalEmployers}
-                    icon={<Briefcase size={24} />}
-                    change="8%"
-                    isPositive={true}
-                />
-                <StatCard
-                    title="Total Jobs"
-                    value={stats.totalJobs}
-                    icon={<FileText size={24} />}
-                    change="5%"
-                    isPositive={false}
-                />
-                <StatCard
-                    title="Successful Matches"
-                    value={stats.totalAppliedJobs}
-                    icon={<CheckCircle size={24} />}
-                    change="15%"
-                    isPositive={true}
-                />
+                {statCardsConfig.map((card) => (
+                    <StatCard
+                        key={card.key}
+                        title={card.title}
+                        value={stats[card.key]}
+                        icon={card.icon}
+                        change={card.change}
+                        isPositive={card.isPositive}
+                        desc={card.desc}
+                    />
+                ))}
             </div>
             <div className={cx('mainGrid')}>
-                <div className={cx('card')} style={{ minHeight: '380px' }}>
+                <div className={cx('card-activity')} style={{ minHeight: '380px' }}>
                     <div className={cx('selectRow')}>
                         <h2>Platform Activity</h2>
                         <select
@@ -106,14 +129,8 @@ const DashboardOverview = () => {
                     </div>
                     <ActivityChart key={chartKey} data={filteredActivityData} />
                 </div>
-                <div className={cx('card')}>
-                    <h2>Recent Activity</h2>
-                    <div className="space-y-5">{/* Recent Activity */}</div>
-                    <button className="mt-5 text-sm font-medium text-blue-600 hover:text-blue-500">
-                        View all activity
-                    </button>
-                </div>
             </div>
+
             <div className={cx('chartsRow')}>
                 <div className={cx('card')}>
                     <h2>Job Postings by Category</h2>

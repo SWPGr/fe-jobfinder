@@ -1,3 +1,132 @@
+// ...existing code...
+
+// Search bar styles
+.searchBar {
+    display: flex;
+    align-items: center;
+    background: #f4f7fc;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.7rem;
+    padding: 0.6rem 1.1rem;
+    font-size: 1rem;
+    color: #324264;
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 1rem;
+
+    input {
+        border: none;
+        background: transparent;
+        outline: none;
+        width: 100%;
+        font-size: 1rem;
+        color: #324264;
+    }
+}
+
+// Filter and Add button group
+.actionGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+
+    .filterBtn {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        color: #324264;
+        border-radius: 0.5rem;
+        padding: 0.54rem 1.15rem;
+        font-weight: 500;
+        transition: all 0.15s;
+
+        &:hover {
+            background: #f6fafd;
+            border-color: #b2cdfd;
+            color: #0c63e4;
+        }
+    }
+
+    .addBtn {
+        background: #2563eb;
+        border: 1px solid #2563eb;
+        color: #fff;
+        border-radius: 0.5rem;
+        padding: 0.54rem 1.15rem;
+        font-weight: 600;
+        transition: all 0.15s;
+
+        &:hover {
+            background: #1747a7;
+            border-color: #1747a7;
+        }
+    }
+}
+
+// Skill tag styles
+.skillTag {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #2563eb;
+    font-size: 0.93rem;
+    font-weight: 500;
+    border-radius: 0.7rem;
+    padding: 0.22rem 0.85rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.15rem;
+    letter-spacing: 0.01em;
+}
+
+// Status badge styles
+.statusText {
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.3rem 0.85rem;
+    border-radius: 0.8rem;
+    display: inline-block;
+
+    &.active {
+        background: #d1fae5;
+        color: #10b981;
+    }
+
+    &.inactive {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+}
+
+// Avatar circle for initials
+.avatarCircle {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: #e0e7ef;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-right: 0.9rem;
+    letter-spacing: 0.01em;
+}
+
+// Edit link
+.editLink {
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+    margin-right: 0.7rem;
+    transition: color 0.15s;
+
+    &:hover {
+        color: #1747a7;
+        text-decoration: underline;
+    }
+}
+
+// ...existing code...
+
 .managementWrapper {
     display: flex;
     flex-direction: column;
@@ -9,14 +138,15 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 0.8rem;
+    padding-top: 1rem;
+}
 
-    h2 {
-        font-size: 1.55rem;
-        font-weight: 700;
-        color: #1a2341;
-        letter-spacing: -0.5px;
-        margin: 0;
-    }
+.headerRow h2 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #1a2341;
+    letter-spacing: -0.5px;
+    margin: 0;
 }
 
 .actionGroup {
@@ -63,6 +193,7 @@
     border-radius: 1.2rem;
     box-shadow: 0 1.5px 8px 0 rgba(22, 28, 45, 0.06);
     overflow-x: auto;
+    margin-top: 1rem;
 }
 
 .dataTable {
@@ -70,35 +201,40 @@
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
+    font-size: 0.95rem;
 }
 
 .dataTable thead {
     background: #f8fafc;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
 
-    th {
-        padding: 1rem 1.3rem;
-        font-size: 0.96rem;
-        font-weight: 700;
-        color: #789;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        border-bottom: 2px solid #e5e7eb;
-        user-select: none;
-        cursor: pointer;
+.dataTable thead th {
+    padding: 1rem 1.3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #789;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 2px solid #e5e7eb;
+    user-select: none;
+    cursor: pointer;
+    text-align: left;
+    background-color: #f4f7fc;
+}
 
-        &.sortable:hover {
-            background: #e8f0fe;
-            color: #2065e4;
-        }
-    }
+.dataTable thead th.sortable:hover {
+    background: #e8f0fe;
+    color: #2065e4;
 }
 
 .dataTable tbody tr {
     transition: background 0.15s;
+}
 
-    &:hover {
-        background: #f3f7fb;
-    }
+.dataTable tbody tr:hover {
+    background: #f3f7fb;
 }
 
 .dataTable td {
@@ -107,6 +243,7 @@
     color: #2e3654;
     white-space: nowrap;
     border-bottom: 1px solid #f1f5f9;
+    text-align: left;
 }
 
 .dataTable td:last-child {
@@ -132,5 +269,104 @@
 
     &:hover {
         color: #1a2341;
+    }
+}
+
+.dataTable th.sorted {
+    color: #2065e4;
+}
+
+.dataTable th.sorted:hover {
+    background-color: #f1faff;
+}
+
+
+
+// ...existing code...
+
+// Avatar circle for initials
+.avatarCircle {
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: #e0e7ef;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-right: 0.9rem;
+    letter-spacing: 0.01em;
+}
+
+// Skill tag styles
+.skillTag {
+    display: inline-block;
+    background: #e8f0fe;
+    color: #2563eb;
+    font-size: 0.93rem;
+    font-weight: 500;
+    border-radius: 0.7rem;
+    padding: 0.22rem 0.85rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.15rem;
+    letter-spacing: 0.01em;
+}
+
+// Status badge styles
+.statusText {
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.3rem 0.85rem;
+    border-radius: 0.8rem;
+    display: inline-block;
+
+    &.active {
+        background: #d1fae5;
+        color: #10b981;
+    }
+
+    &.inactive {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+}
+
+// Search bar styles
+.searchBar {
+    display: flex;
+    align-items: center;
+    background: #f4f7fc;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.7rem;
+    padding: 0.6rem 1.1rem;
+    font-size: 1rem;
+    color: #324264;
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 1rem;
+
+    input {
+        border: none;
+        background: transparent;
+        outline: none;
+        width: 100%;
+        font-size: 1rem;
+        color: #324264;
+    }
+}
+
+// Edit link
+.editLink {
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+    margin-right: 0.7rem;
+    transition: color 0.15s;
+
+    &:hover {
+        color: #1747a7;
+        text-decoration: underline;
     }
 }
