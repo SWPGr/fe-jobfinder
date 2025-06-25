@@ -10,22 +10,24 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import { Menu } from '@mantine/core';
-
 import { Images } from '~/assets';
 import { Button } from '~/components';
 import { EyeIcon } from 'lucide-react';
-import  JobDetail  from '~/pages/JobDetail/JobDetail';// import đúng đường dẫn
+import JobDetail from '~/pages/JobDetail/JobDetail';
+import JobApplications from '~/pages/CreateCVSeeker/Application';
 
 const cx = classNames.bind(styles);
 
 function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false }) {
   const [modalType, setModalType] = useState(null);
+  const [showApplications, setShowApplications] = useState(false); // Thêm trạng thái cho danh sách ứng viên
   const [jobData, setJobData] = useState(jobDescription);
 
   const classes = cx('wrapper', { isVIP });
   const { jobTitle, workTime, remainDay, isActive, numberApplications } = jobData;
 
   const closeModal = () => setModalType(null);
+  const closeApplications = () => setShowApplications(false); // Đóng danh sách ứng viên
 
   // Hàm xử lý lưu dữ liệu khi edit xong
   const handleSave = (updatedJob) => {
@@ -69,7 +71,9 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
         </div>
 
         <div className={cx('action')}>
-          <Button className={cx('view-applications')}>View Applications</Button>
+          <Button className={cx('view-applications')} onClick={() => setShowApplications(true)}>
+            View Applications
+          </Button>
           <Menu
             shadow="md"
             position="bottom-end"
@@ -103,8 +107,18 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
             </button>
 
             {modalType === 'view' && <JobDetail job={jobData} />}
-
             {modalType === 'edit' && <JobDetail job={jobData} editable={true} onSave={handleSave} />}
+          </div>
+        </div>
+      )}
+
+      {showApplications && (
+        <div className={cx('modalOverlay')}>
+          <div className={cx('modalBox')}>
+            <button className={cx('closeBtn')} onClick={closeApplications}>
+              ×
+            </button>
+            <JobApplications /> {/* Hiển thị danh sách ứng viên */}
           </div>
         </div>
       )}

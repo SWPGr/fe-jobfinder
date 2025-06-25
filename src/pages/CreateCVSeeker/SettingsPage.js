@@ -148,7 +148,7 @@ function SettingsPage() {
 
       {activeTab === 'Company Info' && (
         <div className={cx('companyInfoTab')}>
-          <div className={cx('sectionTitle')}>Logo & Banner Image</div>
+          <div className={cx('sectionTitle')}></div>
           <div className={cx('uploadSection')}>
             <div className={cx('uploadBox')} onClick={() => openUploadModal('logo')}>
               {logoFile ? (

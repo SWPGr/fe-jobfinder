@@ -17,7 +17,6 @@ function PostJob() {
   const [vacancies, setVacancies] = useState('');
   const [expirationDate, setExpirationDate] = useState('');
   const [jobLevel, setJobLevel] = useState('');
-  const [applyJobOn, setApplyJobOn] = useState('onJobpilot');
   const [description, setDescription] = useState('');
   const [responsibilities, setResponsibilities] = useState('');
   const [salaryError, setSalaryError] = useState('');
@@ -182,43 +181,6 @@ function PostJob() {
         </div>
       </div>
 
-      <fieldset className={cx('applyJobOn')}>
-        <legend>Apply Job on:</legend>
-        <label className={cx({ activeRadioLabel: applyJobOn === 'onJobpilot' })}>
-          <input
-            type="radio"
-            name="applyJob"
-            value="onJobpilot"
-            checked={applyJobOn === 'onJobpilot'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
-          <strong>On Jobpilot</strong>
-          <p>Candidate will apply job using jobpilot & all application will show on your dashboard.</p>
-        </label>
-        <label className={cx({ activeRadioLabel: applyJobOn === 'externalPlatform' })}>
-          <input
-            type="radio"
-            name="applyJob"
-            value="externalPlatform"
-            checked={applyJobOn === 'externalPlatform'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
-          <strong>External Platform</strong>
-          <p>Candidate apply job on your website, all application on your own website.</p>
-        </label>
-        <label className={cx({ activeRadioLabel: applyJobOn === 'onYourEmail' })}>
-          <input
-            type="radio"
-            name="applyJob"
-            value="onYourEmail"
-            checked={applyJobOn === 'onYourEmail'}
-            onChange={(e) => setApplyJobOn(e.target.value)}
-          />
-          <strong>On Your Email</strong>
-          <p>Candidate apply job on your email address, and all application in your email.</p>
-        </label>
-      </fieldset>
-
       <div className={cx('sectionTitle')}>Description & Responsibility</div>
       <div className={cx('formGroup')}>
         <label>Description</label>
@@ -236,7 +198,7 @@ function PostJob() {
       </div>
 
       <button type="submit" className={cx('saveNextBtn')} disabled={!!salaryError}>
-        Post Job <span className={cx('arrow')}>&rarr;</span>
+        Post Job <span className={cx('arrow')}>→</span>
       </button>
     </form>
   );
