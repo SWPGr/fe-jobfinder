@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import {
@@ -14,11 +15,16 @@ import {
 
 import { Button } from '~/components';
 import ItemInfo from '../components/ItemInfo';
+import { categoryService } from '~/services';
+import { useNotification } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
 function PopularCategory() {
-    const categories = [
+    const [categories, setCategories] = useState([]);
+    const { showError } = useNotification();
+
+    const categoriesList = [
         { icon: <IconWand />, title: 'Design', total: 27 },
         { icon: <IconCode />, title: 'Development', total: 35 },
         { icon: <IconSpeakerphone />, title: 'Marketing', total: 20 },
@@ -28,6 +34,22 @@ function PopularCategory() {
         { icon: <IconFirstAidKit />, title: 'Health & Fitness', total: 12 },
         { icon: <IconDatabase />, title: 'Data & Science', total: 22 },
     ];
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await categoryService.getAllCategory();
+                const data = response.result;
+                console.log('Categories:', data);
+                setCategories(data);
+            } catch (error) {
+                showError('Error fetching categories');
+                console.error('Error fetching categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
 
     return (
         <div className={cx('popular-category__wrapper')}>
@@ -41,7 +63,7 @@ function PopularCategory() {
                 {/*  */}
 
                 <div className={cx('popular-category__list')}>
-                    {categories.map((category, index) => (
+                    {categoriesList.map((category, index) => (
                         <ItemInfo
                             key={index}
                             icon={category.icon}

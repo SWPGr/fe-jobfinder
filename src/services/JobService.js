@@ -34,7 +34,7 @@ const delJobById = async (id) => {
     }
 };
 
-const unSavedJob = async (id) => {
+const unSaveJob = async (id) => {
     try {
         const response = await put(`saved-jobs/${id}`);
         return response;
@@ -120,7 +120,7 @@ const jobService = {
     getJobById,
     createJob,
     delJobById,
-    unSavedJob,
+    unSaveJob,
     saveJob,
     getSavedJob,
     updateJobById,

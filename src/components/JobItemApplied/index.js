@@ -17,7 +17,7 @@ function JobItemApplied({ image = Images.default_image, jobDescription = {}, isL
             <div className={cx('content')}>
                 <div className={cx('logo-company')}>
                     <img
-                        src={image} 
+                        src={image}
                         alt={`${companyName} logo`}
                         onError={(e) => (e.target.src = Images.default_image)}
                     />

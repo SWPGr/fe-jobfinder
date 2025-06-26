@@ -1,5 +1,6 @@
 function transformJobData(rawJob) {
     return {
+        id: rawJob.id,
         companyName: rawJob.employer.fullName || rawJob.employer.email || 'Unknown',
         companyAddress: rawJob.location || 'Địa chỉ không xác định',
         jobTitle: rawJob.title,

@@ -49,8 +49,8 @@ function GoogleLoginButton({ disabled = false }) {
 
     const handleSuccess = async (credentialResponse) => {
         try {
-            showLoading();
             const token = credentialResponse.credential;
+            showLoading();
             const response = await authService.googleLogin({ credential: token });
             console.log(response.result);
             localStorage.setItem('user', JSON.stringify(response.result));
@@ -64,12 +64,25 @@ function GoogleLoginButton({ disabled = false }) {
 
             navigate('/');
         } catch (error) {
-            setErrorMsg('Authentication failed');
-            showError(error.message);
+            hideLoading(); // quan trọng để tránh loading bị treo
+
+            let message = 'Authentication failed';
+
+            if (error.response?.data?.message) {
+                message = error.response.data.message; // lỗi do server trả về
+            } else if (error.message === 'Network Error') {
+                message = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng hoặc thử lại sau.';
+            } else {
+                message = error.message; // fallback cho các lỗi còn lại
+            }
+
+            setErrorMsg(message);
+            showError(message);
         }
     };
 
     const handleError = () => {
+        hideLoading();
         setErrorMsg('Google login failed');
     };
 

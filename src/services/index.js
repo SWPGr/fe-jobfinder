@@ -6,3 +6,4 @@ export { default as jobTypeService } from './JobType.js';
 export { default as notificationService } from './NotificationService.js';
 export { default as socialTypeService } from './SocialType.js';
 export { default as educationService } from './Education.js';
+export { default as categoryService } from './CategoryService.js';

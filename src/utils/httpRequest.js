@@ -21,8 +21,14 @@ httpRequest.interceptors.response.use(
                 case 401:
                     // Token hết hạn hoặc không hợp lệ
                     localStorage.removeItem('user');
+                    window.location.reload();
                     window.location.href = '/login'; // Chuyển hướng về login
-                    return Promise.reject(new Error('Session expired. Please log in again.'));
+                    return Promise.reject(
+                        new Error({
+                            code: 401,
+                            message: 'Session expired. Please log in again.',
+                        }),
+                    );
                 case 403:
                     return Promise.reject(new Error('You do not have permission to perform this action.'));
                 case 429:

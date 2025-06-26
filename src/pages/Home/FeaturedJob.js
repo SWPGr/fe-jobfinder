@@ -28,6 +28,8 @@ function FeaturedJob() {
         const fetchJobs = async () => {
             try {
                 const data = await jobService.listAllJobs();
+                console.log(data);
+
                 setJobs(data.map(format.transformJobData));
                 console.log(data.map(format.transformJobData));
             } catch (error) {
