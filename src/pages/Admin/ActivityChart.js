@@ -44,10 +44,6 @@ export const ActivityChart = ({ data, height = 320 }) => {
                         tickLine={false}
                         axisLine={{ stroke: 'var(--gray-200)' }}
                         interval={data.length > 14 ? Math.ceil(data.length / 7) : 0}
-                        // tickFormatter={(value, idx) => {
-                        //     if (idx === data.length - 1) return `Day ${data.length}`;
-                        //     return value;
-                        // }}
                     />
                     <YAxis
                         stroke="var(--gray-400)"

@@ -5,7 +5,7 @@ import styles from './Setting.module.scss';
 
 const cx = classNames.bind(styles);
 
-const Settings = () => {
+const SettingAdmin = () => {
     const [generalSettings, setGeneralSettings] = useState({
         siteName: 'JobFinder',
         siteDescription: 'Find your dream job with JobFinder',
@@ -253,4 +253,4 @@ const Settings = () => {
     );
 };
 
-export default Settings;
+export default SettingAdmin;
