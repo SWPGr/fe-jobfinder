@@ -66,11 +66,11 @@ export const AuthProvider = ({ children }) => {
     };
 
 
-      user = {
-          //role: 'ADMIN',
-          role: 'JOB_SEEKER',
-         // role: 'EMPLOYER',
-      };
+     //  user = {
+    //       //role: 'ADMIN',
+    //       //role: 'JOB_SEEKER',
+           //role: 'EMPLOYER',
+   //    };
 
 
     return (
