@@ -14,15 +14,21 @@ httpRequest.interceptors.response.use(
     (response) => response, // Trả về response nếu thành công
     (error) => {
         const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
-
+        // const errorMessage = error;
         // Xử lý lỗi cụ thể
         if (error.response) {
             switch (error.response.status) {
                 case 401:
                     // Token hết hạn hoặc không hợp lệ
                     localStorage.removeItem('user');
+                    window.location.reload();
                     window.location.href = '/login'; // Chuyển hướng về login
-                    return Promise.reject(new Error('Session expired. Please log in again.'));
+                    return Promise.reject(
+                        new Error({
+                            code: 401,
+                            message: 'Session expired. Please log in again.',
+                        }),
+                    );
                 case 403:
                     return Promise.reject(new Error('You do not have permission to perform this action.'));
                 case 429:

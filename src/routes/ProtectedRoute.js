@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
     const { user } = useAuth();
     const location = useLocation();
 
-    if (!user) {
+    if (!user?.token) {
         // Chuyển hướng về trang login, đồng thời lưu lại đường dẫn hiện tại để redirect sau khi login thành công
         return <Navigate to="/login" replace state={{ from: location }} />;
     }

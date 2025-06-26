@@ -13,17 +13,42 @@ import { Badge } from '@mantine/core';
 
 import { Images } from '~/assets';
 import { Button } from '~/components';
+import { jobService } from '~/services';
+import { useNotification } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
 function JobItemList({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
     const classes = cx('wrapper', { isLogin, isVIP, saved });
+    const { showSuccess, showError } = useNotification();
 
     // save job status
     const [save, setSave] = useState(saved || false);
 
     const { companyName, companyAddress, jobTitle, workTime, salary, remainDay } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
+
+    const handelSaveJob = async (id) => {
+        try {
+            await jobService.saveJob(id);
+            setSave(!save);
+            showSuccess('Save job successfully');
+        } catch (error) {
+            showError('Save job failed');
+            console.log(error);
+        }
+    };
+
+    const handelUnsaveJob = async (id) => {
+        try {
+            await jobService.unSaveJob(id);
+            setSave(!save);
+            showSuccess('Unsave job successfully');
+        } catch (error) {
+            console.log(error);
+            showError('Unsave job failed');
+        }
+    };
 
     return (
         <div className={classes}>
@@ -83,8 +108,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                                 size={22}
                                 color="#0a65cc"
                                 onClick={() => {
-                                    setSave(!save);
-                                    console.log('save job');
+                                    save ? handelUnsaveJob(jobDescription.id) : handelSaveJob(jobDescription.id);
                                 }}
                             />
                         )}

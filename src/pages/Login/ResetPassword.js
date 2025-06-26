@@ -15,6 +15,7 @@ function ResetPassword({ children, content, title, className, ...props }) {
     const [opened, { open, close }] = useDisclosure(false);
     const [showResendEmail, setShowResendEmail] = useState(false);
     const [countdown, setCountdown] = useState(0);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const formResetPassword = useForm({
         initialValues: {
@@ -37,18 +38,17 @@ function ResetPassword({ children, content, title, className, ...props }) {
 
     const handleSubmitForm = async (values) => {
         try {
+            await authService.forgotPassword(values.email);
             setShowResendEmail(true);
             setCountdown(10);
-            await authService.forgotPassword(values.email);
         } catch (error) {
-            const errorMsg = error?.response?.data?.message || error?.message || 'Something went wrong';
-            // Optionally show error to user
-            console.error('Error during password reset:', errorMsg);
+            const errorMsg = error?.response?.data?.message || error?.message || 'Unexpected error!';
+            setErrorMessage(errorMsg);
         }
     };
 
     const handleResendEmail = async () => {
-        if (countdown === 0 && formResetPassword.values.email && !formResetPassword.errors.email) {
+        if (countdown === 0 && formResetPassword.values.email && !formResetPassword.errors.email && !errorMessage) {
             setShowResendEmail(true);
             setCountdown(10);
             await handleSubmitForm(formResetPassword.values);
@@ -86,6 +86,8 @@ function ResetPassword({ children, content, title, className, ...props }) {
                         placeholder="you@example.com"
                         key={formResetPassword.key.email}
                         {...formResetPassword.getInputProps('email')}
+                        error={formResetPassword.errors.email || errorMessage}
+                        onInput={() => setErrorMessage('')}
                         classNames={{
                             wrapper: cx('text-wrapper'),
                             input: cx('input'),
