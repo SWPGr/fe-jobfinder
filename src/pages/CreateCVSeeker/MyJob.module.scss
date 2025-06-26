@@ -46,6 +46,39 @@
   }
 }
 
+.job-table-head {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1fr 1fr;
+  background-color: var(--gray-100);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  border-radius: 0.8rem;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+
+  .jobs {
+    margin-left: 13rem;
+  }
+
+  .status {
+    margin-left: -5.5rem; 
+  }
+
+  .applications {
+    margin-left: -11rem;
+  }
+
+  .actions {
+    margin-left: -6rem;
+  }
+}
+
 .job-table {
   width: 100%;
   border-collapse: collapse;

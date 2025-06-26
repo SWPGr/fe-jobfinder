@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames/bind";
 import styles from "./JobDetail.module.scss";
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
 import SimpleRichTextEditor from "src/components/RichTextEditor/RichTextEditor.js";
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 const cx = classNames.bind(styles);
 
@@ -74,10 +76,23 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
   });
 
   const [formData, setFormData] = useState(mergeWithDefault(job));
+  const jobDetailRef = useRef(null);
 
   useEffect(() => {
     setFormData(mergeWithDefault(job));
   }, [job]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (jobDetailRef.current && !jobDetailRef.current.contains(event.target) && editable) {
+        onCancel();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editable, onCancel]);
 
   const handleChange = (e, section = null) => {
     const name = e.target?.name;
@@ -115,8 +130,51 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     onSave(formData);
   };
 
+  const handleDownloadJobDetails = async () => {
+    const zip = new JSZip();
+    const jobContent = `
+      Job Title: ${formData.jobTitle}
+      Tags: ${formData.tags}
+      Job Role: ${formData.jobRole}
+      Salary: ${formData.minSalary} - ${formData.maxSalary} ${formData.salaryType}
+      Education: ${formData.education}
+      Experience: ${formData.experience}
+      Job Type: ${formData.jobType}
+      Vacancies: ${formData.vacancies}
+      Expiration Date: ${formData.expirationDate}
+      Job Level: ${formData.jobLevel}
+      Contact URL: ${formData.contactUrl}
+      Phone: ${formData.phone}
+      Email: ${formData.email}
+      Job Description: ${formData.jobDescription}
+      Responsibilities: ${formData.responsibilities}
+      Overview:
+        Posted: ${formData.overview.posted}
+        Expire: ${formData.overview.expire}
+        Education: ${formData.overview.education}
+        Salary: ${formData.overview.salary}
+        Location: ${formData.overview.location}
+        Job Type: ${formData.overview.jobType}
+        Experience: ${formData.overview.experience}
+        Vacancies: ${formData.overview.vacancies}
+        Job Level: ${formData.overview.jobLevel}
+      Company:
+        Name: ${formData.company.name}
+        Description: ${formData.company.description}
+        Founded: ${formData.company.founded}
+        Organization: ${formData.company.organization}
+        Size: ${formData.company.size}
+        Phone: ${formData.company.phone}
+        Email: ${formData.company.email}
+        Website: ${formData.company.website}
+    `;
+    zip.file(`${formData.jobTitle}_details.txt`, jobContent);
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    saveAs(zipBlob, `${formData.jobTitle}_details.zip`);
+  };
+
   return (
-    <div className={cx("container")}>
+    <div className={cx("container")} ref={jobDetailRef}>
       <div className={cx("left")}>
         <div className={cx("header")}>
           <img
@@ -160,12 +218,14 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    className={cx("editable-input")}
                   />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    className={cx("editable-input")}
                   />
                 </>
               ) : (
@@ -185,8 +245,8 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
             </div>
             {editable ? (
               <>
-                <div className={cx("inputGroup")}>
-                  <label>Tags</label>
+                <div className={cx("inputgroup")}>
+                  <label>Tags:</label>
                   <input
                     type="text"
                     name="tags"
@@ -195,8 +255,8 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
                     placeholder="Job keyword, tags etc..."
                   />
                 </div>
-                <div className={cx("inputGroup")}>
-                  <label>Job Role</label>
+                <div className={cx("inputgroup")}>
+                  <label>Job Role:</label>
                   <select name="jobRole" value={formData.jobRole} onChange={handleChange}>
                     <option value="">Select...</option>
                     <option value="Designer">Designer</option>
@@ -501,6 +561,9 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
             </button>
           </div>
         )}
+        <button onClick={handleDownloadJobDetails} className={cx("apply-btn")}>
+          Download Job Details
+        </button>
       </div>
     </div>
   );
