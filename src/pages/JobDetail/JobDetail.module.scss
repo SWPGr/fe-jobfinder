@@ -1,35 +1,32 @@
 .container {
   display: flex;
-  gap: 40px;
-  max-width: 1140px;
-  margin: 40px auto;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  gap: 4rem;
+  max-width: 114rem;
+  margin: 4rem auto;
+  font-family: "segoe ui", tahoma, geneva, verdana, sans-serif;
   color: #333;
 }
 
-/* Left content */
 .left {
   flex: 2;
   background: #fff;
-  padding: 30px 40px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgb(0 0 0 / 0.1);
-  position: relative;
+  padding: 3rem 4rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 0.8rem 2.5rem rgba(0, 0, 0, 0.1);
 }
 
 .header {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 20px;
-  margin-bottom: 30px;
-  position: relative;
+  gap: 2rem;
+  margin-bottom: 3rem;
 }
 
 .logo {
-  width: 70px;
-  height: 70px;
-  border-radius: 20px;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 2rem;
   object-fit: contain;
 }
 
@@ -38,18 +35,18 @@
 }
 
 .job-info__title {
-  font-size: 22px;
+  font-size: 2.2rem;
   font-weight: 700;
   display: flex;
-  gap: 10px;
+  gap: 1rem;
   align-items: center;
 }
 
 .job-info__badge {
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: 700;
   border-radius: 100px;
-  padding: 4px 8px;
+  padding: 0.4rem 0.8rem;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -64,11 +61,28 @@
 }
 
 .contact {
-  margin-top: 6px;
+  margin-top: 0.6rem;
   display: flex;
-  gap: 16px;
-  font-size: 13px;
+  gap: 1.6rem;
+  font-size: 1.3rem;
   color: #5a5a5a;
+}
+
+.contact span {
+  font-weight: 700;
+}
+
+.contact .editable-input {
+  font-weight: 700;
+  border: 1px solid #ccc;
+  border-radius: 0.6rem;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.3rem;
+  line-height: 1.3;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  color: #333;
 }
 
 .contact__link {
@@ -80,89 +94,72 @@
   text-decoration: underline;
 }
 
-.bookmark {
-  border: none;
-  background: transparent;
-  font-size: 24px;
-  cursor: pointer;
-  margin-right: 20px;
-}
-
 .apply-btn {
   background-color: #2563eb;
   border: none;
   color: white;
   font-weight: 600;
-  font-size: 16px;
-  padding: 12px 24px;
-  border-radius: 8px;
+  font-size: 1.6rem;
+  padding: 1.2rem 2.4rem;
+  border-radius: 0.8rem;
   cursor: pointer;
   white-space: nowrap;
+  margin-top: 1rem;
 }
 
 .apply-btn:hover {
   background-color: #1e40af;
 }
 
-.expire {
-  font-size: 13px;
-  margin-left: auto;
-  color: #ef4444;
-  margin-top: 6px;
-}
-
-.expire span {
-  font-weight: 700;
-}
-
-/* Job Description */
 .job-description {
-  margin-top: 20px;
+  margin-top: 2rem;
 }
 
 .job-description__title {
   font-weight: 700;
-  margin-bottom: 12px;
-  font-size: 20px;
+  margin-bottom: 1.2rem;
+  font-size: 2rem;
 }
 
-.job-description__paragraph {
-  font-size: 14px;
+.job-description__content {
+  font-size: 1.6rem;
   line-height: 1.6;
   color: #555;
-  margin-bottom: 12px;
+  margin-bottom: 1.2rem;
 }
 
-/* Responsibilities */
 .responsibilities {
-  margin-top: 20px;
+  margin-top: 2rem;
 }
 
 .responsibilities__title {
   font-weight: 700;
-  margin-bottom: 12px;
-  font-size: 20px;
+  margin-bottom: 1.2rem;
+  font-size: 2rem;
 }
 
-.responsibilities__list {
-  padding-left: 18px;
-  margin: 0;
-  list-style-type: disc;
-}
-
-.responsibilities__item {
-  margin-bottom: 6px;
-  font-size: 14px;
+.responsibilities__content {
+  font-size: 1.6rem;
   line-height: 1.6;
   color: #555;
+  margin-bottom: 1.2rem;
+  padding-left: 0;
 }
 
-/* Share */
+.responsibilities__content ul {
+  padding-left: 2rem;
+  margin: 0;
+}
+
+.responsibilities__content li {
+  margin-bottom: 0.6rem;
+}
+
 .share {
-  margin-top: 30px;
+  margin-top: 3rem;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 1.5rem;
 }
 
 .share__label {
@@ -171,16 +168,16 @@
 
 .share-buttons {
   display: flex;
-  gap: 10px;
+  gap: 1rem;
 }
 
 .share-buttons__btn {
   border: 1px solid #d1d5db;
   background: white;
-  padding: 6px 14px;
-  border-radius: 6px;
+  padding: 0.6rem 1.4rem;
+  border-radius: 0.6rem;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 1.3rem;
   color: #333;
   transition: all 0.3s ease;
 }
@@ -191,79 +188,77 @@
   border-color: #3b82f6;
 }
 
-/* Right content */
 .right {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 2rem;
 }
 
 .job-overview,
 .company-info {
   background: white;
-  padding: 25px 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgb(0 0 0 / 0.1);
+  padding: 2.5rem 2rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 0.8rem 2.5rem rgba(0, 0, 0, 0.1);
 }
 
 .job-overview__title,
 .company-info__title {
   font-weight: 700;
-  margin-bottom: 20px;
-  font-size: 20px;
+  margin-bottom: 2rem;
+  font-size: 2rem;
 }
 
 .overview-item {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 1.6rem;
+  margin-bottom: 1.6rem;
 }
 
 .overview-item__icon {
-  font-size: 22px;
+  font-size: 2.2rem;
 }
 
 .overview-item__label {
-  font-size: 13px;
+  font-size: 1.3rem;
   color: #888;
   margin: 0;
 }
 
 .overview-item__value {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 1.5rem;
 }
 
-/* Company Info */
 .company-info__desc {
   color: #666;
-  font-size: 13px;
-  margin-bottom: 15px;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
 }
 
 .company-details {
-  font-size: 14px;
+  font-size: 1.4rem;
   line-height: 1.5;
 }
 
 .company-details p {
-  margin-bottom: 8px;
+  margin-bottom: 0.8rem;
 }
 
 .company-details b {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .social-icons {
   display: flex;
-  gap: 14px;
-  margin-top: 12px;
+  gap: 1.4rem;
+  margin-top: 1.2rem;
 }
 
 .social-icon {
-  font-size: 20px;
+  font-size: 2rem;
   color: #3b82f6;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -273,7 +268,6 @@
   color: #1e40af;
 }
 
-/* Responsive */
 @media (max-width: 991px) {
   .container {
     flex-direction: column;
@@ -283,18 +277,45 @@
   }
 }
 
-/* Editable inputs */
+.inputgroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.inputgroup label {
+  font-size: 1.6rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.inputgroup input,
+.inputgroup select {
+  flex-grow: 0.2;
+  line-height: 1.6;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 0.6rem;
+  padding: 0.8rem 1.2rem;
+  color: #333;
+  margin-top: 1rem;
+}
+
 .editable-input,
 .editable-textarea,
 .job-title {
   border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 14px;
+  border-radius: 0.6rem;
+  padding: 0.8rem 1.2rem;
+  font-size: 1.6rem;
+  line-height: 1.6;
   font-family: inherit;
   width: 100%;
   box-sizing: border-box;
   color: #333;
+  font-weight: 700;
 }
 
 .editable-input:focus,
@@ -302,24 +323,33 @@
 .job-title:focus {
   outline: none;
   border-color: #3b82f6;
-  box-shadow: 0 0 5px #3b82f6aa;
+  box-shadow: 0 0 0.5rem #3b82f6aa;
 }
 
 .editable-textarea {
   resize: vertical;
-  min-height: 80px;
+  min-height: 8rem;
   font-family: inherit;
 }
 
-/* Add item buttons */
+.additional-info p {
+  font-size: 1.6rem;
+  margin: 0.4rem 0;
+  color: #555;
+}
+
+.additional-info p strong {
+  font-weight: 700;
+}
+
 .add-item-btn {
-  margin-top: 8px;
+  margin-top: 0.8rem;
   background-color: transparent;
   border: 1px solid #3b82f6;
   color: #3b82f6;
-  padding: 6px 14px;
-  font-size: 13px;
-  border-radius: 6px;
+  padding: 0.6rem 1.4rem;
+  font-size: 1.3rem;
+  border-radius: 0.6rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -329,16 +359,15 @@
   color: white;
 }
 
-/* Save & Cancel buttons */
 .save-btn,
 .cancel-btn {
   background-color: #3b82f6;
   color: white;
   border: none;
   font-weight: 600;
-  font-size: 14px;
-  padding: 10px 22px;
-  border-radius: 8px;
+  font-size: 1.4rem;
+  padding: 1rem 2.2rem;
+  border-radius: 0.8rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -349,9 +378,23 @@
 
 .cancel-btn {
   background-color: #ef4444;
-  margin-left: 10px;
+  margin-left: 1rem;
 }
 
 .cancel-btn:hover {
   background-color: #b91c1c;
+}
+
+.my-content {
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: #555;
+}
+
+.my-content ul {
+  padding-left: 2rem;
+}
+
+.my-content li {
+  margin-bottom: 0.6rem;
 }

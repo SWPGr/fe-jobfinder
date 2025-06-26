@@ -17,7 +17,6 @@ import Dashboard1 from '../../../pages/DashBoard/Dashboard'; //Overview của Jo
 import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs'; //Applied Jobs page của Job Seeker
 import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs'; //Favorite Jobs page của Job Seeker
 import JobAlerts from '~/pages/DashBoard/JobAlerts/JobAlerts';
-import Setting from '~/pages/DashBoard/Setting/Setting';
 
 import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
 import PostJob from '~/pages/CreateCVSeeker/PostJob';
@@ -26,7 +25,11 @@ import MyJob from '~/pages/CreateCVSeeker/MyJob';
 import PlansBilling from '~/pages/CreateCVSeeker/PlansBilling';
 import Overview1 from '~/pages/CreateCVSeeker/Overview1';
 import Single from '~/pages/Single/Single';
-
+import DashboardOverview from '~/pages/Admin/DashboardOverview';
+import EmployersManagement from '~/pages/Admin/EmployersManagement';
+import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
+import Jobs from '~/pages/Admin/components/Jobs';
+import Setting from '~/pages/Admin/Setting';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -35,19 +38,28 @@ export const items = {
         items: [
             {
                 title: 'Overview',
-                icon: <IconStack2 />, // Replace with actual icon component
+                icon: <IconStack2 />,
+                page: (chartKey = 0) => <DashboardOverview chartKey={chartKey} />,
+            },
+            {
+                title: 'Manage Jobs',
+                icon: <IconBriefcase />,
+                page: <Jobs />,
             },
             {
                 title: 'Manage Employers',
-                icon: <IconUserCircle />, // Replace with actual icon component
+                icon: <IconUserCircle />,
+                page: <EmployersManagement />,
             },
             {
                 title: 'Manage Job Seekers',
-                icon: <IconUserCircle />, // Replace with actual icon component
+                icon: <IconUserCircle />,
+                page: <JobSeekersManagement />,
             },
             {
                 title: 'Settings',
-                icon: <IconSettings />, // Replace with actual icon component
+                icon: <IconSettings />,
+                page: <Setting />,
             },
         ],
     },

@@ -1,7 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import classNames from "classnames/bind";
 import styles from "./JobDetail.module.scss";
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import SimpleRichTextEditor from "src/components/RichTextEditor/RichTextEditor.js";
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 const cx = classNames.bind(styles);
 
@@ -10,33 +13,45 @@ const noop = () => undefined;
 const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noop }) => {
   const defaultJob = {
     jobTitle: "Senior UX Designer",
-    badges: { featured: true, fulltime: true },
+    tags: "UX, Design, Senior",
+    jobRole: "Senior",
+    badges: { featured: true, fulltime: "Full Time" },
+    minSalary: "50000",
+    maxSalary: "80000",
+    salaryType: "monthly",
+    education: "Bachelor",
+    experience: "10-15 Years",
+    jobType: "Full Time",
+    vacancies: "2-5",
+    expirationDate: "2025-07-31",
+    jobLevel: "Senior",
     contactUrl: "https://instagram.com",
-    phone: "(406) 555-0120",
+    phone: "(555) 123-4567",
     email: "career@instagram.com",
-    jobDescription: [
-      "Integer aliquet pretium consequat. Donec et sapien id leo accumsan pellentesque eget maximus tellus. Duis et est ac leo rhoncus tincidunt vitae vehicula augue. Donec in suscipit diam. Pellentesque quis justo sit amet arcu commodo sollicitudin. Integer finibus blandit condimentum. Vivamus sit amet ligula ullamcorper, pulvinar ante at, tristique erat. Quisque sit amet aliquam urna. Maecenas blandit felis id massa sodales finibus. Integer bibendum eu nulla eu sollicitudin. Sed lobortis diam tincidunt accumsan faucibus. Quisque blandit augue quis turpis auctor, dapibus euismod ante ultricies. Ut non felis lacinia turpis feugiat euismod at id magna. Sed ut orci arcu. Suspendisse sollicitudin faucibus aliquet.",
-      "Nam dapibus consectetur erat in euismod. Cras urna augue, mollis venenatis augue sed, porttitor aliquet nibh. Sed tristique dictum elementum. Nulla imperdiet sit amet quam eget lobortis. Etiam in neque sit amet orci interdum tincidunt.",
-    ],
-    responsibilities: [
-      "Quisque semper gravida est et consectetur.",
-      "Curabitur blandit lorem velit, vitae pretium leo placerat eget.",
-      "Morbi mattis in ipsum ac tempus.",
-      "Curabitur eu vehicula libero. Vestibulum sed purus ullamcorper, lobortis lectus nec.",
-      "Vulputate turpis. Quisque ante odio, iaculis a porttitor sit amet.",
-      "Lobortis vel lectus. Nulla at risus ut diam.",
-      "Commodo feugiat. Nullam laoreet, diam placerat dapibus tincidunt.",
-      "Odio metus posuere lorem, id condimentum erat velit nec neque.",
-      "Dui sodales ut. Curabitur tempus augue.",
-    ],
+    jobDescription: `
+      <p><strong>Job Description:</strong> We are seeking a highly skilled Senior UX Designer to join our team at Instagram. In this role, you will be responsible for creating user-centered designs by understanding business requirements, user needs, and technical constraints. You will collaborate with product managers, engineers, and other designers to deliver intuitive and engaging user experiences across our mobile and web platforms.</p>
+      <p>Key tasks include conducting user research, designing wireframes, prototypes, and high-fidelity mockups, as well as iterating on designs based on feedback. The ideal candidate will have a strong portfolio showcasing expertise in UX design, with a focus on usability and visual aesthetics.</p>
+    `,
+    responsibilities: `
+      <ul>
+        <li>Lead the design process from concept to final deliverable, ensuring alignment with business goals.</li>
+        <li>Conduct user research and usability testing to gather insights and validate design decisions.</li>
+        <li>Design wireframes, prototypes, and high-fidelity mockups using tools like Figma or Sketch.</li>
+        <li>Collaborate with product managers and developers to implement designs effectively.</li>
+        <li>Present design concepts and iterate based on stakeholder feedback.</li>
+        <li>Maintain and evolve the design system to ensure consistency across products.</li>
+      </ul>
+    `,
     overview: {
-      posted: "14 June, 2021",
-      expire: "14 July, 2021",
-      education: "Graduation",
+      posted: "24 June, 2025",
+      expire: "24 July, 2025",
+      education: "Bachelor",
       salary: "$50k-$80k/month",
       location: "New York, USA",
       jobType: "Full Time",
       experience: "10-15 Years",
+      vacancies: "2-5",
+      jobLevel: "Senior",
     },
     company: {
       name: "Instagram",
@@ -44,9 +59,9 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
       founded: "March 21, 2006",
       organization: "Private Company",
       size: "120-300 Employers",
-      phone: "(406) 555-0120",
-      email: "twitter@gmail.com",
-      website: "https://twitter.com",
+      phone: "(555) 123-4567",
+      email: "career@instagram.com",
+      website: "https://instagram.com",
     },
   };
 
@@ -61,30 +76,34 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
   });
 
   const [formData, setFormData] = useState(mergeWithDefault(job));
+  const jobDetailRef = useRef(null);
 
   useEffect(() => {
     setFormData(mergeWithDefault(job));
-  }, [job, editable]);
+  }, [job]);
 
-  const handleChange = (e, idx = null, section = null) => {
-    const name = e.target.name;
-    const value = e.target.value;
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (jobDetailRef.current && !jobDetailRef.current.contains(event.target) && editable) {
+        onCancel();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editable, onCancel]);
 
-    if (section === "jobDescription") {
-      const newArr = [...formData.jobDescription];
-      newArr[idx] = value;
-      setFormData((prev) => ({ ...prev, jobDescription: newArr }));
+  const handleChange = (e, section = null) => {
+    const name = e.target?.name;
+    const value = e.target?.value;
+
+    if (section === "jobDescription" || section === "responsibilities") {
+      setFormData((prev) => ({ ...prev, [section]: value }));
       return;
     }
 
-    if (section === "responsibilities") {
-      const newArr = [...formData.responsibilities];
-      newArr[idx] = value;
-      setFormData((prev) => ({ ...prev, responsibilities: newArr }));
-      return;
-    }
-
-    if (name.startsWith("overview.")) {
+    if (name?.startsWith("overview.")) {
       const key = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
@@ -93,7 +112,7 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
       return;
     }
 
-    if (name.startsWith("company.")) {
+    if (name?.startsWith("company.")) {
       const key = name.split(".")[1];
       setFormData((prev) => ({
         ...prev,
@@ -102,20 +121,8 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
       return;
     }
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddItem = (section) => {
-    if (section === "responsibilities") {
-      setFormData((prev) => ({
-        ...prev,
-        responsibilities: [...prev.responsibilities, ""],
-      }));
-    } else if (section === "jobDescription") {
-      setFormData((prev) => ({
-        ...prev,
-        jobDescription: [...prev.jobDescription, ""],
-      }));
+    if (name) {
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -123,8 +130,51 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     onSave(formData);
   };
 
+  const handleDownloadJobDetails = async () => {
+    const zip = new JSZip();
+    const jobContent = `
+      Job Title: ${formData.jobTitle}
+      Tags: ${formData.tags}
+      Job Role: ${formData.jobRole}
+      Salary: ${formData.minSalary} - ${formData.maxSalary} ${formData.salaryType}
+      Education: ${formData.education}
+      Experience: ${formData.experience}
+      Job Type: ${formData.jobType}
+      Vacancies: ${formData.vacancies}
+      Expiration Date: ${formData.expirationDate}
+      Job Level: ${formData.jobLevel}
+      Contact URL: ${formData.contactUrl}
+      Phone: ${formData.phone}
+      Email: ${formData.email}
+      Job Description: ${formData.jobDescription}
+      Responsibilities: ${formData.responsibilities}
+      Overview:
+        Posted: ${formData.overview.posted}
+        Expire: ${formData.overview.expire}
+        Education: ${formData.overview.education}
+        Salary: ${formData.overview.salary}
+        Location: ${formData.overview.location}
+        Job Type: ${formData.overview.jobType}
+        Experience: ${formData.overview.experience}
+        Vacancies: ${formData.overview.vacancies}
+        Job Level: ${formData.overview.jobLevel}
+      Company:
+        Name: ${formData.company.name}
+        Description: ${formData.company.description}
+        Founded: ${formData.company.founded}
+        Organization: ${formData.company.organization}
+        Size: ${formData.company.size}
+        Phone: ${formData.company.phone}
+        Email: ${formData.company.email}
+        Website: ${formData.company.website}
+    `;
+    zip.file(`${formData.jobTitle}_details.txt`, jobContent);
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    saveAs(zipBlob, `${formData.jobTitle}_details.zip`);
+  };
+
   return (
-    <div className={cx("container")}>
+    <div className={cx("container")} ref={jobDetailRef}>
       <div className={cx("left")}>
         <div className={cx("header")}>
           <img
@@ -147,11 +197,12 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
                   <span className={cx("job-info__badge", "job-info__badge--featured")}>Featured</span>
                 )}
                 {formData.badges?.fulltime && (
-                  <span className={cx("job-info__badge", "job-info__badge--fulltime")}>Full Time</span>
+                  <span className={cx("job-info__badge", "job-info__badge--fulltime")}>
+                    {formData.badges.fulltime}
+                  </span>
                 )}
               </div>
             )}
-
             <div className={cx("contact")}>
               {editable ? (
                 <>
@@ -167,12 +218,14 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    className={cx("editable-input")}
                   />
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
+                    className={cx("editable-input")}
                   />
                 </>
               ) : (
@@ -190,71 +243,66 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
                 </>
               )}
             </div>
+            {editable ? (
+              <>
+                <div className={cx("inputgroup")}>
+                  <label>Tags:</label>
+                  <input
+                    type="text"
+                    name="tags"
+                    value={formData.tags}
+                    onChange={handleChange}
+                    placeholder="Job keyword, tags etc..."
+                  />
+                </div>
+                <div className={cx("inputgroup")}>
+                  <label>Job Role:</label>
+                  <select name="jobRole" value={formData.jobRole} onChange={handleChange}>
+                    <option value="">Select...</option>
+                    <option value="Designer">Designer</option>
+                    <option value="Developer">Developer</option>
+                    <option value="Senior">Senior</option>
+                  </select>
+                </div>
+              </>
+            ) : (
+              <div className={cx("additional-info")}>
+                <p><strong>Tags:</strong> {formData.tags}</p>
+                <p><strong>Job Role:</strong> {formData.jobRole}</p>
+              </div>
+            )}
           </div>
         </div>
 
         <div className={cx("job-description")}>
           <div className={cx("job-description__title")}>Job Description</div>
           {editable ? (
-            <>
-              {formData.jobDescription.map((para, idx) => (
-                <textarea
-                  key={idx}
-                  value={para}
-                  onChange={(e) => handleChange(e, idx, "jobDescription")}
-                  rows={4}
-                  className={cx("editable-textarea", "job-description__paragraph")}
-                />
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAddItem("jobDescription")}
-                className={cx("add-item-btn")}
-              >
-                + Add Job Description Paragraph
-              </button>
-            </>
+            <SimpleRichTextEditor
+              placeholder="Add your job description..."
+              onChange={(value) => handleChange({ target: { value } }, "jobDescription")}
+              content={formData.jobDescription}
+            />
           ) : (
-            formData.jobDescription.map((para, idx) => (
-              <p key={idx} className={cx("job-description__paragraph")}>
-                {para}
-              </p>
-            ))
+            <div
+              className={cx("job-description__content")}
+              dangerouslySetInnerHTML={{ __html: formData.jobDescription }}
+            />
           )}
         </div>
 
         <div className={cx("responsibilities")}>
           <div className={cx("responsibilities__title")}>Responsibilities</div>
           {editable ? (
-            <>
-              <ul className={cx("responsibilities__list")}>
-                {formData.responsibilities.map((item, idx) => (
-                  <li key={idx} className={cx("responsibilities__item")}>
-                    <input
-                      type="text"
-                      value={item}
-                      onChange={(e) => handleChange(e, idx, "responsibilities")}
-                      className={cx("editable-input")}
-                    />
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={() => handleAddItem("responsibilities")}
-                className={cx("add-item-btn")}
-              >
-                + Add Responsibility
-              </button>
-            </>
+            <SimpleRichTextEditor
+              placeholder="Add your job responsibilities..."
+              onChange={(value) => handleChange({ target: { value } }, "responsibilities")}
+              content={formData.responsibilities}
+            />
           ) : (
-            <ul className={cx("responsibilities__list")}>
-              {formData.responsibilities.map((item, idx) => (
-                <li key={idx} className={cx("responsibilities__item")}>
-                  {item}
-                </li>
-              ))}
-            </ul>
+            <div
+              className={cx("responsibilities__content")}
+              dangerouslySetInnerHTML={{ __html: formData.responsibilities }}
+            />
           )}
         </div>
 
@@ -271,39 +319,151 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
       <div className={cx("right")}>
         <div className={cx("job-overview")}>
           <div className={cx("job-overview__title")}>Job Overview</div>
-          {Object.entries(formData.overview).map(([key, value]) => (
+          {[
+            { key: "posted", label: "Posted", icon: "📅" },
+            { key: "expire", label: "Expire", icon: "⏰" },
+            { key: "education", label: "Education", icon: "🎓" },
+            { key: "salary", label: "Salary", icon: "💰" },
+            { key: "location", label: "Location", icon: "📍" },
+            { key: "jobType", label: "Job Type", icon: "💼" },
+            { key: "experience", label: "Experience", icon: "🕒" },
+            { key: "vacancies", label: "Vacancies", icon: "👥" },
+            { key: "jobLevel", label: "Job Level", icon: "📊" },
+          ].map(({ key, label, icon }) => (
             <div key={key} className={cx("overview-item")}>
-              <span className={cx("overview-item__icon")}>
-                {{
-                  posted: "📅",
-                  expire: "⏰",
-                  education: "🎓",
-                  salary: "💰",
-                  location: "📍",
-                  jobType: "💼",
-                  experience: "🕒",
-                }[key] || "ℹ️"}
-              </span>
+              <span className={cx("overview-item__icon")}>{icon}</span>
               <div>
-                <p className={cx("overview-item__label")}>
-                  {key.charAt(0).toUpperCase() +
-                    key.slice(1).replace(/([A-Z])/g, " $1")}
-                  :
-                </p>
-                {editable ? (
-                  <input
-                    type="text"
-                    name={`overview.${key}`}
-                    value={value}
-                    onChange={handleChange}
-                    className={cx("editable-input", "overview-item__value")}
-                  />
+                <p className={cx("overview-item__label")}>{label}:</p>
+                {key === "posted" ? (
+                  <strong className={cx("overview-item__value")}>
+                    {formData.overview[key]}
+                  </strong>
+                ) : editable ? (
+                  key === "education" ? (
+                    <select
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    >
+                      <option value="">Select...</option>
+                      <option value="High School">High School</option>
+                      <option value="Bachelor">Bachelor</option>
+                      <option value="Master">Master</option>
+                    </select>
+                  ) : key === "jobType" ? (
+                    <select
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    >
+                      <option value="">Select...</option>
+                      <option value="Full Time">Full Time</option>
+                      <option value="Part Time">Part Time</option>
+                      <option value="Internship">Internship</option>
+                    </select>
+                  ) : key === "experience" ? (
+                    <select
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    >
+                      <option value="">Select...</option>
+                      <option value="0-1 years">0-1 years</option>
+                      <option value="1-3 years">1-3 years</option>
+                      <option value="3+ years">3+ years</option>
+                    </select>
+                  ) : key === "vacancies" ? (
+                    <select
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    >
+                      <option value="">Select...</option>
+                      <option value="1">1</option>
+                      <option value="2-5">2-5</option>
+                      <option value="5+">5+</option>
+                    </select>
+                  ) : key === "jobLevel" ? (
+                    <select
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    >
+                      <option value="">Select...</option>
+                      <option value="Junior">Junior</option>
+                      <option value="Mid Level">Mid Level</option>
+                      <option value="Senior">Senior</option>
+                    </select>
+                  ) : key === "expire" ? (
+                    <input
+                      type="date"
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      name={`overview.${key}`}
+                      value={formData.overview[key]}
+                      onChange={handleChange}
+                      className={cx("editable-input", "overview-item__value")}
+                    />
+                  )
                 ) : (
-                  <strong className={cx("overview-item__value")}>{value}</strong>
+                  <strong className={cx("overview-item__value")}>
+                    {formData.overview[key]}
+                  </strong>
                 )}
               </div>
             </div>
           ))}
+          <div className={cx("overview-item")}>
+            <span className={cx("overview-item__icon")}>💵</span>
+            <div>
+              <p className={cx("overview-item__label")}>Salary Details:</p>
+              {editable ? (
+                <div className={cx("salary-details")}>
+                  <input
+                    type="number"
+                    name="minSalary"
+                    value={formData.minSalary}
+                    onChange={handleChange}
+                    placeholder="Min Salary"
+                    className={cx("editable-input")}
+                  />
+                  <input
+                    type="number"
+                    name="maxSalary"
+                    value={formData.maxSalary}
+                    onChange={handleChange}
+                    placeholder="Max Salary"
+                    className={cx("editable-input")}
+                  />
+                  <select
+                    name="salaryType"
+                    value={formData.salaryType}
+                    onChange={handleChange}
+                    className={cx("editable-input")}
+                  >
+                    <option value="">Select...</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="hourly">Hourly</option>
+                  </select>
+                </div>
+              ) : (
+                <strong className={cx("overview-item__value")}>
+                  {formData.minSalary} - {formData.maxSalary} USD/{formData.salaryType}
+                </strong>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className={cx("company-info")}>
@@ -323,13 +483,13 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
           </p>
           <div className={cx("company-details")}>
             {[
-              ["Founded in:", "founded"],
-              ["Organization type:", "organization"],
-              ["Company size:", "size"],
-              ["Phone:", "phone"],
-              ["Email:", "email"],
-              ["Website:", "website"],
-            ].map(([label, key]) => (
+              { label: "Founded in:", key: "founded" },
+              { label: "Organization type:", key: "organization" },
+              { label: "Company size:", key: "size" },
+              { label: "Phone:", key: "phone" },
+              { label: "Email:", key: "email" },
+              { label: "Website:", key: "website" },
+            ].map(({ label, key }) => (
               <p key={key}>
                 <b>{label}</b>{" "}
                 {editable ? (
@@ -401,6 +561,9 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
             </button>
           </div>
         )}
+        <button onClick={handleDownloadJobDetails} className={cx("apply-btn")}>
+          Download Job Details
+        </button>
       </div>
     </div>
   );
