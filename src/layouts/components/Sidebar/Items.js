@@ -17,7 +17,6 @@ import Dashboard1 from '../../../pages/DashBoard/Dashboard'; //Overview của Jo
 import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs'; //Applied Jobs page của Job Seeker
 import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs'; //Favorite Jobs page của Job Seeker
 import JobAlerts from '~/pages/DashBoard/JobAlerts/JobAlerts';
-import Setting from '~/pages/DashBoard/Setting/Setting';
 
 import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
 import PostJob from '~/pages/CreateCVSeeker/PostJob';
@@ -29,7 +28,8 @@ import Single from '~/pages/Single/Single';
 import DashboardOverview from '~/pages/Admin/DashboardOverview';
 import EmployersManagement from '~/pages/Admin/EmployersManagement';
 import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
-
+import Jobs from '~/pages/Admin/components/Jobs';
+import Setting from '~/pages/Admin/Setting';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -44,6 +44,7 @@ export const items = {
             {
                 title: 'Manage Jobs',
                 icon: <IconBriefcase />,
+                page: <Jobs />,
             },
             {
                 title: 'Manage Employers',
@@ -58,6 +59,7 @@ export const items = {
             {
                 title: 'Settings',
                 icon: <IconSettings />,
+                page: <Setting />,
             },
         ],
     },
