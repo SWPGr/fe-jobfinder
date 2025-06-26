@@ -29,7 +29,8 @@ import DashboardOverview from '~/pages/Admin/DashboardOverview';
 import EmployersManagement from '~/pages/Admin/EmployersManagement';
 import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
 import Jobs from '~/pages/Admin/components/Jobs';
-import Setting from '~/pages/Admin/Setting';
+import SettingAdmin from '~/pages/Admin/SettingAdmin';
+import Setting from '~/pages/DashBoard/Setting/Setting';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -59,7 +60,7 @@ export const items = {
             {
                 title: 'Settings',
                 icon: <IconSettings />,
-                page: <Setting />,
+                page: <SettingAdmin />,
             },
         ],
     },
