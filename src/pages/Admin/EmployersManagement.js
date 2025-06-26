@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
-import { Filter, MoreHorizontal, ChevronDown, ChevronUp, RotateCcw, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
-
+import { Combobox, useCombobox } from '@mantine/core';
 const cx = classNames.bind(styles);
 
 const sortColumns = [
@@ -13,9 +13,67 @@ const sortColumns = [
     { key: 'location', label: 'Location' },
     { key: 'phone', label: 'Phone' },
     { key: 'createdAt', label: 'Joined' },
-    { key: 'enabled', label: 'Status' },
+    { key: 'isPremium', label: 'Premium' },
 ];
-
+const EmployerRowDropdown = ({ onAction }) => {
+    const combobox = useCombobox();
+    return (
+        <Combobox
+            store={combobox}
+            withinPortal
+            offset={0}
+            onOptionSubmit={(val) => {
+                onAction(val);
+                combobox.closeDropdown();
+            }}
+        >
+            <Combobox.Target>
+                <button
+                    type="button"
+                    className={cx('iconBtn')}
+                    style={{
+                        minWidth: 0,
+                        minHeight: 0,
+                        padding: 0,
+                        background: 'none',
+                        border: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                    onClick={() => combobox.toggleDropdown()}
+                >
+                    <svg
+                        width="18"
+                        height="18"
+                        fill="none"
+                        stroke="#7b809a"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <circle cx="9" cy="9" r="1" />
+                        <circle cx="15" cy="9" r="1" />
+                        <circle cx="3" cy="9" r="1" />
+                    </svg>
+                </button>
+            </Combobox.Target>
+            <Combobox.Dropdown className={cx('dropdownMenu')}>
+                <Combobox.Options>
+                    <Combobox.Option value="edit" className={cx('dropdownItem')}>
+                        Edit
+                    </Combobox.Option>
+                    <Combobox.Option value="archive" className={cx('dropdownItem')}>
+                        Archive
+                    </Combobox.Option>
+                    <Combobox.Option value="share" className={cx('dropdownItem')}>
+                        Share
+                    </Combobox.Option>
+                </Combobox.Options>
+            </Combobox.Dropdown>
+        </Combobox>
+    );
+};
 // Safe initials function
 const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '';
@@ -24,30 +82,33 @@ const getInitials = (name) => {
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-const statusClass = (enabled) => (enabled ? cx('statusText', 'active') : cx('statusText', 'inactive'));
+const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
 
 const EmployersManagement = () => {
-    const [employers, setEmployers] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState('');
-    const [sortConfig, setSortConfig] = React.useState(null);
-    const [search, setSearch] = React.useState('');
-
+    const [employers, setEmployers] = useState([]);
+    const [error, setError] = useState('');
+    const [sortConfig, setSortConfig] = useState(null);
+    const [search, setSearch] = useState('');
+    const handleAction = (action, jobId) => {
+        if (action === 'edit') {
+            console.log(`Editing job ${jobId}`);
+        } else if (action === 'archive') {
+            console.log(`Archiving job ${jobId}`);
+        } else if (action === 'share') {
+            console.log(`Sharing job ${jobId}`);
+        }
+    };
     // Fetch employers
-    const fetchEmployers = React.useCallback(async () => {
-        setLoading(true);
-        setError('');
+    const fetchEmployers = useCallback(async () => {
         try {
             const data = await statisticsService.fetchAllEmployers();
             setEmployers(data);
         } catch (err) {
             setError(err.message || 'Failed to fetch employers');
-        } finally {
-            setLoading(false);
         }
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         fetchEmployers();
     }, [fetchEmployers]);
 
@@ -72,7 +133,7 @@ const EmployersManagement = () => {
         );
     }, [employers, search]);
 
-    const sortedEmployers = React.useMemo(() => {
+    const sortedEmployers = useMemo(() => {
         const arr = [...filteredEmployers];
         if (!sortConfig) return arr;
         return arr.sort((a, b) => {
@@ -84,34 +145,26 @@ const EmployersManagement = () => {
         });
     }, [filteredEmployers, sortConfig]);
 
-    if (loading) return <div className={cx('loading')}>Loading...</div>;
     if (error) return <div className={cx('error')}>{error}</div>;
 
     return (
         <div className={cx('managementWrapper')}>
-            <div className={cx('headerRow')}>
-                <h2>Employers</h2>
-                <div className={cx('actionGroup')}>
-                    <button onClick={fetchEmployers} className={cx('btn')} title="Reload list">
-                        <RotateCcw size={18} /> Reload
-                    </button>
-                    {/* <button className={cx('btn')}>
-                        <Filter size={18} /> Filters
-                    </button> */}
-                    <button className={cx('btn', 'primary')}>Add Employer</button>
+            <div className={cx('jobs-header')}>
+                <h1 className={cx('title')}>Employers Management</h1>
+            </div>
+            <div className={cx('toolbar')}>
+                <div className={cx('search-box')}>
+                    <Search className={cx('search-icon')} />
+                    <input
+                        placeholder="Search employers..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
+                <div className={cx('toolbar-actions')}>
+                    <button className={cx('primary')}>Add Employer</button>
                 </div>
             </div>
-
-            <div className={cx('searchBar')}>
-                <Search size={18} style={{ marginRight: 8, opacity: 0.7 }} />
-                <input
-                    type="text"
-                    placeholder="Search employers..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </div>
-
             <div className={cx('tableWrapper')}>
                 <table className={cx('dataTable')}>
                     <thead>
@@ -154,14 +207,12 @@ const EmployersManagement = () => {
                                 <td>{employer.createdAt?.slice(0, 10) || '--'}</td>
                                 {/* Status badge */}
                                 <td>
-                                    <span className={statusClass(employer.enabled)}>
-                                        {employer.enabled ? 'Active' : 'Inactive'}
+                                    <span className={premiumClass(employer.isPremium)}>
+                                        {employer.isPremium === true ? 'Premium' : 'Normal'}
                                     </span>
                                 </td>
                                 <td>
-                                    <button className={cx('iconBtn')}>
-                                        <MoreHorizontal size={18} />
-                                    </button>
+                                    <EmployerRowDropdown onAction={(action) => handleAction(action, employer.id)} />
                                 </td>
                             </tr>
                         ))}

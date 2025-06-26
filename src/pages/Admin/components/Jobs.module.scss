@@ -1,36 +1,26 @@
-// Wrapper
-.managementWrapper,
-.jobs-wrapper {
-    background: var(--white);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
+.managementWrapper {
     padding: 20px;
-    min-height: 100vh;
+    height: auto;
+    overflow: visible;
 }
 
-// Header
 .jobs-header {
-    margin-bottom: -10px;
-
-    .title {
-        font-size: 24px;
-        font-weight: 600;
-    }
+    margin-bottom: 20px;
 }
 
-// Toolbar
-.toolbar,
-.jobs-toolbar {
+.title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // margin-bottom: 20px;
+    margin-bottom: 20px;
     gap: 18px;
 }
 
-// Search box
 .search-box {
     display: flex;
     align-items: center;
@@ -62,7 +52,6 @@
     }
 }
 
-// Toolbar actions
 .toolbar-actions {
     display: flex;
     gap: 12px;
@@ -84,21 +73,17 @@
     }
 }
 
-// Table wrapper
-.tableWrapper,
-.jobs-table-wrapper {
+.tableWrapper {
     background: #fff;
     border-radius: 1.2rem;
     box-shadow: 0 1.5px 8px 0 rgba(22, 28, 45, 0.06);
     overflow-x: auto;
-    // margin-top: 1rem;
+    margin-top: 1rem;
     height: auto;
     max-height: 500px;
     overflow-y: auto;
 }
 
-// Table
-.dataTable,
 .jobs-table {
     width: 100%;
     border-collapse: collapse;
@@ -122,30 +107,9 @@
         user-select: none;
         cursor: pointer;
     }
-
-    th.sorted {
-        color: #2065e4;
-        background-color: #f1faff;
-    }
-
-    th.sortable:hover {
-        background: #e8f0fe;
-        color: #2065e4;
-    }
-
-    tbody tr {
-        border-bottom: 1px solid #f1f1f1;
-        transition: background 0.12s;
-
-        &:hover {
-            background: #f8fafc;
-        }
-    }
 }
 
-// Avatar
-.avatarCircle,
-.company-avatar {
+.avatarCircle {
     width: 32px;
     height: 32px;
     background-color: #1da1f2;
@@ -160,7 +124,6 @@
     letter-spacing: 0.01em;
 }
 
-// Job title/company
 .job-title {
     font-weight: 500;
     color: #22223b;
@@ -171,9 +134,7 @@
     font-size: 0.98rem;
 }
 
-// Job type/status/premium badge
-.job-type,
-.statusText {
+.job-type {
     background-color: #e0f7fa;
     color: #00796b;
     padding: 4px 14px;
@@ -181,11 +142,18 @@
     font-size: 0.93rem;
     font-weight: 500;
     display: inline-block;
+    text-align: center;
+    justify-content: center;
 }
 
 .statusText {
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 500;
     background: #e0f2fe;
     color: #0891b2;
+    display: inline-block;
 
     &.active {
         background-color: #e8f5e9;
@@ -198,7 +166,6 @@
     }
 }
 
-// Dropdown
 .dropdownWrapper {
     position: relative;
     display: inline-block;
@@ -227,6 +194,7 @@
     z-index: 1000;
     min-width: 120px;
     padding: 8px 0;
+    /* Không giới hạn chiều cao, không cuộn khi ít item */
     max-height: none;
     overflow: visible;
 }
@@ -242,12 +210,11 @@
     color: #333;
     transition: background 0.15s;
 
-    &:hover {
+    &:hover,
+    &[data-hovered="true"] {
         background-color: #f0f0f0;
     }
 }
-
-// Error
 .error {
     color: #d32f2f;
 }
