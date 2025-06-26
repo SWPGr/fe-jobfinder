@@ -36,7 +36,7 @@ const delJobById = async (id) => {
 
 const unSaveJob = async (id) => {
     try {
-        const response = await put(`saved-jobs/${id}`);
+        const response = await del(`unsaved-jobs/${id}`);
         return response;
     } catch (error) {
         throw error;
@@ -45,7 +45,7 @@ const unSaveJob = async (id) => {
 
 const saveJob = async (id) => {
     try {
-        const response = await put(`saved-jobs/${id}`);
+        const response = await post(`saved-jobs`, { jobId: id });
         return response;
     } catch (error) {
         throw error;

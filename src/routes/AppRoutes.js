@@ -50,6 +50,7 @@ const publicRoutes = [
 
 const privateRoutes = [
     { path: config.routes.dashboard, component: DashboardPage },
+    { path: config.routes.dashboard + '/:page', component: DashboardPage },
     { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
     { path: config.routes.findEmployer, component: FindEmployer, layout: HeaderOnly },
     { path: config.routes.findCandidate, component: FindCandidate, layout: HeaderOnly },

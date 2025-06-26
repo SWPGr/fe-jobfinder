@@ -51,13 +51,7 @@ function FeaturedJob() {
                 </div>
                 <div className={cx('featured-job__list')}>
                     {currentPageItems.map((job, index) => (
-                        <JobItem
-                            key={index}
-                            image={Images.google_image}
-                            jobDescription={job}
-                            isLogin={user?.token}
-                            className={cx('item')}
-                        />
+                        <JobItem key={index} image={Images.google_image} jobDescription={job} className={cx('item')} />
                     ))}
                 </div>
             </div>
