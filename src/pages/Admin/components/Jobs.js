@@ -134,7 +134,7 @@ const Jobs = () => {
                             <th>Type</th>
                             <th>Salary Range</th>
                             <th>Applicants</th>
-                            <th>Status</th>
+                            <th>Premium</th>
                             <th>Posted</th>
                             <th></th>
                         </tr>
@@ -166,7 +166,13 @@ const Jobs = () => {
                                 </td>
                                 <td>–</td>
                                 <td>
-                                    <span className={cx('statusText', { active: true })}>Active</span>
+                                    <span
+                                        className={cx('statusText', {
+                                            active: job.employer.isPremium,
+                                        })}
+                                    >
+                                        {job.employer.isPremium ? 'Premium' : 'Standard'}
+                                    </span>
                                 </td>
                                 <td>{job.createdAt?.split(' ')[0]}</td>
                                 <td>
