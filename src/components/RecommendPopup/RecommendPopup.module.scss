@@ -1,0 +1,138 @@
+.recommend-list {
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-100);
+    box-shadow: var(--box-shadow);
+}
+.recommend-popper {
+    padding: 0;
+}
+
+.recommend__container {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    width: 900px;
+    // height: 500px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.recommend__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.recommend__title {
+    font-size: var(--font-size-20px);
+    font-weight: 600;
+    color: var(--gray-900);
+}
+.recommend__clear {
+    cursor: pointer;
+    color: var(--red-500);
+    font-size: var(--font-size-14px);
+}
+
+.suggestion_search,
+.historic_search {
+    padding: 1.4rem;
+    border-left: 1px solid var(--gray-100);
+}
+
+.recommend__list {
+    margin-top: 1rem;
+}
+
+// RECOMMEND ITEM
+
+.recommend__item {
+    width: 100%;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--gray-50);
+    }
+}
+.left {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+.recommend__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-200);
+    width: 2rem;
+    height: 2rem;
+}
+.clear {
+    cursor: pointer;
+}
+.recommend__item-text {
+    font-size: var(--font-size-16px);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 95%;
+}
+.recommend__item-date {
+    color: var(--gray-200);
+}
+
+// SUGGESTED ITEM
+
+.suggested__item {
+    width: 100%;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+        background: var(--gray-50);
+    }
+}
+.suggested__item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-200);
+    width: 5rem;
+    height: 5rem;
+    border: 1px solid var(--gray-100);
+    border-radius: var(--border-radius);
+    background: var(--white);
+
+    img {
+        width: 4.8rem;
+        height: auto;
+        object-fit: cover;
+    }
+}
+.suggested__item-job,
+.suggested__item-company {
+    font-size: var(--font-size-16px);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 90%;
+}
+.suggested__item-company {
+    font-weight: 500;
+}
+.suggested__item-job {
+    font-size: var(--font-size-14px);
+}
+
+.suggested__item-salary {
+    color: var(--blue-500);
+}

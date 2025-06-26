@@ -31,7 +31,7 @@ function AvatarButton({ avatar }) {
             onClick: () => {
                 console.log('Logout clicked');
                 logout();
-                navigate('/login');
+                navigate('/');
             },
         },
     ];

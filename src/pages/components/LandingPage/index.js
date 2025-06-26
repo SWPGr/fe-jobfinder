@@ -7,12 +7,14 @@ import { IconSearch, IconMapPin, IconBriefcase, IconBuildingCommunity, IconUsers
 import { Button } from '~/components';
 import { Images } from '~/assets';
 import ItemInfo from '../ItemInfo';
+import RecommendPopup from '~/components/RecommendPopup/RecommendPopup';
 
 const cx = classNames.bind(styles);
 
 function LandingPage() {
     const [searchJob, setSearchJob] = useState('');
     const [location, setLocation] = useState('');
+    const [showRecommendPopup, setShowRecommendPopup] = useState(false);
 
     const itemsInfo = [
         {
@@ -37,6 +39,9 @@ function LandingPage() {
         },
     ];
 
+    const handleShowPopup = () => setShowRecommendPopup(true);
+    const handleHidePopup = () => setShowRecommendPopup(false);
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
@@ -49,19 +54,27 @@ function LandingPage() {
                             sollicitudin velit bestibulum.
                         </p>
                         <div className={cx('search-input')}>
-                            <TextInput
-                                placeholder="Job tittle, Keyword..."
-                                variant="unstyled"
-                                leftSection={<IconSearch size={90} />}
-                                value={searchJob}
-                                onChange={(e) => setSearchJob(e.target.value)}
-                                classNames={{
-                                    input: cx('input'),
-                                    wrapper: cx('input-wrapper'),
-                                    root: cx('input-root'),
-                                    section: cx('icon'),
-                                }}
-                            ></TextInput>
+                            <RecommendPopup
+                                visible={showRecommendPopup}
+                                onClickOutside={handleHidePopup}
+                                className={cx('popup')}
+                                y={40}
+                            >
+                                <TextInput
+                                    placeholder="Job tittle, Keyword..."
+                                    variant="unstyled"
+                                    leftSection={<IconSearch size={90} />}
+                                    value={searchJob}
+                                    onChange={(e) => setSearchJob(e.target.value)}
+                                    onFocus={handleShowPopup}
+                                    classNames={{
+                                        input: cx('input'),
+                                        wrapper: cx('input-wrapper'),
+                                        root: cx('input-root'),
+                                        section: cx('icon'),
+                                    }}
+                                ></TextInput>
+                            </RecommendPopup>
                             <TextInput
                                 placeholder="Your Location"
                                 variant="unstyled"

@@ -10,6 +10,7 @@ import styles from './Filter.module.scss';
 import { useAuth } from '~/context/AuthContext';
 import { Button } from '~/components';
 import { JobItemList } from '~/components';
+import RecommendPopup from '../RecommendPopup/RecommendPopup';
 
 const cx = classNames.bind(styles);
 
@@ -221,6 +222,7 @@ const fakeJobs = [
 
 function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', onSearch = () => {} }) {
     const { user } = useAuth();
+    const [showRecommendPopup, setShowRecommendPopup] = useState(false);
     const [scroll, scrollTo] = useWindowScroll();
     const [additionalFilter, setAdditionalFilter] = useState('None');
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
@@ -289,22 +291,28 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
         form.setValues(newValues);
     };
 
+    const handleShowPopup = () => setShowRecommendPopup(true);
+    const handleHidePopup = () => setShowRecommendPopup(false);
+
     return (
         <>
             {/* Search inputs */}
             <div className={cx('search__wrapper')}>
                 <div className={cx('search__container')}>
                     <form className={cx('search-form')} onSubmit={(e) => e.preventDefault()}>
-                        <TextInput
-                            placeholder="Enter job title"
-                            {...form.getInputProps('search')}
-                            leftSection={<IconSearch />}
-                            classNames={{
-                                input: cx('search-input'),
-                                root: cx('search-input-root'),
-                                wrapper: cx('search-input-wrapper'),
-                            }}
-                        />
+                        <RecommendPopup visible={showRecommendPopup} onClickOutside={handleHidePopup}>
+                            <TextInput
+                                placeholder="Enter job title"
+                                {...form.getInputProps('search')}
+                                leftSection={<IconSearch />}
+                                onFocus={handleShowPopup}
+                                classNames={{
+                                    input: cx('search-input'),
+                                    root: cx('search-input-root'),
+                                    wrapper: cx('search-input-wrapper'),
+                                }}
+                            />
+                        </RecommendPopup>
 
                         <TextInput
                             placeholder="Enter location"
