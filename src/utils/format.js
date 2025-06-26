@@ -44,6 +44,14 @@ function formatTimeAgo(createdAt) {
     }
 }
 
+function formatTimeRemaining(expiredAt) {
+    const expired = new Date(expiredAt);
+    const now = new Date();
+    const diffMs = expired - now;
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    return days;
+}
+
 const format = {
     transformJobData,
     formatSalary,
