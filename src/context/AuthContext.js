@@ -68,8 +68,8 @@ export const AuthProvider = ({ children }) => {
 
       user = {
           //role: 'ADMIN',
-          //role: 'JOB_SEEKER',
-          role: 'EMPLOYER',
+          role: 'JOB_SEEKER',
+         // role: 'EMPLOYER',
       };
 
 

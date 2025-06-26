@@ -135,6 +135,13 @@ const MyJob = () => {
         </div>
       </div>
 
+      <div className={cx("job-table-head")}>
+        <span className={cx("jobs")}>JOBS</span>
+        <span className={cx("status")}>STATUS</span>
+        <span className={cx("applications")}>APPLICATIONS</span>
+        <span className={cx("actions")}>ACTIONS</span>
+      </div>
+
       <div className={cx("job-items-list")}>
         {jobsFormatted.map((job, idx) => (
           <JobItemOwner

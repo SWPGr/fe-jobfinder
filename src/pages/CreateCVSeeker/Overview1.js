@@ -82,10 +82,10 @@ const Overview1 = () => {
 
       {/* Table header row */}
       <div className={cx("job-table-head")}>
-        <span>JOBS</span>
-        <span>STATUS</span>
-        <span>APPLICATIONS</span>
-        <span>ACTIONS</span>
+        <span className={cx("jobs")}>JOBS</span>
+        <span className={cx("status")}>STATUS</span>
+        <span className={cx("applications")}>APPLICATIONS</span>
+        <span className={cx("actions")}>ACTIONS</span>
       </div>
 
       {/* Job list */}
