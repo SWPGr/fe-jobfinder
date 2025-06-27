@@ -9,15 +9,18 @@ import { Images } from '~/assets';
 import { Button } from '~/components';
 import { jobService } from '~/services';
 import { useNotification } from '~/hooks';
+import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
-function JobItem({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
+function JobItem({ image = Images.default_image, jobDescription = {}, saved, isVIP = false }) {
     // save job status
+    const { user } = useAuth();
+    const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
     const [save, setSave] = useState(saved || false);
     const { showSuccess, showError } = useNotification();
 
-    const classes = cx('wrapper', { isLogin, isVIP, saved });
+    const classes = cx('wrapper', { isVIP, saved });
     const { companyName, companyAddress, jobTitle, workTime, salary } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
 
@@ -77,14 +80,14 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isL
                         </p>
                     </div>
                 </div>
-                {isLogin && (
+                {isJOB_SEEKER && (
                     <div
                         className={cx('save-job')}
                         onClick={() => {
                             save ? handelUnsaveJob(jobDescription.id) : handelSaveJob(jobDescription.id);
                         }}
                     >
-                        {isLogin && <IconComponent size={22} color="#0a65cc" />}
+                        {isJOB_SEEKER && <IconComponent size={22} color="#0a65cc" />}
                     </div>
                 )}
             </div>
