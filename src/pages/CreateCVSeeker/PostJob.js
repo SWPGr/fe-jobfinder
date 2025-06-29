@@ -1,235 +1,287 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './PostJob.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
+import { Button } from '~/components';
+import axios from 'axios';
+import { useWindowScroll } from '@mantine/hooks';
+
+import { jobService } from '~/services';
+import { get } from '~/utils/httpRequest';
+import { useNotification } from '~/hooks';
+import { useLoading } from '~/context/LoadingContext';
 const cx = classNames.bind(styles);
 
-function PostJob() {
-    const [jobTitle, setJobTitle] = useState('');
-    const [tags, setTags] = useState('');
-    const [jobRole, setJobRole] = useState('');
-    const [minSalary, setMinSalary] = useState('');
-    const [maxSalary, setMaxSalary] = useState('');
-    const [salaryType, setSalaryType] = useState('');
-    const [education, setEducation] = useState('');
-    const [experience, setExperience] = useState('');
-    const [jobType, setJobType] = useState('');
-    const [vacancies, setVacancies] = useState();
-    const [expirationDate, setExpirationDate] = useState('');
-    const [jobLevel, setJobLevel] = useState('');
-    const [applyJobOn, setApplyJobOn] = useState('onJobpilot');
-    const [description, setDescription] = useState('');
-    const [responsibilities, setResponsibilities] = useState('');
-    const [salaryError, setSalaryError] = useState('');
+const PostJob = () => {
+    const [scroll, scrollTo] = useWindowScroll();
+    const { showSuccess, showError } = useNotification();
+    const { showLoading, hideLoading } = useLoading();
 
-    const handleMinSalaryChange = (e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        setMinSalary(value);
-        if (maxSalary && value !== '' && Number(value) >= Number(maxSalary)) {
-            setSalaryError('Min Salary phải nhỏ hơn Max Salary!');
-        } else {
-            setSalaryError('');
-        }
+    const [formData, setFormData] = useState({
+        jobTitle: '',
+        tags: '',
+        jobRole: '',
+        minSalary: '',
+        maxSalary: '',
+        education: '',
+        experience: '',
+        jobType: '',
+        vacancies: '',
+        expirationDate: '',
+        jobLevel: '',
+        description: '',
+        responsibilities: '',
+    });
+
+    const [formErrors, setFormErrors] = useState({});
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+
+    const [dropdowns, setDropdowns] = useState({
+        jobRoles: [],
+        educations: [],
+        experiences: [],
+        jobTypes: [],
+        jobLevels: [],
+    });
+
+    useEffect(() => {
+        const getAllOptions = async () => {
+            try {
+                const response = await jobService.getAllOptions();
+                console.log('response', response);
+                setDropdowns({
+                    jobRoles: response.categories,
+                    educations: response.educations,
+                    experiences: response.experiences,
+                    jobTypes: response.jobTypes,
+                    jobLevels: response.jobLevels,
+                });
+                return response;
+            } catch (error) {
+                throw error;
+            }
+        };
+        getAllOptions();
+    }, []);
+
+    const handleChange = (field) => (e) => {
+        setFormData({ ...formData, [field]: e.target.value });
+        setFormErrors({ ...formErrors, [field]: undefined, salaryRange: undefined });
     };
 
-    const handleMaxSalaryChange = (e) => {
-        const value = e.target.value.replace(/[^0-9]/g, '');
-        setMaxSalary(value);
-        if (minSalary && value !== '' && Number(minSalary) >= Number(value)) {
-            setSalaryError('Max Salary phải lớn hơn Min Salary!');
-        } else {
-            setSalaryError('');
+    const handleEditorChange = (field) => (value) => {
+        setFormData({ ...formData, [field]: value });
+        setFormErrors({ ...formErrors, [field]: undefined });
+    };
+
+    const validateForm = () => {
+        const errors = {};
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!formData.jobTitle.trim()) errors.jobTitle = 'Job title is required';
+        if (!formData.jobRole) errors.jobRole = 'Job role is required';
+        if (!formData.minSalary) errors.minSalary = 'Min salary is required';
+        if (!formData.maxSalary) errors.maxSalary = 'Max salary is required';
+        if (formData.minSalary && formData.maxSalary && Number(formData.minSalary) >= Number(formData.maxSalary)) {
+            errors.salaryRange = 'Min salary must be less than max salary';
         }
+        if (!formData.expirationDate) errors.expirationDate = 'Expiration date is required';
+        else if (formData.expirationDate < today) errors.expirationDate = 'Expiration date cannot be in the past';
+        if (!formData.education) errors.education = 'Education is required';
+        if (!formData.experience) errors.experience = 'Experience is required';
+        if (!formData.jobType) errors.jobType = 'Job type is required';
+        if (!formData.vacancies) errors.vacancies = 'Vacancies is required';
+        if (!formData.jobLevel) errors.jobLevel = 'Job level is required';
+        if (!formData.description) errors.description = 'Description is required';
+        if (!formData.responsibilities) errors.responsibilities = 'Responsibilities is required';
+
+        return errors;
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (salaryError) return;
-        alert('Job posted successfully!');
+        const errors = validateForm();
+        setFormErrors(errors);
+        if (Object.keys(errors).length === 0) {
+            setShowConfirmPopup(true);
+        } else {
+            scrollTo({ y: 0 });
+        }
     };
+
+    const handleConfirm = () => {
+        setShowConfirmPopup(false);
+        const {
+            jobTitle,
+            tags,
+            jobRole,
+            minSalary,
+            maxSalary,
+            education,
+            experience,
+            jobType,
+            vacancies,
+            expirationDate,
+            jobLevel,
+            description,
+            responsibilities,
+        } = formData;
+
+        const jobData = {
+            title: jobTitle,
+            tags,
+            categoryId: jobRole,
+            salaryMin: minSalary,
+            salaryMax: maxSalary,
+            educationId: education,
+            experienceId: experience,
+            jobTypeId: jobType,
+            vacancy: vacancies,
+            expiredDate: expirationDate,
+            jobLevelId: jobLevel,
+            description,
+            responsibility: responsibilities,
+        };
+
+        try {
+            showLoading();
+            const response = jobService.createJob(jobData);
+            hideLoading();
+            showSuccess('Job posted successfully!');
+            console.log(response);
+            setFormData({
+                jobTitle: '',
+                tags: '',
+                jobRole: '',
+                minSalary: '',
+                maxSalary: '',
+                education: '',
+                experience: '',
+                jobType: '',
+                vacancies: '',
+                expirationDate: '',
+                jobLevel: '',
+                description: '',
+                responsibilities: '',
+            });
+
+            // Xóa lỗi nếu có
+            setFormErrors({});
+        } catch (error) {
+            hideLoading();
+            showError('Failed to post job');
+            console.log(error);
+        }
+
+        console.log('Submitting:', jobData);
+    };
+
+    const renderInput = (label, field, type = 'text') => (
+        <div className={cx('inputGroup')}>
+            <label>{label}</label>
+            <input
+                type={type}
+                value={formData[field]}
+                onChange={handleChange(field)}
+                onKeyDown={(e) => {
+                    if (type === 'number' && (e.key === '-' || e.key === 'e')) e.preventDefault();
+                }}
+            />
+            {formErrors[field] && <div className={cx('error')}>{formErrors[field]}</div>}
+        </div>
+    );
+
+    const renderSelect = (label, field, options) => (
+        <div className={cx('inputGroup')}>
+            <label>{label}</label>
+            <select value={formData[field]} onChange={handleChange(field)}>
+                <option value="">Select...</option>
+                {options.map((item) => (
+                    <option key={item.id} value={item.id}>
+                        {item.name}
+                    </option>
+                ))}
+            </select>
+            {formErrors[field] && <div className={cx('error')}>{formErrors[field]}</div>}
+        </div>
+    );
 
     return (
         <form className={cx('postJobTab')} onSubmit={handleSubmit}>
             <div className={cx('pageTitle')}>Post a job</div>
 
-            <div className={cx('formGroup')}>
-                <label>Job Title</label>
-                <input
-                    type="text"
-                    placeholder="Add job title, role, vacancies etc"
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    required
-                />
-            </div>
+            {renderInput('Job Title', 'jobTitle')}
 
             <div className={cx('row')}>
-                <div className={cx('inputGroup')}>
-                    <label>Tags</label>
-                    <input
-                        type="text"
-                        placeholder="Job keyword, tags etc..."
-                        value={tags}
-                        onChange={(e) => setTags(e.target.value)}
-                    />
-                </div>
-                <div className={cx('inputGroup')}>
-                    <label>Job Role</label>
-                    <select value={jobRole} onChange={(e) => setJobRole(e.target.value)}>
-                        <option value="">Select...</option>
-                        <option value="role1">Role 1</option>
-                        <option value="role2">Role 2</option>
-                    </select>
-                </div>
+                {renderInput('Tags', 'tags')}
+                {renderSelect('Job Role', 'jobRole', dropdowns.jobRoles)}
             </div>
 
             <div className={cx('sectionTitle')}>Salary</div>
             <div className={cx('row')}>
-                <div className={cx('inputGroup')} style={{ position: 'relative' }}>
-                    <label>Min Salary</label>
-                    <input
-                        type="number"
-                        min="0"
-                        placeholder="Minimum salary..."
-                        value={minSalary}
-                        onChange={handleMinSalaryChange}
-                        required
-                    />
-                    <span className={cx('currency')}>USD</span>
-                </div>
-                <div className={cx('inputGroup')} style={{ position: 'relative' }}>
-                    <label>Max Salary</label>
-                    <input
-                        type="number"
-                        min="0"
-                        placeholder="Maximum salary..."
-                        value={maxSalary}
-                        onChange={handleMaxSalaryChange}
-                        required
-                    />
-                    <span className={cx('currency')}>USD</span>
-                </div>
-                {/* <div className={cx('inputGroup')}>
-                    <label>Salary Type</label>
-                    <select value={salaryType} onChange={(e) => setSalaryType(e.target.value)}>
-                        <option value="">Select...</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="hourly">Hourly</option>
-                    </select>
-                </div> */}
+                {renderInput('Min Salary', 'minSalary', 'number')}
+                {renderInput('Max Salary', 'maxSalary', 'number')}
             </div>
-            {salaryError && <div style={{ color: 'red', marginBottom: 10 }}>{salaryError}</div>}
+            {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
 
             <div className={cx('sectionTitle')}>Advance Information</div>
             <div className={cx('row')}>
-                <div className={cx('inputGroup')}>
-                    <label>Education</label>
-                    <select value={education} onChange={(e) => setEducation(e.target.value)}>
-                        <option value="">Select...</option>
-                        <option value="highschool">High School</option>
-                        <option value="bachelor">Bachelor</option>
-                        <option value="master">Master</option>
-                    </select>
-                </div>
-                <div className={cx('inputGroup')}>
-                    <label>Experience</label>
-                    <select value={experience} onChange={(e) => setExperience(e.target.value)}>
-                        <option value="">Select...</option>
-                        <option value="0-1">0-1 years</option>
-                        <option value="1-3">1-3 years</option>
-                        <option value="3+">3+ years</option>
-                    </select>
-                </div>
-                <div className={cx('inputGroup')}>
-                    <label>Job Type</label>
-                    <select value={jobType} onChange={(e) => setJobType(e.target.value)}>
-                        <option value="">Select...</option>
-                        <option value="fulltime">Full Time</option>
-                        <option value="parttime">Part Time</option>
-                        <option value="intern">Internship</option>
-                    </select>
-                </div>
+                {renderSelect('Education', 'education', dropdowns.educations)}
+                {renderSelect('Experience', 'experience', dropdowns.experiences)}
+                {renderSelect('Job Type', 'jobType', dropdowns.jobTypes)}
             </div>
 
             <div className={cx('row')}>
-                <div className={cx('inputGroup')}>
-                    <label>Vacancies</label>
-                    <input
-                        type="number"
-                        min="0"
-                        value={vacancies}
-                        placeholder="Number of vacancies..."
-                        onChange={(e) => setVacancies(e.target.value)}
-                    />
-                </div>
-                <div className={cx('inputGroup')}>
-                    <label>Expiration Date</label>
-                    <input type="date" value={expirationDate} onChange={(e) => setExpirationDate(e.target.value)} />
-                </div>
-                <div className={cx('inputGroup')}>
-                    <label>Job Level</label>
-                    <select value={jobLevel} onChange={(e) => setJobLevel(e.target.value)}>
-                        <option value="">Select...</option>
-                        <option value="junior">Junior</option>
-                        <option value="mid">Mid Level</option>
-                        <option value="senior">Senior</option>
-                    </select>
-                </div>
+                {renderInput('Vacancies', 'vacancies', 'number')}
+                {renderInput('Expiration Date', 'expirationDate', 'date')}
+                {renderSelect('Job Level', 'jobLevel', dropdowns.jobLevels)}
             </div>
 
-            <fieldset className={cx('applyJobOn')}>
-                <legend>Apply Job on:</legend>
-                <label className={cx({ activeRadioLabel: applyJobOn === 'onJobpilot' })}>
-                    <input
-                        type="radio"
-                        name="applyJob"
-                        value="onJobpilot"
-                        checked={applyJobOn === 'onJobpilot'}
-                        onChange={(e) => setApplyJobOn(e.target.value)}
-                    />
-                    <strong>On Jobpilot</strong>
-                    <p>Candidate will apply job using jobpilot & all application will show on your dashboard.</p>
-                </label>
-                <label className={cx({ activeRadioLabel: applyJobOn === 'externalPlatform' })}>
-                    <input
-                        type="radio"
-                        name="applyJob"
-                        value="externalPlatform"
-                        checked={applyJobOn === 'externalPlatform'}
-                        onChange={(e) => setApplyJobOn(e.target.value)}
-                    />
-                    <strong>External Platform</strong>
-                    <p>Candidate apply job on your website, all application on your own website.</p>
-                </label>
-                <label className={cx({ activeRadioLabel: applyJobOn === 'onYourEmail' })}>
-                    <input
-                        type="radio"
-                        name="applyJob"
-                        value="onYourEmail"
-                        checked={applyJobOn === 'onYourEmail'}
-                        onChange={(e) => setApplyJobOn(e.target.value)}
-                    />
-                    <strong>On Your Email</strong>
-                    <p>Candidate apply job on your email address, and all application in your email.</p>
-                </label>
-            </fieldset>
-
-            <div className={cx('sectionTitle')}>Description & Responsibility</div>
             <div className={cx('formGroup')}>
                 <label>Description</label>
-                <SimpleRichTextEditor placeholder="Add your job description..." onChange={setDescription} />
+                <SimpleRichTextEditor
+                    placeholder="Add your job description..."
+                    onChange={handleEditorChange('description')}
+                    value={formData.description}
+                />
+                {formErrors.description && <div className={cx('error')}>{formErrors.description}</div>}
             </div>
+
             <div className={cx('formGroup')}>
                 <label>Responsibilities</label>
-                <SimpleRichTextEditor placeholder="Add your job responsibilities..." onChange={setResponsibilities} />
+                <SimpleRichTextEditor
+                    placeholder="Add your job responsibilities..."
+                    onChange={handleEditorChange('responsibilities')}
+                    value={formData.responsibilities}
+                />
+                {formErrors.responsibilities && <div className={cx('error')}>{formErrors.responsibilities}</div>}
             </div>
 
-            <button type="submit" className={cx('saveNextBtn')} disabled={!!salaryError}>
+            <button type="submit" className={cx('saveNextBtn')}>
                 Post Job <span className={cx('arrow')}>&rarr;</span>
             </button>
+
+            {Object.values(formErrors).some(Boolean) && (
+                <div className={cx('error', 'formSubmitError')}>
+                    Please fix the above errors before submitting the form.
+                </div>
+            )}
+
+            {showConfirmPopup && (
+                <div className={cx('popupOverlay')}>
+                    <div className={cx('popup')}>
+                        <p>Do you want to post this job?</p>
+                        <div className={cx('popupActions')}>
+                            <Button onClick={handleConfirm}>Yes</Button>
+                            <Button red onClick={() => setShowConfirmPopup(false)}>
+                                Cancel
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </form>
     );
-
-}
+};
 
 export default PostJob;
