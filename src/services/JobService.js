@@ -2,7 +2,7 @@ import { get, post, put, del } from '~/utils/httpRequest';
 
 const listAllJobs = async () => {
     try {
-        const response = await get('job');
+        const response = await get('job/list');
         return response;
     } catch (error) {
         throw error;
@@ -19,7 +19,7 @@ const getJobById = async (id) => {
 };
 const createJob = async (data) => {
     try {
-        const response = await post('job', data);
+        const response = await post('job/create', data);
         return response;
     } catch (error) {
         throw error;
@@ -36,7 +36,7 @@ const delJobById = async (id) => {
 
 const unSaveJob = async (id) => {
     try {
-        const response = await put(`saved-jobs/${id}`);
+        const response = await del(`unsaved-jobs/${id}`);
         return response;
     } catch (error) {
         throw error;
@@ -45,7 +45,7 @@ const unSaveJob = async (id) => {
 
 const saveJob = async (id) => {
     try {
-        const response = await put(`saved-jobs/${id}`);
+        const response = await post(`saved-jobs`, { jobId: id });
         return response;
     } catch (error) {
         throw error;
@@ -106,6 +106,15 @@ const getAllCandidateAppliedJobId = async (id) => {
     }
 };
 
+const getAllOptions = async () => {
+    try {
+        const response = await get(`options/all`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const trackViewdJob = async (id) => {
     try {
         const response = await post(`job-views/${id}`);
@@ -128,6 +137,7 @@ const jobService = {
     getAppliedJob,
     updateApplyStatus,
     getAllCandidateAppliedJobId,
+    getAllOptions,
 };
 
 export default jobService;

@@ -54,7 +54,7 @@
     grid-template-columns: 1fr;
     gap: 2rem;
     margin-bottom: 2rem;
-    width: 800px;
+    // width: 800px;
     max-width: 100%;
 
     @media (min-width: 1024px) {
@@ -68,8 +68,8 @@
         border-radius: 1.6rem;
         box-shadow: var(--box-shadow);
         padding: 3.2rem;
-        width: 700px;
-        // max-width: none;
+        width: 100%;
+        max-width: none;
         min-width: 400px;
         min-height: 36rem;
         display: flex;

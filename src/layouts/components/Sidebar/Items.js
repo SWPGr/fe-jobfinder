@@ -1,6 +1,4 @@
-import classNames from 'classnames/bind';
-import styles from './Sidebar.module.scss';
-
+// 📁 Items.js
 import {
     IconStack2,
     IconSettings,
@@ -13,9 +11,12 @@ import {
     IconBuildingCommunity,
 } from '@tabler/icons-react';
 
-import Dashboard1 from '../../../pages/DashBoard/Dashboard'; //Overview của Job Seeker
-import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs'; //Applied Jobs page của Job Seeker
-import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs'; //Favorite Jobs page của Job Seeker
+import classNames from 'classnames/bind';
+import styles from './Sidebar.module.scss';
+
+import Dashboard1 from '../../../pages/DashBoard/Dashboard';
+import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs';
+import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs';
 import JobAlerts from '~/pages/DashBoard/JobAlerts/JobAlerts';
 
 import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
@@ -29,7 +30,8 @@ import DashboardOverview from '~/pages/Admin/DashboardOverview';
 import EmployersManagement from '~/pages/Admin/EmployersManagement';
 import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
 import Jobs from '~/pages/Admin/components/Jobs';
-import Setting from '~/pages/Admin/Setting';
+import SettingAdmin from '~/pages/Admin/SettingAdmin';
+import Setting from '~/pages/DashBoard/Setting/Setting';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -40,26 +42,32 @@ export const items = {
                 title: 'Overview',
                 icon: <IconStack2 />,
                 page: (chartKey = 0) => <DashboardOverview chartKey={chartKey} />,
+                link: '/dashboard',
             },
             {
                 title: 'Manage Jobs',
                 icon: <IconBriefcase />,
                 page: <Jobs />,
+                link: '/dashboard/jobs',
             },
             {
                 title: 'Manage Employers',
                 icon: <IconUserCircle />,
                 page: <EmployersManagement />,
+                link: '/dashboard/employers',
             },
             {
                 title: 'Manage Job Seekers',
                 icon: <IconUserCircle />,
                 page: <JobSeekersManagement />,
+                link: '/dashboard/jobseekers',
             },
             {
                 title: 'Settings',
                 icon: <IconSettings />,
-                page: <Setting />,
+
+                link: '/dashboard/settings',
+                page: <SettingAdmin />,
             },
         ],
     },
@@ -69,45 +77,51 @@ export const items = {
         items: [
             {
                 title: 'Overview',
-                icon: <IconStack2 />, // Replace with actual icon component
-
-                // page: <Overview />, // Example page component
-
+                icon: <IconStack2 />,
                 page: <Overview1 />,
+                link: '/dashboard',
             },
             {
                 title: 'Employer Profile',
-                icon: <IconUserCircle />, // Replace with actual icon component
+                icon: <IconUserCircle />,
                 page: <Single />,
+                link: '/dashboard/profile',
             },
             {
                 title: 'Post a Job',
-                icon: <IconCirclePlus />, // Replace with actual icon component
+                icon: <IconCirclePlus />,
                 page: <PostJob />,
+                link: '/dashboard/postjob',
             },
             {
                 title: 'My Jobs',
-                icon: <IconBriefcase />, // Replace with actual icon component
+                icon: <IconBriefcase />,
                 page: <MyJob />,
+                link: '/dashboard/my-jobs',
             },
             {
                 title: 'Saved Candidates',
-                icon: <IconBookmark />, // Replace with actual icon component
+                icon: <IconBookmark />,
                 page: <SavedCandidates />,
+                link: '/dashboard/saved-candidates',
             },
             {
                 title: 'Plans & Billing',
-                icon: <IconNotebook />, // Replace with actual icon component
+                icon: <IconNotebook />,
                 page: <PlansBilling />,
+                link: '/dashboard/plans',
             },
             {
                 title: 'All Companies',
-                icon: <IconBuildingCommunity />, // Replace with actual icon component
+                icon: <IconBuildingCommunity />,
+                page: null,
+                link: '/dashboard/companies',
             },
             {
                 title: 'Settings',
-                icon: <IconSettings />, // Replace with actual icon component
+                icon: <IconSettings />,
                 page: <SettingsPage />,
+                link: '/dashboard/settings',
             },
         ],
     },
@@ -117,29 +131,34 @@ export const items = {
         items: [
             {
                 title: 'Overview',
-                icon: <IconStack2 />, // Replace with actual icon component
-                page: <Dashboard1 />, // Example page component
+                icon: <IconStack2 />,
+                page: <Dashboard1 />,
+                link: '/dashboard',
             },
             {
                 title: 'Applied Jobs',
-                icon: <IconBriefcase />, // Replace with actual icon component
+                icon: <IconBriefcase />,
                 page: <AppliedJobs />,
+                link: '/dashboard/applied',
             },
             {
                 title: 'Favorite Jobs',
-                icon: <IconBookmark />, // Replace with actual icon component
+                icon: <IconBookmark />,
                 page: <FavoriteJobs />,
+                link: '/dashboard/favorites',
             },
             {
                 title: 'Job Alert',
-                icon: <IconBellRinging />, // Replace with actual icon component
-                rightSection: <span className={cx('badge')}>3</span>, // Example right section
+                icon: <IconBellRinging />,
+                rightSection: <span className={cx('badge')}>3</span>,
                 page: <JobAlerts />,
+                link: '/dashboard/alerts',
             },
             {
                 title: 'Settings',
-                icon: <IconSettings />, // Replace with actual icon component
+                icon: <IconSettings />,
                 page: <Setting />,
+                link: '/dashboard/settings',
             },
         ],
     },

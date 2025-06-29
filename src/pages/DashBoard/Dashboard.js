@@ -4,6 +4,9 @@ import JobItemApplied from '~/components/JobItemApplied';
 import { Images } from '~/assets';
 import { Pagination } from '@mantine/core';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Setting from './Setting/Setting';
+
 const cx = classNames.bind(styles);
 
 const jobList = [
@@ -284,7 +287,10 @@ function Dashboard1() {
                     <span className={cx('warning-title')}>Your profile editing is not completed.</span>
                     <span className={cx('warning-desc')}>Complete your profile editing & build your custom Resume</span>
                 </div>
-                <button className={cx('edit-profile-btn')}>Edit Profile →</button>
+
+                <button className={cx('edit-profile-btn')}>
+                    <Link to={Setting}>Edit Profile →</Link>
+                </button>
             </div>
 
             <div className={cx('job-list-container')}>

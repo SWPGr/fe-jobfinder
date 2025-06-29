@@ -41,10 +41,10 @@ function Login() {
 
     // Handler for form submission (currently empty)
     const handleSubmitForm = async (values) => {
-        console.log('Form submitted:', values);
+        // console.log('Form submitted:', values);
         const data = await login(values.email, values.password);
 
-        console.log(data);
+        // console.log(data);
 
         if (data.success) {
             setLoading(false);
@@ -52,7 +52,7 @@ function Login() {
             showSuccess(data.message);
         } else {
             setLoading(false);
-            console.log(data);
+            // console.log(data);
             showError(data.message);
             setError(data.message);
         }

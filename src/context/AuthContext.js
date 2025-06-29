@@ -28,9 +28,9 @@ export const AuthProvider = ({ children }) => {
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoading(false);
-            return { success: true, data: data };
+            return { success: true, ...response };
         } catch (error) {
-            console.log(error);
+            // console.log(error);
             setError(error);
             setLoading(false);
             return { success: false, message: error };
@@ -66,11 +66,13 @@ export const AuthProvider = ({ children }) => {
     };
 
 
+
        //user = {
     //       //role: 'ADMIN',
            //role: 'JOB_SEEKER',
            //role: 'EMPLOYER',
        //};
+
 
 
     return (

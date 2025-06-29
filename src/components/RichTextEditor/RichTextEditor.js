@@ -22,7 +22,7 @@ const funcChange = (data) => {
     console.log('Content changed:', data);
 };
 
-function SimpleRichTextEditor({ placeholder = 'Enter something here', onChange = funcChange }) {
+function SimpleRichTextEditor({ value = '', placeholder = 'Enter something here', onChange = funcChange }) {
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -43,6 +43,12 @@ function SimpleRichTextEditor({ placeholder = 'Enter something here', onChange =
             }
         },
     });
+    // Update editor content when `value` changes externally
+    React.useEffect(() => {
+        if (editor && value !== editor.getHTML()) {
+            editor.commands.setContent(value || '', false); // false = no history record
+        }
+    }, [value, editor]);
 
     return (
         <RichTextEditor

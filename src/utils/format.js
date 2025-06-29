@@ -23,10 +23,40 @@ function formatDueDate(createdAt) {
     return due.toISOString().split('T')[0]; // Trả về yyyy-mm-dd
 }
 
+function formatTimeAgo(createdAt) {
+    const created = new Date(createdAt);
+    const now = new Date();
+    const diffMs = now - created;
+
+    const seconds = Math.floor(diffMs / 1000);
+    const minutes = Math.floor(diffMs / (1000 * 60));
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (seconds < 60) {
+        return `${seconds} seconds ago`;
+    } else if (minutes < 60) {
+        return `${minutes} minutes ago`;
+    } else if (hours < 24) {
+        return `${hours} hours ago`;
+    } else {
+        return `${days} days ago`;
+    }
+}
+
+function formatTimeRemaining(expiredAt) {
+    const expired = new Date(expiredAt);
+    const now = new Date();
+    const diffMs = expired - now;
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    return days;
+}
+
 const format = {
     transformJobData,
     formatSalary,
     formatDueDate,
+    formatTimeAgo,
 };
 
 export default format;
