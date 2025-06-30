@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
 import statisticsService from '~/services/statisticsService';
@@ -89,7 +89,6 @@ const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'acti
 const JobSeekersManagement = () => {
     const [jobSeekers, setJobSeekers] = useState([]);
     const [error, setError] = useState('');
-    const [sortConfig, setSortConfig] = useState(null);
     const [search, setSearch] = useState('');
     const [visibleSeekers, setVisibleSeekers] = useState(10);
     const [selectedSeeker, setSelectedSeeker] = useState(null);
@@ -141,31 +140,7 @@ const JobSeekersManagement = () => {
         setVisibleSeekers((prev) => prev + 10);
     };
 
-    const requestSort = (key) => {
-        let direction = 'ascending';
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
-        }
-        setSortConfig({ key, direction });
-    };
-
-    const sortedJobSeekers = useMemo(() => {
-        const arr = [...jobSeekers];
-        if (!sortConfig) return arr;
-        return arr.sort((a, b) => {
-            let aVal = a[sortConfig.key];
-            let bVal = b[sortConfig.key];
-            if (Array.isArray(aVal)) aVal = aVal.join(', ');
-            if (Array.isArray(bVal)) bVal = bVal.join(', ');
-            aVal = (aVal || '').toString().toLowerCase();
-            bVal = (bVal || '').toString().toLowerCase();
-            if (aVal < bVal) return sortConfig.direction === 'ascending' ? -1 : 1;
-            if (aVal > bVal) return sortConfig.direction === 'ascending' ? 1 : -1;
-            return 0;
-        });
-    }, [jobSeekers, sortConfig]);
-
-    const seekersToDisplay = sortedJobSeekers.slice(0, visibleSeekers);
+    const seekersToDisplay = jobSeekers.slice(0, visibleSeekers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -193,22 +168,7 @@ const JobSeekersManagement = () => {
                     <thead>
                         <tr>
                             {sortColumns.map((col) => (
-                                <th
-                                    key={col.key}
-                                    className={cx('sortable', {
-                                        sorted: sortConfig?.key === col.key,
-                                    })}
-                                    onClick={() => requestSort(col.key)}
-                                >
-                                    {col.label}
-                                    {sortConfig?.key === col.key ? (
-                                        sortConfig.direction === 'ascending' ? (
-                                            <ChevronUp size={14} />
-                                        ) : (
-                                            <ChevronDown size={14} />
-                                        )
-                                    ) : null}
-                                </th>
+                                <th key={col.key}>{col.label}</th>
                             ))}
                             <th></th>
                         </tr>
@@ -244,7 +204,7 @@ const JobSeekersManagement = () => {
                         ))}
                     </tbody>
                 </table>
-                {sortedJobSeekers.length > visibleSeekers && (
+                {jobSeekers.length > visibleSeekers && (
                     <div className={cx('load-more')}>
                         <button onClick={loadMoreSeekers}>Load More</button>
                     </div>

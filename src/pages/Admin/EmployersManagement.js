@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
-import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Reuse JobDetail for view
@@ -86,7 +86,6 @@ const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'acti
 const EmployersManagement = () => {
     const [employers, setEmployers] = useState([]);
     const [error, setError] = useState('');
-    const [sortConfig, setSortConfig] = useState(null);
     const [search, setSearch] = useState('');
     const [visibleEmployers, setVisibleEmployers] = useState(10);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
@@ -131,14 +130,6 @@ const EmployersManagement = () => {
         setVisibleEmployers((prev) => prev + 10);
     };
 
-    const requestSort = (key) => {
-        let direction = 'ascending';
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
-        }
-        setSortConfig({ key, direction });
-    };
-
     // Filter by search
     const filteredEmployers = useMemo(() => {
         if (!search) return employers;
@@ -152,19 +143,7 @@ const EmployersManagement = () => {
         );
     }, [employers, search]);
 
-    const sortedEmployers = useMemo(() => {
-        const arr = [...filteredEmployers];
-        if (!sortConfig) return arr;
-        return arr.sort((a, b) => {
-            const aVal = (a[sortConfig.key] || '').toString().toLowerCase();
-            const bVal = (b[sortConfig.key] || '').toString().toLowerCase();
-            if (aVal < bVal) return sortConfig.direction === 'ascending' ? -1 : 1;
-            if (aVal > bVal) return sortConfig.direction === 'ascending' ? 1 : -1;
-            return 0;
-        });
-    }, [filteredEmployers, sortConfig]);
-
-    const employersToDisplay = sortedEmployers.slice(0, visibleEmployers);
+    const employersToDisplay = filteredEmployers.slice(0, visibleEmployers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -191,22 +170,7 @@ const EmployersManagement = () => {
                     <thead>
                         <tr>
                             {sortColumns.map((col) => (
-                                <th
-                                    key={col.key}
-                                    className={cx('sortable', {
-                                        sorted: sortConfig?.key === col.key,
-                                    })}
-                                    onClick={() => requestSort(col.key)}
-                                >
-                                    {col.label}
-                                    {sortConfig?.key === col.key ? (
-                                        sortConfig.direction === 'ascending' ? (
-                                            <ChevronUp size={14} />
-                                        ) : (
-                                            <ChevronDown size={14} />
-                                        )
-                                    ) : null}
-                                </th>
+                                <th key={col.key}>{col.label}</th>
                             ))}
                             <th></th>
                         </tr>
