@@ -23,6 +23,7 @@ httpRequest.interceptors.response.use(
                 case 401:
                     // Token hết hạn hoặc không hợp lệ
                     localStorage.removeItem('user');
+                    console.log('Session expired. Please log in again.');
                     window.location.reload();
                     window.location.href = '/login'; // Chuyển hướng về login
                     return Promise.reject(
