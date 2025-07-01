@@ -15,7 +15,7 @@ import { LoadingProvider } from '~/context/LoadingContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
+    <React.Fragment>
         <GlobalStyles>
             <AuthContext.AuthProvider>
                 <MantineProvider withGlobalStyles withNormalizeCSS>
@@ -26,7 +26,7 @@ root.render(
                 </MantineProvider>
             </AuthContext.AuthProvider>
         </GlobalStyles>
-    </React.StrictMode>,
+    </React.Fragment>,
 );
 
 // If you want to start measuring performance in your app, pass a function
