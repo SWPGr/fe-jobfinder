@@ -40,7 +40,7 @@ function PopularCategory() {
             try {
                 const response = await categoryService.getAllCategory();
                 const data = response.result;
-                console.log('Categories:', data);
+                // console.log('Categories:', data);
                 setCategories(data);
             } catch (error) {
                 showError('Error fetching categories');

@@ -1,13 +1,13 @@
 import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { IconMail, IconBrandSamsungpass, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Checkbox, ActionIcon, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import ResetPassword from './ResetPassword';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { LeftSideLogin } from '../components';
 import { validator } from '~/utils';
 import { Button, GoogleLoginButton } from '~/components';
@@ -38,6 +38,7 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
     const { showError, showSuccess } = useNotification();
     const [error, setError] = useState(null);
+    const [searchParams] = useSearchParams();
 
     // Handler for form submission (currently empty)
     const handleSubmitForm = async (values) => {
@@ -57,6 +58,14 @@ function Login() {
             setError(data.message);
         }
     };
+
+    useEffect(() => {
+        console.log('render');
+
+        if (searchParams.get('error') === 'session-expired') {
+            showError('Session expired. Please log in again.');
+        }
+    }, []);
 
     return (
         <div className={cx('wrapper')}>
