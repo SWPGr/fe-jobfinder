@@ -3,13 +3,11 @@ import classNames from 'classnames/bind';
 import styles from './PostJob.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import { Button } from '~/components';
-import axios from 'axios';
 import { useWindowScroll } from '@mantine/hooks';
-
-import { jobService } from '~/services';
-import { get } from '~/utils/httpRequest';
+import EmployerService from '~/services/EmployerService';
 import { useNotification } from '~/hooks';
 import { useLoading } from '~/context/LoadingContext';
+
 const cx = classNames.bind(styles);
 
 const PostJob = () => {
@@ -45,23 +43,23 @@ const PostJob = () => {
     });
 
     useEffect(() => {
-        const getAllOptions = async () => {
+        const fetchDropdownData = async () => {
             try {
-                const response = await jobService.getAllOptions();
-                console.log('response', response);
-                setDropdowns({
-                    jobRoles: response.categories,
-                    educations: response.educations,
-                    experiences: response.experiences,
-                    jobTypes: response.jobTypes,
-                    jobLevels: response.jobLevels,
-                });
-                return response;
+                const [jobTypes, jobLevels] = await Promise.all([
+                    EmployerService.fetchJobTypesFake(),
+                    EmployerService.fetchJobLevelFake(),
+                ]);
+                setDropdowns((prev) => ({
+                    ...prev,
+                    jobTypes: jobTypes || [],
+                    jobLevels: jobLevels || [],
+                }));
             } catch (error) {
-                throw error;
+                console.error('Failed to fetch dropdown data:', error);
             }
         };
-        getAllOptions();
+    
+        fetchDropdownData();
     }, []);
 
     const handleChange = (field) => (e) => {
@@ -109,7 +107,7 @@ const PostJob = () => {
         }
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         setShowConfirmPopup(false);
         const {
             jobTitle,
@@ -145,10 +143,10 @@ const PostJob = () => {
 
         try {
             showLoading();
-            const response = jobService.createJob(jobData);
+            const response = await EmployerService.fetchCreateJob(jobData);
             hideLoading();
             showSuccess('Job posted successfully!');
-            console.log(response);
+            console.log('Fake response:', response);
             setFormData({
                 jobTitle: '',
                 tags: '',
@@ -164,16 +162,12 @@ const PostJob = () => {
                 description: '',
                 responsibilities: '',
             });
-
-            // Xóa lỗi nếu có
             setFormErrors({});
         } catch (error) {
             hideLoading();
             showError('Failed to post job');
             console.log(error);
         }
-
-        console.log('Submitting:', jobData);
     };
 
     const renderInput = (label, field, type = 'text') => (
@@ -209,34 +203,28 @@ const PostJob = () => {
     return (
         <form className={cx('postJobTab')} onSubmit={handleSubmit}>
             <div className={cx('pageTitle')}>Post a job</div>
-
             {renderInput('Job Title', 'jobTitle')}
-
             <div className={cx('row')}>
                 {renderInput('Tags', 'tags')}
                 {renderSelect('Job Role', 'jobRole', dropdowns.jobRoles)}
             </div>
-
             <div className={cx('sectionTitle')}>Salary</div>
             <div className={cx('row')}>
                 {renderInput('Min Salary', 'minSalary', 'number')}
                 {renderInput('Max Salary', 'maxSalary', 'number')}
             </div>
             {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
-
             <div className={cx('sectionTitle')}>Advance Information</div>
             <div className={cx('row')}>
                 {renderSelect('Education', 'education', dropdowns.educations)}
                 {renderSelect('Experience', 'experience', dropdowns.experiences)}
                 {renderSelect('Job Type', 'jobType', dropdowns.jobTypes)}
             </div>
-
             <div className={cx('row')}>
                 {renderInput('Vacancies', 'vacancies', 'number')}
                 {renderInput('Expiration Date', 'expirationDate', 'date')}
                 {renderSelect('Job Level', 'jobLevel', dropdowns.jobLevels)}
             </div>
-
             <div className={cx('formGroup')}>
                 <label>Description</label>
                 <SimpleRichTextEditor
@@ -246,7 +234,6 @@ const PostJob = () => {
                 />
                 {formErrors.description && <div className={cx('error')}>{formErrors.description}</div>}
             </div>
-
             <div className={cx('formGroup')}>
                 <label>Responsibilities</label>
                 <SimpleRichTextEditor
@@ -256,26 +243,21 @@ const PostJob = () => {
                 />
                 {formErrors.responsibilities && <div className={cx('error')}>{formErrors.responsibilities}</div>}
             </div>
-
             <button type="submit" className={cx('saveNextBtn')}>
                 Post Job <span className={cx('arrow')}>&rarr;</span>
             </button>
-
             {Object.values(formErrors).some(Boolean) && (
                 <div className={cx('error', 'formSubmitError')}>
                     Please fix the above errors before submitting the form.
                 </div>
             )}
-
             {showConfirmPopup && (
                 <div className={cx('popupOverlay')}>
                     <div className={cx('popup')}>
                         <p>Do you want to post this job?</p>
                         <div className={cx('popupActions')}>
                             <Button onClick={handleConfirm}>Yes</Button>
-                            <Button red onClick={() => setShowConfirmPopup(false)}>
-                                Cancel
-                            </Button>
+                            <Button red onClick={() => setShowConfirmPopup(false)}>Cancel</Button>
                         </div>
                     </div>
                 </div>

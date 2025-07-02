@@ -21,6 +21,7 @@ const Overview1 = () => {
         const result = await EmployerService.fetchTotalJobs();
         setJobs(result.jobApplicationCounts || []);
         setTotalApplications(result.totalApplicationsAcrossJobs || 0);
+        console.log("API result:", result); // 👈 THÊM DÒNG NÀY
       } catch (err) {
         console.error("Error fetching jobs", err);
       }
@@ -76,6 +77,7 @@ const Overview1 = () => {
             isActive: true,
             numberApplications: job.applicationCount,
           };
+          console.log("Jobs:", jobs);
 
           return (
             <JobItemOwner
@@ -83,6 +85,7 @@ const Overview1 = () => {
               jobDescription={jobDescription}
               isVIP={true}
             />
+            
           );
         })}
       </div>
