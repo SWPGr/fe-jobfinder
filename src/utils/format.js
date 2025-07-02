@@ -7,6 +7,7 @@ function transformJobData(rawJob) {
         workTime: rawJob.jobType?.name || 'Không rõ',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
         dueDate: formatDueDate(rawJob.createdAt), // giả định dueDate = createdAt + 30 ngày
+        save: rawJob.save,
     };
 }
 

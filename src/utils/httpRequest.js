@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+// trong interceptor
+
 const httpRequest = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL, // đặt baseURL nếu có
     headers: {
@@ -23,8 +25,8 @@ httpRequest.interceptors.response.use(
                 case 401:
                     // Token hết hạn hoặc không hợp lệ
                     localStorage.removeItem('user');
-                    window.location.reload();
-                    window.location.href = '/login'; // Chuyển hướng về login
+                    console.log('Session expired. Please log in again.');
+                    window.location.href = '/login?error=session-expired'; // Chuyển hướng về login
                     return Promise.reject(
                         new Error({
                             code: 401,

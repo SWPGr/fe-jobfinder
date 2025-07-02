@@ -65,16 +65,16 @@
 .card {
     margin-top: 2rem;
     background: var(--white);
-        border-radius: 1.6rem;
-        box-shadow: var(--box-shadow);
-        padding: 3.2rem;
-        width: 100%;
-        max-width: none;
-        min-width: 400px;
-        min-height: 36rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
+    border-radius: 1.6rem;
+    box-shadow: var(--box-shadow);
+    padding: 3.2rem;
+    width: 100%;
+    max-width: none;
+    min-width: 400px;
+    min-height: 36rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 
     h2 {
         font-size: var(--font-size-20px);

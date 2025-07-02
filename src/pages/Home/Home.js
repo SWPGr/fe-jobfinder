@@ -10,7 +10,7 @@ import PopularCategory from './PopularCategory';
 import FeaturedJob from './FeaturedJob';
 import TopCompanies from './TopCompanies';
 import CTA from './CTA';
-
+import JobMarketTrends from './JobMarketTrends';
 const cx = classNames.bind(styles);
 
 function Home() {
@@ -24,7 +24,8 @@ function Home() {
         <>
             <div className={cx('wrapper')}>
                 <LandingPage />
-                <PopularVacancy />
+                {/* <PopularVacancy /> */}
+                <JobMarketTrends />
                 <Instruction />
                 <PopularCategory />
                 <FeaturedJob />
