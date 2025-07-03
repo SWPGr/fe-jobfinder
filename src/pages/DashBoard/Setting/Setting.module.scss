@@ -25,7 +25,7 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
-    gap: 0;
+    gap: 8px;
     border-bottom: 2px solid var(--gray-100);
     margin-bottom: 24px;
     padding-bottom: 8px;
@@ -45,13 +45,13 @@
     border-bottom: 2px solid transparent;
     font-weight: 600;
     font-size: var(--font-size-14px);
-    padding: 6px 10px;
+    padding: 8px 12px;
     cursor: pointer;
     color: var(--gray-600);
     transition: color var(--transition), border-color var(--transition);
     font-family: var(--font-family) !important;
     white-space: nowrap;
-    min-width: 80px;
+    min-width: 100px;
     border-radius: 4px 4px 0 0;
 }
 
@@ -98,52 +98,63 @@
 /* Căn chỉnh form-row */
 .form-row {
     display: flex;
-    gap: 16px;
+    gap: 20px;
     margin-bottom: 20px;
-    align-items: flex-start;
+    align-items: center; /* Căn giữa theo chiều dọc */
 }
 
 .form-row input,
-.form-row select,
-.form-row textarea {
+.form-row select {
     flex: 1;
+    height: 40px; /* Đặt chiều cao cố định */
     padding: 10px 14px;
     font-size: var(--font-size-14px);
     border: 1px solid var(--gray-300);
     border-radius: var(--border-radius);
-    min-width: 200px;
+    min-width: 250px;
     font-family: var(--font-family) !important;
+    line-height: 20px; /* Điều chỉnh line-height để text căn giữa */
     transition: border-color var(--transition);
 }
 
 .form-row input:focus,
-.form-row select:focus,
-.form-row textarea:focus {
+.form-row select:focus {
     border-color: var(--primary-color);
     outline: none;
 }
 
 .form-row label {
-    width: 140px;
+    width: 150px;
     font-weight: 600;
     font-size: var(--font-size-14px);
     color: var(--gray-700);
-    margin-top: 5px;
+    margin-top: 0; /* Xóa margin-top để căn đều */
     font-family: var(--font-family) !important;
+    text-align: right; /* Căn phải label để đồng đều */
+    padding-right: 10px; /* Thêm padding để cách input */
 }
 
 .form-row.biography {
     flex-direction: column;
+    align-items: flex-start;
 }
 
 .form-row.biography label {
     width: 100%;
     margin-bottom: 6px;
+    text-align: left;
+    padding-right: 0;
 }
 
 .form-row.biography textarea {
     min-height: 120px;
     resize: vertical;
+    padding: 10px 14px;
+    font-size: var(--font-size-14px);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-family: var(--font-family) !important;
+    line-height: 20px;
 }
 
 /* Profile Pic */
@@ -236,7 +247,7 @@
     background: var(--gray-50);
     padding: 16px;
     border-radius: var(--border-radius);
-    width: 180px;
+    width: 200px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -285,7 +296,7 @@
     color: var(--primary-color-dark);
     font-size: var(--font-size-12px);
     cursor: pointer;
-    padding: 2px 6px;
+    padding: 4px 8px;
     border-radius: 4px;
     transition: background-color var(--transition);
 }
@@ -299,7 +310,7 @@
 .cv-add {
     border: 2px dashed var(--gray-400);
     border-radius: var(--border-radius);
-    width: 180px;
+    width: 200px;
     padding: 20px;
     text-align: center;
     cursor: pointer;
@@ -363,6 +374,7 @@
     background: var(--white);
     color: var(--text-color);
     transition: border-color var(--transition);
+    height: 40px; /* Đồng đều với input/select */
 }
 
 .socialSelect:focus,
@@ -379,6 +391,7 @@
     border-radius: var(--border-radius);
     font-size: var(--font-size-14px);
     transition: border-color var(--transition);
+    height: 40px; /* Đồng đều với input/select */
 }
 
 .removeBtn {
@@ -534,7 +547,7 @@
 
     .tab-button {
         font-size: var(--font-size-12px);
-        padding: 4px 8px;
+        padding: 6px 10px;
     }
 
     .form-row {
@@ -545,6 +558,14 @@
     .form-row label {
         width: 100%;
         margin-bottom: 5px;
+        text-align: left;
+        padding-right: 0;
+    }
+
+    .form-row input,
+    .form-row select {
+        height: 40px;
+        min-width: 100%; /* Full width trên mobile */
     }
 
     .fields {
@@ -565,6 +586,7 @@
     .socialLinksContainer .socialSelect,
     .socialLinksContainer .socialInput {
         width: 100%;
+        height: 40px;
     }
 
     .socialLinksContainer .removeBtn {
@@ -577,7 +599,7 @@
 
     .cv-item,
     .cv-add {
-        width: 160px;
+        width: 180px;
         padding: 12px;
     }
 
@@ -591,7 +613,7 @@
 
     .cv-item .cv-actions button {
         font-size: var(--font-size-10px);
-        padding: 2px 4px;
+        padding: 2px 6px;
     }
 
     .cv-add .cv-add-icon {
@@ -618,7 +640,7 @@
 
     .tab-button {
         font-size: var(--font-size-10px);
-        padding: 3px 6px;
+        padding: 4px 8px;
     }
 
     .socialLinksContainer .socialLinkRow {
@@ -629,6 +651,7 @@
     .socialLinksContainer .socialInput {
         padding: 6px 10px;
         font-size: var(--font-size-10px);
+        height: 40px;
     }
 
     .socialLinksContainer .removeBtn {
@@ -641,7 +664,7 @@
 
     .cv-item,
     .cv-add {
-        width: 140px;
+        width: 160px;
         padding: 10px;
     }
 
@@ -655,7 +678,7 @@
 
     .cv-item .cv-actions button {
         font-size: var(--font-size-10px);
-        padding: 1px 3px;
+        padding: 1px 4px;
     }
 
     .cv-add .cv-add-icon {
@@ -682,7 +705,7 @@
 
     .tab-button {
         font-size: var(--font-size-10px);
-        padding: 2px 4px;
+        padding: 2px 6px;
     }
 
     .socialLinksContainer .socialLinkRow {
@@ -700,7 +723,7 @@
 
     .cv-item,
     .cv-add {
-        width: 120px;
+        width: 140px;
         padding: 8px;
     }
 
