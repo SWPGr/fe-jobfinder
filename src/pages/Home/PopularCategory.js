@@ -12,6 +12,7 @@ import {
     IconFirstAidKit,
     IconDatabase,
 } from '@tabler/icons-react';
+import { Carousel } from '@mantine/carousel';
 
 import { Button } from '~/components';
 import ItemInfo from '../components/ItemInfo';
@@ -23,16 +24,18 @@ const cx = classNames.bind(styles);
 function PopularCategory() {
     const [categories, setCategories] = useState([]);
     const { showError } = useNotification();
+    const size = 8;
+    const numberOfPage = Math.ceil(categories.length / size);
 
     const categoriesList = [
-        { icon: <IconWand />, title: 'Design', total: 27 },
-        { icon: <IconCode />, title: 'Development', total: 35 },
-        { icon: <IconSpeakerphone />, title: 'Marketing', total: 20 },
-        { icon: <IconBrandParsinta />, title: 'Sales', total: 15 },
-        { icon: <IconMusic />, title: 'Music', total: 10 },
-        { icon: <IconChartBarPopular />, title: 'Data Science', total: 18 },
-        { icon: <IconFirstAidKit />, title: 'Health & Fitness', total: 12 },
-        { icon: <IconDatabase />, title: 'Data & Science', total: 22 },
+        { icon: <IconWand />, title: 'Design' },
+        { icon: <IconCode />, title: 'Development' },
+        { icon: <IconSpeakerphone />, title: 'Marketing' },
+        { icon: <IconBrandParsinta />, title: 'Sales' },
+        { icon: <IconMusic />, title: 'Music' },
+        { icon: <IconChartBarPopular />, title: 'Data Science' },
+        { icon: <IconFirstAidKit />, title: 'Health & Fitness' },
+        { icon: <IconDatabase />, title: 'Data & Science' },
     ];
 
     useEffect(() => {
@@ -40,7 +43,7 @@ function PopularCategory() {
             try {
                 const response = await categoryService.getAllCategory();
                 const data = response.result;
-                // console.log('Categories:', data);
+                console.log('Categories:', data);
                 setCategories(data);
             } catch (error) {
                 showError('Error fetching categories');
@@ -62,7 +65,7 @@ function PopularCategory() {
                 </div>
                 {/*  */}
 
-                <div className={cx('popular-category__list')}>
+                {/* <div className={cx('popular-category__list')}>
                     {categoriesList.map((category, index) => (
                         <ItemInfo
                             key={index}
@@ -72,8 +75,32 @@ function PopularCategory() {
                             className={cx('popular-category__item')}
                         />
                     ))}
-                </div>
+                </div> */}
                 {/*  */}
+                <Carousel
+                    withIndicators
+                    classNames={{
+                        indicator: cx('popular-category__indicator'),
+                        control: cx('popular-category__control'),
+                        controls: cx('popular-category__controls'),
+                        slide: cx('popular-category__slide'),
+                    }}
+                >
+                    {[...Array(numberOfPage)].map((_, index) => (
+                        <Carousel.Slide key={index}>
+                            <div className={cx('popular-category__list')}>
+                                {categories.slice(index * size, (index + 1) * size).map((category, index) => (
+                                    <ItemInfo
+                                        key={index}
+                                        title={category.name}
+                                        description={`${category.total} Open positions`}
+                                        className={cx('popular-category__item')}
+                                    />
+                                ))}
+                            </div>
+                        </Carousel.Slide>
+                    ))}
+                </Carousel>
             </div>
         </div>
     );

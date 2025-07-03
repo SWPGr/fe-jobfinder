@@ -4,9 +4,9 @@ import axios from 'axios';
 
 const httpRequest = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL, // đặt baseURL nếu có
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // },
     timeout: 10000, // timeout 10s (tuỳ chọn)
 });
 
@@ -71,9 +71,17 @@ httpRequest.interceptors.request.use(
 );
 
 // Xử lý GET
-export const get = async (path, options = {}) => {
+export const get = async (path, params = {}, options = {}) => {
     try {
-        const response = await httpRequest.get(path, options);
+        const response = await httpRequest.get(
+            path,
+            {
+                params: {
+                    ...params,
+                },
+            },
+            options,
+        );
         return response.data;
     } catch (error) {
         // Có thể xử lý lỗi ở đây hoặc throw lên trên
