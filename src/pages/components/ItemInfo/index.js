@@ -2,11 +2,11 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './ItemInfo.module.scss';
 import { ThemeIcon } from '@mantine/core';
-import { IconPhoto } from '@tabler/icons-react';
+import { IconBriefcase } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
-function ItemInfo({ icon = <IconPhoto />, title, description, onClick, className }) {
+function ItemInfo({ icon = <IconBriefcase />, title, description, onClick, className }) {
     return (
         <div className={cx('wrapper', { [className]: className })}>
             <ThemeIcon classNames={{ root: cx('root') }}>

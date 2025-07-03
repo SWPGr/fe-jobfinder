@@ -5,7 +5,7 @@ const itemsNav = {
         { name: 'Employers', link: '/dashboard/employers' },
         { name: 'Candidates', link: '/candidates' },
         { name: 'Pricing Plans', link: '/pricing-plan' },
-        { name: 'Customer Supports', link: '/customer-supports' },
+        { name: 'Feed Back', link: '/feedback' },
     ],
     true: {
         ADMIN: [
@@ -22,7 +22,7 @@ const itemsNav = {
             { name: 'Find Employers', link: '/find-employer' },
             { name: 'Dashboard', link: '/dashboard' },
             { name: 'Job Alerts', link: '/dashboard/alerts' },
-            { name: 'Customer Supports', link: '/customer-supports' },
+            { name: 'Feed Back', link: '/feedback' },
         ],
         EMPLOYER: [
             { name: 'Home', link: '/' },
@@ -30,7 +30,7 @@ const itemsNav = {
             { name: 'Dashboard', link: '/dashboard' },
             { name: 'My Jobs', link: '/dashboard/my-jobs' },
             { name: 'Applications', link: '/dashboard/saved-candidates' },
-            { name: 'Customer Supports', link: '/customer-supports' },
+            { name: 'Feed Back', link: '/feedback' },
         ],
     },
 };

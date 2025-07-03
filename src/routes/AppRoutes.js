@@ -21,12 +21,14 @@ import {
     SingleJobPage,
     Term,
     ResetPassword,
+    CustomerSupport,
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
 import Single from '~/pages/Single/Single';
 
 import Payment from '~/pages/Payment/Payment';
+import FeedBack from '~/pages/FeedBack/FeedBack';
 
 const publicRoutes = [
     { path: config.routes.login, component: LoginPage, layout: null },
@@ -46,12 +48,13 @@ const publicRoutes = [
     { path: config.routes.payment, component: Payment, layout: HeaderOnly },
     { path: config.routes.resetPassword, component: ResetPassword, layout: null },
     { path: config.routes.verify, component: VerifyPage, layout: null },
+    { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
+    { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
 ];
 
 const privateRoutes = [
     { path: config.routes.dashboard, component: DashboardPage },
     { path: config.routes.dashboard + '/:page', component: DashboardPage },
-    { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
     { path: config.routes.findEmployer, component: FindEmployer, layout: HeaderOnly },
     { path: config.routes.findCandidate, component: FindCandidate, layout: HeaderOnly },
 ];

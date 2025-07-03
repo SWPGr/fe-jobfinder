@@ -1,0 +1,106 @@
+.wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px #0001;
+    padding: 32px;
+}
+
+.title {
+    color: #2563eb;
+    margin-bottom: 16px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.row {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.form {
+    flex: 1;
+    min-width: 320px;
+}
+
+.group {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.input,
+.select,
+.textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.button {
+    background: #2563eb;
+    color: #fff;
+    padding: 10px 32px;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-top: 8px;
+    &:hover {
+        background: #1749b1;
+    }
+}
+
+.success {
+    margin-top: 16px;
+    color: green;
+    font-weight: 500;
+}
+
+.info {
+    min-width: 250px;
+    flex: 1;
+}
+
+.infoTitle {
+    color: #444;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.infoContent {
+    line-height: 2;
+    font-size: 15px;
+}
+
+.note {
+    margin-top: 20px;
+    color: #888;
+    font-size: 13px;
+}
+
+@media (max-width: 800px) {
+    .row {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .wrapper {
+        padding: 16px;
+    }
+}

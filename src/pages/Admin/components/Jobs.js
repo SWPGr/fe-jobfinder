@@ -173,7 +173,7 @@ const Jobs = () => {
                                 <td>
                                     ${job.salaryMin} - ${job.salaryMax}
                                 </td>
-                                <td>–</td>
+                                <td>{job.jobApplicationCounts || 0}</td>
                                 <td>
                                     <span
                                         className={cx('statusText', {
