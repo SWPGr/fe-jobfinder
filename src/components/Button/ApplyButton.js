@@ -1,0 +1,205 @@
+import { useDisclosure } from '@mantine/hooks';
+import { Modal, Group, Text, TextInput, Textarea } from '@mantine/core';
+import {
+    IconUpload,
+    IconPhoto,
+    IconX,
+    IconFileTypePdf,
+    IconFeatherFilled,
+    IconFileCvFilled,
+} from '@tabler/icons-react';
+import { Dropzone, DropzoneProps, PDF_MIME_TYPE, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { useForm } from '@mantine/form';
+import classNames from 'classnames/bind';
+import styles from './ApplyButton.module.scss';
+
+import { validator } from '~/utils';
+import Button from '.';
+import { jobService } from '~/services';
+import { useNotification } from '~/hooks';
+import { useLoading } from '~/context/LoadingContext';
+
+const cx = classNames.bind(styles);
+
+function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
+    const [opened, { open, close }] = useDisclosure(false);
+    const { showLoading, hideLoading } = useLoading();
+    const { showSuccess, showError } = useNotification();
+
+    const form = useForm({
+        initialValues: {
+            resume: (value) => (value ? null : 'Please upload a resume file'),
+            fullname: '',
+            email: '',
+            phone: '',
+            coverLetter: '',
+        },
+
+        validate: {
+            resume: (value) => (value ? null : 'Please upload a resume file'),
+            fullname: (value) => validator.validateUsername(value),
+            email: (value) => validator.validateEmail(value),
+            phone: (value) => validator.validatePhoneNumber(value),
+        },
+    });
+
+    const handleSubmit = async (values) => {
+        const formData = new FormData();
+        formData.append('jobId', id);
+        formData.append('resume', values.resume);
+        formData.append('fullname', values.fullname);
+        formData.append('email', values.email);
+        formData.append('phone', values.phone);
+        formData.append('coverLetter', values.coverLetter);
+
+        try {
+            showLoading(); // Bắt đầu loading
+
+            const data = await jobService.applyJob(formData); // Gửi API
+            console.log(data);
+
+            showSuccess('Ứng tuyển thành công!');
+            onClick(); // Gọi callback nếu có
+            close(); // Đóng modal
+        } catch (error) {
+            console.log(error);
+            showError('Đã có lỗi xảy ra, vui lòng thử lại sau.');
+        } finally {
+            hideLoading(); // Dù thành công hay lỗi đều tắt loading
+        }
+    };
+
+    return (
+        <>
+            <Modal
+                classNames={{
+                    modal: cx('modal'),
+                    content: cx('modal-content'),
+                    inner: cx('modal-inner'),
+                    header: cx('modal-header'),
+                    body: cx('modal-body'),
+                }}
+                size="auto"
+                opened={opened}
+                onClose={close}
+                title={
+                    <div className={cx('modal-title')}>
+                        Apply for <span className={cx('job-title')}>{title}</span>
+                    </div>
+                }
+            >
+                <div className={cx('apply-form-body')}>
+                    <div className={cx('cover-letter-header', 'header')}>
+                        <IconFileCvFilled classname={cx('cover-letter-icon')} />
+                        <p className={cx('cover-letter-title')}>Choose application for job</p>
+                    </div>
+                    <div className={cx('apply-form')}>
+                        <div className={cx('dropzone')}>
+                            <Dropzone
+                                onDrop={(files) => {
+                                    console.log('accepted files', files);
+                                    form.setFieldValue('resume', files[0]);
+                                }}
+                                onReject={(files) => {
+                                    console.log('rejected files', files);
+                                    form.setFieldError('resume', 'File không hợp lệ hoặc vượt quá dung lượng');
+                                }}
+                                maxSize={20 * 1024 ** 2}
+                                accept={IMAGE_MIME_TYPE}
+                            >
+                                <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
+                                    <Dropzone.Accept>
+                                        <IconUpload size={52} color="var(--mantine-color-blue-6)" stroke={1.5} />
+                                    </Dropzone.Accept>
+                                    <Dropzone.Reject>
+                                        <IconX size={52} color="var(--mantine-color-red-6)" stroke={1.5} />
+                                    </Dropzone.Reject>
+                                    <Dropzone.Idle>
+                                        <IconFileTypePdf size={52} color="var(--mantine-color-dimmed)" stroke={1.5} />
+                                    </Dropzone.Idle>
+
+                                    <div>
+                                        <Text size="xl" inline>
+                                            Drag pdf file here or click to select files
+                                        </Text>
+                                        <Text size="sm" c="dimmed" inline mt={7}>
+                                            Attach as many files as you like, each file should not exceed 5mb
+                                        </Text>
+                                    </div>
+                                </Group>
+                            </Dropzone>
+                            {form.errors.resume && <p className={cx('error-message')}>{form.errors.resume}</p>}
+                        </div>
+                        <p className={cx('apply-form-title')}>Please fill in your information</p>
+                        <div className={cx('input-group')}>
+                            <TextInput
+                                label="Full Name"
+                                required
+                                size="xl"
+                                key={form.key.fullname} // Unique key
+                                {...form.getInputProps('fullname')}
+                                placeholder="Enter your full name"
+                                classNames={{ root: cx('fullname') }}
+                            />
+                            <TextInput
+                                label="Email"
+                                required
+                                size="xl"
+                                key={form.key.email} // Unique key
+                                {...form.getInputProps('email')}
+                                placeholder="Enter your email here"
+                                classNames={{ root: cx('email') }}
+                            />
+                            <TextInput
+                                label="Phone number"
+                                required
+                                size="xl"
+                                key={form.key.phone} // Unique key
+                                {...form.getInputProps('phone')}
+                                placeholder="phone number"
+                                classNames={{ root: cx('phone') }}
+                            />
+                        </div>
+                    </div>
+                    {/* Cover letter */}
+                    <div className={cx('cover-letter')}>
+                        <div className={cx('cover-letter-header')}>
+                            <IconFeatherFilled className={cx('cover-letter-icon')} />
+                            <p className={cx('cover-letter-title')}>Cover letter:</p>
+                        </div>
+                        <p className={cx('cover-letter-description')}>
+                            A brief, well-written cover letter will help you appear more professional and make a better
+                            impression on the employer.
+                        </p>
+                        <Textarea
+                            placeholder="Input placeholder"
+                            size="lg"
+                            classNames={{ input: cx('cover-letter-textarea') }}
+                            {...form.getInputProps('coverLetter')}
+                            key={form.key.coverLetter} // Unique key
+                        />
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className={cx('apply-form-footer')}>
+                    <Button black_white className={cx('btn')} onClick={close}>
+                        Cancel
+                    </Button>
+                    <Button
+                        blue
+                        className={cx('btn', 'apply-btn')}
+                        onClick={form.onSubmit((values) => handleSubmit(values))}
+                    >
+                        Submit the application
+                    </Button>
+                </div>
+            </Modal>
+            <Button blue_white className={classname} onClick={open}>
+                Apply Now
+            </Button>
+        </>
+    );
+}
+
+export default ApplyButton;

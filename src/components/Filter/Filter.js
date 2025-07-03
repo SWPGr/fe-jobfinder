@@ -244,6 +244,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
             search: '',
             location: '',
             category: '',
+            page: '1',
             ...Object.keys(filters).reduce((acc, key) => {
                 // Initialize values: empty string for Radio, empty array for Checkbox
                 acc[key] = filters[key].type === 'Checkbox' ? [] : '';
@@ -272,6 +273,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
 
     const handleSearch = () => {
         onSearch(form.values);
+        console.log(form.values);
     };
 
     // Giữ nguyên giá trị của 'category' và reset các field khác về initialValues
@@ -327,7 +329,9 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
 
                         <Select
                             placeholder="Select category"
-                            data={categoryOptions}
+                            data={categoryOptions.map((option) => ({ value: option.id + '', label: option.name }))}
+                            value={form.values.category}
+                            onChange={(_value, option) => form.setFieldValue('category', option.value)}
                             {...form.getInputProps('category')}
                             leftSection={<IconStack2 />}
                             classNames={{
@@ -384,9 +388,9 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                             >
                                                 {options.map((option) => (
                                                     <Radio
-                                                        key={option}
-                                                        value={option}
-                                                        label={option}
+                                                        key={`${key}-${option.id}`}
+                                                        value={String(option.id)}
+                                                        label={option.name}
                                                         classNames={{ inner: cx('inner'), body: cx('body') }}
                                                     />
                                                 ))}
@@ -399,10 +403,11 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                             >
                                                 {options.map((option) => (
                                                     <Checkbox
-                                                        key={option}
-                                                        label={option}
-                                                        checked={form.values[key]?.includes(option)}
-                                                        onChange={() => toggleCheckbox(key, option)}
+                                                        key={key}
+                                                        value={option.id}
+                                                        label={option.name}
+                                                        checked={form.values[key]?.includes(option.id)}
+                                                        onChange={() => toggleCheckbox(key, option.id)}
                                                         classNames={{ inner: cx('inner'), body: cx('body') }}
                                                     />
                                                 ))}
@@ -442,6 +447,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                 total={totalPages}
                                 onChange={(page) => {
                                     setActivePage(page);
+                                    form.setFieldValue('page', page);
                                     scrollTo({ y: resultRef.current.getBoundingClientRect().top - 210 });
                                 }}
                                 radius="xl"

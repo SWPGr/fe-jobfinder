@@ -15,11 +15,13 @@ import {
 } from 'recharts';
 import { ChevronDownIcon, TrendingUpIcon, BriefcaseIcon } from 'lucide-react';
 
-import { jobMarketTrendsService } from '~/services';
+import { jobMarketTrendsService, jobService } from '~/services';
 import '~/index.css';
 import StatCard from './components/StateCard';
 import CustomTooltip from './components/CustomToolTip';
 import CustomLegend from './components/CustomLegend';
+import { format } from '~/utils';
+import JobItem from './components/JobItem';
 
 const recentJobs = [
     {
@@ -61,6 +63,7 @@ const JobMarketTrends = () => {
     const [jobOpportunity, setJobOpportunity] = useState([]);
     const [listTop, setListTop] = useState([]);
     const [date, setDate] = useState('');
+    const [topJobs, setTopJobs] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,8 +91,14 @@ const JobMarketTrends = () => {
                         job_category_count: Number(item.job_category_count.replace(/\./g, '')),
                     }));
                 setListTop(top);
+
+                const res4 = await jobService.getTopLatestJobs();
+                const data = res4.map((job) => {
+                    return format.transformJobData(job);
+                });
+                setTopJobs(data.slice(0, 4));
             } catch (err) {
-                console.error(err);
+                console.log(err);
             }
         };
         fetchData();
@@ -97,7 +106,7 @@ const JobMarketTrends = () => {
 
     return (
         <div className={cx('job-market-trends')}>
-            <div className="w-full max-w-[1350px] p-5 mx-auto bg-gradient-to-br from-[#18191c] to-[#0a65cc] rounded-xl overflow-hidden shadow-xl">
+            <div className="w-full max-w-[1350px] p-5 mx-auto bg-gradient-to-br from-[#2f3338]  to-[#9199a3] rounded-xl overflow-hidden shadow-xl">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-white">
                         Thị trường việc làm hôm nay <span className="text-[#93c5fd]">{date}</span>
@@ -117,24 +126,8 @@ const JobMarketTrends = () => {
                             Việc làm mới nhất
                         </h3>
                         <div className="space-y-4">
-                            {recentJobs.map((job) => (
-                                <div
-                                    key={job.id}
-                                    className="flex bg-white bg-opacity-10 rounded-lg p-3 hover:bg-opacity-20 transition-all cursor-pointer"
-                                >
-                                    <div className="w-12 h-12 rounded overflow-hidden bg-[#f1f2f4] p-1 mr-3 flex-shrink-0">
-                                        <img
-                                            src={job.logo}
-                                            alt={job.company}
-                                            className="w-full h-full object-contain"
-                                        />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h4 className="font-medium text-white text-sm line-clamp-2">{job.title}</h4>
-                                        <p className="text-xs text-gray-300 mt-1 line-clamp-1">{job.company}</p>
-                                        <p className="text-xs text-gray-400 mt-1">{job.location}</p>
-                                    </div>
-                                </div>
+                            {topJobs.map((job) => (
+                                <JobItem key={job.id} job={job} />
                             ))}
                         </div>
                     </div>

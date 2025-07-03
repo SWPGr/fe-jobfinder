@@ -1,8 +1,13 @@
 import axios from 'axios';
 
+// trong interceptor
+
 const httpRequest = axios.create({
     //loại bỏ cố định content-type: application/json để làm mô hình request nâng cao
     baseURL: process.env.REACT_APP_API_BASE_URL, // đặt baseURL nếu có
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // },
     timeout: 10000, // timeout 10s (tuỳ chọn)
 });
 // Middleware có thể thêm: interceptors request/response nếu muốn
@@ -17,7 +22,7 @@ httpRequest.interceptors.response.use(
                 case 401:
                     localStorage.removeItem('user');
                     console.log('Session expired. Please log in again.');
-                    window.location.href = '/login'; // Chuyển hướng về login
+                    window.location.href = '/login?error=session-expired'; // Chuyển hướng về login
                     return Promise.reject(
                         new Error({
                             code: 401,
@@ -65,9 +70,17 @@ httpRequest.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 // Xử lý GET
-export const get = async (path, options = {}) => {
+export const get = async (path, params = {}, options = {}) => {
     try {
-        const response = await httpRequest.get(path, options);
+        const response = await httpRequest.get(
+            path,
+            {
+                params: {
+                    ...params,
+                },
+            },
+            options,
+        );
         return response.data;
     } catch (error) {
         throw error;

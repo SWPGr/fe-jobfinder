@@ -6,7 +6,7 @@ import GlobalStyles from './components/GlobalStyles';
 import { AuthContext } from './context';
 import { MantineProvider } from '@mantine/core'; // Import MantineProvider
 import '@mantine/core/styles.css';
-
+import '@mantine/carousel/styles.css';
 // import './index.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import { Notifications } from '@mantine/notifications';
@@ -15,7 +15,7 @@ import { LoadingProvider } from '~/context/LoadingContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
+    <React.Fragment>
         <GlobalStyles>
             <AuthContext.AuthProvider>
                 <MantineProvider withGlobalStyles withNormalizeCSS>
@@ -26,7 +26,7 @@ root.render(
                 </MantineProvider>
             </AuthContext.AuthProvider>
         </GlobalStyles>
-    </React.StrictMode>,
+    </React.Fragment>,
 );
 
 // If you want to start measuring performance in your app, pass a function
