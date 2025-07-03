@@ -24,7 +24,7 @@ function FindEmployer() {
     return (
         <div className={cx('find-job__wrapper')}>
             <div className={cx('find-job__title')}>
-                <h1>Find Job</h1>
+                <h1>Find Company</h1>
             </div>
 
             <Filter

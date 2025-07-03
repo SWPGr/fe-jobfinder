@@ -191,6 +191,29 @@
             color: var(--gray-300);
         }
     }
+    .popular-category__indicator {
+        background: var(--blue-500);
+    }
+    .popular-category__control {
+        width: 2rem;
+        height: 2rem;
+        border: none;
+        box-shadow: none;
+
+        svg {
+            width: 5rem !important;
+            height: 5rem !important;
+            stroke: var(--blue-500);
+        }
+    }
+    .popular-category__controls {
+        width: 1350px;
+    }
+    .popular-category__slide {
+        position: relative;
+        width: var(--default-layout-width);
+        padding-bottom: 2rem;
+    }
 }
 
 // FEATURED JOB

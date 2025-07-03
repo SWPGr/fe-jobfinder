@@ -17,29 +17,22 @@ function FeaturedJob() {
     const { user } = useAuth();
     const [jobs, setJobs] = useState([]);
     const [activePage, setActivePage] = useState(1);
+    const [totalJobs, setTotalJobs] = useState(0);
     const pageSize = 9;
-
-    const startIndex = (activePage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-
-    const currentPageItems = jobs.slice(startIndex, endIndex);
 
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const data = await jobService.listAllJobs();
-                // console.log(data);
-
-                setJobs(data.map(format.transformJobData));
-
-                console.log(data.map(format.transformJobData));
+                const data = await jobService.listAllJobs(activePage, 9);
+                setJobs(data.content.map(format.transformJobData));
+                setTotalJobs(data.totalElements);
             } catch (error) {
                 console.log(error);
             }
         };
 
         fetchJobs();
-    }, []);
+    }, [activePage]);
 
     return (
         <div className={cx('featured-job')}>
@@ -51,7 +44,7 @@ function FeaturedJob() {
                     </Button>
                 </div>
                 <div className={cx('featured-job__list')}>
-                    {currentPageItems.map((job, index) => (
+                    {jobs.map((job, index) => (
                         <JobItem
                             key={index}
                             image={Images.google_image}
@@ -67,7 +60,7 @@ function FeaturedJob() {
                 <Pagination
                     page={activePage}
                     onChange={(page) => setActivePage(page)}
-                    total={Math.ceil(jobs.length / pageSize)}
+                    total={Math.ceil(totalJobs / pageSize)}
                     defaultValue={1}
                     siblings={1}
                     radius="xl"

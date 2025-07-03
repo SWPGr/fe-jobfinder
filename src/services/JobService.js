@@ -1,8 +1,8 @@
 import { get, post, put, del } from '~/utils/httpRequest';
 
-const listAllJobs = async () => {
+const listAllJobs = async (page = 1, size = 12) => {
     try {
-        const response = await get('job/user');
+        const response = await get('job/list?page=' + page + '&size=' + size);
         return response;
     } catch (error) {
         throw error;
@@ -70,9 +70,9 @@ const updateJobById = async (id, data) => {
     }
 };
 
-const applyJob = async (id) => {
+const applyJob = async (formData) => {
     try {
-        const response = await post(`apply/${id}`);
+        const response = await post(`apply`, formData, {});
         return response;
     } catch (error) {
         throw error;
@@ -133,6 +133,15 @@ const trackViewdJob = async (id) => {
     }
 };
 
+const searchJob = async ({ params }) => {
+    try {
+        const response = await get('jobs/search', { params });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const jobService = {
     listAllJobs,
     getJobById,
@@ -148,6 +157,7 @@ const jobService = {
     getAllCandidateAppliedJobId,
     getAllOptions,
     getTopLatestJobs,
+    searchJob,
 };
 
 export default jobService;
