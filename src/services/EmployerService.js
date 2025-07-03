@@ -1,12 +1,28 @@
 import { get } from '~/utils/httpRequest';
 
 const fetchTotalJobs = async () => {
-    const data = await get('/analytics/employer/job-application-counts');
-    return data.result || [];
+    const data = await get('/job/my-employer-jobs');
+    const result = data.result || {};
+
+    // Tính tổng số ứng viên từ tất cả job
+    const totalApplicationsAcrossJobs = (result.content || []).reduce(
+        (sum, job) => sum + (job.jobApplicationCounts || 0),
+        0
+    );
+
+    return {
+        jobApplicationCounts: (result.content || []).map((job) => ({
+            jobId: job.id,
+            jobTitle: job.title,
+            applicationCount: job.jobApplicationCounts,
+        })),
+        totalApplicationsAcrossJobs,
+    };
 };
 
+
 const fetchCreateJob = async (jobData) => {
-    console.log('📤 [FAKE POST] /job/create', jobData);
+    console.log(' [FAKE POST] /job/create', jobData);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     return {
         id: Math.floor(Math.random() * 100000),
@@ -15,7 +31,10 @@ const fetchCreateJob = async (jobData) => {
         createdAt: new Date().toISOString(),
     };
 };
-
+const fetchEducationFake = async () => {
+    const response = await get('/educations');
+    return response?.result || [];
+}
 const fetchJobTypesFake = async () => {
     const response = await get('/job-types');
     return response?.result || [];
@@ -101,6 +120,10 @@ const fetchJobEmployerFake = async () => {
         };
     }
 };
+const fetchSocialLinkFake = async () => {
+    const response = await get ('/social-types');
+    return response || null;
+}
 const fetchEmployerProfile = async () => {
     try {
         const response = await get('/job/1');
@@ -125,7 +148,9 @@ const EmployerService = {
     fetchJobLevelFake,
     fetchJobEmployerFake,
     fetchMyJobFake,
-    fetchEmployerProfile
+    fetchEmployerProfile,
+    fetchEducationFake,
+    fetchSocialLinkFake,
 };
 
 export default EmployerService;

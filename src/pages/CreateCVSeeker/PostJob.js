@@ -45,14 +45,16 @@ const PostJob = () => {
     useEffect(() => {
         const fetchDropdownData = async () => {
             try {
-                const [jobTypes, jobLevels] = await Promise.all([
+                const [jobTypes, jobLevels, educations] = await Promise.all([
                     EmployerService.fetchJobTypesFake(),
                     EmployerService.fetchJobLevelFake(),
+                    EmployerService.fetchEducationFake(),
                 ]);
                 setDropdowns((prev) => ({
                     ...prev,
                     jobTypes: jobTypes || [],
                     jobLevels: jobLevels || [],
+                    educations: educations || [],
                 }));
             } catch (error) {
                 console.error('Failed to fetch dropdown data:', error);

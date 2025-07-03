@@ -6,11 +6,6 @@ import EmployerService from "~/services/EmployerService";
 
 const cx = classNames.bind(styles);
 
-function parseRemainDay(remainStr) {
-  const match = remainStr.match(/\d+/);
-  return match ? Number(match[0]) : 0;
-}
-
 const Overview1 = () => {
   const [jobs, setJobs] = useState([]);
   const [totalApplications, setTotalApplications] = useState(0);
@@ -21,7 +16,7 @@ const Overview1 = () => {
         const result = await EmployerService.fetchTotalJobs();
         setJobs(result.jobApplicationCounts || []);
         setTotalApplications(result.totalApplicationsAcrossJobs || 0);
-        console.log("API result:", result); // 👈 THÊM DÒNG NÀY
+        console.log("API result:", result);
       } catch (err) {
         console.error("Error fetching jobs", err);
       }
@@ -44,14 +39,14 @@ const Overview1 = () => {
           <div className={cx("info-number")}>{jobs.length}</div>
           <div className={cx("info-label")}>Open Jobs</div>
           <div className={cx("info-icon")}>
-            {/* SVG icon here */}
+            {/* SVG icon if needed */}
           </div>
         </div>
         <div className={cx("info-card", "yellow")}>
           <div className={cx("info-number")}>{totalApplications}</div>
           <div className={cx("info-label")}>Total Applications</div>
           <div className={cx("info-icon")}>
-            {/* SVG icon here */}
+            {/* SVG icon if needed */}
           </div>
         </div>
       </div>
@@ -71,13 +66,12 @@ const Overview1 = () => {
       <div className={cx("job-list")}>
         {jobs.map((job, idx) => {
           const jobDescription = {
-            jobTitle: job.jobTitle,
-            workTime: "Full Time", // hoặc lấy từ API nếu có
-            remainDay: 30, // giả sử còn 30 ngày
-            isActive: true,
-            numberApplications: job.applicationCount,
+            jobTitle: job.jobTitle || "No title",
+            workTime: "Full Time", // hardcoded or from API if available
+            remainDay: 30, // giả định còn 30 ngày - hoặc tính toán từ expiredDate
+            isActive: true, // hoặc dùng job.status nếu có trong API
+            numberApplications: job.applicationCount || 0,
           };
-          console.log("Jobs:", jobs);
 
           return (
             <JobItemOwner
@@ -85,7 +79,6 @@ const Overview1 = () => {
               jobDescription={jobDescription}
               isVIP={true}
             />
-            
           );
         })}
       </div>
