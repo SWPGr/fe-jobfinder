@@ -369,12 +369,16 @@
 }
 .modalOverlay {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
   }
   
   .modalBox {
@@ -387,6 +391,8 @@
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
+    //overflow: hidden;
+    height: 120rem; 
   }
   
   .closeBtn {
