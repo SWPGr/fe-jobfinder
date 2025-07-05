@@ -64,6 +64,7 @@
             align-items: center;
             gap: 1rem;
             .name {
+                font-size: var(--font-size-14px);
                 display: -webkit-box; /* Sử dụng flexbox với WebKit */
                 -webkit-line-clamp: 1; /* Hiển thị tối đa 1 dòng */
                 -webkit-box-orient: vertical; /* Định hướng nội dung dọc */

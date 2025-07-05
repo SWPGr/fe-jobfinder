@@ -30,6 +30,7 @@
 
 .dropzone {
     border-bottom: 1px solid var(--gray-200);
+    padding: 1rem;
 }
 .apply-form-title {
     font-size: var(--font-size-16px);
@@ -89,4 +90,69 @@
 .apply-btn {
     flex: 1;
     width: 100%;
+}
+
+.error-message {
+    color: #fa5252;
+    font-size: 12px;
+}
+
+.dropzone-root {
+    border: none !important;
+    cursor: default !important;
+
+    &:hover {
+        background: white !important;
+    }
+}
+
+.dropzone-content {
+    min-height: 0 !important;
+    gap: 1rem !important;
+}
+
+.file {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 1rem;
+}
+
+.file-button {
+    height: 30px;
+    font-size: 14px;
+}
+
+.file-name {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--blue-500);
+}
+
+.file-name-text {
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 15rem;
+}
+.file-delete {
+    cursor: pointer;
+    color: #fa5252;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--border-radius);
+    background: var(--red-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-delete-icon {
+    width: 70%;
+    height: 70%;
 }

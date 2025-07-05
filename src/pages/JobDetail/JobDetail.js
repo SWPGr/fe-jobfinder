@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './JobDetail.module.scss';
 import {
@@ -14,15 +15,21 @@ import {
     IconBrain,
     IconUsers,
     IconBrightnessAuto,
+    IconBookmarkFilled,
+    IconBookmark,
 } from '@tabler/icons-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import SimpleRichTextEditor from 'src/components/RichTextEditor/RichTextEditor.js';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { CalendarIcon, Icon } from 'lucide-react';
+import { useWindowScroll } from '@mantine/hooks';
 
 import { Button } from '~/components';
 import ApplyButton from '~/components/Button/ApplyButton';
+import { useAuth } from '~/context/AuthContext';
+import { useNotification } from '~/hooks';
+import { jobService } from '~/services';
 
 const cx = classNames.bind(styles);
 
@@ -92,9 +99,19 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
         jobDescription: jobData?.jobDescription || defaultJob.jobDescription,
         responsibilities: jobData?.responsibilities || defaultJob.responsibilities,
     });
-
+    const { jobId } = useParams();
+    const { user } = useAuth();
+    const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
+    const [save, setSave] = useState(false); //set true if saved job
+    const { showSuccess, showError } = useNotification();
     const [formData, setFormData] = useState(mergeWithDefault(job));
     const jobDetailRef = useRef(null);
+    const IconComponent = save ? IconBookmarkFilled : IconBookmark;
+    const [scroll, scrollTo] = useWindowScroll();
+
+    useEffect(() => {
+        scrollTo({ y: 0 });
+    }, []);
 
     useEffect(() => {
         setFormData(mergeWithDefault(job));
@@ -146,6 +163,28 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
 
     const handleSave = () => {
         onSave(formData);
+    };
+
+    const handelSaveJob = async (id) => {
+        try {
+            await jobService.saveJob(id);
+            setSave(!save);
+            showSuccess('Save job successfully');
+        } catch (error) {
+            showError('Save job failed');
+            console.log(error);
+        }
+    };
+
+    const handelUnsaveJob = async (id) => {
+        try {
+            await jobService.unSaveJob(id);
+            setSave(!save);
+            showSuccess('Unsave job successfully');
+        } catch (error) {
+            console.log(error);
+            showError('Unsave job failed');
+        }
     };
 
     const handleDownloadJobDetails = async () => {
@@ -215,16 +254,36 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
                             />
                         ) : (
                             <div className={cx('job-info__title')}>
-                                {formData.jobTitle}{' '}
-                                {formData.badges?.featured && (
-                                    <span className={cx('job-info__badge', 'job-info__badge--featured')}>Featured</span>
+                                <div className={cx('job-info__title__name')}>
+                                    {formData.jobTitle}
+                                    {formData.badges?.featured && (
+                                        <span className={cx('job-info__badge', 'job-info__badge--featured')}>
+                                            Featured
+                                        </span>
+                                    )}
+                                    {formData.badges?.fulltime && (
+                                        <span className={cx('job-info__badge', 'job-info__badge--fulltime')}>
+                                            {formData.badges.fulltime}
+                                        </span>
+                                    )}
+                                </div>
+                                {!editable && (
+                                    <div className={cx('action-btn')}>
+                                        <div
+                                            className={cx('save-job')}
+                                            onClick={() => {
+                                                save ? handelUnsaveJob(jobId) : handelSaveJob(jobId);
+                                            }}
+                                        >
+                                            {isJOB_SEEKER && <IconComponent size={22} color="#0a65cc" />}
+                                        </div>
+                                        <ApplyButton
+                                            classname={cx('job-info__apply')}
+                                            title="Software Engineer"
+                                            jobId={jobId}
+                                        />
+                                    </div>
                                 )}
-                                {formData.badges?.fulltime && (
-                                    <span className={cx('job-info__badge', 'job-info__badge--fulltime')}>
-                                        {formData.badges.fulltime}
-                                    </span>
-                                )}
-                                <ApplyButton classname={cx('job-info__apply')} title="Software Engineer" />
                             </div>
                         )}
                         <div className={cx('contact')}>

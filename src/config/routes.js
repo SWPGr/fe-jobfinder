@@ -16,16 +16,14 @@ const routes = {
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
     findJobPage: '/findJobPage',
-    jobDetails: '/jobDetails',
+    jobDetails: '/jobDetails/:jobId',
     seekerDetailPage: '/seekerDetailPage',
-
     singleJob: '/singleJob',
-
     findJob: '/find-job',
     findCandidate: '/find-candidate',
     findEmployer: '/find-employer',
     verify: '/api/auth/verify',
-    single: '/single',
+    company: '/company/:id',
     dashboardOverview: '/dashboard-overview',
 
     term: '/term',

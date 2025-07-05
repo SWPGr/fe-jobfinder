@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './JobItem.module.scss';
 import { IconMapPin, IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
@@ -23,10 +23,12 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
     const classes = cx('wrapper', { isVIP, saved });
     const { companyName, companyAddress, jobTitle, workTime, salary } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
+    const navigate = useNavigate();
 
-    const handelSaveJob = async (id) => {
+    const handelSaveJob = async (e, id) => {
         try {
-            const response = await jobService.saveJob(id);
+            e.stopPropagation();
+            await jobService.saveJob(id);
             setSave(!save);
             showSuccess('Save job successfully');
         } catch (error) {
@@ -35,8 +37,9 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
         }
     };
 
-    const handelUnsaveJob = async (id) => {
+    const handelUnsaveJob = async (e, id) => {
         try {
+            e.stopPropagation();
             await jobService.unSaveJob(id);
             setSave(!save);
             showSuccess('Unsave job successfully');
@@ -46,8 +49,16 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
         }
     };
 
+    const handelDirectToJobDetails = () => {
+        navigate(`/jobDetails/${jobDescription.id}`);
+    };
+    const handelDireactToCompanyDetails = (e, id) => {
+        e.stopPropagation();
+        navigate(`/company/${id}`);
+    };
+
     return (
-        <div className={classes}>
+        <div className={classes} onClick={handelDirectToJobDetails}>
             <div className={cx('header')}>
                 <div className={cx('container')}>
                     <div className={cx('logo-company')}>
@@ -59,7 +70,7 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
                     </div>
                     <div className={cx('company-inf')}>
                         <span className={cx('company-name')}>
-                            <Button text to={'#'} className={cx('name')}>
+                            <Button text onClick={(e) => handelDireactToCompanyDetails(e, 1)} className={cx('name')}>
                                 {companyName}
                             </Button>
                             {isVIP && (
@@ -83,8 +94,8 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
                 {isJOB_SEEKER && (
                     <div
                         className={cx('save-job')}
-                        onClick={() => {
-                            save ? handelUnsaveJob(jobDescription.id) : handelSaveJob(jobDescription.id);
+                        onClick={(e) => {
+                            save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
                         }}
                     >
                         {isJOB_SEEKER && <IconComponent size={22} color="#0a65cc" />}

@@ -21,10 +21,13 @@ function FeaturedJob() {
     const pageSize = 9;
 
     useEffect(() => {
+        console.log('render');
         const fetchJobs = async () => {
             try {
                 const data = await jobService.listAllJobs(activePage, 9);
-                setJobs(data.content.map(format.transformJobData));
+                const jobsList = data.content.map(format.transformJobData);
+                console.log('jobsList', jobsList);
+                setJobs(jobsList);
                 setTotalJobs(data.totalElements);
             } catch (error) {
                 console.log(error);

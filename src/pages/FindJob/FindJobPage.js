@@ -9,7 +9,7 @@ import { jobService } from '~/services';
 const cx = classNames.bind(styles);
 
 function FindJob() {
-    const [jobFilter, setJobFilter] = React.useState({});
+    const [jobFilters, setJobFilter] = React.useState({});
 
     const [categoryOptions, setCategoryOptions] = React.useState([]);
 
@@ -23,8 +23,9 @@ function FindJob() {
             const data = await jobService.getAllOptions();
 
             const rawData = {
-                experiences: { type: 'Radio', options: [], grid: true },
+                experiences: { name: 'Experience', type: 'Radio', options: [], grid: true },
                 salary: {
+                    name: 'Salary',
                     type: 'Radio',
                     options: [
                         { id: 1, name: '$0 - $50k', min: 0, max: 50000 },
@@ -34,9 +35,9 @@ function FindJob() {
                     ],
                     grid: true,
                 },
-                jobTypes: { type: 'Radio', options: [], grid: true },
-                educations: { type: 'Radio', options: [] },
-                jobLevels: { type: 'Radio', options: [] },
+                jobTypes: { name: 'Job Type', type: 'Radio', options: [], grid: true },
+                educations: { name: 'Education', type: 'Radio', options: [] },
+                jobLevels: { name: 'Job Level', type: 'Radio', options: [] },
             };
 
             rawData.experiences.options = data.experiences;
@@ -59,7 +60,7 @@ function FindJob() {
             </div>
 
             <Filter
-                filters={jobFilter}
+                filters={jobFilters}
                 categoryOptions={categoryOptions}
                 buttonLabel="Find Job"
                 onSearch={handleFilterSearch}

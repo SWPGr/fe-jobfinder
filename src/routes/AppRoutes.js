@@ -40,7 +40,7 @@ const publicRoutes = [
     { path: config.routes.jobDetails, component: JobDetail, layout: HeaderOnly },
     { path: config.routes.seekerDetailPage, component: SeekerDetailPage, layout: HeaderOnly },
     { path: config.routes.verify, component: VerifyPage, layout: null },
-    { path: config.routes.single, component: Single, layout: HeaderOnly },
+    { path: config.routes.company, component: Single, layout: HeaderOnly },
     { path: config.routes.dashboardOverview, component: DashboardOverview, layout: HeaderOnly },
     { path: config.routes.term, component: Term, layout: null },
     { path: config.routes.payment, component: Payment, layout: HeaderOnly },
