@@ -10,6 +10,7 @@ import {
     IconBookmarkFilled,
 } from '@tabler/icons-react';
 import { Badge } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
 
 import { Images } from '~/assets';
 import { Button } from '~/components';
@@ -27,9 +28,11 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
 
     const { companyName, companyAddress, jobTitle, workTime, salary, remainDay } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
+    const navigate = useNavigate();
 
-    const handelSaveJob = async (id) => {
+    const handelSaveJob = async (e, id) => {
         try {
+            e.stopPropagation();
             await jobService.saveJob(id);
             setSave(!save);
             showSuccess('Save job successfully');
@@ -39,8 +42,9 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
         }
     };
 
-    const handelUnsaveJob = async (id) => {
+    const handelUnsaveJob = async (e, id) => {
         try {
+            e.stopPropagation();
             await jobService.unSaveJob(id);
             setSave(!save);
             showSuccess('Unsave job successfully');
@@ -50,8 +54,12 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
         }
     };
 
+    const handelDirectToJobDetails = () => {
+        navigate(`/jobDetails/${jobDescription.id}`);
+    };
+
     return (
-        <div className={classes}>
+        <div className={classes} onClick={handelDirectToJobDetails}>
             <div className={cx('content')}>
                 <div className={cx('logo-company')}>
                     <img
@@ -107,8 +115,8 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                             <IconComponent
                                 size={22}
                                 color="#0a65cc"
-                                onClick={() => {
-                                    save ? handelUnsaveJob(jobDescription.id) : handelSaveJob(jobDescription.id);
+                                onClick={(e) => {
+                                    save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
                                 }}
                             />
                         )}

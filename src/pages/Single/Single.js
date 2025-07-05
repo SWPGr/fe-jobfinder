@@ -3,6 +3,7 @@ import styles from './Single.module.scss';
 import classNames from 'classnames/bind';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { AiOutlineCalendar, AiOutlineLink, AiOutlinePhone, AiOutlineMail } from 'react-icons/ai';
+import { IconBuildingCommunity, IconBriefcase, IconUsersGroup, IconWorld } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
@@ -38,52 +39,52 @@ const companyInfo = {
 };
 
 export default function Single() {
-  return (
-    <div className={cx("container")}>
-      <div className={cx("wrapperBox")}>
-        {/* Header */}
-        <div className={cx("header")} style={{ position: "relative" }}>
-          <div className={cx("companyInfo")}>
-            <div className={cx("companyLogo")}>
-              <FaInstagram size={28} />
-            </div>
-            <div className={cx("companyDetails")}>
-              <div className={cx("companyName")}>{companyInfo.name}</div>
-              <div className={cx("industry")}>{companyInfo.industry}</div>
-            </div>
-          </div>
+    return (
+        <div className={cx('container')}>
+            <div className={cx('wrapperBox')}>
+                {/* Header */}
+                <div className={cx('header')} style={{ position: 'relative' }}>
+                    <div className={cx('companyInfo')}>
+                        <div className={cx('companyLogo')}>
+                            <FaInstagram size={28} />
+                        </div>
+                        <div className={cx('companyDetails')}>
+                            <div className={cx('companyName')}>{companyInfo.name}</div>
+                            <div className={cx('industry')}>{companyInfo.industry}</div>
+                        </div>
+                    </div>
 
-          {/* Icon Instagram góc dưới bên phải */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "1rem",
-              right: "1rem",
-              width: "40px",
-              height: "40px",
-              color: "#E4405F", // màu Instagram
-            }}
-          >
-            <FaInstagram size={40} />
-          </div>
-        </div>
+                    {/* Icon Instagram góc dưới bên phải */}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            bottom: '1rem',
+                            right: '1rem',
+                            width: '40px',
+                            height: '40px',
+                            color: '#E4405F', // màu Instagram
+                        }}
+                    >
+                        <FaInstagram size={40} />
+                    </div>
+                </div>
 
-        {/* Main Section */}
-        <div className={cx("section")}>
-          {/* Left Column */}
-          <div className={cx("leftColumn")}>
-            <h3 className={cx("title1")}>Description</h3>
-            <p className={cx("description")}>{companyInfo.description}</p>
+                {/* Main Section */}
+                <div className={cx('section')}>
+                    {/* Left Column */}
+                    <div className={cx('leftColumn')}>
+                        <h3 className={cx('title1')}>Description</h3>
+                        <p className={cx('description')}>{companyInfo.description}</p>
 
-            <h4 className={cx("title2")}>Company Benefits</h4>
-            <ul className={cx("benefitsList")}>
-              {companyInfo.benefits.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
+                        <h4 className={cx('title2')}>Company Benefits</h4>
+                        <ul className={cx('benefitsList')}>
+                            {companyInfo.benefits.map((item, i) => (
+                                <li key={i}>{item}</li>
+                            ))}
+                        </ul>
 
-            <h4 className={cx("title2")}>Company Vision</h4>
-            <p className={cx("companyVision")}>{companyInfo.vision}</p>
+                        <h4 className={cx('title2')}>Company Vision</h4>
+                        <p className={cx('companyVision')}>{companyInfo.vision}</p>
                         <div className={cx('shareProfile')}>
                             <button>
                                 <FaFacebookF /> Facebook
@@ -102,61 +103,76 @@ export default function Single() {
                         <div className={cx('card')}>
                             <div className={cx('cardRow')}>
                                 <div className={cx('cardLabel')}>
-                                    <AiOutlineCalendar /> Founded
+                                    <AiOutlineCalendar className={cx('icon')} /> Founded
                                 </div>
                                 <div className={cx('cardValue')}>{companyInfo.details.date}</div>
                             </div>
                             <div className={cx('cardRow')}>
                                 <div className={cx('cardLabel')}>
-                                    <AiOutlineLink /> Organization Type
+                                    <IconBuildingCommunity className={cx('icon')} /> Organization Type
                                 </div>
                                 <div className={cx('cardValue')}>{companyInfo.details.type}</div>
                             </div>
                             <div className={cx('cardRow')}>
-                                <div className={cx('cardLabel')}>Team Size</div>
+                                <div className={cx('cardLabel')}>
+                                    <IconUsersGroup className={cx('icon')} />
+                                    Team Size
+                                </div>
                                 <div className={cx('cardValue')}>{companyInfo.details.vacancies}</div>
                             </div>
                             <div className={cx('cardRow')}>
-                                <div className={cx('cardLabel')}>Industry Type</div>
+                                <div className={cx('cardLabel')}>
+                                    <IconBriefcase className={cx('icon')} />
+                                    Industry Type
+                                </div>
                                 <div className={cx('cardValue')}>{companyInfo.details.industry}</div>
                             </div>
                         </div>
 
                         <div className={cx('card')}>
-                            <h4>Contact Information</h4>
+                            <h4 className={cx('cardTitle')}>Contact Information</h4>
                             <div className={cx('contactRow')}>
-                                <AiOutlineLink className={cx('contactIcon')} />
+                                <IconWorld className={cx('icon')} />
                                 <a href={`https://${companyInfo.contact.website}`} target="_blank" rel="noreferrer">
-                                    {companyInfo.contact.website}
+                                    <p className={cx('contactLabel')}>WEBSITE</p>
+                                    <p className={cx('contactLink')}>{companyInfo.contact.website}</p>
                                 </a>
                             </div>
                             <div className={cx('contactRow')}>
-                                <AiOutlinePhone className={cx('contactIcon')} />
-                                <span>{companyInfo.contact.phone}</span>
+                                <AiOutlinePhone className={cx('icon')} />
+                                <span>
+                                    <p className={cx('contactLabel')}>PHONE</p>
+                                    {companyInfo.contact.phone}
+                                </span>
                             </div>
                             <div className={cx('contactRow')}>
-                                <AiOutlineMail className={cx('contactIcon')} />
-                                <a href={`mailto:${companyInfo.contact.email}`}>{companyInfo.contact.email}</a>
+                                <AiOutlineMail className={cx('icon')} />
+                                <p href={`mailto:${companyInfo.contact.email}`}>
+                                    <p className={cx('contactLabel')}>EMAIL ADDRESS</p>
+                                    {companyInfo.contact.email}
+                                </p>
                             </div>
                             <div className={cx('followUs')}>Follow us on:</div>
                             <div className={cx('socialLinks')}>
                                 <a href={companyInfo.social.facebook} className={cx('socialLink')}>
-                                    <FaFacebookF />
+                                    <FaFacebookF className={cx('icon')} />
                                 </a>
                                 <a href={companyInfo.social.twitter} className={cx('socialLink')}>
-                                    <FaTwitter />
+                                    <FaTwitter className={cx('icon')} />
                                 </a>
                                 <a href={companyInfo.social.instagram} className={cx('socialLink')}>
-                                    <FaInstagram />
+                                    <FaInstagram className={cx('icon')} />
                                 </a>
                                 <a href={companyInfo.social.youtube} className={cx('socialLink')}>
-                                    <FaYoutube />
+                                    <FaYoutube className={cx('icon')} />
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
+                {/* End Main Section */}
             </div>
+            <div className={cx('openings')}></div>
         </div>
     );
 }

@@ -2,16 +2,18 @@ import { useDisclosure } from '@mantine/hooks';
 import { Modal, Group, Text, TextInput, Textarea } from '@mantine/core';
 import {
     IconUpload,
-    IconPhoto,
     IconX,
     IconFileTypePdf,
     IconFeatherFilled,
     IconFileCvFilled,
+    IconFileText,
+    IconTrash,
 } from '@tabler/icons-react';
-import { Dropzone, DropzoneProps, PDF_MIME_TYPE, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { Dropzone, PDF_MIME_TYPE } from '@mantine/dropzone';
 import { useForm } from '@mantine/form';
 import classNames from 'classnames/bind';
 import styles from './ApplyButton.module.scss';
+import { useRef } from 'react';
 
 import { validator } from '~/utils';
 import Button from '.';
@@ -21,14 +23,15 @@ import { useLoading } from '~/context/LoadingContext';
 
 const cx = classNames.bind(styles);
 
-function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
+function ApplyButton({ classname, onClick = () => {}, title, jobId }) {
     const [opened, { open, close }] = useDisclosure(false);
     const { showLoading, hideLoading } = useLoading();
     const { showSuccess, showError } = useNotification();
+    const openRef = useRef(null);
 
     const form = useForm({
         initialValues: {
-            resume: (value) => (value ? null : 'Please upload a resume file'),
+            resume: null,
             fullname: '',
             email: '',
             phone: '',
@@ -44,8 +47,10 @@ function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
     });
 
     const handleSubmit = async (values) => {
+        console.log(values);
+
         const formData = new FormData();
-        formData.append('jobId', id);
+        formData.append('jobId', jobId);
         formData.append('resume', values.resume);
         formData.append('fullname', values.fullname);
         formData.append('email', values.email);
@@ -58,15 +63,19 @@ function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
             const data = await jobService.applyJob(formData); // Gửi API
             console.log(data);
 
-            showSuccess('Ứng tuyển thành công!');
+            showSuccess('Apply job successfully!');
             onClick(); // Gọi callback nếu có
             close(); // Đóng modal
         } catch (error) {
             console.log(error);
-            showError('Đã có lỗi xảy ra, vui lòng thử lại sau.');
+            showError('Apply job failed!');
         } finally {
             hideLoading(); // Dù thành công hay lỗi đều tắt loading
         }
+    };
+
+    const handleOnClickApply = () => {
+        open();
     };
 
     return (
@@ -90,24 +99,34 @@ function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
             >
                 <div className={cx('apply-form-body')}>
                     <div className={cx('cover-letter-header', 'header')}>
-                        <IconFileCvFilled classname={cx('cover-letter-icon')} />
+                        <IconFileCvFilled className={cx('cover-letter-icon')} />
                         <p className={cx('cover-letter-title')}>Choose application for job</p>
                     </div>
                     <div className={cx('apply-form')}>
                         <div className={cx('dropzone')}>
                             <Dropzone
+                                openRef={openRef}
+                                {...form.getInputProps('resume')}
+                                key={form.values.resume}
                                 onDrop={(files) => {
-                                    console.log('accepted files', files);
+                                    console.log('accepted files', files[0]);
+
                                     form.setFieldValue('resume', files[0]);
                                 }}
                                 onReject={(files) => {
                                     console.log('rejected files', files);
-                                    form.setFieldError('resume', 'File không hợp lệ hoặc vượt quá dung lượng');
+                                    form.setFieldError('resume', 'File is not proper format or too big!');
                                 }}
                                 maxSize={20 * 1024 ** 2}
-                                accept={IMAGE_MIME_TYPE}
+                                accept={PDF_MIME_TYPE}
+                                multiple={false}
+                                classNames={{
+                                    root: cx('dropzone-root'),
+                                    dropzone: cx('dropzone'),
+                                    input: cx('dropzone-input'),
+                                }}
                             >
-                                <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
+                                <Group justify="center" gap="xl" mih={220} className={cx('dropzone-content')}>
                                     <Dropzone.Accept>
                                         <IconUpload size={52} color="var(--mantine-color-blue-6)" stroke={1.5} />
                                     </Dropzone.Accept>
@@ -122,14 +141,36 @@ function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
                                         <Text size="xl" inline>
                                             Drag pdf file here or click to select files
                                         </Text>
-                                        <Text size="sm" c="dimmed" inline mt={7}>
-                                            Attach as many files as you like, each file should not exceed 5mb
+                                        <Text size="lg" c="dimmed" inline mt={7}>
+                                            Support PDF files up to 10MB
                                         </Text>
                                     </div>
                                 </Group>
                             </Dropzone>
+
+                            {/* 👇 Phần này nằm ngoài Dropzone */}
+                            <div className={cx('file')}>
+                                {form.values.resume && (
+                                    <>
+                                        <div className={cx('file-name')}>
+                                            <IconFileText />
+                                            <p className={cx('file-name-text')}>{form.values.resume?.name}</p>
+                                        </div>
+                                        <div
+                                            className={cx('file-delete')}
+                                            onClick={() => form.setFieldValue('resume', null)}
+                                        >
+                                            <IconTrash className={cx('file-delete-icon')} />
+                                        </div>
+                                    </>
+                                )}
+                                <Button className={cx('file-button')} onClick={() => openRef.current?.()}>
+                                    Select CV
+                                </Button>
+                            </div>
                             {form.errors.resume && <p className={cx('error-message')}>{form.errors.resume}</p>}
                         </div>
+
                         <p className={cx('apply-form-title')}>Please fill in your information</p>
                         <div className={cx('input-group')}>
                             <TextInput
@@ -187,7 +228,6 @@ function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
                         Cancel
                     </Button>
                     <Button
-                        blue
                         className={cx('btn', 'apply-btn')}
                         onClick={form.onSubmit((values) => handleSubmit(values))}
                     >
@@ -195,7 +235,7 @@ function ApplyButton({ classname, onClick = () => {}, title, id = 6 }) {
                     </Button>
                 </div>
             </Modal>
-            <Button blue_white className={classname} onClick={open}>
+            <Button blue_white className={classname} onClick={handleOnClickApply}>
                 Apply Now
             </Button>
         </>

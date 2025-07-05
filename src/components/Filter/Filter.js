@@ -369,10 +369,10 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                         </div>
 
                         <div className={cx('filter__content')}>
-                            {Object.entries(filters).map(([key, { type, options, grid }]) => (
+                            {Object.entries(filters).map(([key, { name, type, options, grid }]) => (
                                 <div key={key} className={cx('filter__item')}>
                                     <div className={cx('filter__item-title')}>
-                                        <h3>{key}</h3>
+                                        <h3>{name}</h3>
                                     </div>
                                     <div className={cx('filter__item-content')}>
                                         {type === 'Radio' ? (
@@ -448,7 +448,7 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                 onChange={(page) => {
                                     setActivePage(page);
                                     form.setFieldValue('page', page);
-                                    scrollTo({ y: resultRef.current.getBoundingClientRect().top - 210 });
+                                    scrollTo({ y: 200 });
                                 }}
                                 radius="xl"
                                 classNames={{ root: cx('pagination-root'), control: cx('control') }}

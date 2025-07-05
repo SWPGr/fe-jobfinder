@@ -11,6 +11,8 @@ import '@mantine/carousel/styles.css';
 import 'tippy.js/dist/tippy.css'; // optional for styling
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
+import '@mantine/dropzone/styles.css';
+
 import { LoadingProvider } from '~/context/LoadingContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
