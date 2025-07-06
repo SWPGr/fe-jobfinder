@@ -19,26 +19,10 @@ function FindEmployer() {
             const data = await jobService.getAllOptions();
 
             const rawData = {
-                experiences: { type: 'Radio', options: [], grid: true },
-                salary: {
-                    type: 'Radio',
-                    options: [
-                        { id: 1, name: '$0 - $50k', min: 0, max: 50000 },
-                        { id: 2, name: '$50k - $100k', min: 50000, max: 100000 },
-                        { id: 3, name: '$100k - $200k', min: 100000, max: 200000 },
-                        { id: 4, name: '$200k+', min: 200000, max: Infinity },
-                    ],
-                    grid: true,
-                },
-                jobTypes: { type: 'Radio', options: [], grid: true },
-                educations: { type: 'Radio', options: [] },
-                jobLevels: { type: 'Radio', options: [] },
+                organizations: { name: 'Organization Type', type: 'Radio', options: [] },
             };
 
-            rawData.experiences.options = data.experiences;
-            rawData.jobTypes.options = data.jobTypes;
-            rawData.educations.options = data.educations;
-            rawData.jobLevels.options = data.jobLevels;
+            rawData.organizations.options = data.organizations;
 
             setJobFilter(rawData);
             setCategoryOptions(data.categories);
