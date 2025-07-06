@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import { IconArrowRight } from '@tabler/icons-react';

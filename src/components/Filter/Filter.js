@@ -232,6 +232,8 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
     const totalPages = Math.ceil(fakeJobs.length / pageSize);
 
     useEffect(() => {
+        console.log('filter', filters);
+
         scrollTo({ y: 0 });
     }, []);
 
@@ -244,6 +246,8 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
             search: '',
             location: '',
             category: '',
+            min: '',
+            max: '',
             page: '1',
             ...Object.keys(filters).reduce((acc, key) => {
                 // Initialize values: empty string for Radio, empty array for Checkbox
@@ -269,6 +273,10 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
     // Thay đổi radio (cho các trường string)
     const handleRadioChange = (field, value) => {
         form.setFieldValue(field, value);
+        if (field === 'salary') {
+            form.setFieldValue('min', filters['salary'].options[value - 1].min + '');
+            form.setFieldValue('max', filters['salary'].options[value - 1].max + '');
+        }
     };
 
     const handleSearch = () => {
@@ -295,6 +303,33 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
 
     const handleShowPopup = () => setShowRecommendPopup(true);
     const handleHidePopup = () => setShowRecommendPopup(false);
+
+    const matchSalaryOption = (min, max) => {
+        const matched = filters.salary.options.find((opt) => {
+            return Number(min) === opt.min && Number(max) === opt.max;
+        });
+        return matched ? String(matched.id) : '';
+    };
+
+    const handleSalaryMinChange = (e) => {
+        const newMin = e.target.value;
+        const currentMax = form.values.max;
+
+        form.setFieldValue('min', newMin);
+
+        const matchedRadio = matchSalaryOption(newMin, currentMax);
+        form.setFieldValue('salary', matchedRadio);
+    };
+
+    const handleSalaryMaxChange = (e) => {
+        const newMax = e.target.value;
+        const currentMin = form.values.min;
+
+        form.setFieldValue('max', newMax);
+
+        const matchedRadio = matchSalaryOption(currentMin, newMax);
+        form.setFieldValue('salary', matchedRadio);
+    };
 
     return (
         <>
@@ -376,25 +411,51 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                                     </div>
                                     <div className={cx('filter__item-content')}>
                                         {type === 'Radio' ? (
-                                            <Radio.Group
-                                                name={key}
-                                                value={form.values[key]}
-                                                onChange={(value) => handleRadioChange(key, value)}
-                                                classNames={{
-                                                    root: cx('filter-root', {
-                                                        grid: grid,
-                                                    }),
-                                                }}
-                                            >
-                                                {options.map((option) => (
-                                                    <Radio
-                                                        key={`${key}-${option.id}`}
-                                                        value={String(option.id)}
-                                                        label={option.name}
-                                                        classNames={{ inner: cx('inner'), body: cx('body') }}
-                                                    />
-                                                ))}
-                                            </Radio.Group>
+                                            <>
+                                                <Radio.Group
+                                                    name={key}
+                                                    value={form.values[key]}
+                                                    onChange={(value) => handleRadioChange(key, value)}
+                                                    classNames={{
+                                                        root: cx('filter-root', {
+                                                            grid: grid,
+                                                        }),
+                                                    }}
+                                                >
+                                                    {options.map((option) => (
+                                                        <Radio
+                                                            key={`${key}-${option.id}`}
+                                                            value={String(option.id)}
+                                                            label={option.name}
+                                                            classNames={{ inner: cx('inner'), body: cx('body') }}
+                                                        />
+                                                    ))}
+                                                </Radio.Group>
+                                                {key === 'salary' && (
+                                                    <div className={cx('salary-range')}>
+                                                        <input
+                                                            {...form.getInputProps('min')}
+                                                            className={cx('salary-input')}
+                                                            type="number"
+                                                            min={0}
+                                                            max={100000}
+                                                            placeholder="from"
+                                                            onInput={(e) => handleSalaryMinChange(e)}
+                                                        />{' '}
+                                                        -{' '}
+                                                        <input
+                                                            {...form.getInputProps('max')}
+                                                            className={cx('salary-input')}
+                                                            type="number"
+                                                            min={0}
+                                                            max={100000}
+                                                            placeholder="to"
+                                                            onInput={(e) => handleSalaryMaxChange(e)}
+                                                        />
+                                                        $
+                                                    </div>
+                                                )}
+                                            </>
                                         ) : (
                                             <div
                                                 className={cx('checkbox-container', {
