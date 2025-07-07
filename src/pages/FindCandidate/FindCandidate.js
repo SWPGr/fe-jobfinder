@@ -10,16 +10,7 @@ const cx = classNames.bind(styles);
 
 function FindCandidate() {
     const [employerFilter, setEmployerFilter] = React.useState({});
-
-    const jobFilters = {
-        experience: { type: 'Radio', options: ['0-1 year', '1-3 years', '3-5 years', '5+ years'] },
-        salary: { type: 'Radio', options: ['$0 - $50k', '$50k - $100k', '$100k - $200k', '$200k+'] },
-        jobType: { type: 'Checkbox', options: ['Full-time', 'Part-time', 'Contract'] },
-        education: { type: 'Checkbox', options: ['High School', 'Bachelor', 'Master', 'PhD'] },
-        jobLevel: { type: 'Radio', options: ['Internship', 'Entry Level', 'Mid Level', 'Senior Level'] },
-    };
-
-    const categoryOptions = ['Software Development', 'Design', 'Marketing', 'Sales'];
+    const [categoryOptions, setCategoryOptions] = React.useState([]);
 
     const handleFilterSearch = (values) => {
         console.log('User filters:', values);
@@ -31,28 +22,19 @@ function FindCandidate() {
             const data = await jobService.getAllOptions();
 
             const rawData = {
-                experiences: { type: 'Radio', options: [], grid: true },
-                salary: {
-                    type: 'Radio',
-                    options: [
-                        { id: 1, name: '$0 - $50k', min: 0, max: 50000 },
-                        { id: 2, name: '$50k - $100k', min: 50000, max: 100000 },
-                        { id: 3, name: '$100k - $200k', min: 100000, max: 200000 },
-                        { id: 4, name: '$200k+', min: 200000, max: Infinity },
-                    ],
-                    grid: true,
-                },
-                jobTypes: { type: 'Radio', options: [], grid: true },
-                educations: { type: 'Radio', options: [] },
-                jobLevels: { type: 'Radio', options: [] },
+                experiences: { name: 'Experience', type: 'Radio', options: [], grid: true },
+                jobTypes: { name: 'Job Type', type: 'Radio', options: [], grid: true },
+                educations: { name: 'Education', type: 'Radio', options: [] },
+                candidateLevel: { name: 'Candidate Level', type: 'Radio', options: [] },
             };
 
             rawData.experiences.options = data.experiences;
             rawData.jobTypes.options = data.jobTypes;
             rawData.educations.options = data.educations;
-            rawData.jobLevels.options = data.jobLevels;
+            rawData.candidateLevel.options = data.jobLevels;
 
             setEmployerFilter(rawData);
+            setCategoryOptions(data.categories);
             console.log('rawData', rawData);
         };
 

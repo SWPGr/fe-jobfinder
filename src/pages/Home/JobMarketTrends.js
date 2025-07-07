@@ -50,15 +50,15 @@ const recentJobs = [
 const colors = ['#22c55e', '#3b82f6', '#f59e0b', '#06b6d4', '#eab308'];
 
 const valuesSet = [
-    { name: 'quantity_job_new_today', title: 'Việc làm mới 24h gần đây' },
-    { name: 'quantity_job_recruitment', title: 'Việc làm đang tuyển' },
-    { name: 'quantity_company_recruitment', title: 'Công ty đang tuyển' },
+    { name: 'quantity_job_new_today', title: 'New Jobs in the Last 24 Hours' },
+    { name: 'quantity_job_recruitment', title: 'Active Job Listings' },
+    { name: 'quantity_company_recruitment', title: 'Hiring Companies' },
 ];
 
 const cx = classNames.bind(styles);
 
 const JobMarketTrends = () => {
-    const [selectedIndustry, setSelectedIndustry] = useState('Ngành nghề');
+    const [selectedIndustry, setSelectedIndustry] = useState('Industry');
     const [figure, setFigure] = useState([]);
     const [jobOpportunity, setJobOpportunity] = useState([]);
     const [listTop, setListTop] = useState([]);
@@ -109,7 +109,7 @@ const JobMarketTrends = () => {
             <div className="w-full max-w-[1350px] p-5 mx-auto bg-gradient-to-br from-[#2f3338]  to-[#9199a3] rounded-xl overflow-hidden shadow-xl">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-white">
-                        Thị trường việc làm hôm nay <span className="text-[#93c5fd]">{date}</span>
+                        Job Market Today <span className="text-[#93c5fd]">{date}</span>
                     </h2>
                     <div className="w-16 h-16 opacity-30">
                         <img
@@ -123,7 +123,7 @@ const JobMarketTrends = () => {
                     <div className="lg:col-span-3 bg-[#18191c] bg-opacity-40 rounded-lg p-4">
                         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
                             <BriefcaseIcon className="mr-2 h-5 w-5 text-[#0a65cc]" />
-                            Việc làm mới nhất
+                            Latest Jobs
                         </h3>
                         <div className="space-y-4">
                             {topJobs.map((job) => (
@@ -143,7 +143,7 @@ const JobMarketTrends = () => {
                             <div className="bg-[#18191c] bg-opacity-40 rounded-lg p-4">
                                 <h3 className="text-lg font-medium text-white mb-4 flex items-center">
                                     <TrendingUpIcon className="mr-2 h-5 w-5 text-[#0a65cc]" />
-                                    Tăng trưởng cơ hội việc làm
+                                    Job Opportunity Growth
                                 </h3>
                                 <div className="h-80">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -194,7 +194,7 @@ const JobMarketTrends = () => {
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-medium text-white flex items-center">
                                         <TrendingUpIcon className="mr-2 h-5 w-5 text-[#0a65cc]" />
-                                        Nhu cầu tuyển dụng theo
+                                        Recruitment Demand by
                                     </h3>
                                     <button className="flex items-center text-white bg-[#0a65cc] bg-opacity-50 rounded-md px-3 py-1 text-sm">
                                         {selectedIndustry}

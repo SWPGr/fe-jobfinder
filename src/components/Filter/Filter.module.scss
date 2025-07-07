@@ -221,6 +221,19 @@ div[role='radiogroup'] {
     }
 }
 
+.salary-range {
+    display: flex;
+    margin-top: 2rem;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 14px;
+}
+.salary-input {
+    flex: 1;
+    padding: 1.2rem;
+    border-radius: 999px;
+}
+
 .checkbox-container,
 div[role='radiogroup'] {
     width: 100%;
