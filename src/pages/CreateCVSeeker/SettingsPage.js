@@ -472,15 +472,18 @@ function SettingsPage() {
       )}
 
       <Modal
-        opened={modalOpened}
-        onClose={() => setModalOpened(false)}
-        title="Add Image"
-        centered
-        overlayBlur={3}
-        overlayOpacity={0.55}
-        closeButtonLabel="Close modal"
-        size="sm"
-      >
+  opened={modalOpened}
+  onClose={() => setModalOpened(false)}
+  title="Add Image"
+  centered
+  size="sm"
+  overlayProps={{
+    blur: 3,
+    opacity: 0.55,
+  }}
+  withCloseButton
+  closeButtonProps={{ 'aria-label': 'Close modal' }}
+>
         <TextInput
           label="Image Name"
           placeholder="Enter image name"
@@ -547,7 +550,7 @@ function SettingsPage() {
                 ) : (
                   <IconPhoto size={48} color="#868e96" />
                 )}
-                <Text size="md" color="dimmed" align="center">
+                <Text size="md" color="dimmed" style={{ textAlign: 'center' }}>
                   Drag image here or click to select (PNG, JPG, JPEG). Max 12 MB.
                 </Text>
               </>

@@ -146,12 +146,14 @@ export default function Single() {
                                 </span>
                             </div>
                             <div className={cx('contactRow')}>
-                                <AiOutlineMail className={cx('icon')} />
-                                <p href={`mailto:${companyInfo.contact.email}`}>
-                                    <p className={cx('contactLabel')}>EMAIL ADDRESS</p>
-                                    {companyInfo.contact.email}
-                                </p>
-                            </div>
+  <AiOutlineMail className={cx('icon')} />
+  <div>
+    <p className={cx('contactLabel')}>EMAIL ADDRESS</p>
+    <a href={`mailto:${companyInfo.contact.email}`} className={cx('contactLink')}>
+      {companyInfo.contact.email}
+    </a>
+  </div>
+</div>
                             <div className={cx('followUs')}>Follow us on:</div>
                             <div className={cx('socialLinks')}>
                                 <a href={companyInfo.social.facebook} className={cx('socialLink')}>
