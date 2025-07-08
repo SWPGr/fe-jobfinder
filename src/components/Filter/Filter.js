@@ -1,259 +1,99 @@
 import React, { useEffect } from 'react';
 import { useState, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { useWindowScroll } from '@mantine/hooks';
-import { TextInput, Checkbox, Radio, Pagination, Select } from '@mantine/core';
-import { IconSearch, IconMapPin, IconStack2, IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
+import { Checkbox, Radio, Pagination, Select } from '@mantine/core';
+import { IconMapPin, IconStack2, IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 import classNames from 'classnames/bind';
 import styles from './Filter.module.scss';
 
-import { useAuth } from '~/context/AuthContext';
 import { Button } from '~/components';
 import { JobItemList } from '~/components';
 import RecommendPopup from '../RecommendPopup/RecommendPopup';
+import SearchRecommend from './SearchRecommend';
 
 const cx = classNames.bind(styles);
 
-// Tạo danh sách công việc giả
-const fakeJobs = [
-    {
-        id: 1,
-        jobTitle: 'Software Engineer',
-        companyName: 'Google',
-        companyAddress: 'Mountain View, CA',
-        salary: '$100,000 - $150,000',
-        dueDate: '2025-06-15',
-    },
-    {
-        id: 2,
-        jobTitle: 'Product Manager',
-        companyName: 'Facebook',
-        companyAddress: 'Menlo Park, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-01',
-        isVIP: true,
-    },
-    {
-        id: 3,
-        jobTitle: 'Data Scientist',
-        companyName: 'Amazon',
-        companyAddress: 'Seattle, WA',
-        salary: '$90,000 - $130,000',
-        dueDate: '2025-06-30',
-    },
-    {
-        id: 4,
-        jobTitle: 'UX Designer',
-        companyName: 'Microsoft',
-        companyAddress: 'Redmond, WA',
-        salary: '$95,000 - $140,000',
-        dueDate: '2025-07-15',
-    },
-    {
-        id: 5,
-        jobTitle: 'DevOps Engineer',
-        companyName: 'Netflix',
-        companyAddress: 'Los Gatos, CA',
-        salary: '$120,000 - $170,000',
-        dueDate: '2025-08-01',
-    },
-    {
-        id: 6,
-        jobTitle: 'Marketing Specialist',
-        companyName: 'Airbnb',
-        companyAddress: 'San Francisco, CA',
-        salary: '$70,000 - $110,000',
-        dueDate: '2025-06-20',
-    },
-    {
-        id: 7,
-        jobTitle: 'Electrical Engineer',
-        companyName: 'Tesla',
-        companyAddress: 'Palo Alto, CA',
-        salary: '$105,000 - $150,000',
-        dueDate: '2025-07-10',
-    },
-    {
-        id: 8,
-        jobTitle: 'Content Strategist',
-        companyName: 'Spotify',
-        companyAddress: 'New York, NY',
-        salary: '$65,000 - $95,000',
-        dueDate: '2025-06-25',
-    },
-    {
-        id: 9,
-        jobTitle: 'Customer Support',
-        companyName: 'Dropbox',
-        companyAddress: 'San Francisco, CA',
-        salary: '$50,000 - $70,000',
-        dueDate: '2025-07-05',
-        isVIP: true,
-    },
-    {
-        id: 10,
-        jobTitle: 'Sales Manager',
-        companyName: 'Salesforce',
-        companyAddress: 'San Francisco, CA',
-        salary: '$90,000 - $140,000',
-        dueDate: '2025-07-30',
-    },
-    {
-        id: 11,
-        jobTitle: 'Hardware Engineer',
-        companyName: 'Intel',
-        companyAddress: 'Santa Clara, CA',
-        salary: '$95,000 - $145,000',
-        dueDate: '2025-08-05',
-    },
-    {
-        id: 12,
-        jobTitle: 'Cloud Solutions Architect',
-        companyName: 'IBM',
-        companyAddress: 'Armonk, NY',
-        salary: '$120,000 - $180,000',
-        dueDate: '2025-08-20',
-    },
-    {
-        id: 13,
-        jobTitle: 'Graphic Designer',
-        companyName: 'Adobe',
-        companyAddress: 'San Jose, CA',
-        salary: '$70,000 - $100,000',
-        dueDate: '2025-06-28',
-    },
-    {
-        id: 14,
-        jobTitle: 'Operations Manager',
-        companyName: 'Uber',
-        companyAddress: 'San Francisco, CA',
-        salary: '$85,000 - $130,000',
-        dueDate: '2025-07-18',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
-    {
-        id: 15,
-        jobTitle: 'Software Engineer',
-        companyName: 'LinkedIn',
-        companyAddress: 'Sunnyvale, CA',
-        salary: '$110,000 - $160,000',
-        dueDate: '2025-07-22',
-    },
+const locations = [
+    { id: 1, name: 'Hà Nội' },
+    { id: 2, name: 'Huế' },
+    { id: 3, name: 'Quảng Ninh' },
+    { id: 4, name: 'Cao Bằng' },
+    { id: 5, name: 'Lạng Sơn' },
+    { id: 6, name: 'Lai Châu' },
+    { id: 7, name: 'Điện Biên' },
+    { id: 8, name: 'Sơn La' },
+    { id: 9, name: 'Thanh Hóa' },
+    { id: 10, name: 'Nghệ An' },
+    { id: 11, name: 'Hà Tĩnh' },
+    { id: 12, name: 'Tuyên Quang' },
+    { id: 13, name: 'Lào Cai' },
+    { id: 14, name: 'Thái Nguyên' },
+    { id: 15, name: 'Phú Thọ' },
+    { id: 16, name: 'Bắc Ninh' },
+    { id: 17, name: 'Hưng Yên' },
+    { id: 18, name: 'TP Hải Phòng' },
+    { id: 19, name: 'Ninh Bình' },
+    { id: 20, name: 'Quảng Trị' },
+    { id: 21, name: 'TP Đà Nẵng' },
+    { id: 22, name: 'Quảng Ngãi' },
+    { id: 23, name: 'Gia Lai' },
+    { id: 24, name: 'Khánh Hòa' },
+    { id: 25, name: 'Lâm Đồng' },
+    { id: 26, name: 'Đắk Lắk' },
+    { id: 27, name: 'TP Hồ Chí Minh' },
+    { id: 28, name: 'Đồng Nai' },
+    { id: 29, name: 'Tây Ninh' },
+    { id: 30, name: 'TP Cần Thơ' },
+    { id: 31, name: 'Vĩnh Long' },
+    { id: 32, name: 'Đồng Tháp' },
+    { id: 33, name: 'Cà Mau' },
+    { id: 34, name: 'An Giang' },
 ];
 
-function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', onSearch = () => {} }) {
-    const { user } = useAuth();
-    const [showRecommendPopup, setShowRecommendPopup] = useState(false);
+function Filter({
+    filters = {},
+    dataset = [],
+    categoryOptions = [],
+    buttonLabel = 'Find Job',
+    onSearch = async () => {},
+}) {
     const [scroll, scrollTo] = useWindowScroll();
     const [additionalFilter, setAdditionalFilter] = useState('None');
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
     const resultRef = useRef(null); // This will hold the location of the search result
-    const [page, setActivePage] = useState(1);
+    const [activePage, setActivePage] = useState(1);
     const pageSize = 12; // Số lượng công việc mỗi trang
-    const totalPages = Math.ceil(fakeJobs.length / pageSize);
+    const totalPages = Math.ceil(dataset.length / pageSize);
 
     useEffect(() => {
         console.log('filter', filters);
-
         scrollTo({ y: 0 });
     }, []);
 
-    // Tính toán dữ liệu trên mỗi trang
-    const startIndex = (page - 1) * pageSize;
-    const currentJobs = fakeJobs.slice(startIndex, startIndex + pageSize);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const form = useForm({
         initialValues: {
-            search: '',
-            location: '',
-            category: '',
-            min: '',
-            max: '',
-            page: '1',
-            ...Object.keys(filters).reduce((acc, key) => {
-                // Initialize values: empty string for Radio, empty array for Checkbox
-                acc[key] = filters[key].type === 'Checkbox' ? [] : '';
-                return acc;
-            }, {}),
+            keyword: searchParams.get('keyword') || '',
+            location: searchParams.get('location') || '',
+            categoryId: searchParams.get('categoryId') || '',
+            min: searchParams.get('min') || '',
+            max: searchParams.get('max') || '',
+            page: searchParams.get('page') || '1',
+            salary: searchParams.get('salary') || '',
+            educationId: searchParams.get('educationId') || '',
+            experienceId: searchParams.get('experienceId') || '',
+            jobTypeId: searchParams.get('jobTypeId') || '',
+            jobLevelId: searchParams.get('jobLevelId') || '',
+            organizationTypeId: searchParams.get('organizationId') || '',
+
+            // ...Object.keys(filters).reduce((acc, key) => {
+            //     // Initialize values: empty string for Radio, empty array for Checkbox
+            //     acc[key] = filters[key].type === 'Checkbox' ? [] : '';
+            //     return acc;
+            // }, {}),
         },
     });
 
@@ -279,9 +119,12 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
         }
     };
 
-    const handleSearch = () => {
-        onSearch(form.values);
-        console.log(form.values);
+    // Xử lý nút tìm kiếm
+    const handleSearch = async () => {
+        const entries = Object.entries(form.values).filter(([_, v]) => v !== '');
+        console.log(entries);
+
+        await onSearch(entries); // gửi lên FindJob để gọi setSearchParams
     };
 
     // Giữ nguyên giá trị của 'category' và reset các field khác về initialValues
@@ -291,18 +134,15 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                 acc[key] = filters[key].type === 'Checkbox' ? [] : '';
                 return acc;
             }, {}),
-            search: form.values.search, // giữ nguyên search hiện tại
+            keyword: form.values.keyword, // giữ nguyên search hiện tại
             location: form.values.location, // giữ nguyên location hiện tại
-            category: form.values.category, // giữ nguyên category hiện tại
+            categoryId: form.values.categoryId, // giữ nguyên category hiện tại
         };
         setAdditionalFilter('None');
         console.log(newValues);
 
         form.setValues(newValues);
     };
-
-    const handleShowPopup = () => setShowRecommendPopup(true);
-    const handleHidePopup = () => setShowRecommendPopup(false);
 
     const matchSalaryOption = (min, max) => {
         const matched = filters.salary.options.find((opt) => {
@@ -330,6 +170,13 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
         const matchedRadio = matchSalaryOption(currentMin, newMax);
         form.setFieldValue('salary', matchedRadio);
     };
+    const handlePageChange = (page) => {
+        setActivePage(page);
+        form.setFieldValue('page', page);
+        const params = new URLSearchParams(searchParams);
+        params.set('page', page);
+        setSearchParams(params);
+    };
 
     return (
         <>
@@ -337,28 +184,21 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
             <div className={cx('search__wrapper')}>
                 <div className={cx('search__container')}>
                     <form className={cx('search-form')} onSubmit={(e) => e.preventDefault()}>
-                        <RecommendPopup visible={showRecommendPopup} onClickOutside={handleHidePopup}>
-                            <TextInput
-                                placeholder="Enter job title"
-                                {...form.getInputProps('search')}
-                                leftSection={<IconSearch />}
-                                onFocus={handleShowPopup}
-                                classNames={{
-                                    input: cx('search-input'),
-                                    root: cx('search-input-root'),
-                                    wrapper: cx('search-input-wrapper'),
-                                }}
-                            />
-                        </RecommendPopup>
+                        <SearchRecommend {...form.getInputProps('keyword')} />
 
-                        <TextInput
-                            placeholder="Enter location"
+                        <Select
+                            placeholder="Select location"
+                            data={locations.map((option) => ({ value: option.name + '', label: option.name }))}
+                            value={form.values.location}
+                            // onChange={(_value, option) => form.setFieldValue('location', option.name)}
                             {...form.getInputProps('location')}
                             leftSection={<IconMapPin />}
                             classNames={{
                                 input: cx('search-input'),
                                 root: cx('search-input-root'),
                                 wrapper: cx('search-input-wrapper'),
+                                option: cx('select-option'),
+                                dropdown: cx('select-dropdown'),
                             }}
                         />
 
@@ -499,18 +339,12 @@ function Filter({ filters = {}, categoryOptions = [], buttonLabel = 'Find Job', 
                         </div>
                         <div className={cx('result__content')} ref={resultRef}>
                             {/* Bạn có thể render danh sách kết quả thực tế ở đây */}
-                            {currentJobs.map((job, index) => (
-                                <JobItemList key={index} jobDescription={job} isVIP={job.isVIP} isLogin />
-                            ))}
+                            {dataset && dataset.map((job, index) => <JobItemList key={index} jobDescription={job} />)}
                         </div>
                         <div className={cx('pagination')}>
                             <Pagination
                                 total={totalPages}
-                                onChange={(page) => {
-                                    setActivePage(page);
-                                    form.setFieldValue('page', page);
-                                    scrollTo({ y: 200 });
-                                }}
+                                onChange={handlePageChange}
                                 radius="xl"
                                 classNames={{ root: cx('pagination-root'), control: cx('control') }}
                             />

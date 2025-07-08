@@ -133,9 +133,9 @@ const trackViewdJob = async (id) => {
     }
 };
 
-const searchJob = async ({ params }) => {
+const searchJob = async (params) => {
     try {
-        const response = await get('jobs/search', { params });
+        const response = await get('jobs/search', params);
         return response;
     } catch (error) {
         throw error;

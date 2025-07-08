@@ -1,29 +1,28 @@
-import React from 'react';
-import { Filter } from '~/components';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './FindJob.module.scss';
-import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { jobService } from '~/services';
+import { format } from '~/utils';
+import { Filter } from '~/components';
 
 const cx = classNames.bind(styles);
 
 function FindJob() {
-    const [jobFilters, setJobFilter] = React.useState({});
+    const [jobFilters, setJobFilter] = useState({});
+    const [dataset, setDataset] = useState([]);
+    const [categoryOptions, setCategoryOptions] = useState([]);
 
-    const [categoryOptions, setCategoryOptions] = React.useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const handleFilterSearch = (values) => {
-        console.log('User filters:', values);
-        // TODO: gọi API tìm kiếm với các giá trị filter truyền về
-    };
-
+    // ===== useEffect 1: Lấy filter options khi load trang =====
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchOptions = async () => {
             const data = await jobService.getAllOptions();
 
-            const rawData = {
-                experiences: { name: 'Experience', type: 'Radio', options: [], grid: true },
+            const filters = {
+                experienceId: { name: 'Experience', type: 'Radio', options: data.experiences, grid: true },
                 salary: {
                     name: 'Salary',
                     type: 'Radio',
@@ -37,23 +36,32 @@ function FindJob() {
                     ],
                     grid: true,
                 },
-                jobTypes: { name: 'Job Type', type: 'Radio', options: [], grid: true },
-                educations: { name: 'Education', type: 'Radio', options: [] },
-                jobLevels: { name: 'Job Level', type: 'Radio', options: [] },
+                jobTypeId: { name: 'Job Type', type: 'Radio', options: data.jobTypes, grid: true },
+                educationId: { name: 'Education', type: 'Radio', options: data.educations },
+                jobLevelId: { name: 'Job Level', type: 'Radio', options: data.jobLevels },
             };
 
-            rawData.experiences.options = data.experiences;
-            rawData.jobTypes.options = data.jobTypes;
-            rawData.educations.options = data.educations;
-            rawData.jobLevels.options = data.jobLevels;
-
-            setJobFilter(rawData);
+            setJobFilter(filters);
             setCategoryOptions(data.categories);
-            console.log('rawData', rawData);
         };
 
-        fetchData();
+        fetchOptions();
     }, []);
+
+    // ===== useEffect 2: Mỗi khi searchParams thay đổi thì gọi API tìm job =====
+    useEffect(() => {
+        const fetchJobs = async () => {
+            const cleanedParams = Object.fromEntries(
+                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null),
+            );
+
+            const result = await jobService.searchJob(cleanedParams);
+            const formatted = result.map(format.transformJobData);
+            setDataset(formatted);
+        };
+
+        fetchJobs();
+    }, [searchParams]);
 
     return (
         <div className={cx('find-job__wrapper')}>
@@ -64,8 +72,11 @@ function FindJob() {
             <Filter
                 filters={jobFilters}
                 categoryOptions={categoryOptions}
+                dataset={dataset}
                 buttonLabel="Find Job"
-                onSearch={handleFilterSearch}
+                onSearch={(formValues) => {
+                    setSearchParams(formValues);
+                }}
             />
         </div>
     );

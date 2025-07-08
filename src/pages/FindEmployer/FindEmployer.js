@@ -19,7 +19,7 @@ function FindEmployer() {
             const data = await jobService.getAllOptions();
 
             const rawData = {
-                organizations: { name: 'Organization Type', type: 'Radio', options: [] },
+                organizationTypeId: { name: 'Organization Type', type: 'Radio', options: [] },
             };
 
             rawData.organizations.options = data.organizations;

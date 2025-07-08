@@ -32,7 +32,6 @@ function RecommendPopup({
             offset={[x, y]}
             onClickOutside={onClickOutside} // ✅ sử dụng props
             placement="bottom"
-            e
             render={(attrs) => {
                 return (
                     <div className={cx('recommend-list')} tabIndex="-1" {...attrs}>

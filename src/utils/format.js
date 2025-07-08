@@ -1,12 +1,12 @@
 function transformJobData(rawJob) {
     return {
         id: rawJob.id,
-        companyName: rawJob.employer.fullName || rawJob.employer.email || 'Unknown',
+        companyName: rawJob.employer?.fullName || rawJob.employer?.email || 'Unknown',
         companyAddress: rawJob.location || 'Địa chỉ không xác định',
         jobTitle: rawJob.title,
         workTime: rawJob.jobType?.name || 'Không rõ',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
-        dueDate: formatDueDate(rawJob.createdAt), // giả định dueDate = createdAt + 30 ngày
+        remainDay: formatDueDate(rawJob.createdAt), // giả định dueDate = createdAt + 30 ngày
         save: rawJob.save,
     };
 }
