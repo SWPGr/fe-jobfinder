@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconUpload, IconX, IconPhoto } from '@tabler/icons-react';
 import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
+import EmployerService from '~/services/EmployerService';
 
 const cx = classNames.bind(styles);
 
@@ -25,6 +26,7 @@ const SaveNextButton = ({ onClick, style }) => (
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Company Info');
+
   const [form, setForm] = useState({
     organizationType: '',
     industryTypes: '',
@@ -37,6 +39,8 @@ function SettingsPage() {
   const [socialLinks, setSocialLinks] = useState([{ id: 1, type: 'facebook', url: '' }]);
   const [logoFile, setLogoFile] = useState(null);
   const [bannerFile, setBannerFile] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [bannerUrl, setBannerUrl] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [aboutUs, setAboutUs] = useState('');
 
@@ -47,11 +51,45 @@ function SettingsPage() {
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
 
+  // Load data once on mount
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const data = await EmployerService.fetchSettingFake();
+        if (data.length > 0) {
+          const profile = data[0];
+          setCompanyName(profile.companyName || '');
+          setAboutUs(profile.description || '');
+          setForm({
+            organizationType: profile.organizationType || '',
+            teamSize: profile.teamSize || '',
+            yearOfEstablishment: profile.yearOfEstablishment
+              ? profile.yearOfEstablishment.toString()
+              : '',
+            companyWebsite: profile.website || '',
+            industryTypes: '',
+            companyVision: '',
+          });
+          if (profile.socialLinks && profile.socialLinks.length) {
+            setSocialLinks(profile.socialLinks);
+          }
+          if (profile.logoUrl) setLogoUrl(profile.logoUrl);
+          if (profile.banner) setBannerUrl(profile.banner);
+        }
+      } catch (err) {
+        console.error('Failed to load profile', err);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Form input handler
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Open image upload modal
   const openUploadModal = (target) => {
     setUploadTarget(target);
     setModalOpened(true);
@@ -61,6 +99,7 @@ function SettingsPage() {
     setError('');
   };
 
+  // Handle dropped/selected image file
   const handleImageChange = (files) => {
     if (files.length === 0) return;
     const file = files[0];
@@ -70,10 +109,10 @@ function SettingsPage() {
     }
     setImageFile(file);
     setError('');
-    const previewURL = URL.createObjectURL(file);
-    setImagePreview(previewURL);
+    setImagePreview(URL.createObjectURL(file));
   };
 
+  // Confirm add image from modal
   const handleAddImage = () => {
     if (!imageFile || !imageName.trim()) {
       setError('Please provide image and image name');
@@ -81,8 +120,10 @@ function SettingsPage() {
     }
     if (uploadTarget === 'logo') {
       setLogoFile(imageFile);
+      setLogoUrl(null);
     } else if (uploadTarget === 'banner') {
       setBannerFile(imageFile);
+      setBannerUrl(null);
     }
     setModalOpened(false);
     setImageName('');
@@ -91,6 +132,7 @@ function SettingsPage() {
     setError('');
   };
 
+  // Save handler (mock)
   const handleSave = () => {
     console.log({
       companyName,
@@ -99,9 +141,12 @@ function SettingsPage() {
       socialLinks,
       logoFile,
       bannerFile,
+      logoUrl,
+      bannerUrl,
     });
   };
 
+  // Move to next tab in order
   const goToNextTab = () => {
     const currentIndex = tabsOrder.indexOf(activeTab);
     if (currentIndex < tabsOrder.length - 1) {
@@ -109,6 +154,7 @@ function SettingsPage() {
     }
   };
 
+  // Social link handlers
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
       prev.map((link) => (link.id === id ? { ...link, type: newType } : link)),
@@ -133,27 +179,35 @@ function SettingsPage() {
   return (
     <div className={cx('main')}>
       <div className={cx('title')}>Settings</div>
+
       <div className={cx('tabs')}>
         {tabsOrder.map((tab) => (
           <button
             key={tab}
+            type="button"
             className={cx('tab', { active: activeTab === tab })}
             onClick={() => setActiveTab(tab)}
-            type="button"
           >
             {tab}
           </button>
         ))}
       </div>
 
+      {/* Company Info Tab */}
       {activeTab === 'Company Info' && (
         <div className={cx('companyInfoTab')}>
-          <div className={cx('sectionTitle')}></div>
           <div className={cx('uploadSection')}>
             <div className={cx('uploadBox')} onClick={() => openUploadModal('logo')}>
               {logoFile ? (
                 <img
                   src={URL.createObjectURL(logoFile)}
+                  alt="logo preview"
+                  className={cx('previewImage')}
+                  style={{ maxHeight: 140, objectFit: 'contain' }}
+                />
+              ) : logoUrl ? (
+                <img
+                  src={logoUrl}
                   alt="logo preview"
                   className={cx('previewImage')}
                   style={{ maxHeight: 140, objectFit: 'contain' }}
@@ -195,6 +249,13 @@ function SettingsPage() {
               {bannerFile ? (
                 <img
                   src={URL.createObjectURL(bannerFile)}
+                  alt="banner preview"
+                  className={cx('previewImage')}
+                  style={{ maxHeight: 140, objectFit: 'contain' }}
+                />
+              ) : bannerUrl ? (
+                <img
+                  src={bannerUrl}
                   alt="banner preview"
                   className={cx('previewImage')}
                   style={{ maxHeight: 140, objectFit: 'contain' }}
@@ -248,7 +309,8 @@ function SettingsPage() {
             <label htmlFor="about-us">About Us</label>
             <SimpleRichTextEditor
               placeholder="Write down about your company here. Let the candidate know who we are..."
-              onChange={(html) => setAboutUs(html)}
+              onChange={setAboutUs}
+              value={aboutUs}
             />
           </div>
 
@@ -263,6 +325,7 @@ function SettingsPage() {
         </div>
       )}
 
+      {/* Founding Info Tab */}
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
@@ -326,7 +389,8 @@ function SettingsPage() {
             <label>Company Vision</label>
             <SimpleRichTextEditor
               placeholder="Tell us about your company vision..."
-              onChange={(value) => setForm((prev) => ({ ...prev, companyVision: value }))}
+              onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
+              value={form.companyVision}
             />
           </div>
 
@@ -348,6 +412,7 @@ function SettingsPage() {
         </form>
       )}
 
+      {/* Social Media Profile Tab */}
       {activeTab === 'Social Media Profile' && (
         <div className={cx('socialLinksContainer')}>
           {socialLinks.map((link, idx) => (
@@ -383,6 +448,7 @@ function SettingsPage() {
               </div>
             </div>
           ))}
+
           <button type="button" className={cx('addSocialBtn')} onClick={handleAddSocialLink}>
             + Add New Social Link
           </button>
@@ -401,13 +467,16 @@ function SettingsPage() {
         </div>
       )}
 
+      {/* Contact Tab */}
       {activeTab === 'Contact' && (
         <div className={cx('contactTab')}>
           <div className={cx('sectionTitle')}>Contact Information</div>
+
           <div className={cx('formGroup')}>
             <label>Map Location</label>
             <input type="text" placeholder="Map Location" />
           </div>
+
           <div className={cx('phoneGroup')}>
             <label>Phone</label>
             <div className={cx('phoneInput')}>
@@ -419,10 +488,12 @@ function SettingsPage() {
               <input type="tel" placeholder="Phone number.." />
             </div>
           </div>
+
           <div className={cx('formGroup')}>
             <label>Email</label>
             <input type="email" placeholder="Email address" />
           </div>
+
           <button className={cx('saveBtn')}>Save Changes</button>
 
           <hr className={cx('divider')} />
@@ -438,6 +509,7 @@ function SettingsPage() {
                 </button>
               </div>
             </div>
+
             <div className={cx('inputGroup')}>
               <label>New Password</label>
               <div className={cx('passwordInput')}>
@@ -447,6 +519,7 @@ function SettingsPage() {
                 </button>
               </div>
             </div>
+
             <div className={cx('inputGroup')}>
               <label>Confirm Password</label>
               <div className={cx('passwordInput')}>
@@ -457,6 +530,7 @@ function SettingsPage() {
               </div>
             </div>
           </div>
+
           <button className={cx('saveBtn')}>Change Password</button>
 
           <hr className={cx('divider')} />
@@ -471,24 +545,25 @@ function SettingsPage() {
         </div>
       )}
 
+      {/* Modal for uploading image */}
       <Modal
-  opened={modalOpened}
-  onClose={() => setModalOpened(false)}
-  title="Add Image"
-  centered
-  size="sm"
-  overlayProps={{
-    blur: 3,
-    opacity: 0.55,
-  }}
-  withCloseButton
-  closeButtonProps={{ 'aria-label': 'Close modal' }}
->
+        opened={modalOpened}
+        onClose={() => setModalOpened(false)}
+        title="Add Image"
+        centered
+        size="sm"
+        overlayProps={{
+          blur: 3,
+          opacity: 0.55,
+        }}
+        withCloseButton
+        closeButtonProps={{ 'aria-label': 'Close modal' }}
+      >
         <TextInput
           label="Image Name"
           placeholder="Enter image name"
           value={imageName}
-          onChange={(event) => setImageName(event.currentTarget.value)}
+          onChange={(e) => setImageName(e.currentTarget.value)}
           mb="md"
           required
           error={error && !imageName.trim() ? error : null}
@@ -564,12 +639,7 @@ function SettingsPage() {
           <Button variant="outline" onClick={() => setModalOpened(false)}>
             Cancel
           </Button>
-          <Button
-            onClick={handleAddImage}
-            color="blue"
-            radius="md"
-            disabled={!imageFile || !imageName.trim()}
-          >
+          <Button onClick={handleAddImage} color="blue" radius="md" disabled={!imageFile || !imageName.trim()}>
             Add Image
           </Button>
         </Group>

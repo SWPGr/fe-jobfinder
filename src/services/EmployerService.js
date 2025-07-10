@@ -148,6 +148,10 @@ const fetchPostJobFake = async () => {
     const response = await get('/job/create');
     return response?.result || [];
 }
+const fetchSettingFake = async () => {
+  const response = await get('/profiles/me');
+  return response?.result || [];
+};
 
 const EmployerService = {
     fetchTotalJobs,
@@ -161,6 +165,7 @@ const EmployerService = {
     fetchSocialLinkFake,
     fetchExperienceFake,
     fetchPostJobFake,
+    fetchSettingFake,
 
 };
 
