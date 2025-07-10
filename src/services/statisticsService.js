@@ -15,6 +15,19 @@ export const fetchAllJobs = async () => {
         return [];
     }
 };
+
+const fetchMonthOverMonthComparison = async (token) => {
+    const data = await get(
+        '/statistics/month-over-month-comparison',
+        {},
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        },
+    );
+    return data.result || null;
+};
 const fetchApplicationsTrend = async () => {
     const data = await get('/statistics/last-3-months-applications');
     return data.result || [];
@@ -59,6 +72,7 @@ const statisticsService = {
     fetchJobCategories,
     fetchAllJobs,
     fetchApplicationsTrend,
+    fetchMonthOverMonthComparison,
 };
 
 export default statisticsService;

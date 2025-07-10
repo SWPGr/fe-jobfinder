@@ -35,6 +35,7 @@ const routes = {
 
     resetPassword: 'api/auth/reset-password', // Reset password page
     FeedBack: '/feedback',
+    PaymentManagement: '/payment',
 };
 
 export default routes;

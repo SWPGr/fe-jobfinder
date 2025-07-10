@@ -53,8 +53,8 @@ const JobRowDropdown = ({ onAction, jobId }) => {
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
                 <Combobox.Options>
-                    <Combobox.Option value="delete" className={cx('dropdownItem', 'dropdownItem--delete')}>
-                        Delete
+                    <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                        Block
                     </Combobox.Option>
                     <Combobox.Option value="view" className={cx('dropdownItem')}>
                         View
@@ -77,9 +77,9 @@ const Jobs = () => {
         if (action === 'view') {
             setSelectedJob(job);
             setIsModalOpen(true);
-        } else if (action === 'delete') {
-            console.log(`Deleting job ${jobId}`);
-            setJobs((prevJobs) => prevJobs.filter((job) => job.id !== jobId));
+        } else if (action === 'block') {
+            console.log(`Blocking job ${jobId}`);
+            setJobs((prevJobs) => prevJobs.map((job) => (job.id === jobId ? { ...job, isBlocked: true } : job)));
         }
     };
 
@@ -178,9 +178,10 @@ const Jobs = () => {
                                     <span
                                         className={cx('statusText', {
                                             active: job.employer.isPremium,
+                                            inactive: !job.employer.isPremium,
                                         })}
                                     >
-                                        {job.employer.isPremium ? 'Premium' : 'Standard'}
+                                        {job.employer.isPremium ? 'Premium' : 'Normal'}
                                     </span>
                                 </td>
                                 <td>{job.createdAt?.split(' ')[0]}</td>

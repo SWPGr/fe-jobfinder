@@ -23,3 +23,4 @@ export { default as Payment } from './Payment/Payment.js';
 export { default as AdminPage } from './Admin/Admin.js';
 export { default as ResetPassword } from './ResetPassword/ResetPassword.js';
 export { default as FeedBack } from './FeedBack/FeedBack';
+export { default as PaymentManagement } from './Admin/PaymentManagement';

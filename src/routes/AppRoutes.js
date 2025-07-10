@@ -22,6 +22,7 @@ import {
     Term,
     ResetPassword,
     CustomerSupport,
+    PaymentManagement,
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
@@ -50,6 +51,7 @@ const publicRoutes = [
     { path: config.routes.verify, component: VerifyPage, layout: null },
     { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
+    { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
 ];
 
 const privateRoutes = [
