@@ -26,12 +26,19 @@ function validateUsername(username) {
     return null;
 }
 
+function validationTextArea(text) {
+    if (!text) return 'Text is required';
+    if (text.length < 100) return 'Text must be at least 100 characters';
+    return null;
+}
+
 const validator = {
     validateEmail,
     validatePassword,
     validateConfirmPassword,
     validatePhoneNumber,
     validateUsername,
+    validationTextArea,
 };
 
 export default validator;

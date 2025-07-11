@@ -16,12 +16,15 @@ import { Images } from '~/assets';
 import { Button } from '~/components';
 import { jobService } from '~/services';
 import { useNotification } from '~/hooks';
+import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function JobItemList({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
     const classes = cx('wrapper', { isLogin, isVIP, saved });
     const { showSuccess, showError } = useNotification();
+    const { user } = useAuth();
+    const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
 
     // save job status
     const [save, setSave] = useState(saved || false);
@@ -102,24 +105,22 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                         </div>
                         <div className={cx('remain-date')}>
                             <IconCalendarWeek size={20} />
-                            {remainDay} Days Remaining
+                            {remainDay}
                         </div>
                     </div>
                     {/*  */}
                 </div>
             </div>
-            {isLogin && (
+            {isJOB_SEEKER && (
                 <div className={cx('action')}>
                     <div className={cx('save-job')}>
-                        {isLogin && (
-                            <IconComponent
-                                size={22}
-                                color="#0a65cc"
-                                onClick={(e) => {
-                                    save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
-                                }}
-                            />
-                        )}
+                        <IconComponent
+                            size={22}
+                            color="#0a65cc"
+                            onClick={(e) => {
+                                save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
+                            }}
+                        />
                     </div>
 
                     <div className={cx('apply-job')}>

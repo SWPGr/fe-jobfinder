@@ -51,7 +51,7 @@ function App() {
                                 key={index}
                                 path={route.path}
                                 element={
-                                    <ProtectedRoute>
+                                    <ProtectedRoute allowedRoles={route.allowedRoles}>
                                         <Layout>
                                             <Page />
                                         </Layout>

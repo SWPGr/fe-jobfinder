@@ -1,28 +1,28 @@
 import classNames from 'classnames/bind';
 import styles from './RecommendPopup.module.scss';
-import { IconHistory, IconX } from '@tabler/icons-react';
+import { IconHistory, IconX, IconSearch } from '@tabler/icons-react';
 
 import { format } from '~/utils';
 
 const cx = classNames.bind(styles);
 
-function RecommendItem({ title, date }) {
+function RecommendItem({ title, date, isRecommend = false, onClick = () => {} }) {
     return (
-        <div className={cx('recommend__item')}>
+        <div className={cx('recommend__item')} onClick={onClick}>
             <div className={cx('left')}>
-                <div className={cx('recommend__item-icon')}>
-                    <IconHistory />
-                </div>
+                <div className={cx('recommend__item-icon')}>{isRecommend ? <IconSearch /> : <IconHistory />}</div>
                 <div className={cx('recommend__item-info')}>
                     <p className={cx('recommend__item-text')} onClick={() => {}}>
-                        Web designer asdasd asdjash ajds ajhksdjashd ajdhks
+                        {title}
                     </p>
-                    <p className={cx('recommend__item-date')}>{format.formatTimeAgo('2025-06-25')}</p>
+                    {!isRecommend && <p className={cx('recommend__item-date')}>{format.formatTimeAgo(date)}</p>}
                 </div>
             </div>
-            <div className={cx('recommend__item-icon', 'clear')}>
-                <IconX />
-            </div>
+            {!isRecommend && (
+                <div className={cx('recommend__item-icon', 'clear')}>
+                    <IconX />
+                </div>
+            )}
         </div>
     );
 }
