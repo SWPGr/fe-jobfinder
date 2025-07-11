@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './RecommendPopup.module.scss';
 import Tippy from '@tippyjs/react/headless';
+import { useSearchParams } from 'react-router-dom';
 
 import { PopperWrapper } from '..';
 import RecommendItem from './RecommendItem';
@@ -16,23 +17,29 @@ function RecommendPopup({
     items = [],
     suggestedItems = [],
     visible,
-    onClickOutside = defaultFn,
     x = 200,
     y = 30,
     className,
+    handleShowPopup = defaultFn,
+    handleHidePopup = defaultFn,
 }) {
+    const [searchParams, setSearchParams] = useSearchParams();
     const classes = cx('recommend__container', {
         [className]: className,
     });
+
+    const handleOnClick = (title) => {
+        setSearchParams({ keyword: title });
+        handleHidePopup();
+    };
     return (
         <Tippy
             delay={[0, 700]}
             visible={visible}
             interactive
             offset={[x, y]}
-            onClickOutside={onClickOutside} // ✅ sử dụng props
+            onClickOutside={handleHidePopup} // ✅ sử dụng props
             placement="bottom"
-            e
             render={(attrs) => {
                 return (
                     <div className={cx('recommend-list')} tabIndex="-1" {...attrs}>
@@ -40,18 +47,37 @@ function RecommendPopup({
                             <div className={classes}>
                                 <div className={cx('historic_search')}>
                                     <div className={cx('recommend__header')}>
-                                        <p className={cx('recommend__title')}>Recent search keywords</p>
-                                        <p className={cx('recommend__clear')}>Clear all</p>
+                                        <p className={cx('recommend__title')}>
+                                            {items.length > 0 ? 'Suggestions' : 'Recent search keywords'}
+                                        </p>
+                                        {!(items.length > 0) && <p className={cx('recommend__clear')}>Clear all</p>}
                                     </div>
                                     <div className={cx('recommend__list')}>
-                                        {items.map((item, index) => (
-                                            <p key={index} className={cx('recommend__item')}>
-                                                {item}
-                                            </p>
-                                        ))}
-                                        <RecommendItem />
-                                        <RecommendItem />
-                                        <RecommendItem />
+                                        {items.length > 0 ? (
+                                            items.map((item, index) => (
+                                                <RecommendItem
+                                                    title={item}
+                                                    key={index}
+                                                    isRecommend
+                                                    onClick={(title) => handleOnClick(item)}
+                                                />
+                                            ))
+                                        ) : (
+                                            <>
+                                                <RecommendItem
+                                                    title={'software engineer'}
+                                                    onClick={(title) => handleOnClick(items)}
+                                                />
+                                                <RecommendItem
+                                                    title={'software engineer'}
+                                                    onClick={(title) => handleOnClick(items)}
+                                                />
+                                                <RecommendItem
+                                                    title={'software engineer'}
+                                                    onClick={(title) => handleOnClick(items)}
+                                                />
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                                 {/*  */}

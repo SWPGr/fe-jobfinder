@@ -32,6 +32,8 @@ import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
 import Jobs from '~/pages/Admin/components/Jobs';
 import SettingAdmin from '~/pages/Admin/SettingAdmin';
 import Setting from '~/pages/DashBoard/Setting/Setting';
+import { CreditCard } from 'lucide-react';
+import PaymentManagement from '~/pages/Admin/PaymentManagement';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -68,6 +70,12 @@ export const items = {
 
                 link: '/dashboard/settings',
                 page: <SettingAdmin />,
+            },
+            {
+                title: 'Payment',
+                icon: <CreditCard size={20} />,
+                link: '/dashboard/payment',
+                page: <PaymentManagement />,
             },
         ],
     },

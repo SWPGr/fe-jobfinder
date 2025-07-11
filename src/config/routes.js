@@ -17,7 +17,6 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
-    findJobPage: '/findJobPage',
     jobDetails: '/jobDetails/:jobId',
     seekerDetailPage: '/seekerDetailPage',
     singleJob: '/singleJob',
@@ -33,6 +32,7 @@ const routes = {
 
     resetPassword: 'api/auth/reset-password', // Reset password page
     FeedBack: '/feedback',
+    PaymentManagement: '/payment',
 };
 
 export default routes;

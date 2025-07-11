@@ -4,10 +4,7 @@ import { authService } from '~/services';
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    let [user, setUser] = useState(() => {
-        const storedUser = localStorage.getItem('user');
-        return storedUser ? JSON.parse(storedUser) : null;
-    });
+    let [user, setUser] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);

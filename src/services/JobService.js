@@ -133,9 +133,18 @@ const trackViewdJob = async (id) => {
     }
 };
 
-const searchJob = async ({ params }) => {
+const searchJob = async (params) => {
     try {
-        const response = await get('jobs/search', { params });
+        const response = await get('jobs/search', params);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getSuggestions = async (params) => {
+    try {
+        const response = await get('jobs/suggest', params);
         return response;
     } catch (error) {
         throw error;
@@ -158,6 +167,7 @@ const jobService = {
     getAllOptions,
     getTopLatestJobs,
     searchJob,
+    getSuggestions,
 };
 
 export default jobService;
