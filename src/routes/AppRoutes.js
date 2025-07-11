@@ -42,7 +42,7 @@ const publicRoutes = [
     { path: config.routes.resetPassword, component: ResetPassword, layout: null },
     { path: config.routes.verify, component: VerifyPage, layout: null },
     // { path: '/unauthorized', component: UnauthorizedPage, layout: null }, // xử lý khi truy cập trái phép
-    { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
+    { path: config.routes.findJob, component: FindJobPage, layout: HeaderOnly },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
     { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
 ];
