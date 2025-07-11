@@ -22,7 +22,7 @@ function FindEmployer() {
                 organizationTypeId: { name: 'Organization Type', type: 'Radio', options: [] },
             };
 
-            rawData.organizations.options = data.organizations;
+            rawData.organizationTypeId.options = data?.organizations;
 
             setJobFilter(rawData);
             setCategoryOptions(data.categories);

@@ -142,6 +142,15 @@ const searchJob = async (params) => {
     }
 };
 
+const getSuggestions = async (params) => {
+    try {
+        const response = await get('jobs/suggest', params);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const jobService = {
     listAllJobs,
     getJobById,
@@ -158,6 +167,7 @@ const jobService = {
     getAllOptions,
     getTopLatestJobs,
     searchJob,
+    getSuggestions,
 };
 
 export default jobService;

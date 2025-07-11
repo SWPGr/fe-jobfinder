@@ -6,7 +6,7 @@ function transformJobData(rawJob) {
         jobTitle: rawJob.title,
         workTime: rawJob.jobType?.name || 'Không rõ',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
-        remainDay: formatDueDate(rawJob.createdAt), // giả định dueDate = createdAt + 30 ngày
+        remainDay: getTimeUntilDueDate(rawJob.createdAt),
         save: rawJob.save,
     };
 }
@@ -22,6 +22,30 @@ function formatDueDate(createdAt) {
     const due = new Date(created);
     due.setDate(due.getDate() + 30);
     return due.toISOString().split('T')[0]; // Trả về yyyy-mm-dd
+}
+
+function getTimeUntilDueDate(dueDate) {
+    const created = new Date(dueDate);
+
+    const now = new Date();
+    const diffMs = created - now;
+
+    if (diffMs <= 0) {
+        return 'expired';
+    }
+
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+    if (minutes < 60) {
+        return `${minutes} minutes remaining`;
+    } else if (hours < 24) {
+        return `${hours} hours remaining`;
+    } else {
+        return `${days} days remaining`;
+    }
 }
 
 function formatTimeAgo(createdAt) {

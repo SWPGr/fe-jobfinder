@@ -10,7 +10,6 @@ import styles from './Filter.module.scss';
 
 import { Button } from '~/components';
 import { JobItemList } from '~/components';
-import RecommendPopup from '../RecommendPopup/RecommendPopup';
 import SearchRecommend from './SearchRecommend';
 
 const cx = classNames.bind(styles);
@@ -33,10 +32,10 @@ const locations = [
     { id: 15, name: 'Phú Thọ' },
     { id: 16, name: 'Bắc Ninh' },
     { id: 17, name: 'Hưng Yên' },
-    { id: 18, name: 'TP Hải Phòng' },
+    { id: 18, name: 'Hải Phòng' },
     { id: 19, name: 'Ninh Bình' },
     { id: 20, name: 'Quảng Trị' },
-    { id: 21, name: 'TP Đà Nẵng' },
+    { id: 21, name: 'Đà Nẵng' },
     { id: 22, name: 'Quảng Ngãi' },
     { id: 23, name: 'Gia Lai' },
     { id: 24, name: 'Khánh Hòa' },
@@ -52,25 +51,26 @@ const locations = [
     { id: 34, name: 'An Giang' },
 ];
 
+const sortOptions = [
+    { value: '', label: 'None' },
+    { value: 'desc', label: 'Latest' },
+    { value: 'asc', label: 'Oldest' },
+];
+
 function Filter({
     filters = {},
     dataset = [],
+    totalHits = 0,
     categoryOptions = [],
     buttonLabel = 'Find Job',
     onSearch = async () => {},
 }) {
     const [scroll, scrollTo] = useWindowScroll();
-    const [additionalFilter, setAdditionalFilter] = useState('None');
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
     const resultRef = useRef(null); // This will hold the location of the search result
     const [activePage, setActivePage] = useState(1);
-    const pageSize = 12; // Số lượng công việc mỗi trang
-    const totalPages = Math.ceil(dataset.length / pageSize);
-
-    useEffect(() => {
-        console.log('filter', filters);
-        scrollTo({ y: 0 });
-    }, []);
+    const size = 10; // Số lượng công việc mỗi trang
+    const totalPages = Math.ceil(totalHits / size);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -88,14 +88,29 @@ function Filter({
             jobTypeId: searchParams.get('jobTypeId') || '',
             jobLevelId: searchParams.get('jobLevelId') || '',
             organizationTypeId: searchParams.get('organizationId') || '',
-
-            // ...Object.keys(filters).reduce((acc, key) => {
-            //     // Initialize values: empty string for Radio, empty array for Checkbox
-            //     acc[key] = filters[key].type === 'Checkbox' ? [] : '';
-            //     return acc;
-            // }, {}),
+            sort: searchParams.get('sort') || '',
         },
     });
+
+    useEffect(() => {
+        form.setValues({
+            keyword: searchParams.get('keyword') || '',
+            location: searchParams.get('location') || '',
+            categoryId: searchParams.get('categoryId') || '',
+            min: searchParams.get('min') || '',
+            max: searchParams.get('max') || '',
+            page: searchParams.get('page') || '1',
+            salary: searchParams.get('salary') || '',
+            educationId: searchParams.get('educationId') || '',
+            experienceId: searchParams.get('experienceId') || '',
+            jobTypeId: searchParams.get('jobTypeId') || '',
+            jobLevelId: searchParams.get('jobLevelId') || '',
+            organizationTypeId: searchParams.get('organizationId') || '',
+            sort: searchParams.get('sort') || '',
+        });
+
+        scrollTo({ y: 0 });
+    }, [searchParams]);
 
     // Thêm/xóa option checkbox cho các trường dạng mảng
     const toggleCheckbox = (field, value) => {
@@ -137,8 +152,8 @@ function Filter({
             keyword: form.values.keyword, // giữ nguyên search hiện tại
             location: form.values.location, // giữ nguyên location hiện tại
             categoryId: form.values.categoryId, // giữ nguyên category hiện tại
+            sort: '',
         };
-        setAdditionalFilter('None');
         console.log(newValues);
 
         form.setValues(newValues);
@@ -178,13 +193,25 @@ function Filter({
         setSearchParams(params);
     };
 
+    const handleSortChange = (value) => {
+        form.setFieldValue('sort', value);
+        const params = new URLSearchParams(searchParams);
+
+        if (value) {
+            params.set('sort', value);
+        } else {
+            params.delete('sort'); // 👈 xoá param nếu value null, undefined hoặc rỗng
+        }
+        setSearchParams(params);
+    };
+
     return (
         <>
             {/* Search inputs */}
             <div className={cx('search__wrapper')}>
                 <div className={cx('search__container')}>
                     <form className={cx('search-form')} onSubmit={(e) => e.preventDefault()}>
-                        <SearchRecommend {...form.getInputProps('keyword')} />
+                        <SearchRecommend form={form} />
 
                         <Select
                             placeholder="Select location"
@@ -325,10 +352,14 @@ function Filter({
                             <Select
                                 checkIconPosition="right"
                                 placeholder="Sort by"
-                                data={['None', 'Newest', 'Oldest', 'Most View']}
-                                value={additionalFilter}
+                                data={sortOptions.map((option) => ({
+                                    value: option.value,
+                                    label: option.label,
+                                }))}
+                                value={form.values.sort}
+                                {...form.getInputProps('sort')}
+                                onChange={(value) => handleSortChange(value)}
                                 comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
-                                onChange={(value) => setAdditionalFilter(value)}
                                 classNames={{
                                     input: cx('select-filter-input'),
                                     section: cx('select-filter-section'),

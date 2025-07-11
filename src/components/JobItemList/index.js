@@ -105,7 +105,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                         </div>
                         <div className={cx('remain-date')}>
                             <IconCalendarWeek size={20} />
-                            {remainDay} Days Remaining
+                            {remainDay}
                         </div>
                     </div>
                     {/*  */}

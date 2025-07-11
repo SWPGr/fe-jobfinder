@@ -13,6 +13,7 @@ function FindJob() {
     const [jobFilters, setJobFilter] = useState({});
     const [dataset, setDataset] = useState([]);
     const [categoryOptions, setCategoryOptions] = useState([]);
+    const [totalHits, setTotalHits] = useState(0);
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -56,8 +57,11 @@ function FindJob() {
             );
 
             const result = await jobService.searchJob(cleanedParams);
-            const formatted = result.map(format.transformJobData);
+            console.log(result.data);
+
+            const formatted = result.data.map(format.transformJobData);
             setDataset(formatted);
+            setTotalHits(result.totalHits);
         };
 
         fetchJobs();
@@ -73,6 +77,7 @@ function FindJob() {
                 filters={jobFilters}
                 categoryOptions={categoryOptions}
                 dataset={dataset}
+                totalHits={totalHits}
                 buttonLabel="Find Job"
                 onSearch={(formValues) => {
                     setSearchParams(formValues);
