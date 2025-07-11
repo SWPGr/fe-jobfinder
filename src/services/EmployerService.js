@@ -1,10 +1,11 @@
-import { get } from '~/utils/httpRequest';
+import { get, put } from '~/utils/httpRequest';  // Assuming get is a utility function for HTTP requests
 
+// Fetch total number of job applications
 const fetchTotalJobs = async () => {
     const data = await get('/job/my-employer-jobs');
     const result = data.result || {};
 
-    // Tính tổng số ứng viên từ tất cả job
+    // Calculate total applications across all jobs
     const totalApplicationsAcrossJobs = (result.content || []).reduce(
         (sum, job) => sum + (job.jobApplicationCounts || 0),
         0
@@ -20,10 +21,10 @@ const fetchTotalJobs = async () => {
     };
 };
 
-
+// Create a new job
 const fetchCreateJob = async (jobData) => {
     console.log(' [FAKE POST] /job/create', jobData);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
     return {
         id: Math.floor(Math.random() * 100000),
         ...jobData,
@@ -31,27 +32,36 @@ const fetchCreateJob = async (jobData) => {
         createdAt: new Date().toISOString(),
     };
 };
+
+// Fetch education details (Fake)
 const fetchEducationFake = async () => {
     const response = await get('/educations');
     return response?.result || [];
-}
+};
+
+// Fetch job types (Fake)
 const fetchJobTypesFake = async () => {
     const response = await get('/job-types');
     return response?.result || [];
 };
+
+// Fetch job levels (Fake)
 const fetchJobLevelFake = async () => {
     const response = await get('/job-levels');
     return response?.result || [];
 };
+
+// Fetch employer job details (Fake)
 const fetchJobEmployerFake = async () => {
     const response = await get('/job/1');
     return response || null;
-  };
-  const fetchMyJobFake = async (page = 0, size = 10) => {
+};
+
+// Fetch a list of jobs created by the employer
+const fetchMyJobFake = async (page = 0, size = 10) => {
     try {
         const response = await get(`/job/my-employer-jobs?page=${page}&size=${size}`);
         
-        // Kiểm tra response và result
         if (!response || !response.result || !Array.isArray(response.result.content)) {
             console.warn('Invalid API response structure:', response);
             return {
@@ -69,18 +79,14 @@ const fetchJobEmployerFake = async () => {
 
         const data = response.result;
 
-        // Ánh xạ dữ liệu từ API sang định dạng của MyJob
+        // Format jobs data
         const jobsFormatted = data.content.map((job) => {
-            // Tính ngày còn lại
             const createdDate = new Date(job.createdAt);
             const defaultExpireDate = new Date(createdDate);
-            defaultExpireDate.setDate(createdDate.getDate() + 30); // Giả lập 30 ngày
+            defaultExpireDate.setDate(createdDate.getDate() + 30); // Simulate expiration in 30 days
             const expireDate = job.expiredDate ? new Date(job.expiredDate) : defaultExpireDate;
             const today = new Date();
-            const remainingDays = Math.max(
-                0,
-                Math.ceil((expireDate - today) / (1000 * 60 * 60 * 24))
-            );
+            const remainingDays = Math.max(0, Math.ceil((expireDate - today) / (1000 * 60 * 60 * 24)));
             const remainingText = remainingDays > 0 ? `${remainingDays} days remaining` : 'Expired';
 
             return {
@@ -120,15 +126,17 @@ const fetchJobEmployerFake = async () => {
         };
     }
 };
+
+// Fetch social link types (Fake)
 const fetchSocialLinkFake = async () => {
-    const response = await get ('/social-types');
+    const response = await get('/social-types');
     return response || null;
-}
+};
+
+// Fetch employer profile (Fake)
 const fetchEmployerProfile = async () => {
     try {
         const response = await get('/job/1');
-        
-        // Kiểm tra response và employer
         if (!response || !response.result || !response.result.employer) {
             console.warn('Invalid API response structure for employer profile:', response);
             return null;
@@ -140,19 +148,33 @@ const fetchEmployerProfile = async () => {
         return null;
     }
 };
+
+// Fetch experience details (Fake)
 const fetchExperienceFake = async () => {
     const response = await get('/experiences');
     return response?.result || [];
-}
+};
+
+// Fetch post job data (Fake)
 const fetchPostJobFake = async () => {
     const response = await get('/job/create');
     return response?.result || [];
-}
-const fetchSettingFake = async () => {
-  const response = await get('/profiles/me');
-  return response?.result || [];
 };
 
+
+const fetchEmployerProfileFake = async () => {
+  const response = await get('/profiles/me');
+  return response?.result || {}; 
+};
+const fetchSettingFake = async (updatedData) => {
+  try {
+    const response = await put('/profiles', updatedData);  
+    return response?.result || {}; 
+  } catch (error) {
+    console.error('Error updating company profile:', error);
+    throw error;  
+  }
+};
 const EmployerService = {
     fetchTotalJobs,
     fetchCreateJob,
@@ -166,7 +188,7 @@ const EmployerService = {
     fetchExperienceFake,
     fetchPostJobFake,
     fetchSettingFake,
-
+    fetchEmployerProfileFake,
 };
 
 export default EmployerService;

@@ -6,6 +6,7 @@ import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import EmployerService from '~/services/EmployerService';
+import Single from '../Single/Single';
 
 const cx = classNames.bind(styles);
 
@@ -20,13 +21,14 @@ const socialOptions = [
 
 const SaveNextButton = ({ onClick, style }) => (
   <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
-    Save & Next →
+    Save & Next →  
   </button>
 );
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Company Info');
 
+  const [companyInfo, setCompanyInfo] = useState({});
   const [form, setForm] = useState({
     organizationType: '',
     industryTypes: '',
@@ -43,7 +45,6 @@ function SettingsPage() {
   const [bannerUrl, setBannerUrl] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [aboutUs, setAboutUs] = useState('');
-
   const [modalOpened, setModalOpened] = useState(false);
   const [imageName, setImageName] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -51,45 +52,55 @@ function SettingsPage() {
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
 
-  // Load data once on mount
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await EmployerService.fetchSettingFake();
-        if (data.length > 0) {
-          const profile = data[0];
-          setCompanyName(profile.companyName || '');
-          setAboutUs(profile.description || '');
-          setForm({
-            organizationType: profile.organizationType || '',
-            teamSize: profile.teamSize || '',
-            yearOfEstablishment: profile.yearOfEstablishment
-              ? profile.yearOfEstablishment.toString()
-              : '',
-            companyWebsite: profile.website || '',
-            industryTypes: '',
-            companyVision: '',
-          });
-          if (profile.socialLinks && profile.socialLinks.length) {
-            setSocialLinks(profile.socialLinks);
-          }
-          if (profile.logoUrl) setLogoUrl(profile.logoUrl);
-          if (profile.banner) setBannerUrl(profile.banner);
-        }
-      } catch (err) {
-        console.error('Failed to load profile', err);
+  const loadData = async () => {
+  try {
+    const data = await EmployerService.fetchSettingFake();
+    
+    if (data && data.companyName) {
+      const profile = data;  
+      setCompanyName(profile.companyName || '');
+      setAboutUs(profile.description || '');
+      setForm({
+        organizationType: profile.organizationType || '',
+        teamSize: profile.teamSize || '',
+        yearOfEstablishment: profile.yearOfEstablishment ? profile.yearOfEstablishment.toString() : '',
+        companyWebsite: profile.website || '',
+        industryTypes: '',
+        companyVision: '',
+      });
+      if (profile.socialLinks && profile.socialLinks.length) {
+        setSocialLinks(profile.socialLinks);
       }
+      if (profile.logoUrl) setLogoUrl(profile.logoUrl);
+      if (profile.banner) setBannerUrl(profile.banner);
+    } else {
+      console.error("Company name or data is missing in response:", data);
+      setCompanyName("Unknown Company");
     }
-    loadData();
-  }, []);
+  } catch (err) {
+    console.error('Failed to load profile:', err);
+  }
+};
 
-  // Form input handler
+useEffect(() => {
+  const getCompanyInfo = async () => {
+    try {
+      const response = await EmployerService.fetchEmployerProfileFake();
+      setCompanyInfo(response || {});
+    } catch (error) {
+      console.error('Error fetching company info:', error);
+    }
+  };
+
+  loadData();
+  getCompanyInfo();
+}, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Open image upload modal
   const openUploadModal = (target) => {
     setUploadTarget(target);
     setModalOpened(true);
@@ -99,7 +110,6 @@ function SettingsPage() {
     setError('');
   };
 
-  // Handle dropped/selected image file
   const handleImageChange = (files) => {
     if (files.length === 0) return;
     const file = files[0];
@@ -112,7 +122,6 @@ function SettingsPage() {
     setImagePreview(URL.createObjectURL(file));
   };
 
-  // Confirm add image from modal
   const handleAddImage = () => {
     if (!imageFile || !imageName.trim()) {
       setError('Please provide image and image name');
@@ -132,21 +141,36 @@ function SettingsPage() {
     setError('');
   };
 
-  // Save handler (mock)
-  const handleSave = () => {
-    console.log({
-      companyName,
-      aboutUs,
-      form,
-      socialLinks,
-      logoFile,
-      bannerFile,
-      logoUrl,
-      bannerUrl,
-    });
+  const handleSave = async () => {
+    if (!companyName || companyName.trim() === '') {
+    setError('Company name is required'); // Cập nhật lỗi
+    return; // Dừng lại nếu không có company name
+  }
+  if (!aboutUs || aboutUs.trim() === '') {
+    setError('About Us is required');
+    return;
+  }
+    try {
+      const updatedProfile = {
+        companyName,
+        aboutUs,
+        form,
+        socialLinks,
+        logoFile,
+        bannerFile,
+        logoUrl,
+        bannerUrl,
+      };
+
+      const response = await EmployerService.fetchSettingFake(updatedProfile);
+      console.log('Company info updated successfully!', response);
+
+      await loadData();
+    } catch (error) {
+      console.error('Error updating company info:', error);
+    }
   };
 
-  // Move to next tab in order
   const goToNextTab = () => {
     const currentIndex = tabsOrder.indexOf(activeTab);
     if (currentIndex < tabsOrder.length - 1) {
@@ -154,7 +178,6 @@ function SettingsPage() {
     }
   };
 
-  // Social link handlers
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
       prev.map((link) => (link.id === id ? { ...link, type: newType } : link)),
@@ -193,7 +216,6 @@ function SettingsPage() {
         ))}
       </div>
 
-      {/* Company Info Tab */}
       {activeTab === 'Company Info' && (
         <div className={cx('companyInfoTab')}>
           <div className={cx('uploadSection')}>
@@ -325,7 +347,6 @@ function SettingsPage() {
         </div>
       )}
 
-      {/* Founding Info Tab */}
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
@@ -412,7 +433,6 @@ function SettingsPage() {
         </form>
       )}
 
-      {/* Social Media Profile Tab */}
       {activeTab === 'Social Media Profile' && (
         <div className={cx('socialLinksContainer')}>
           {socialLinks.map((link, idx) => (
@@ -467,7 +487,6 @@ function SettingsPage() {
         </div>
       )}
 
-      {/* Contact Tab */}
       {activeTab === 'Contact' && (
         <div className={cx('contactTab')}>
           <div className={cx('sectionTitle')}>Contact Information</div>
@@ -545,7 +564,6 @@ function SettingsPage() {
         </div>
       )}
 
-      {/* Modal for uploading image */}
       <Modal
         opened={modalOpened}
         onClose={() => setModalOpened(false)}
