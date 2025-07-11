@@ -21,16 +21,16 @@ import { useAuth } from '~/context/AuthContext';
 const cx = classNames.bind(styles);
 
 function JobItemList({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
-    const classes = cx('wrapper', { isLogin, isVIP, saved });
     const { showSuccess, showError } = useNotification();
     const { user } = useAuth();
     const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
 
     // save job status
-    const [save, setSave] = useState(saved || false);
 
-    const { companyName, companyAddress, jobTitle, workTime, salary, remainDay } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, remainDay, isSave } = jobDescription;
+    const [save, setSave] = useState(isSave || false);
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
+    const classes = cx('wrapper', { isLogin, isVIP, saved: save });
     const navigate = useNavigate();
 
     const handelSaveJob = async (e, id) => {
@@ -113,14 +113,13 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
             </div>
             {isJOB_SEEKER && (
                 <div className={cx('action')}>
-                    <div className={cx('save-job')}>
-                        <IconComponent
-                            size={22}
-                            color="#0a65cc"
-                            onClick={(e) => {
-                                save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
-                            }}
-                        />
+                    <div
+                        className={cx('save-job')}
+                        onClick={(e) => {
+                            save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
+                        }}
+                    >
+                        <IconComponent size={22} color="#0a65cc" />
                     </div>
 
                     <div className={cx('apply-job')}>

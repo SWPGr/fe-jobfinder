@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './RecommendPopup.module.scss';
 import Tippy from '@tippyjs/react/headless';
 import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { PopperWrapper } from '..';
 import RecommendItem from './RecommendItem';
@@ -22,14 +23,22 @@ function RecommendPopup({
     className,
     handleShowPopup = defaultFn,
     handleHidePopup = defaultFn,
+    forwardLink = false,
 }) {
     const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
     const classes = cx('recommend__container', {
         [className]: className,
     });
 
     const handleOnClick = (title) => {
-        setSearchParams({ keyword: title });
+        if (forwardLink) {
+            const params = new URLSearchParams({ keyword: title });
+            navigate(`${forwardLink}?${params.toString()}`);
+            // console.log(title);
+        } else {
+            setSearchParams({ keyword: title });
+        }
         handleHidePopup();
     };
     return (
@@ -59,7 +68,7 @@ function RecommendPopup({
                                                     title={item}
                                                     key={index}
                                                     isRecommend
-                                                    onClick={(title) => handleOnClick(item)}
+                                                    onClick={() => handleOnClick(item)}
                                                 />
                                             ))
                                         ) : (
