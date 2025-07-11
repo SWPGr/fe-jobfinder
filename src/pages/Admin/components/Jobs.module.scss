@@ -272,21 +272,20 @@
     font-size: var(--font-size-12px);
     color: var(--text-color);
     transition: var(--transition);
-
 }
 .dropdownItem:hover,
-.dropdownItem[data-hovered="true"] {
+.dropdownItem[data-hovered='true'] {
     background-color: var(--gray-100);
 }
 
-.dropdownItem[value="delete"]:hover,
-.dropdownItem[value="delete"][data-hovered="true"] {
+.dropdownItem[value='block']:hover,
+.dropdownItem[value='block'][data-hovered='true'] {
     background-color: var(--red-100);
     color: var(--red-600);
 }
 
-.dropdownItem[value="view"]:hover,
-.dropdownItem[value="view"][data-hovered="true"] {
+.dropdownItem[value='view']:hover,
+.dropdownItem[value='view'][data-hovered='true'] {
     background-color: var(--green-100);
     color: var(--green-600);
 }

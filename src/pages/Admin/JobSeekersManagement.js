@@ -64,8 +64,8 @@ const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
                 <Combobox.Options>
-                    <Combobox.Option value="delete" className={cx('dropdownItem', 'dropdownItem--delete')}>
-                        Delete
+                    <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                        Block
                     </Combobox.Option>
                     <Combobox.Option value="view" className={cx('dropdownItem')}>
                         View
@@ -119,10 +119,12 @@ const JobSeekersManagement = () => {
 
     const handleAction = (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
-        if (action === 'delete') {
-            console.log(`Deleting job seeker ${seekerId}`);
-            if (window.confirm(`Are you sure you want to delete job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
-                setJobSeekers((prevSeekers) => prevSeekers.filter((seeker) => seeker.id !== seekerId));
+        if (action === 'block') {
+            console.log(`Blocking job seeker ${seekerId}`);
+            if (window.confirm(`Are you sure you want to block job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
+                setJobSeekers((prevSeekers) =>
+                    prevSeekers.map((seeker) => (seeker.id === seekerId ? { ...seeker, isBlocked: true } : seeker)),
+                );
             }
         } else if (action === 'view') {
             console.log(`Viewing job seeker ${seekerId}`);
