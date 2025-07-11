@@ -1,4 +1,4 @@
-import { get, put } from '~/utils/httpRequest';
+import { get, put, post } from '~/utils/httpRequest';
 
 const updateProfileWithFile = async (formData) => {
     return await put('/profiles', formData, { headers: {} });
@@ -6,10 +6,10 @@ const updateProfileWithFile = async (formData) => {
 
 const getProfile = async () => {
     try {
-        const response = await get('/profiles'); // Thay '/profiles' bằng endpoint thực tế (ví dụ: '/profile')
+        const response = await get('/profiles/me', {}); // Updated to /profile/me
         return response;
     } catch (error) {
-        throw error; // Ném lỗi để interceptor xử lý
+        throw error;
     }
 };
 

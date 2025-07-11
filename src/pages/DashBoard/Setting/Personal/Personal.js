@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from '@mantine/form';
 import classNames from 'classnames/bind';
 import styles from '../Setting.module.scss';
 import JobSeekerProfileService from '~/services/JobSeekerProfileService';
-import { Modal, TextInput, Button, Group, Text, Image, Alert } from '@mantine/core';
+import { Modal, TextInput, Button, Group, Text, Alert } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconUpload, IconPhoto, IconX, IconCheck } from '@tabler/icons-react';
 
@@ -24,12 +24,12 @@ const experienceOptions = [
 function Personal() {
     const [modalOpened, setModalOpened] = useState(false);
     const [avatarFile, setAvatarFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(''); // Preview trong modal
-    const [profileImageUrl, setProfileImageUrl] = useState(''); // Ảnh hiển thị trên giao diện chính
+    const [previewUrl, setPreviewUrl] = useState('');
+    const [profileImageUrl, setProfileImageUrl] = useState('');
+    const [profileData, setProfileData] = useState(null);
     const [message, setMessage] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
-    // 1. Khởi tạo Mantine useForm với các trường bổ sung
     const form = useForm({
         initialValues: {
             fullName: '',
@@ -49,7 +49,20 @@ function Personal() {
         },
     });
 
-    // 2. File change handler
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await JobSeekerProfileService.getProfile();
+                const pData = response[0];
+                setProfileData(pData);
+                setProfileImageUrl(pData.avatarUrl || '');
+            } catch (err) {
+                setMessage('❌ Lỗi: Không thể tải thông tin profile');
+            }
+        };
+        fetchProfile();
+    }, []);
+
     const handleFileChange = (files) => {
         if (!files || files.length === 0) {
             setAvatarFile(null);
@@ -64,10 +77,8 @@ function Personal() {
             setAvatarFile(null);
             setPreviewUrl('');
         }
-        console.log('[FileChange] avatar:', file);
     };
 
-    // 3. Submit handler cho Save Changes
     const handleSubmit = async (values) => {
         setMessage('');
         try {
@@ -80,60 +91,36 @@ function Personal() {
             formData.append('resumeUrl', values.resumeUrl || '');
             if (avatarFile) formData.append('avatar', avatarFile);
 
-            console.log('🟡 [Submit] FormData gửi lên:', Object.fromEntries(formData));
-
             const response = await JobSeekerProfileService.updateProfileWithFile(formData);
-
-            console.log('🟢 [Submit] Update profile response:', response);
             setMessage('Cập nhật thành công');
-
-            // Cập nhật form với dữ liệu mới từ response
-            form.setValues({
-                fullName: response.fullName,
-                location: response.location || '',
-                phone: response.phone || '',
-                experienceId: response.experienceId,
-                educationId: response.educationId,
-                resumeUrl: response.resumeUrl || '',
-            });
-            if (response.avatarUrl) {
-                setProfileImageUrl(response.avatarUrl); // Cập nhật ảnh từ URL trả về
-            }
+            setProfileData(response);
+            if (response.avatarUrl) setProfileImageUrl(response.avatarUrl);
             setAvatarFile(null);
             setPreviewUrl('');
         } catch (err) {
-            console.error('🔴 [Submit] Lỗi cập nhật profile:', err.response || err);
             setMessage('❌ Lỗi: ' + (err.response?.data?.message || err.message));
         }
     };
 
-    // 4. Xử lý submit từ modal (chỉ upload ảnh)
     const handleModalSubmit = async () => {
         if (!avatarFile) {
             setMessage('Vui lòng chọn ảnh trước khi upload.');
             return;
         }
-
         try {
             const formData = new FormData();
             formData.append('avatar', avatarFile);
 
-            console.log('🟡 [Modal Submit] FormData gửi lên:', Object.fromEntries(formData));
-
             const response = await JobSeekerProfileService.updateProfileWithFile(formData);
-
-            console.log('🟢 [Modal Submit] Update profile response:', response);
             setShowSuccessAlert(true);
-            if (response.avatarUrl) {
-                setProfileImageUrl(response.avatarUrl); // Cập nhật ảnh trên giao diện chính
-            }
+            if (response.avatarUrl) setProfileImageUrl(response.avatarUrl);
+            setAvatarFile(null);
+            setPreviewUrl('');
         } catch (err) {
-            console.error('🔴 [Modal Submit] Lỗi cập nhật avatar:', err.response || err);
             setMessage('❌ Lỗi: ' + (err.response?.data?.message || err.message));
         }
     };
 
-    // 5. Xử lý đóng alert và thoát modal
     const handleAlertClose = () => {
         setShowSuccessAlert(false);
         setModalOpened(false);
@@ -144,52 +131,118 @@ function Personal() {
             <h2>Personal</h2>
             <section className={cx('basic-info')}>
                 <h3>Basic Information</h3>
-                <div className={cx('form-row')}>
-                    <div
-                        className={cx('profile-pic')}
-                        onClick={() => setModalOpened(true)}
-                        style={{ cursor: 'pointer', position: 'relative' }}
-                    >
-                        {profileImageUrl || previewUrl ? (
-                            <img
-                                src={profileImageUrl || previewUrl}
-                                alt="Profile"
-                                style={{ width: 160, height: 160, objectFit: 'cover', borderRadius: 8 }}
+                <div className={cx('personal-form-layout')}>
+                    <div className={cx('profile-pic-col')}>
+                        <div
+                            className={cx('profile-pic')}
+                            onClick={() => setModalOpened(true)}
+                            style={{ cursor: 'pointer', position: 'relative' }}
+                        >
+                            {profileImageUrl || previewUrl ? (
+                                <img
+                                    src={previewUrl || profileImageUrl}
+                                    alt="Profile"
+                                    style={{ width: 250, height: 250, objectFit: 'cover', borderRadius: 16 }}
+                                />
+                            ) : (
+                                <>
+                                    <div className={cx('upload-icon')}>＋</div>
+                                    <p>Add Image</p>
+                                    <small>Browse image or drop here. Only png, jpg, jpeg</small>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <form className={cx('fields-vertical')} onSubmit={form.onSubmit(handleSubmit)} autoComplete="off">
+                        <div className={cx('field-item')}>
+                            <label htmlFor="fullName" className={cx('input-label')}>
+                                Full name
+                            </label>
+                            <TextInput
+                                id="fullName"
+                                {...form.getInputProps('fullName')}
+                                placeholder={profileData?.fullName || 'Full name'}
                             />
-                        ) : (
-                            <>
-                                <div className={cx('upload-icon')}>＋</div>
-                                <p>Add Image</p>
-                                <small>Browse image or drop here. Only png, jpg, jpeg</small>
-                            </>
-                        )}
-                    </div>
-                    <div className={cx('fields')}>
-                        <TextInput placeholder="Full name" {...form.getInputProps('fullName')} />
-                        <TextInput placeholder="Location" {...form.getInputProps('location')} />
-                        <TextInput placeholder="Phone" {...form.getInputProps('phone')} />
-                        <select {...form.getInputProps('experienceId')} required>
-                            <option value="">Select Experience</option>
-                            {experienceOptions.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
+                        </div>
+                        <div className={cx('field-item')}>
+                            <label htmlFor="location" className={cx('input-label')}>
+                                Location
+                            </label>
+                            <TextInput
+                                id="location"
+                                {...form.getInputProps('location')}
+                                placeholder={profileData?.location || 'Location'}
+                            />
+                        </div>
+                        <div className={cx('field-item')}>
+                            <label htmlFor="phone" className={cx('input-label')}>
+                                Phone
+                            </label>
+                            <TextInput
+                                id="phone"
+                                {...form.getInputProps('phone')}
+                                placeholder={profileData?.phone || 'Phone'}
+                            />
+                        </div>
+                        <div className={cx('field-item')}>
+                            <label htmlFor="experienceId" className={cx('input-label')}>
+                                Experience
+                            </label>
+                            <select
+                                id="experienceId"
+                                {...form.getInputProps('experienceId')}
+                                className={cx('input-select')}
+                            >
+                                <option value="" disabled>
+                                    {profileData?.experienceId
+                                        ? experienceOptions.find((e) => e.value === profileData.experienceId)?.label
+                                        : 'Select Experience'}
                                 </option>
-                            ))}
-                        </select>
-                        <select {...form.getInputProps('educationId')} required>
-                            <option value="">Select Education</option>
-                            {educationOptions.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                    {opt.label}
+                                {experienceOptions.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className={cx('field-item')}>
+                            <label htmlFor="educationId" className={cx('input-label')}>
+                                Education
+                            </label>
+                            <select
+                                id="educationId"
+                                {...form.getInputProps('educationId')}
+                                className={cx('input-select')}
+                            >
+                                <option value="" disabled>
+                                    {profileData?.educationId
+                                        ? educationOptions.find((e) => e.value === profileData.educationId)?.label
+                                        : 'Select Education'}
                                 </option>
-                            ))}
-                        </select>
-                        <TextInput placeholder="Resume URL" {...form.getInputProps('resumeUrl')} />
-                    </div>
+                                {educationOptions.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>
+                                        {opt.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className={cx('field-item')}>
+                            <label htmlFor="resumeUrl" className={cx('input-label')}>
+                                Resume URL
+                            </label>
+                            <TextInput
+                                id="resumeUrl"
+                                {...form.getInputProps('resumeUrl')}
+                                placeholder={profileData?.resumeUrl || 'Resume URL'}
+                            />
+                        </div>
+                        <div className={cx('field-item', 'save-btn-wrap')}>
+                            <button className={cx('save-btn')} type="submit">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <button className={cx('save-btn')} onClick={form.onSubmit(handleSubmit)}>
-                    Save Changes
-                </button>
             </section>
 
             {message && (
@@ -281,6 +334,7 @@ function Personal() {
             <section className={cx('cv-section')}>
                 <h3>Your CV/Resume</h3>
                 <div className={cx('cv-list')}>
+                    {/* Danh sách CV mẫu */}
                     <div className={cx('cv-item')}>
                         <span className={cx('cv-icon')}>📄</span>
                         <p className={cx('cv-title')}>Professional Resume</p>
@@ -309,6 +363,7 @@ function Personal() {
                         </div>
                     </div>
 
+                    {/* Thêm mới CV bằng Dropzone */}
                     <Dropzone
                         onDrop={(files) => {
                             const file = files[0];
