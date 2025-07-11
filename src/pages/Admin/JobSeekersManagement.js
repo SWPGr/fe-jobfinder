@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Search } from 'lucide-react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
 import statisticsService from '~/services/statisticsService';
-import { useDebounce } from '~/hooks'; // Ensure you have the useDebounce hook
+import { useDebounce } from '~/hooks';
 import { Combobox, useCombobox } from '@mantine/core';
+import JobDetail from '~/pages/JobDetail/JobDetail'; // Reuse JobDetail for view
+
 const cx = classNames.bind(styles);
 
 const sortColumns = [
@@ -16,7 +18,8 @@ const sortColumns = [
     { key: 'isPremium', label: 'Premium' },
     { key: 'createdAt', label: 'Joined' },
 ];
-const JobSeekerRowDropdown = ({ onAction }) => {
+
+const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
     const combobox = useCombobox();
     return (
         <Combobox
@@ -24,7 +27,7 @@ const JobSeekerRowDropdown = ({ onAction }) => {
             withinPortal
             offset={0}
             onOptionSubmit={(val) => {
-                onAction(val);
+                onAction(val, seekerId);
                 combobox.closeDropdown();
             }}
         >
@@ -61,14 +64,11 @@ const JobSeekerRowDropdown = ({ onAction }) => {
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
                 <Combobox.Options>
-                    <Combobox.Option value="edit" className={cx('dropdownItem')}>
-                        Edit
+                    <Combobox.Option value="delete" className={cx('dropdownItem', 'dropdownItem--delete')}>
+                        Delete
                     </Combobox.Option>
-                    <Combobox.Option value="archive" className={cx('dropdownItem')}>
-                        Archive
-                    </Combobox.Option>
-                    <Combobox.Option value="share" className={cx('dropdownItem')}>
-                        Share
+                    <Combobox.Option value="view" className={cx('dropdownItem')}>
+                        View
                     </Combobox.Option>
                 </Combobox.Options>
             </Combobox.Dropdown>
@@ -77,6 +77,7 @@ const JobSeekerRowDropdown = ({ onAction }) => {
 };
 
 const getInitials = (name) => {
+    //lấy chữ cái đầu tiên trong tên người dùng
     if (!name || typeof name !== 'string') return '';
     const parts = name.trim().split(' ');
     if (parts.length === 1) return parts[0][0] ? parts[0][0].toUpperCase() : '';
@@ -88,64 +89,58 @@ const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'acti
 const JobSeekersManagement = () => {
     const [jobSeekers, setJobSeekers] = useState([]);
     const [error, setError] = useState('');
-    const [sortConfig, setSortConfig] = useState(null);
     const [search, setSearch] = useState('');
+    const [visibleSeekers, setVisibleSeekers] = useState(10);
+    const [selectedSeeker, setSelectedSeeker] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Debounce the search value (500ms delay)
+    // Debounce the search value (500ms delay) -> chưa xong đang chờ BE
     const dataSearch = useDebounce(search, 500);
 
-    const handleAction = (action, jobId) => {
-        if (action === 'edit') {
-            console.log(`Editing job ${jobId}`);
-        } else if (action === 'archive') {
-            console.log(`Archiving job ${jobId}`);
-        } else if (action === 'share') {
-            console.log(`Sharing job ${jobId}`);
-        }
-    };
     // Fetch job seekers based on search query
     const fetchJobSeekers = useCallback(async (searchQuery) => {
         setError('');
         try {
-            const data = await statisticsService.fetchAllJobSeekers(searchQuery); // Pass searchQuery to API
-            setJobSeekers(data);
+            const data = await statisticsService.fetchAllJobSeekers(searchQuery);
+            setJobSeekers(data || []);
         } catch (err) {
             setError(err.message || 'Failed to fetch job seekers');
         }
-    }, []); // Không cần thêm dataSearch vào dependency của useCallback
+    }, []);
 
     // Fetch job seekers whenever the search value changes (debounced)
     useEffect(() => {
         if (dataSearch === '') {
-            fetchJobSeekers(''); // Fetch all job seekers when search is empty
+            fetchJobSeekers('');
         } else {
-            fetchJobSeekers(dataSearch); // Fetch filtered job seekers based on searchQuery
+            fetchJobSeekers(dataSearch);
         }
-    }, [dataSearch, fetchJobSeekers]); // Trigger effect when dataSearch changes
+    }, [dataSearch, fetchJobSeekers]);
 
-    const requestSort = (key) => {
-        let direction = 'ascending';
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
+    const handleAction = (action, seekerId) => {
+        const seeker = jobSeekers.find((s) => s.id === seekerId);
+        if (action === 'delete') {
+            console.log(`Deleting job seeker ${seekerId}`);
+            if (window.confirm(`Are you sure you want to delete job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
+                setJobSeekers((prevSeekers) => prevSeekers.filter((seeker) => seeker.id !== seekerId));
+            }
+        } else if (action === 'view') {
+            console.log(`Viewing job seeker ${seekerId}`);
+            setSelectedSeeker(seeker);
+            setIsModalOpen(true);
         }
-        setSortConfig({ key, direction });
     };
 
-    const sortedJobSeekers = useMemo(() => {
-        const arr = [...jobSeekers];
-        if (!sortConfig) return arr;
-        return arr.sort((a, b) => {
-            let aVal = a[sortConfig.key];
-            let bVal = b[sortConfig.key];
-            if (Array.isArray(aVal)) aVal = aVal.join(', ');
-            if (Array.isArray(bVal)) bVal = bVal.join(', ');
-            aVal = (aVal || '').toString().toLowerCase();
-            bVal = (bVal || '').toString().toLowerCase();
-            if (aVal < bVal) return sortConfig.direction === 'ascending' ? -1 : 1;
-            if (aVal > bVal) return sortConfig.direction === 'ascending' ? 1 : -1;
-            return 0;
-        });
-    }, [jobSeekers, sortConfig]);
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedSeeker(null);
+    };
+
+    const loadMoreSeekers = () => {
+        setVisibleSeekers((prev) => prev + 10);
+    };
+
+    const seekersToDisplay = jobSeekers.slice(0, visibleSeekers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -154,15 +149,14 @@ const JobSeekersManagement = () => {
             <div className={cx('jobs-header')}>
                 <h1 className={cx('title')}>Job Seekers Management</h1>
             </div>
-
             <div className={cx('jobs-toolbar')}>
                 <div className={cx('search-box')}>
                     <Search className={cx('search-icon')} />
                     <input
                         type="text"
                         placeholder="Search job seekers..."
-                        value={search} // Bind the input to search state
-                        onChange={(e) => setSearch(e.target.value)} // Directly update search state
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
                 <div className={cx('toolbar-actions')}>
@@ -174,28 +168,13 @@ const JobSeekersManagement = () => {
                     <thead>
                         <tr>
                             {sortColumns.map((col) => (
-                                <th
-                                    key={col.key}
-                                    className={cx('sortable', {
-                                        sorted: sortConfig?.key === col.key,
-                                    })}
-                                    onClick={() => requestSort(col.key)}
-                                >
-                                    {col.label}
-                                    {sortConfig?.key === col.key ? (
-                                        sortConfig.direction === 'ascending' ? (
-                                            <ChevronUp size={14} />
-                                        ) : (
-                                            <ChevronDown size={14} />
-                                        )
-                                    ) : null}
-                                </th>
+                                <th key={col.key}>{col.label}</th>
                             ))}
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedJobSeekers.map((seeker, idx) => (
+                        {seekersToDisplay.map((seeker, idx) => (
                             <tr key={seeker.id || idx}>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -216,13 +195,78 @@ const JobSeekersManagement = () => {
                                 </td>
                                 <td>{seeker.createdAt?.slice(0, 10) || '--'}</td>
                                 <td>
-                                    <JobSeekerRowDropdown onAction={(action) => handleAction(action, seeker.id)} />
+                                    <JobSeekerRowDropdown
+                                        onAction={(action) => handleAction(action, seeker.id)}
+                                        seekerId={seeker.id}
+                                    />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                {jobSeekers.length > visibleSeekers && (
+                    <div className={cx('load-more')}>
+                        <button onClick={loadMoreSeekers}>Load More</button>
+                    </div>
+                )}
             </div>
+            {isModalOpen && selectedSeeker && (
+                <div className={cx('modalOverlay')}>
+                    <div className={cx('modalBox')}>
+                        <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">
+                            ✕
+                        </button>
+                        <JobDetail
+                            job={{
+                                id: selectedSeeker.id,
+                                jobTitle: selectedSeeker.fullName || 'Unknown Job Seeker',
+                                tags: `Job Seeker, ${selectedSeeker.skills?.join(', ') || 'Skills'}`,
+                                jobRole: selectedSeeker.isPremium ? 'Premium' : 'Normal',
+                                badges: { featured: false, fulltime: 'N/A' },
+                                minSalary: '0', // Job seekers don't have salary
+                                maxSalary: '0',
+                                salaryType: 'N/A',
+                                education: 'N/A',
+                                experience: 'N/A',
+                                jobType: 'N/A',
+                                vacancies: selectedSeeker.applications ?? '0',
+                                expirationDate: 'N/A',
+                                jobLevel: selectedSeeker.isPremium ? 'Premium' : 'Normal',
+                                contactUrl: 'N/A',
+                                phone: selectedSeeker.phone || 'N/A',
+                                email: selectedSeeker.email || 'N/A',
+                                jobDescription: `<p>Details for job seeker ${
+                                    selectedSeeker.fullName || 'ID ' + selectedSeeker.id
+                                }</p><p>Skills: ${selectedSeeker.skills?.join(', ') || 'None'}</p>`,
+                                responsibilities: '<ul><li>Seeking job opportunities</li></ul>',
+                                overview: {
+                                    posted: selectedSeeker.createdAt?.slice(0, 10) || 'N/A',
+                                    expire: 'N/A',
+                                    education: 'N/A',
+                                    salary: 'N/A',
+                                    location: selectedSeeker.location || 'N/A',
+                                    jobType: 'N/A',
+                                    experience: 'N/A',
+                                    vacancies: selectedSeeker.applications ?? '0',
+                                    jobLevel: selectedSeeker.isPremium ? 'Premium' : 'Normal',
+                                },
+                                company: {
+                                    name: selectedSeeker.fullName || 'N/A',
+                                    description: 'N/A',
+                                    founded: 'N/A',
+                                    organization: 'N/A',
+                                    size: 'N/A',
+                                    phone: selectedSeeker.phone || 'N/A',
+                                    email: selectedSeeker.email || 'N/A',
+                                    website: 'N/A',
+                                },
+                            }}
+                            editable={false}
+                            onCancel={closeModal}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -84,6 +84,7 @@ export const ActivityChart = ({ data, height = 320 }) => {
                     <Line
                         type="monotone"
                         dataKey="Applications"
+                        name="AppliedJobs"
                         stroke={colorApplications}
                         strokeWidth={2}
                         dot={false}

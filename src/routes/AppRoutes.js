@@ -17,12 +17,14 @@ import {
     DashboardOverview,
     Term,
     ResetPassword,
+    CustomerSupport,
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
 import Single from '~/pages/Single/Single';
 import Payment from '~/pages/Payment/Payment';
 // import UnauthorizedPage from '~/pages/UnauthorizedPage'; // Thêm nếu chưa có
+import FeedBack from '~/pages/FeedBack/FeedBack';
 
 // Các route ai cũng truy cập được
 const publicRoutes = [
@@ -39,6 +41,8 @@ const publicRoutes = [
     { path: config.routes.resetPassword, component: ResetPassword, layout: null },
     { path: config.routes.verify, component: VerifyPage, layout: null },
     // { path: '/unauthorized', component: UnauthorizedPage, layout: null }, // xử lý khi truy cập trái phép
+    { path: config.routes.findJob, component: FindJob, layout: HeaderOnly },
+    { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
 ];
 
 // Các route yêu cầu đăng nhập, kèm role tương ứng

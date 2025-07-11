@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
-import { ChevronDown, ChevronUp, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
+import JobDetail from '~/pages/JobDetail/JobDetail'; // Reuse JobDetail for view
+
 const cx = classNames.bind(styles);
 
 const sortColumns = [
@@ -15,7 +17,8 @@ const sortColumns = [
     { key: 'createdAt', label: 'Joined' },
     { key: 'isPremium', label: 'Premium' },
 ];
-const EmployerRowDropdown = ({ onAction }) => {
+
+const EmployerRowDropdown = ({ onAction, employerId }) => {
     const combobox = useCombobox();
     return (
         <Combobox
@@ -23,7 +26,7 @@ const EmployerRowDropdown = ({ onAction }) => {
             withinPortal
             offset={0}
             onOptionSubmit={(val) => {
-                onAction(val);
+                onAction(val, employerId);
                 combobox.closeDropdown();
             }}
         >
@@ -59,21 +62,17 @@ const EmployerRowDropdown = ({ onAction }) => {
                 </button>
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
-                <Combobox.Options>
-                    <Combobox.Option value="edit" className={cx('dropdownItem')}>
-                        Edit
-                    </Combobox.Option>
-                    <Combobox.Option value="archive" className={cx('dropdownItem')}>
-                        Archive
-                    </Combobox.Option>
-                    <Combobox.Option value="share" className={cx('dropdownItem')}>
-                        Share
-                    </Combobox.Option>
-                </Combobox.Options>
+                <Combobox.Option value="delete" className={cx('dropdownItem', 'dropdownItem--delete')}>
+                    Delete
+                </Combobox.Option>
+                <Combobox.Option value="view" className={cx('dropdownItem')}>
+                    View
+                </Combobox.Option>
             </Combobox.Dropdown>
         </Combobox>
     );
 };
+
 // Safe initials function
 const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '';
@@ -87,22 +86,16 @@ const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'acti
 const EmployersManagement = () => {
     const [employers, setEmployers] = useState([]);
     const [error, setError] = useState('');
-    const [sortConfig, setSortConfig] = useState(null);
     const [search, setSearch] = useState('');
-    const handleAction = (action, jobId) => {
-        if (action === 'edit') {
-            console.log(`Editing job ${jobId}`);
-        } else if (action === 'archive') {
-            console.log(`Archiving job ${jobId}`);
-        } else if (action === 'share') {
-            console.log(`Sharing job ${jobId}`);
-        }
-    };
+    const [visibleEmployers, setVisibleEmployers] = useState(10);
+    const [selectedEmployer, setSelectedEmployer] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     // Fetch employers
     const fetchEmployers = useCallback(async () => {
         try {
             const data = await statisticsService.fetchAllEmployers();
-            setEmployers(data);
+            setEmployers(data || []);
         } catch (err) {
             setError(err.message || 'Failed to fetch employers');
         }
@@ -112,16 +105,33 @@ const EmployersManagement = () => {
         fetchEmployers();
     }, [fetchEmployers]);
 
-    const requestSort = (key) => {
-        let direction = 'ascending';
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === 'ascending') {
-            direction = 'descending';
+    const handleAction = (action, employerId) => {
+        const employer = employers.find((e) => e.id === employerId);
+        if (action === 'delete') {
+            console.log(`Deleting employer ${employerId}`);
+            if (
+                window.confirm(`Are you sure you want to delete employer ${employer.fullName || 'ID ' + employerId}?`)
+            ) {
+                setEmployers((prevEmployers) => prevEmployers.filter((employer) => employer.id !== employerId));
+            }
+        } else if (action === 'view') {
+            console.log(`Viewing employer ${employerId}`);
+            setSelectedEmployer(employer);
+            setIsModalOpen(true);
         }
-        setSortConfig({ key, direction });
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedEmployer(null);
+    };
+
+    const loadMoreEmployers = () => {
+        setVisibleEmployers((prev) => prev + 10);
     };
 
     // Filter by search
-    const filteredEmployers = React.useMemo(() => {
+    const filteredEmployers = useMemo(() => {
         if (!search) return employers;
         const s = search.toLowerCase();
         return employers.filter(
@@ -133,17 +143,7 @@ const EmployersManagement = () => {
         );
     }, [employers, search]);
 
-    const sortedEmployers = useMemo(() => {
-        const arr = [...filteredEmployers];
-        if (!sortConfig) return arr;
-        return arr.sort((a, b) => {
-            const aVal = (a[sortConfig.key] || '').toString().toLowerCase();
-            const bVal = (b[sortConfig.key] || '').toString().toLowerCase();
-            if (aVal < bVal) return sortConfig.direction === 'ascending' ? -1 : 1;
-            if (aVal > bVal) return sortConfig.direction === 'ascending' ? 1 : -1;
-            return 0;
-        });
-    }, [filteredEmployers, sortConfig]);
+    const employersToDisplay = filteredEmployers.slice(0, visibleEmployers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -170,31 +170,15 @@ const EmployersManagement = () => {
                     <thead>
                         <tr>
                             {sortColumns.map((col) => (
-                                <th
-                                    key={col.key}
-                                    className={cx('sortable', {
-                                        sorted: sortConfig?.key === col.key,
-                                    })}
-                                    onClick={() => requestSort(col.key)}
-                                >
-                                    {col.label}
-                                    {sortConfig?.key === col.key ? (
-                                        sortConfig.direction === 'ascending' ? (
-                                            <ChevronUp size={14} />
-                                        ) : (
-                                            <ChevronDown size={14} />
-                                        )
-                                    ) : null}
-                                </th>
+                                <th key={col.key}>{col.label}</th>
                             ))}
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedEmployers.map((employer, index) => (
+                        {employersToDisplay.map((employer, index) => (
                             <tr key={employer.id || index}>
                                 <td>{employer.id}</td>
-                                {/* Name with avatar */}
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <div className={cx('avatarCircle')}>{getInitials(employer.fullName)}</div>
@@ -205,20 +189,84 @@ const EmployersManagement = () => {
                                 <td>{employer.location || '--'}</td>
                                 <td>{employer.phone || '--'}</td>
                                 <td>{employer.createdAt?.slice(0, 10) || '--'}</td>
-                                {/* Status badge */}
                                 <td>
                                     <span className={premiumClass(employer.isPremium)}>
                                         {employer.isPremium === true ? 'Premium' : 'Normal'}
                                     </span>
                                 </td>
                                 <td>
-                                    <EmployerRowDropdown onAction={(action) => handleAction(action, employer.id)} />
+                                    <EmployerRowDropdown
+                                        onAction={(action) => handleAction(action, employer.id)}
+                                        employerId={employer.id}
+                                    />
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+                {filteredEmployers.length > visibleEmployers && (
+                    <div className={cx('load-more')}>
+                        <button onClick={loadMoreEmployers}>Load More</button>
+                    </div>
+                )}
             </div>
+            {isModalOpen && selectedEmployer && (
+                <div className={cx('modalOverlay')}>
+                    <div className={cx('modalBox')}>
+                        <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">
+                            ✕
+                        </button>
+                        <JobDetail
+                            job={{
+                                id: selectedEmployer.id,
+                                jobTitle: selectedEmployer.fullName || 'Unknown Employer',
+                                tags: 'Employer, Management',
+                                jobRole: selectedEmployer.isPremium ? 'Premium' : 'Normal',
+                                badges: { featured: false, fulltime: 'N/A' },
+                                minSalary: '0', // Employers don't have salary
+                                maxSalary: '0',
+                                salaryType: 'N/A',
+                                education: 'N/A',
+                                experience: 'N/A',
+                                jobType: 'N/A',
+                                vacancies: 'N/A',
+                                expirationDate: 'N/A',
+                                jobLevel: selectedEmployer.isPremium ? 'Premium' : 'Normal',
+                                contactUrl: selectedEmployer.website || 'N/A',
+                                phone: selectedEmployer.phone || 'N/A',
+                                email: selectedEmployer.email || 'N/A',
+                                jobDescription: `<p>Details for employer ${
+                                    selectedEmployer.fullName || 'ID ' + selectedEmployer.id
+                                }</p>`,
+                                responsibilities: '<ul><li>Manage company operations</li></ul>',
+                                overview: {
+                                    posted: selectedEmployer.createdAt?.slice(0, 10) || 'N/A',
+                                    expire: 'N/A',
+                                    education: 'N/A',
+                                    salary: 'N/A',
+                                    location: selectedEmployer.location || 'N/A',
+                                    jobType: 'N/A',
+                                    experience: 'N/A',
+                                    vacancies: 'N/A',
+                                    jobLevel: selectedEmployer.isPremium ? 'Premium' : 'Normal',
+                                },
+                                company: {
+                                    name: selectedEmployer.fullName || 'N/A',
+                                    description: 'N/A',
+                                    founded: 'N/A',
+                                    organization: 'N/A',
+                                    size: 'N/A',
+                                    phone: selectedEmployer.phone || 'N/A',
+                                    email: selectedEmployer.email || 'N/A',
+                                    website: selectedEmployer.website || 'N/A',
+                                },
+                            }}
+                            editable={false} // No edit functionality for employers
+                            onCancel={closeModal}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

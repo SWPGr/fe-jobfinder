@@ -3,27 +3,23 @@ import axios from 'axios';
 // trong interceptor
 
 const httpRequest = axios.create({
+    //loại bỏ cố định content-type: application/json để làm mô hình request nâng cao
     baseURL: process.env.REACT_APP_API_BASE_URL, // đặt baseURL nếu có
     // headers: {
     //     'Content-Type': 'application/json',
     // },
     timeout: 10000, // timeout 10s (tuỳ chọn)
 });
-
 // Middleware có thể thêm: interceptors request/response nếu muốn
-
 httpRequest.interceptors.response.use(
     (response) => response, // Trả về response nếu thành công
     (error) => {
         const errorMessage = error.response?.data?.message || error.message || 'Something went wrong';
         console.log('Error:', errorMessage);
 
-        // const errorMessage = error;
-        // Xử lý lỗi cụ thể
         if (error.response) {
             switch (error.response.status) {
                 case 401:
-                    // Token hết hạn hoặc không hợp lệ
                     localStorage.removeItem('user');
                     console.log('Session expired. Please log in again.');
                     window.location.href = '/login?error=session-expired'; // Chuyển hướng về login
@@ -41,10 +37,8 @@ httpRequest.interceptors.response.use(
                     return Promise.reject(errorMessage);
             }
         } else if (error.code === 'ECONNABORTED') {
-            // Lỗi timeout
             return Promise.reject(new Error('Request timed out. Please try again.'));
         } else if (!error.response) {
-            // Lỗi mạng
             return Promise.reject(new Error('Network error. Please check your connection.'));
         }
 
@@ -62,6 +56,12 @@ httpRequest.interceptors.request.use(
                     config.headers.Authorization = `Bearer ${user.token}`;
                 }
             }
+            // Nếu data là FormData, không thêm Content-Type để trình duyệt tự xử lý
+            if (config.data instanceof FormData) {
+                delete config.headers['Content-Type'];
+            } else {
+                config.headers['Content-Type'] = 'application/json'; // Mặc định cho JSON
+            }
         } catch (error) {
             console.warn('Failed to parse user data from localStorage:', error);
         }
@@ -69,7 +69,6 @@ httpRequest.interceptors.request.use(
     },
     (error) => Promise.reject(error),
 );
-
 // Xử lý GET
 export const get = async (path, params = {}, options = {}) => {
     try {
@@ -84,7 +83,6 @@ export const get = async (path, params = {}, options = {}) => {
         );
         return response.data;
     } catch (error) {
-        // Có thể xử lý lỗi ở đây hoặc throw lên trên
         throw error;
     }
 };

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Setting.module.scss';
-import { IconUserCircle, IconUser, IconWorld, IconSettings } from '@tabler/icons-react';
+import { IconUserCircle, IconWorld, IconSettings } from '@tabler/icons-react';
 
 import Personal from './Personal/Personal';
-import Profile from './Profile/Profile';
+// import Profile from './Profile/Profile';
 import SocialLinks from './SocialLinks/SocialLinks';
 import AccountSetting from './AccountSetting/AccountSetting';
 
@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 export default function Setting() {
     const tabs = [
         { id: 'personal', label: 'Personal', icon: <IconUserCircle /> }, // Thêm biểu tượng cho tab Personal
-        { id: 'profile', label: 'Profile', icon: <IconUser /> },
+        // { id: 'profile', label: 'Profile', icon: <IconUser /> },
         { id: 'Social Media Profile', label: 'Social Media Profile', icon: <IconWorld /> },
         { id: 'accountSetting', label: 'Account Setting', icon: <IconSettings /> },
     ];
@@ -21,7 +21,7 @@ export default function Setting() {
     const [activeTab, setActiveTab] = useState('personal'); // Mặc định là Personal
     const tabComponents = {
         personal: Personal,
-        profile: Profile,
+        // profile: Profile,
         'Social Media Profile': SocialLinks,
         accountSetting: AccountSetting,
     };
