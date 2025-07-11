@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './LandingPage.module.scss';
 import { TextInput } from '@mantine/core';
@@ -8,6 +8,8 @@ import { Button } from '~/components';
 import { Images } from '~/assets';
 import ItemInfo from '../ItemInfo';
 import RecommendPopup from '~/components/RecommendPopup/RecommendPopup';
+import { useDebounce } from '~/hooks';
+import { jobService } from '~/services';
 
 const cx = classNames.bind(styles);
 
@@ -15,6 +17,21 @@ function LandingPage() {
     const [searchJob, setSearchJob] = useState('');
     const [location, setLocation] = useState('');
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
+    const [popupContent, setPopupContent] = useState([]);
+
+    const debounceValue = useDebounce(searchJob, 500);
+
+    useEffect(() => {
+        if (debounceValue.trim() !== '') {
+            const fetchApi = async () => {
+                const response = await jobService.getSuggestions({ keyword: debounceValue });
+                setPopupContent(response || []);
+            };
+            fetchApi();
+        } else {
+            setPopupContent([]);
+        }
+    }, [debounceValue]);
 
     const itemsInfo = [
         {
@@ -56,9 +73,12 @@ function LandingPage() {
                         <div className={cx('search-input')}>
                             <RecommendPopup
                                 visible={showRecommendPopup}
-                                onClickOutside={handleHidePopup}
+                                handleShowPopup={handleShowPopup}
+                                handleHidePopup={handleHidePopup}
                                 className={cx('popup')}
                                 y={40}
+                                items={popupContent}
+                                forwardLink={'/find-job'}
                             >
                                 <TextInput
                                     placeholder="Job tittle, Keyword..."
