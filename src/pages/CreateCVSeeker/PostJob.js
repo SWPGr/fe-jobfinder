@@ -3,13 +3,12 @@ import classNames from 'classnames/bind';
 import styles from './PostJob.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import { Button } from '~/components';
-import axios from 'axios';
 import { useWindowScroll } from '@mantine/hooks';
 
 import { jobService } from '~/services';
-import { get } from '~/utils/httpRequest';
 import { useNotification } from '~/hooks';
 import { useLoading } from '~/context/LoadingContext';
+
 const cx = classNames.bind(styles);
 
 const PostJob = () => {
@@ -31,11 +30,11 @@ const PostJob = () => {
         jobLevel: '',
         description: '',
         responsibilities: '',
+        isNegotiable: false,
     });
 
     const [formErrors, setFormErrors] = useState({});
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
-
     const [dropdowns, setDropdowns] = useState({
         jobRoles: [],
         educations: [],
@@ -48,7 +47,6 @@ const PostJob = () => {
         const getAllOptions = async () => {
             try {
                 const response = await jobService.getAllOptions();
-                console.log('response', response);
                 setDropdowns({
                     jobRoles: response.categories,
                     educations: response.educations,
@@ -56,9 +54,8 @@ const PostJob = () => {
                     jobTypes: response.jobTypes,
                     jobLevels: response.jobLevels,
                 });
-                return response;
             } catch (error) {
-                throw error;
+                showError('Failed to load dropdown options');
             }
         };
         getAllOptions();
@@ -67,6 +64,23 @@ const PostJob = () => {
     const handleChange = (field) => (e) => {
         setFormData({ ...formData, [field]: e.target.value });
         setFormErrors({ ...formErrors, [field]: undefined, salaryRange: undefined });
+    };
+
+    const handleCheckboxChange = (field) => (e) => {
+        const checked = e.target.checked;
+        setFormData((prev) => ({
+            ...prev,
+            [field]: checked,
+            ...(field === 'isNegotiable' && checked ? { minSalary: null, maxSalary: null } : {}),
+        }));
+        if (field === 'isNegotiable' && checked) {
+            setFormErrors((prev) => ({
+                ...prev,
+                minSalary: null,
+                maxSalary: null,
+                salaryRange: undefined,
+            }));
+        }
     };
 
     const handleEditorChange = (field) => (value) => {
@@ -80,11 +94,15 @@ const PostJob = () => {
 
         if (!formData.jobTitle.trim()) errors.jobTitle = 'Job title is required';
         if (!formData.jobRole) errors.jobRole = 'Job role is required';
-        if (!formData.minSalary) errors.minSalary = 'Min salary is required';
-        if (!formData.maxSalary) errors.maxSalary = 'Max salary is required';
-        if (formData.minSalary && formData.maxSalary && Number(formData.minSalary) >= Number(formData.maxSalary)) {
-            errors.salaryRange = 'Min salary must be less than max salary';
+
+        if (!formData.isNegotiable) {
+            if (!formData.minSalary) errors.minSalary = 'Min salary is required';
+            if (!formData.maxSalary) errors.maxSalary = 'Max salary is required';
+            if (formData.minSalary && formData.maxSalary && Number(formData.minSalary) >= Number(formData.maxSalary)) {
+                errors.salaryRange = 'Min salary must be less than max salary';
+            }
         }
+
         if (!formData.expirationDate) errors.expirationDate = 'Expiration date is required';
         else if (formData.expirationDate < today) errors.expirationDate = 'Expiration date cannot be in the past';
         if (!formData.education) errors.education = 'Education is required';
@@ -109,7 +127,7 @@ const PostJob = () => {
         }
     };
 
-    const handleConfirm = () => {
+    const handleConfirm = async () => {
         setShowConfirmPopup(false);
         const {
             jobTitle,
@@ -125,14 +143,15 @@ const PostJob = () => {
             jobLevel,
             description,
             responsibilities,
+            isNegotiable,
         } = formData;
 
         const jobData = {
             title: jobTitle,
             tags,
             categoryId: jobRole,
-            salaryMin: minSalary,
-            salaryMax: maxSalary,
+            salaryMin: isNegotiable ? null : minSalary,
+            salaryMax: isNegotiable ? null : maxSalary,
             educationId: education,
             experienceId: experience,
             jobTypeId: jobType,
@@ -141,14 +160,14 @@ const PostJob = () => {
             jobLevelId: jobLevel,
             description,
             responsibility: responsibilities,
+            salaryType: isNegotiable ? 'NEGOTIABLE' : 'RANGE',
         };
 
         try {
             showLoading();
-            const response = jobService.createJob(jobData);
+            await jobService.createJob(jobData);
             hideLoading();
             showSuccess('Job posted successfully!');
-            console.log(response);
             setFormData({
                 jobTitle: '',
                 tags: '',
@@ -163,17 +182,13 @@ const PostJob = () => {
                 jobLevel: '',
                 description: '',
                 responsibilities: '',
+                isNegotiable: false,
             });
-
-            // Xóa lỗi nếu có
             setFormErrors({});
         } catch (error) {
             hideLoading();
             showError('Failed to post job');
-            console.log(error);
         }
-
-        console.log('Submitting:', jobData);
     };
 
     const renderInput = (label, field, type = 'text') => (
@@ -183,8 +198,10 @@ const PostJob = () => {
                 type={type}
                 value={formData[field]}
                 onChange={handleChange(field)}
+                min={type === 'number' ? 0 : undefined}
                 onKeyDown={(e) => {
-                    if (type === 'number' && (e.key === '-' || e.key === 'e')) e.preventDefault();
+                    if (!formData.isNegotiable && type === 'number' && (e.key === '-' || e.key === 'e'))
+                        e.preventDefault();
                 }}
             />
             {formErrors[field] && <div className={cx('error')}>{formErrors[field]}</div>}
@@ -209,7 +226,6 @@ const PostJob = () => {
     return (
         <form className={cx('postJobTab')} onSubmit={handleSubmit}>
             <div className={cx('pageTitle')}>Post a job</div>
-
             {renderInput('Job Title', 'jobTitle')}
 
             <div className={cx('row')}>
@@ -218,11 +234,26 @@ const PostJob = () => {
             </div>
 
             <div className={cx('sectionTitle')}>Salary</div>
-            <div className={cx('row')}>
-                {renderInput('Min Salary', 'minSalary', 'number')}
-                {renderInput('Max Salary', 'maxSalary', 'number')}
+            <div className={cx('inputGroup')}>
+                <label className={cx('checkboxLabel')}>
+                    <input
+                        type="checkbox"
+                        checked={formData.isNegotiable}
+                        onChange={handleCheckboxChange('isNegotiable')}
+                    />
+                    &nbsp; Negotiable salary
+                </label>
             </div>
-            {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
+
+            {!formData.isNegotiable && (
+                <>
+                    <div className={cx('row')}>
+                        {renderInput('Min Salary', 'minSalary', 'number')}
+                        {renderInput('Max Salary', 'maxSalary', 'number')}
+                    </div>
+                    {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
+                </>
+            )}
 
             <div className={cx('sectionTitle')}>Advance Information</div>
             <div className={cx('row')}>

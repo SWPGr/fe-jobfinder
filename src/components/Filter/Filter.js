@@ -79,8 +79,8 @@ function Filter({
             keyword: searchParams.get('keyword') || '',
             location: searchParams.get('location') || '',
             categoryId: searchParams.get('categoryId') || '',
-            min: searchParams.get('min') || '',
-            max: searchParams.get('max') || '',
+            salaryMin: searchParams.get('salaryMin') || '',
+            salaryMax: searchParams.get('salaryMax') || '',
             page: searchParams.get('page') || '1',
             salary: searchParams.get('salary') || '',
             educationId: searchParams.get('educationId') || '',
@@ -97,8 +97,8 @@ function Filter({
             keyword: searchParams.get('keyword') || '',
             location: searchParams.get('location') || '',
             categoryId: searchParams.get('categoryId') || '',
-            min: searchParams.get('min') || '',
-            max: searchParams.get('max') || '',
+            salaryMin: searchParams.get('salaryMin') || '',
+            salaryMax: searchParams.get('salaryMax') || '',
             page: searchParams.get('page') || '1',
             salary: searchParams.get('salary') || '',
             educationId: searchParams.get('educationId') || '',
@@ -129,8 +129,11 @@ function Filter({
     const handleRadioChange = (field, value) => {
         form.setFieldValue(field, value);
         if (field === 'salary') {
-            form.setFieldValue('min', filters['salary'].options[value - 1].min + '');
-            form.setFieldValue('max', filters['salary'].options[value - 1].max + '');
+            form.setFieldValue('salaryMin', filters['salary'].options[value - 1].salaryMin + '');
+            form.setFieldValue('salaryMax', filters['salary'].options[value - 1].salaryMax + '');
+            if (filters['salary'].options[value - 1].name === 'Negotiable') {
+                form.setFieldValue('isNegotiable', true);
+            }
         }
     };
 
@@ -157,6 +160,8 @@ function Filter({
         console.log(newValues);
 
         form.setValues(newValues);
+
+        setSearchParams({});
     };
 
     const matchSalaryOption = (min, max) => {
@@ -170,7 +175,7 @@ function Filter({
         const newMin = e.target.value;
         const currentMax = form.values.max;
 
-        form.setFieldValue('min', newMin);
+        form.setFieldValue('salaryMin', newMin);
 
         const matchedRadio = matchSalaryOption(newMin, currentMax);
         form.setFieldValue('salary', matchedRadio);
@@ -178,9 +183,9 @@ function Filter({
 
     const handleSalaryMaxChange = (e) => {
         const newMax = e.target.value;
-        const currentMin = form.values.min;
+        const currentMin = form.values.salaryMin;
 
-        form.setFieldValue('max', newMax);
+        form.setFieldValue('salaryMax', newMax);
 
         const matchedRadio = matchSalaryOption(currentMin, newMax);
         form.setFieldValue('salary', matchedRadio);
@@ -217,7 +222,6 @@ function Filter({
                             placeholder="Select location"
                             data={locations.map((option) => ({ value: option.name + '', label: option.name }))}
                             value={form.values.location}
-                            // onChange={(_value, option) => form.setFieldValue('location', option.name)}
                             {...form.getInputProps('location')}
                             leftSection={<IconMapPin />}
                             classNames={{
@@ -301,7 +305,7 @@ function Filter({
                                                 {key === 'salary' && (
                                                     <div className={cx('salary-range')}>
                                                         <input
-                                                            {...form.getInputProps('min')}
+                                                            {...form.getInputProps('salaryMin')}
                                                             className={cx('salary-input')}
                                                             type="number"
                                                             min={0}
@@ -311,7 +315,7 @@ function Filter({
                                                         />{' '}
                                                         -{' '}
                                                         <input
-                                                            {...form.getInputProps('max')}
+                                                            {...form.getInputProps('salaryMax')}
                                                             className={cx('salary-input')}
                                                             type="number"
                                                             min={0}
@@ -375,6 +379,7 @@ function Filter({
                         <div className={cx('pagination')}>
                             <Pagination
                                 total={totalPages}
+                                value={Number(form.values.page)}
                                 onChange={handlePageChange}
                                 radius="xl"
                                 classNames={{ root: cx('pagination-root'), control: cx('control') }}

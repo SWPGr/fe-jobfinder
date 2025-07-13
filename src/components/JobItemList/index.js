@@ -8,6 +8,7 @@ import {
     IconCalendarWeek,
     IconArrowRight,
     IconBookmarkFilled,
+    IconCoin,
 } from '@tabler/icons-react';
 import { Badge } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
@@ -100,7 +101,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                             {companyAddress}
                         </div>
                         <div className={cx('salary')}>
-                            <IconCurrencyDollar size={20} />
+                            <IconCoin size={20} />
                             {salary}
                         </div>
                         <div className={cx('remain-date')}>

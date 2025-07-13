@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './LandingPage.module.scss';
-import { TextInput } from '@mantine/core';
+import { TextInput, Select } from '@mantine/core';
 import { IconSearch, IconMapPin, IconBriefcase, IconBuildingCommunity, IconUsers } from '@tabler/icons-react';
 
 import { Button } from '~/components';
@@ -10,16 +10,54 @@ import ItemInfo from '../ItemInfo';
 import RecommendPopup from '~/components/RecommendPopup/RecommendPopup';
 import { useDebounce } from '~/hooks';
 import { jobService } from '~/services';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
+
+const locations = [
+    { id: 1, name: 'Hà Nội' },
+    { id: 2, name: 'Huế' },
+    { id: 3, name: 'Quảng Ninh' },
+    { id: 4, name: 'Cao Bằng' },
+    { id: 5, name: 'Lạng Sơn' },
+    { id: 6, name: 'Lai Châu' },
+    { id: 7, name: 'Điện Biên' },
+    { id: 8, name: 'Sơn La' },
+    { id: 9, name: 'Thanh Hóa' },
+    { id: 10, name: 'Nghệ An' },
+    { id: 11, name: 'Hà Tĩnh' },
+    { id: 12, name: 'Tuyên Quang' },
+    { id: 13, name: 'Lào Cai' },
+    { id: 14, name: 'Thái Nguyên' },
+    { id: 15, name: 'Phú Thọ' },
+    { id: 16, name: 'Bắc Ninh' },
+    { id: 17, name: 'Hưng Yên' },
+    { id: 18, name: 'Hải Phòng' },
+    { id: 19, name: 'Ninh Bình' },
+    { id: 20, name: 'Quảng Trị' },
+    { id: 21, name: 'Đà Nẵng' },
+    { id: 22, name: 'Quảng Ngãi' },
+    { id: 23, name: 'Gia Lai' },
+    { id: 24, name: 'Khánh Hòa' },
+    { id: 25, name: 'Lâm Đồng' },
+    { id: 26, name: 'Đắk Lắk' },
+    { id: 27, name: 'TP Hồ Chí Minh' },
+    { id: 28, name: 'Đồng Nai' },
+    { id: 29, name: 'Tây Ninh' },
+    { id: 30, name: 'TP Cần Thơ' },
+    { id: 31, name: 'Vĩnh Long' },
+    { id: 32, name: 'Đồng Tháp' },
+    { id: 33, name: 'Cà Mau' },
+    { id: 34, name: 'An Giang' },
+];
 
 function LandingPage() {
     const [searchJob, setSearchJob] = useState('');
     const [location, setLocation] = useState('');
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
     const [popupContent, setPopupContent] = useState([]);
-
     const debounceValue = useDebounce(searchJob, 500);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (debounceValue.trim() !== '') {
@@ -32,6 +70,23 @@ function LandingPage() {
             setPopupContent([]);
         }
     }, [debounceValue]);
+
+    const handleShowPopup = () => setShowRecommendPopup(true);
+    const handleHidePopup = () => setShowRecommendPopup(false);
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+
+        if (searchJob.trim()) {
+            params.set('search', searchJob.trim());
+        }
+
+        if (location.trim()) {
+            params.set('location', location.trim());
+        }
+
+        navigate(`/find-job?${params.toString()}`);
+    };
 
     const itemsInfo = [
         {
@@ -56,9 +111,6 @@ function LandingPage() {
         },
     ];
 
-    const handleShowPopup = () => setShowRecommendPopup(true);
-    const handleHidePopup = () => setShowRecommendPopup(false);
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('container')}>
@@ -68,7 +120,7 @@ function LandingPage() {
                         <h1 className={cx('title')}>Find a job that suits your interest & skills.</h1>
                         <p className={cx('description')}>
                             Aliquam vitae turpis in diam convallis finibus in at risus. Nullam in scelerisque leo, eget
-                            sollicitudin velit bestibulum.
+                            sollicitudin velit vestibulum.
                         </p>
                         <div className={cx('search-input')}>
                             <RecommendPopup
@@ -81,7 +133,7 @@ function LandingPage() {
                                 forwardLink={'/find-job'}
                             >
                                 <TextInput
-                                    placeholder="Job tittle, Keyword..."
+                                    placeholder="Job title, Keyword..."
                                     variant="unstyled"
                                     leftSection={<IconSearch size={90} />}
                                     value={searchJob}
@@ -93,31 +145,35 @@ function LandingPage() {
                                         root: cx('input-root'),
                                         section: cx('icon'),
                                     }}
-                                ></TextInput>
+                                />
                             </RecommendPopup>
-                            <TextInput
-                                placeholder="Your Location"
-                                variant="unstyled"
-                                leftSection={<IconMapPin size={28} />}
+
+                            <Select
+                                placeholder="Select location"
+                                data={locations.map((option) => ({ value: option.name, label: option.name }))}
                                 value={location}
-                                onChange={(e) => setLocation(e.target.value)}
+                                onChange={setLocation}
+                                leftSection={<IconMapPin />}
                                 classNames={{
                                     input: cx('input'),
                                     wrapper: cx('input-wrapper'),
                                     root: cx('input-root'),
                                     section: cx('icon'),
+                                    option: cx('select-option'),
+                                    dropdown: cx('select-dropdown'),
                                 }}
-                            ></TextInput>
+                            />
+
                             <Button
                                 className={cx('button')}
                                 large
                                 disabled={searchJob.trim() === '' && location.trim() === ''}
+                                onClick={handleSearch}
                             >
                                 Find Job
                             </Button>
                         </div>
                     </div>
-                    {/*  */}
 
                     <div className={cx('banner')}>
                         <img src={Images.banner} alt="Landing Page" />

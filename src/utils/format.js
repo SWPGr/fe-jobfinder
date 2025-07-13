@@ -1,3 +1,5 @@
+import { NumberFormatter } from '@mantine/core';
+
 function transformJobData(rawJob) {
     return {
         id: rawJob.id,
@@ -12,9 +14,16 @@ function transformJobData(rawJob) {
 }
 
 function formatSalary(min, max) {
-    if (!min || !max) return 'Thỏa thuận';
-    const toUSD = (vnd) => `$${(vnd / 23000).toFixed(0).toLocaleString()}`;
-    return `${toUSD(min)} - ${toUSD(max)}`;
+    const isEmpty = (value) => value === null || value === undefined || value === '';
+
+    if (isEmpty(min) && isEmpty(max)) return 'Negotiable';
+
+    return (
+        <p>
+            <NumberFormatter prefix="$ " value={min} thousandSeparator />
+            - <NumberFormatter prefix="$ " value={max} thousandSeparator />
+        </p>
+    );
 }
 
 function formatDueDate(createdAt) {
@@ -28,7 +37,7 @@ function getTimeUntilDueDate(dueDate) {
     const created = new Date(dueDate);
 
     const now = new Date();
-    const diffMs = created - now;
+    const diffMs = now - created;
 
     if (diffMs <= 0) {
         return 'expired';
