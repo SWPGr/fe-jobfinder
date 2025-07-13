@@ -7,7 +7,7 @@ function transformJobData(rawJob) {
         workTime: rawJob.jobType?.name || 'Không rõ',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
         remainDay: getTimeUntilDueDate(rawJob.createdAt),
-        save: rawJob.save,
+        isSave: rawJob.isSave,
     };
 }
 
