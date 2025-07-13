@@ -53,45 +53,31 @@ function SettingsPage() {
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
 
-  // Hàm load data profile từ API
+  // Load data profile từ API
   const loadData = async () => {
     try {
       let data = await EmployerService.fetchSettingFake();
-      console.log('Raw loaded data:', data);
-
-      if (Array.isArray(data)) {
-        data = data[0]; // Nếu API trả về mảng, lấy phần tử đầu tiên
-      }
-      
+      if (Array.isArray(data)) data = data[0];
       if (data && data.companyName) {
         setCompanyName(data.companyName || '');
         setAboutUs(data.description || '');
 
-        // Tạo object form mới với đầy đủ trường cần thiết
-        const newForm = {
+        setForm({
           organizationType: data.organizationType || '',
-          industryTypes: data.industryTypes || '',  // thêm nếu có trong API
+          industryTypes: data.industryTypes || '',
           teamSize: data.teamSize || '',
-          yearOfEstablishment: data.yearOfEstablishment
-            ? `${data.yearOfEstablishment}-01-01` // chuẩn yyyy-MM-dd cho input date
-            : '',
+          yearOfEstablishment: data.yearOfEstablishment ? `${data.yearOfEstablishment}-01-01` : '',
           mapLocation: data.mapLocation || '',
           phone: data.phone || '',
           email: data.email || '',
           companyWebsite: data.website || '',
           companyVision: data.companyVision || '',
-        };
+        });
 
-        console.log('Setting form data:', newForm);
-        setForm(newForm);
-
-        if (data.socialLinks && data.socialLinks.length) {
-          setSocialLinks(data.socialLinks);
-        }
+        if (data.socialLinks && data.socialLinks.length) setSocialLinks(data.socialLinks);
         if (data.logoUrl) setLogoUrl(data.logoUrl);
         if (data.banner) setBannerUrl(data.banner);
       } else {
-        console.error('Company name or data is missing in response:', data);
         setCompanyName('Unknown Company');
       }
     } catch (err) {
@@ -103,13 +89,12 @@ function SettingsPage() {
     loadData();
   }, []);
 
-  // Xử lý input change cho form
+  // Xử lý input form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Các hàm khác không đổi, giữ nguyên
   const openUploadModal = (target) => {
     setUploadTarget(target);
     setModalOpened(true);
@@ -118,6 +103,12 @@ function SettingsPage() {
     setImagePreview(null);
     setError('');
   };
+  const goToNextTab = () => {
+  const currentIndex = tabsOrder.indexOf(activeTab);
+  if (currentIndex < tabsOrder.length - 1) {
+    setActiveTab(tabsOrder[currentIndex + 1]);
+  }
+};
 
   const handleImageChange = (files) => {
     if (files.length === 0) return;
@@ -151,43 +142,69 @@ function SettingsPage() {
   };
 
   const handleSave = async () => {
-    if (!companyName || companyName.trim() === '') {
-      setError('Company name is required');
-      return;
+  if (!companyName || companyName.trim() === '') {
+    setError('Company name is required');
+    return;
+  }
+  if (!aboutUs || aboutUs.trim() === '') {
+    setError('About Us is required');
+    return;
+  }
+  try {
+    let logoUrlUploaded = logoUrl;
+    if (logoFile) {
+      const formData = new FormData();
+      formData.append('file', logoFile);
+      const res = await EmployerService.uploadFile(formData);
+      logoUrlUploaded = res.data.url;
     }
-    if (!aboutUs || aboutUs.trim() === '') {
-      setError('About Us is required');
-      return;
+
+    let bannerUrlUploaded = bannerUrl;
+    if (bannerFile) {
+      const formData = new FormData();
+      formData.append('file', bannerFile);
+      const res = await EmployerService.uploadFile(formData);
+      bannerUrlUploaded = res.data.url;
     }
-    try {
-      const updatedProfile = {
-        companyName,
-        description: aboutUs,
-        ...form,
-        socialLinks,
-        logoFile,
-        bannerFile,
-        logoUrl,
-        bannerUrl,
-      };
 
-      const response = await EmployerService.fetchSettingFake(updatedProfile);
-      console.log('Company info updated successfully!', response);
+    // Chuyển đổi yearOfEstablishment sang số nguyên (năm)
+    const year = form.yearOfEstablishment
+      ? parseInt(form.yearOfEstablishment.substring(0, 4), 10)
+      : null;
 
-      await loadData();
-    } catch (error) {
-      console.error('Error updating company info:', error);
-    }
-  };
+    const updatedProfile = {
+      companyName: companyName.trim(),
+      description: aboutUs,
+      organizationType: form.organizationType,
+      industryTypes: form.industryTypes,
+      teamSize: form.teamSize,
+      yearOfEstablishment: year,
+      mapLocation: form.mapLocation,
+      phone: form.phone,
+      email: form.email,
+      website: form.companyWebsite,
+      companyVision: form.companyVision,
+      socialLinks: socialLinks,
+      logoUrl: logoUrlUploaded,
+      banner: bannerUrlUploaded,  // lưu ý đổi bannerUrl thành banner
+    };
 
-  const goToNextTab = () => {
-    const currentIndex = tabsOrder.indexOf(activeTab);
-    if (currentIndex < tabsOrder.length - 1) {
-      setActiveTab(tabsOrder[currentIndex + 1]);
-    }
-  };
+    console.log('companyName before API call:', updatedProfile.companyName);
+    console.log('updatedProfile:', updatedProfile);
 
-  // Các hàm xử lý social links giữ nguyên như bạn viết
+    const response = await EmployerService.fetchSettingFake(updatedProfile);
+    console.log('Company info updated successfully!', response);
+
+    await loadData();
+    setError('');
+  } catch (error) {
+    console.error('Error updating company info:', error);
+    setError('Update failed. Please check your input.');
+  }
+};
+
+
+  // Xử lý social links
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
       prev.map((link) => (link.id === id ? { ...link, type: newType } : link))
