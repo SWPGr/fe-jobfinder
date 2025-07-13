@@ -33,7 +33,20 @@ const cx = classNames.bind(styles);
 
 const noop = () => undefined;
 
-// Hàm lấy giá trị hiển thị khi value có thể là object hoặc chuỗi
+// Giả định 'get' là hàm fetch API GET, bạn có thể thay thế bằng axios hoặc fetch tùy dự án
+const get = async (url) => {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return { result: [] };
+  }
+};
+
+
 const getDisplayValue = (value) => {
   if (typeof value === 'object' && value !== null) {
     return value.name || '';
@@ -46,11 +59,19 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
   const { user } = useAuth();
   const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
   const [save, setSave] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState(null);
   const jobDetailRef = useRef(null);
   const IconComponent = save ? IconBookmarkFilled : IconBookmark;
   const [, scrollTo] = useWindowScroll();
   const { showSuccess, showError } = useNotification();
+
+  // States chứa dữ liệu phụ trợ
+  const [educations, setEducations] = useState([]);
+  const [jobTypes, setJobTypes] = useState([]);
+  const [jobLevels, setJobLevels] = useState([]);
+  const [experiences, setExperiences] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   // Lấy dữ liệu job khi mount hoặc khi job/jobId thay đổi
   useEffect(() => {
@@ -69,8 +90,67 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
       setFormData(job);
     } else if (id) {
       fetchJob();
+    } else {
+      // Nếu không có id và không có job thì khởi tạo form rỗng để tạo mới
+      setFormData({
+        title: '',
+        description: '',
+        location: '',
+        salaryMin: '',
+        salaryMax: '',
+        responsibility: '',
+        expiredDate: '',
+        category: '',
+        jobLevel: '',
+        jobType: '',
+        education: '',
+        experience:'',
+        company: {
+          name: '',
+          description: '',
+          founded: '',
+          organization: '',
+          size: '',
+          phone: '',
+          email: '',
+          website: '',
+          avatarUrl: '',
+          logoUrl: '',
+        },
+        badges: null,
+        tags: '',
+        jobRole: '',
+        contactUrl: '',
+        phone: '',
+        email: '',
+        vacancies: '',
+      });
     }
   }, [job, id]);
+
+  // Lấy dữ liệu phụ trợ khi component mount
+  useEffect(() => {
+    const fetchAuxiliaryData = async () => {
+      try {
+        const [edus, types, levels, exps, cats] = await Promise.all([
+          EmployerService.fetchEducationFake(),
+          EmployerService.fetchJobTypesFake(),
+          EmployerService.fetchJobLevelFake(),
+          EmployerService.fetchExperienceFake(),
+          EmployerService.fetchCategoriesFake(),
+        ]);
+        setEducations(edus);
+        setJobTypes(types);
+        setJobLevels(levels);
+        setExperiences(exps);
+        setCategories(cats);
+      } catch (error) {
+        console.error('Error fetching auxiliary data:', error);
+      }
+    };
+
+    fetchAuxiliaryData();
+  }, []);
 
   // Scroll lên đầu khi component mount
   useEffect(() => {
@@ -90,6 +170,7 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
 
   if (!formData) return <div>Loading...</div>;
 
+  // Xử lý thay đổi input
   const handleChange = (e, section = null) => {
     const { name, value } = e.target;
 
@@ -121,8 +202,44 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     }
   };
 
+  // Gọi hàm onSave từ cha
   const handleSave = () => {
     onSave(formData);
+  };
+
+  // Hàm tạo job mới (POST)
+  const handleCreateJob = async () => {
+    setLoading(true);
+    try {
+      const created = await EmployerService.fetchPostJobFake(formData);
+      setFormData(created);
+      showSuccess('Job created successfully');
+    } catch (error) {
+      showError('Failed to create job');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Xử lý lưu job (update)
+  const handleUpdateJob = async () => {
+    if (!formData.id) {
+      showError('Job ID missing for update');
+      return;
+    }
+    setLoading(true);
+    try {
+      const updated = await EmployerService.updateJob(formData.id, formData);
+      setFormData(updated.data || formData);
+      showSuccess('Job updated successfully');
+      if (onSave) onSave(formData);
+    } catch (error) {
+      showError('Failed to update job');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handelSaveJob = async () => {
@@ -368,24 +485,52 @@ Company:
             {[
               { key: 'posted', label: 'Job Posted', icon: <CalendarIcon /> },
               { key: 'expiredDate', label: 'Job Expire', icon: <IconStopwatch /> },
-              { key: 'education', label: 'Education', icon: <IconBooks /> },
-              { key: 'salary', label: 'Salary', icon: <IconWallet /> },
-              { key: 'location', label: 'Location', icon: <IconMapPin /> },
-              { key: 'jobType', label: 'Job Type', icon: <IconBriefcase /> },
-              { key: 'experience', label: 'Experience', icon: <IconBrain /> },
-              { key: 'vacancies', label: 'Vacancies', icon: <IconUsers /> },
-              { key: 'jobLevel', label: 'Job Level', icon: <IconBrightnessAuto /> },
-            ].map(({ key, label, icon }) => (
+              {
+                key: 'education',
+                label: 'Education',
+                icon: <IconBooks />,
+                options: educations,
+              },
+              {
+                key: 'salary',
+                label: 'Salary',
+                icon: <IconWallet />,
+              },
+              {
+                key: 'location',
+                label: 'Location',
+                icon: <IconMapPin />,
+              },
+              {
+                key: 'jobType',
+                label: 'Job Type',
+                icon: <IconBriefcase />,
+                options: jobTypes,
+              },
+              {
+                key: 'experience',
+                label: 'Experience',
+                icon: <IconBrain />,
+                options: experiences,
+              },
+              {
+                key: 'vacancies',
+                label: 'Vacancies',
+                icon: <IconUsers />,
+              },
+              {
+                key: 'jobLevel',
+                label: 'Job Level',
+                icon: <IconBrightnessAuto />,
+                options: jobLevels,
+              },
+            ].map(({ key, label, icon, options }) => (
               <div key={key} className={cx('overview-item')}>
                 <span className={cx('overview-item__icon')}>{icon}</span>
                 <div className={cx('overview-item__content', editable && 'editable_content')}>
                   <p className={cx('overview-item__label')}>{label}:</p>
                   {editable ? (
-                    key === 'education' ||
-                    key === 'jobType' ||
-                    key === 'experience' ||
-                    key === 'vacancies' ||
-                    key === 'jobLevel' ? (
+                    options ? (
                       <select
                         name={key}
                         value={getDisplayValue(formData[key])}
@@ -393,41 +538,23 @@ Company:
                         className={cx('editable-input', 'overview-item__value')}
                       >
                         <option value="">Select...</option>
-                        {key === 'education' && (
-                          <>
-                            <option value="High School">High School</option>
-                            <option value="Bachelor">Bachelor</option>
-                            <option value="Master">Master</option>
-                          </>
-                        )}
-                        {key === 'jobType' && (
-                          <>
-                            <option value="Full Time">Full Time</option>
-                            <option value="Part Time">Part Time</option>
-                            <option value="Internship">Internship</option>
-                          </>
-                        )}
-                        {key === 'experience' && (
-                          <>
-                            <option value="0-1 years">0-1 years</option>
-                            <option value="1-3 years">1-3 years</option>
-                            <option value="3+ years">3+ years</option>
-                          </>
-                        )}
-                        {key === 'vacancies' && (
-                          <>
-                            <option value="1">1</option>
-                            <option value="2-5">2-5</option>
-                            <option value="5+">5+</option>
-                          </>
-                        )}
-                        {key === 'jobLevel' && (
-                          <>
-                            <option value="Junior">Junior</option>
-                            <option value="Mid Level">Mid Level</option>
-                            <option value="Senior">Senior</option>
-                          </>
-                        )}
+                        {options.map((opt) => (
+                          <option key={opt.id || opt} value={opt.name || opt}>
+                            {opt.name || opt}
+                          </option>
+                        ))}
+                      </select>
+                    ) : key === 'vacancies' ? (
+                      <select
+                        name={key}
+                        value={formData[key] || ''}
+                        onChange={handleChange}
+                        className={cx('editable-input', 'overview-item__value')}
+                      >
+                        <option value="">Select...</option>
+                        <option value="1">1</option>
+                        <option value="2-5">2-5</option>
+                        <option value="5+">5+</option>
                       </select>
                     ) : (
                       <input
@@ -466,9 +593,9 @@ Company:
           </p>
           <div className={cx('company-details')}>
             {[
-              { label: 'Founded in:', key: 'yearOfEstablishment' },
-              { label: 'Organization type:', key: 'organizationType' },
-              { label: 'Company size:', key: 'teamSize' },
+              { label: 'Founded in:', key: 'founded' },
+              { label: 'Organization type:', key: 'organization' },
+              { label: 'Company size:', key: 'size' },
               { label: 'Phone:', key: 'phone' },
               { label: 'Email:', key: 'email' },
               { label: 'Website:', key: 'website' },
@@ -532,12 +659,33 @@ Company:
 
         {editable && (
           <div style={{ marginTop: 20 }}>
-            <button onClick={handleSave} className={cx('save-btn')}>
-              Save Changes
-            </button>
-            <button onClick={onCancel} className={cx('cancel-btn')} style={{ marginLeft: 10 }}>
-              Cancel
-            </button>
+            {!formData.id ? (
+              <button
+                onClick={handleCreateJob}
+                className={cx('save-btn')}
+                disabled={loading}
+              >
+                {loading ? 'Creating...' : 'Create Job'}
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={handleUpdateJob}
+                  className={cx('save-btn')}
+                  disabled={loading}
+                >
+                  {loading ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button
+                  onClick={onCancel}
+                  className={cx('cancel-btn')}
+                  style={{ marginLeft: 10 }}
+                  disabled={loading}
+                >
+                  Cancel
+                </button>
+              </>
+            )}
           </div>
         )}
 
