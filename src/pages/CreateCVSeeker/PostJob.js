@@ -17,8 +17,7 @@ const PostJob = () => {
 
   const [formData, setFormData] = useState({
     jobTitle: '',
-    tags: '',
-    jobRole: '',
+    categoryId: '',         // thêm categoryId
     minSalary: '',
     maxSalary: '',
     education: '',
@@ -35,7 +34,7 @@ const PostJob = () => {
   const [showConfirmPopup, setShowConfirmPopup] = useState(false);
 
   const [dropdowns, setDropdowns] = useState({
-    jobRoles: [],
+    categories: [],         // thêm categories
     educations: [],
     experiences: [],
     jobTypes: [],
@@ -45,21 +44,20 @@ const PostJob = () => {
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
-        const [jobTypes, jobLevels, educations, experiences,] = await Promise.all([
+        const [categories, jobTypes, jobLevels, educations, experiences] = await Promise.all([
+          EmployerService.fetchCategoriesFake(),   // giả sử bạn có hàm fetch này
           EmployerService.fetchJobTypesFake(),
           EmployerService.fetchJobLevelFake(),
           EmployerService.fetchEducationFake(),
           EmployerService.fetchExperienceFake(),
-          
         ]);
-        setDropdowns((prev) => ({
-          ...prev,
+        setDropdowns({
+          categories: categories || [],
           jobTypes: jobTypes || [],
           jobLevels: jobLevels || [],
           educations: educations || [],
           experiences: experiences || [],
-          
-        }));
+        });
       } catch (error) {
         console.error('Failed to fetch dropdown data:', error);
       }
@@ -83,14 +81,19 @@ const PostJob = () => {
     const today = new Date().toISOString().split('T')[0];
 
     if (!formData.jobTitle.trim()) errors.jobTitle = 'Job title is required';
-    if (!formData.jobRole) errors.jobRole = 'Job role is required';
+    if (!formData.categoryId) errors.categoryId = 'Category is required';    // validate categoryId
     if (!formData.minSalary) errors.minSalary = 'Min salary is required';
     if (!formData.maxSalary) errors.maxSalary = 'Max salary is required';
-    if (formData.minSalary && formData.maxSalary && Number(formData.minSalary) >= Number(formData.maxSalary)) {
+    if (
+      formData.minSalary &&
+      formData.maxSalary &&
+      Number(formData.minSalary) >= Number(formData.maxSalary)
+    ) {
       errors.salaryRange = 'Min salary must be less than max salary';
     }
     if (!formData.expirationDate) errors.expirationDate = 'Expiration date is required';
-    else if (formData.expirationDate < today) errors.expirationDate = 'Expiration date cannot be in the past';
+    else if (formData.expirationDate < today)
+      errors.expirationDate = 'Expiration date cannot be in the past';
     if (!formData.education) errors.education = 'Education is required';
     if (!formData.experience) errors.experience = 'Experience is required';
     if (!formData.jobType) errors.jobType = 'Job type is required';
@@ -115,10 +118,10 @@ const PostJob = () => {
 
   const handleConfirm = async () => {
     setShowConfirmPopup(false);
+
     const {
       jobTitle,
-      tags,
-      jobRole,
+      categoryId,
       minSalary,
       maxSalary,
       education,
@@ -132,31 +135,30 @@ const PostJob = () => {
     } = formData;
 
     const jobData = {
-      title: jobTitle,
-      tags,
-      categoryId: parseInt(jobRole),
-      salaryMin: parseFloat(minSalary),
-      salaryMax: parseFloat(maxSalary),
-      educationId: parseInt(education),
-      experienceId: parseInt(experience),
-      jobTypeId: parseInt(jobType),
-      vacancy: parseInt(vacancies),
+      title: jobTitle.trim(),
+      categoryId: Number(categoryId),      // gửi categoryId
+      description: description.trim(),
+      salaryMin: Number(minSalary),
+      salaryMax: Number(maxSalary),
+      jobLevelId: Number(jobLevel),
+      jobTypeId: Number(jobType),
+      educationId: Number(education),
+      experienceId: Number(experience),
+      vacancy: Number(vacancies),
+      responsibility: responsibilities.trim(),
       expiredDate: expirationDate,
-      jobLevelId: parseInt(jobLevel),
-      description,
-      responsibility: responsibilities,
     };
+
+    console.log('Posting job data:', jobData);
 
     try {
       showLoading();
       const response = await EmployerService.fetchPostJobFake(jobData);
       hideLoading();
       showSuccess('Job posted successfully!');
-      console.log('Fake response:', response);
       setFormData({
         jobTitle: '',
-        tags: '',
-        jobRole: '',
+        categoryId: '',
         minSalary: '',
         maxSalary: '',
         education: '',
@@ -171,8 +173,8 @@ const PostJob = () => {
       setFormErrors({});
     } catch (error) {
       hideLoading();
-      showError('Failed to post job');
-      console.log(error);
+      showError(error.message || 'Failed to post job');
+      console.error('Error posting job:', error);
     }
   };
 
@@ -198,7 +200,7 @@ const PostJob = () => {
         <option value="">Select...</option>
         {options.map((item) => (
           <option key={item.id} value={item.id}>
-            {item.name}
+            {item.category_name || item.name}
           </option>
         ))}
       </select>
@@ -210,16 +212,17 @@ const PostJob = () => {
     <form className={cx('postJobTab')} onSubmit={handleSubmit}>
       <div className={cx('pageTitle')}>Post a job</div>
       {renderInput('Job Title', 'jobTitle')}
-      <div className={cx('row')}>
-        {renderInput('Tags', 'tags')}
-        {renderSelect('Job Role', 'jobRole', dropdowns.jobRoles)}
-      </div>
+
+      {/* Dropdown chọn Category */}
+      {renderSelect('Category', 'categoryId', dropdowns.categories)}
+
       <div className={cx('sectionTitle')}>Salary</div>
       <div className={cx('row')}>
         {renderInput('Min Salary', 'minSalary', 'number')}
         {renderInput('Max Salary', 'maxSalary', 'number')}
       </div>
       {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
+
       <div className={cx('sectionTitle')}>Advance Information</div>
       <div className={cx('row')}>
         {renderSelect('Education', 'education', dropdowns.educations)}

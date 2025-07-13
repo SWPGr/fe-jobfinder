@@ -1,4 +1,4 @@
-import { del, get, put } from '~/utils/httpRequest';  // Assuming get is a utility function for HTTP requests
+import { del, get, post, put } from '~/utils/httpRequest';  // Assuming get is a utility function for HTTP requests
 
 // Fetch total number of job applications
 const fetchTotalJobs = async () => {
@@ -156,9 +156,30 @@ const fetchExperienceFake = async () => {
 };
 
 // Fetch post job data (Fake)
-const fetchPostJobFake = async () => {
-    const response = await get('/job/create');
-    return response?.result || [];
+const fetchPostJobFake = async (jobData) => {
+  try {
+    const response = await fetch('job/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jobData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('API Error Response:', data);
+      throw new Error(data.message || 'Uncategorized error');
+    }
+
+    return data?.result || {};
+  } catch (error) {
+    console.error('Fetch error:', error);
+    throw error;
+  }
+};
+const fetchCategoriesFake = async () => {
+  const response = await get('/categories');
+  return response?.result || [];
 };
 const fetchViewJobFake = async () => {
   const response = await get('/job/1');
@@ -205,6 +226,7 @@ const EmployerService = {
     fetchViewJobFake,
     fetchEditJobFake,
     fetchDeleteJobFake,
+    fetchCategoriesFake,
 };
 
 export default EmployerService;
