@@ -158,7 +158,7 @@ const fetchExperienceFake = async () => {
 // Fetch post job data (Fake)
 const fetchPostJobFake = async (jobData) => {
   try {
-    const response = await fetch('job/create', {
+    const response = await fetch('/job/create', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(jobData),
@@ -200,12 +200,12 @@ const fetchEmployerProfileFake = async () => {
   return response?.result || {}; 
 };
 const fetchSettingFake = async (updatedData) => {
-  try {
-    const response = await put('/profiles', updatedData);  
-    return response?.result || {}; 
-  } catch (error) {
-    console.error('Error updating company profile:', error);
-    throw error;  
+  if (updatedData) {
+    // giả lập update profile với PUT
+    return await put('/profiles', updatedData);
+  } else {
+    // giả lập lấy profile
+    return await get('/profiles/me');
   }
 };
 

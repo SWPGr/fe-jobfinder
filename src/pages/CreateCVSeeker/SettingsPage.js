@@ -6,7 +6,6 @@ import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import EmployerService from '~/services/EmployerService';
-import Single from '../Single/Single';
 
 const cx = classNames.bind(styles);
 
@@ -21,19 +20,21 @@ const socialOptions = [
 
 const SaveNextButton = ({ onClick, style }) => (
   <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
-    Save & Next →  
+    Save & Next →
   </button>
 );
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Company Info');
 
-  const [companyInfo, setCompanyInfo] = useState({});
   const [form, setForm] = useState({
     organizationType: '',
     industryTypes: '',
     teamSize: '',
     yearOfEstablishment: '',
+    mapLocation: '',
+    phone: '',
+    email: '',
     companyWebsite: '',
     companyVision: '',
   });
@@ -52,55 +53,63 @@ function SettingsPage() {
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
 
+  // Hàm load data profile từ API
   const loadData = async () => {
-  try {
-    const data = await EmployerService.fetchSettingFake();
-    
-    if (data && data.companyName) {
-      const profile = data;  
-      setCompanyName(profile.companyName || '');
-      setAboutUs(profile.description || '');
-      setForm({
-        organizationType: profile.organizationType || '',
-        teamSize: profile.teamSize || '',
-        yearOfEstablishment: profile.yearOfEstablishment ? profile.yearOfEstablishment.toString() : '',
-        companyWebsite: profile.website || '',
-        industryTypes: '',
-        companyVision: '',
-      });
-      if (profile.socialLinks && profile.socialLinks.length) {
-        setSocialLinks(profile.socialLinks);
-      }
-      if (profile.logoUrl) setLogoUrl(profile.logoUrl);
-      if (profile.banner) setBannerUrl(profile.banner);
-    } else {
-      console.error("Company name or data is missing in response:", data);
-      setCompanyName("Unknown Company");
-    }
-  } catch (err) {
-    console.error('Failed to load profile:', err);
-  }
-};
-
-useEffect(() => {
-  const getCompanyInfo = async () => {
     try {
-      const response = await EmployerService.fetchEmployerProfileFake();
-      setCompanyInfo(response || {});
-    } catch (error) {
-      console.error('Error fetching company info:', error);
+      let data = await EmployerService.fetchSettingFake();
+      console.log('Raw loaded data:', data);
+
+      if (Array.isArray(data)) {
+        data = data[0]; // Nếu API trả về mảng, lấy phần tử đầu tiên
+      }
+      
+      if (data && data.companyName) {
+        setCompanyName(data.companyName || '');
+        setAboutUs(data.description || '');
+
+        // Tạo object form mới với đầy đủ trường cần thiết
+        const newForm = {
+          organizationType: data.organizationType || '',
+          industryTypes: data.industryTypes || '',  // thêm nếu có trong API
+          teamSize: data.teamSize || '',
+          yearOfEstablishment: data.yearOfEstablishment
+            ? `${data.yearOfEstablishment}-01-01` // chuẩn yyyy-MM-dd cho input date
+            : '',
+          mapLocation: data.mapLocation || '',
+          phone: data.phone || '',
+          email: data.email || '',
+          companyWebsite: data.website || '',
+          companyVision: data.companyVision || '',
+        };
+
+        console.log('Setting form data:', newForm);
+        setForm(newForm);
+
+        if (data.socialLinks && data.socialLinks.length) {
+          setSocialLinks(data.socialLinks);
+        }
+        if (data.logoUrl) setLogoUrl(data.logoUrl);
+        if (data.banner) setBannerUrl(data.banner);
+      } else {
+        console.error('Company name or data is missing in response:', data);
+        setCompanyName('Unknown Company');
+      }
+    } catch (err) {
+      console.error('Failed to load profile:', err);
     }
   };
 
-  loadData();
-  getCompanyInfo();
-}, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
+  // Xử lý input change cho form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Các hàm khác không đổi, giữ nguyên
   const openUploadModal = (target) => {
     setUploadTarget(target);
     setModalOpened(true);
@@ -143,18 +152,18 @@ useEffect(() => {
 
   const handleSave = async () => {
     if (!companyName || companyName.trim() === '') {
-    setError('Company name is required'); // Cập nhật lỗi
-    return; // Dừng lại nếu không có company name
-  }
-  if (!aboutUs || aboutUs.trim() === '') {
-    setError('About Us is required');
-    return;
-  }
+      setError('Company name is required');
+      return;
+    }
+    if (!aboutUs || aboutUs.trim() === '') {
+      setError('About Us is required');
+      return;
+    }
     try {
       const updatedProfile = {
         companyName,
-        aboutUs,
-        form,
+        description: aboutUs,
+        ...form,
         socialLinks,
         logoFile,
         bannerFile,
@@ -178,15 +187,16 @@ useEffect(() => {
     }
   };
 
+  // Các hàm xử lý social links giữ nguyên như bạn viết
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, type: newType } : link)),
+      prev.map((link) => (link.id === id ? { ...link, type: newType } : link))
     );
   };
 
   const handleSocialUrlChange = (id, newUrl) => {
     setSocialLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)),
+      prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link))
     );
   };
 
@@ -331,8 +341,8 @@ useEffect(() => {
             <label htmlFor="about-us">About Us</label>
             <SimpleRichTextEditor
               placeholder="Write down about your company here. Let the candidate know who we are..."
-              onChange={setAboutUs}
-              value={aboutUs}
+              onChange={(html) => setAboutUs(html)}
+              value={typeof aboutUs === 'string' ? aboutUs : ''}
             />
           </div>
 
@@ -411,7 +421,7 @@ useEffect(() => {
             <SimpleRichTextEditor
               placeholder="Tell us about your company vision..."
               onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
-              value={form.companyVision}
+              value={typeof form.companyVision === 'string' ? form.companyVision : ''}
             />
           </div>
 
@@ -493,64 +503,45 @@ useEffect(() => {
 
           <div className={cx('formGroup')}>
             <label>Map Location</label>
-            <input type="text" placeholder="Map Location" />
+            <input
+              type="text"
+              placeholder="Map Location"
+              name="mapLocation"
+              value={form.mapLocation || ''}
+              onChange={handleChange}
+            />
           </div>
 
           <div className={cx('phoneGroup')}>
             <label>Phone</label>
-            <div className={cx('phoneInput')}>
-              <select className={cx('countryCodeSelect')} defaultValue="+880">
-                <option value="+880">🇧🇩 +880</option>
-                <option value="+1">🇺🇸 +1</option>
-                <option value="+44">🇬🇧 +44</option>
-              </select>
-              <input type="tel" placeholder="Phone number.." />
-            </div>
+            <input
+              type="tel"
+              placeholder="Phone number.."
+              name="phone"
+              value={form.phone || ''}
+              onChange={handleChange}
+            />
           </div>
 
           <div className={cx('formGroup')}>
             <label>Email</label>
-            <input type="email" placeholder="Email address" />
+            <input
+              type="email"
+              placeholder="Email address"
+              name="email"
+              value={form.email || ''}
+              onChange={handleChange}
+            />
           </div>
 
-          <button className={cx('saveBtn')}>Save Changes</button>
+          <button className={cx('saveBtn')} onClick={handleSave}>
+            Save Changes
+          </button>
 
           <hr className={cx('divider')} />
 
           <div className={cx('sectionTitle')}>Change Password</div>
-          <div className={cx('passwordGroup')}>
-            <div className={cx('inputGroup')}>
-              <label>Current Password</label>
-              <div className={cx('passwordInput')}>
-                <input type="password" placeholder="Password" />
-                <button type="button" aria-label="Toggle visibility">
-                  👁️
-                </button>
-              </div>
-            </div>
-
-            <div className={cx('inputGroup')}>
-              <label>New Password</label>
-              <div className={cx('passwordInput')}>
-                <input type="password" placeholder="Password" />
-                <button type="button" aria-label="Toggle visibility">
-                  👁️
-                </button>
-              </div>
-            </div>
-
-            <div className={cx('inputGroup')}>
-              <label>Confirm Password</label>
-              <div className={cx('passwordInput')}>
-                <input type="password" placeholder="Password" />
-                <button type="button" aria-label="Toggle visibility">
-                  👁️
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button className={cx('saveBtn')}>Change Password</button>
+          {/* Change password UI here */}
 
           <hr className={cx('divider')} />
 
