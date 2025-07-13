@@ -1,4 +1,4 @@
-import { get, put } from '~/utils/httpRequest';  // Assuming get is a utility function for HTTP requests
+import { del, get, put } from '~/utils/httpRequest';  // Assuming get is a utility function for HTTP requests
 
 // Fetch total number of job applications
 const fetchTotalJobs = async () => {
@@ -160,6 +160,18 @@ const fetchPostJobFake = async () => {
     const response = await get('/job/create');
     return response?.result || [];
 };
+const fetchViewJobFake = async () => {
+  const response = await get('/job/1');
+  return response?.result || {}; 
+};
+const fetchEditJobFake = async (updatedJobData) => {
+  const response = await put('/job/1', updatedJobData);
+  return response?.result || {};
+};
+const fetchDeleteJobFake = async () => {
+  const response = await del('/job/1');
+  return response?.result || {}; 
+};
 
 
 const fetchEmployerProfileFake = async () => {
@@ -175,6 +187,7 @@ const fetchSettingFake = async (updatedData) => {
     throw error;  
   }
 };
+
 const EmployerService = {
     fetchTotalJobs,
     fetchCreateJob,
@@ -189,6 +202,9 @@ const EmployerService = {
     fetchPostJobFake,
     fetchSettingFake,
     fetchEmployerProfileFake,
+    fetchViewJobFake,
+    fetchEditJobFake,
+    fetchDeleteJobFake,
 };
 
 export default EmployerService;
