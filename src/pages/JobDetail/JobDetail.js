@@ -485,7 +485,7 @@ Company:
           )}
         </div>
 
-        {/* Responsibilities */}
+        {/* Responsibilities ss*/}
         <div className={cx('responsibilities')}>
           <div className={cx('responsibilities__title')}>Responsibilities</div>
           {editable ? (
@@ -601,6 +601,7 @@ Company:
                         <option value="1">1</option>
                         <option value="2-5">2-5</option>
                         <option value="5+">5+</option>
+                        
                       </select>
                     ) : (
                       <input
