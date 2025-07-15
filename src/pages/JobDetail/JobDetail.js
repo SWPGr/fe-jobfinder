@@ -33,20 +33,7 @@ const cx = classNames.bind(styles);
 
 const noop = () => undefined;
 
-// Giả định 'get' là hàm fetch API GET, bạn có thể thay thế bằng axios hoặc fetch tùy dự án
-const get = async (url) => {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Failed to fetch ${url}`);
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    return { result: [] };
-  }
-};
-
-
+// Lấy tên nếu value là object, ngược lại trả value trực tiếp
 const getDisplayValue = (value) => {
   if (typeof value === 'object' && value !== null) {
     return value.name || '';
@@ -60,25 +47,100 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
   const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
   const [save, setSave] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loadingAuxiliary, setLoadingAuxiliary] = useState(true);
   const [formData, setFormData] = useState(null);
   const jobDetailRef = useRef(null);
   const IconComponent = save ? IconBookmarkFilled : IconBookmark;
   const [, scrollTo] = useWindowScroll();
   const { showSuccess, showError } = useNotification();
 
-  // States chứa dữ liệu phụ trợ
+  // Dữ liệu phụ trợ cho các dropdown
   const [educations, setEducations] = useState([]);
   const [jobTypes, setJobTypes] = useState([]);
   const [jobLevels, setJobLevels] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // Lấy dữ liệu job khi mount hoặc khi job/jobId thay đổi
+  // Helper tìm object trong danh sách theo id hoặc name
+  const findObject = (list, val) => {
+    if (!val) return '';
+    if (typeof val === 'object') return val;
+    const valNum = Number(val);
+    return (
+      list.find((item) => item.id === valNum || item.name === val) ||
+      { name: val }
+    );
+  };
+
+  // Chuẩn hóa dữ liệu, map các trường thành object nếu có trong danh sách phụ trợ
+  const normalizeData = (data) => {
+    if (!data) return null;
+    return {
+      ...data,
+      salaryMin: data.salaryMin ?? '',
+      salaryMax: data.salaryMax ?? '',
+      expiredDate: data.expiredDate || '',
+      email: data.email || data.employer?.email || '',
+      roleName: data.roleName || data.employer?.roleName || '',
+      phone: data.phone || data.employer?.phone || '',
+      education: findObject(educations, data.education),
+      experience: findObject(experiences, data.experience),
+      jobLevel: findObject(jobLevels, data.jobLevel),
+      jobType: findObject(jobTypes, data.jobType),
+      company: {
+        avatarUrl: data.company?.avatarUrl || data.employer?.avatarUrl || '',
+        logoUrl: data.company?.logoUrl || data.employer?.avatarUrl || '',
+        companyName: data.company?.companyName || data.company?.name || data.employer?.companyName || '',
+        description: data.company?.description || data.employer?.description || '',
+        founded: data.company?.founded || data.employer?.yearOfEstablishment || '',
+        organization: data.company?.organization || data.employer?.organizationType || '',
+        size: data.company?.size || data.employer?.teamSize || '',
+        phone: data.company?.phone || data.employer?.phone || '',
+        email: data.company?.email || data.employer?.email || '',
+        website: data.company?.website || data.employer?.website || '',
+      },
+      badges: data.badges || null,
+      tags: data.tags || '',
+      jobRole: data.jobRole || '',
+      contactUrl: data.contactUrl || '',
+      vacancies: data.vacancies || '',
+      createdAt: data.createdAt || data.postedAt || '',
+    };
+  };
+
+  // Load dữ liệu phụ trợ trước (lấy riêng result từ API response)
   useEffect(() => {
+    const fetchAuxiliaryData = async () => {
+      try {
+        const educationResponse = await EmployerService.fetchEducationFake();
+        const jobTypesResponse = await EmployerService.fetchJobTypesFake();
+        const jobLevelsResponse = await EmployerService.fetchJobLevelFake();
+        const experienceResponse = await EmployerService.fetchExperienceFake();
+        const categoriesResponse = await EmployerService.fetchCategoriesFake();
+
+        setEducations(educationResponse.result || educationResponse || []);
+        setJobTypes(jobTypesResponse.result || jobTypesResponse || []);
+        setJobLevels(jobLevelsResponse.result || jobLevelsResponse || []);
+        setExperiences(experienceResponse.result || experienceResponse || []);
+        setCategories(categoriesResponse.result || categoriesResponse || []);
+      } catch (error) {
+        console.error('Error fetching auxiliary data:', error);
+      } finally {
+        setLoadingAuxiliary(false);
+      }
+    };
+    fetchAuxiliaryData();
+  }, []);
+
+  // Load chi tiết job sau khi dữ liệu phụ trợ có đầy đủ
+  useEffect(() => {
+    if (loadingAuxiliary && !job) return;
+
     const fetchJob = async () => {
+      if (!id) return;
       try {
         const response = await EmployerService.getJobDetail(id);
-        const data = response.data || {};
+        const data = normalizeData(response.data || {});
         setFormData(data);
       } catch (error) {
         console.error('Error fetching job detail:', error);
@@ -86,81 +148,24 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
       }
     };
 
-    if (job) {
-      setFormData(job);
-    } else if (id) {
-      fetchJob();
-    } else {
-      // Nếu không có id và không có job thì khởi tạo form rỗng để tạo mới
-      setFormData({
-        title: '',
-        description: '',
-        location: '',
-        salaryMin: '',
-        salaryMax: '',
-        responsibility: '',
-        expiredDate: '',
-        category: '',
-        jobLevel: '',
-        jobType: '',
-        education: '',
-        experience:'',
-        company: {
-          name: '',
-          description: '',
-          founded: '',
-          organization: '',
-          size: '',
-          phone: '',
-          email: '',
-          website: '',
-          avatarUrl: '',
-          logoUrl: '',
-        },
-        badges: null,
-        tags: '',
-        jobRole: '',
-        contactUrl: '',
-        phone: '',
-        email: '',
-        vacancies: '',
-      });
-    }
-  }, [job, id]);
-
-  // Lấy dữ liệu phụ trợ khi component mount
-  useEffect(() => {
-    const fetchAuxiliaryData = async () => {
-      try {
-        const [edus, types, levels, exps, cats] = await Promise.all([
-          EmployerService.fetchEducationFake(),
-          EmployerService.fetchJobTypesFake(),
-          EmployerService.fetchJobLevelFake(),
-          EmployerService.fetchExperienceFake(),
-          EmployerService.fetchCategoriesFake(),
-        ]);
-        setEducations(edus);
-        setJobTypes(types);
-        setJobLevels(levels);
-        setExperiences(exps);
-        setCategories(cats);
-      } catch (error) {
-        console.error('Error fetching auxiliary data:', error);
+    if (educations.length && experiences.length && jobLevels.length && jobTypes.length) {
+      if (job) {
+        setFormData(normalizeData(job));
+      } else {
+        fetchJob();
       }
-    };
+    }
+  }, [id, job, educations, experiences, jobLevels, jobTypes, loadingAuxiliary]);
 
-    fetchAuxiliaryData();
-  }, []);
-
-  // Scroll lên đầu khi component mount
+  // Scroll lên đầu trang khi mở component
   useEffect(() => {
     scrollTo({ y: 0 });
   }, [scrollTo]);
 
-  // Đóng modal khi click ngoài (chỉ khi editable)
+  // Đóng modal khi click ra ngoài (chỉ với editable)
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (jobDetailRef.current && !jobDetailRef.current.contains(event.target) && editable) {
+    const handleClickOutside = (e) => {
+      if (jobDetailRef.current && !jobDetailRef.current.contains(e.target) && editable) {
         onCancel();
       }
     };
@@ -168,20 +173,20 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [editable, onCancel]);
 
-  if (!formData) return <div>Loading...</div>;
+  if (loadingAuxiliary || !formData) return <div>Loading...</div>;
 
-  // Xử lý thay đổi input
+  // Xử lý thay đổi input, xử lý select các trường object
   const handleChange = (e, section = null) => {
     const { name, value } = e.target;
 
     if (section === 'description' || section === 'responsibility') {
-      setFormData((prev) => ({ ...prev, [section]: value }));
+      setFormData(prev => ({ ...prev, [section]: value }));
       return;
     }
 
     if (name?.startsWith('overview.')) {
       const key = name.split('.')[1];
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         overview: { ...prev.overview, [key]: value },
       }));
@@ -190,29 +195,45 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
 
     if (name?.startsWith('company.')) {
       const key = name.split('.')[1];
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         company: { ...prev.company, [key]: value },
       }));
       return;
     }
 
+    if (name === 'experience') {
+      const selected = experiences.find(exp => exp.name === value);
+      setFormData(prev => ({ ...prev, experience: selected || { name: value } }));
+      return;
+    }
+    if (name === 'education') {
+      const selected = educations.find(edu => edu.name === value);
+      setFormData(prev => ({ ...prev, education: selected || { name: value } }));
+      return;
+    }
+    if (name === 'jobLevel') {
+      const selected = jobLevels.find(level => level.name === value);
+      setFormData(prev => ({ ...prev, jobLevel: selected || { name: value } }));
+      return;
+    }
+    if (name === 'jobType') {
+      const selected = jobTypes.find(type => type.name === value);
+      setFormData(prev => ({ ...prev, jobType: selected || { name: value } }));
+      return;
+    }
+
     if (name) {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  // Gọi hàm onSave từ cha
-  const handleSave = () => {
-    onSave(formData);
-  };
-
-  // Hàm tạo job mới (POST)
+  // Tạo job mới
   const handleCreateJob = async () => {
     setLoading(true);
     try {
       const created = await EmployerService.fetchPostJobFake(formData);
-      setFormData(created);
+      setFormData(normalizeData(created));
       showSuccess('Job created successfully');
     } catch (error) {
       showError('Failed to create job');
@@ -222,7 +243,7 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     }
   };
 
-  // Xử lý lưu job (update)
+  // Cập nhật job
   const handleUpdateJob = async () => {
     if (!formData.id) {
       showError('Job ID missing for update');
@@ -230,8 +251,21 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     }
     setLoading(true);
     try {
-      const updated = await EmployerService.updateJob(formData.id, formData);
-      setFormData(updated.data || formData);
+      // Chuyển các trường object thành id gửi backend
+      const payload = {
+        ...formData,
+        education: formData.education?.id || null,
+        experience: formData.experience?.id || null,
+        jobLevel: formData.jobLevel?.id || null,
+        jobType: formData.jobType?.id || null,
+        category: formData.category?.id || null,
+        company: { ...formData.company },
+      };
+      delete payload.createdAt;
+      delete payload.badges;
+
+      const updated = await EmployerService.updateJob(formData.id, payload);
+      setFormData(normalizeData(updated.data || formData));
       showSuccess('Job updated successfully');
       if (onSave) onSave(formData);
     } catch (error) {
@@ -242,6 +276,7 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     }
   };
 
+  // Lưu / bỏ lưu job
   const handelSaveJob = async () => {
     try {
       setSave(true);
@@ -262,6 +297,7 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
     }
   };
 
+  // Tải chi tiết job dạng zip
   const handleDownloadJobDetails = async () => {
     const zip = new JSZip();
 
@@ -269,12 +305,12 @@ const JobDetail = ({ job = null, editable = false, onSave = noop, onCancel = noo
 Job Title: ${formData.title || formData.jobTitle || ''}
 Tags: ${formData.tags || ''}
 Job Role: ${formData.jobRole || ''}
-Salary: ${formData.salaryMin || formData.minSalary || ''} - ${formData.salaryMax || formData.maxSalary || ''} ${formData.salaryType || ''}
+Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''} ${formData.salaryType || ''}
 Education: ${getDisplayValue(formData.education)}
 Experience: ${getDisplayValue(formData.experience)}
 Job Type: ${getDisplayValue(formData.jobType)}
 Vacancies: ${formData.vacancies || ''}
-Expiration Date: ${formData.expiredDate || formData.expirationDate || ''}
+Expiration Date: ${formData.expiredDate || ''}
 Job Level: ${getDisplayValue(formData.jobLevel)}
 Contact URL: ${formData.contactUrl || ''}
 Phone: ${formData.phone || ''}
@@ -282,17 +318,17 @@ Email: ${formData.email || ''}
 Job Description: ${formData.description || ''}
 Responsibilities: ${formData.responsibility || ''}
 Overview:
-  Posted: ${formData.overview?.posted || ''}
-  Expire: ${formData.overview?.expire || ''}
-  Education: ${formData.overview?.education || ''}
-  Salary: ${formData.overview?.salary || ''}
-  Location: ${formData.overview?.location || ''}
-  Job Type: ${formData.overview?.jobType || ''}
-  Experience: ${formData.overview?.experience || ''}
-  Vacancies: ${formData.overview?.vacancies || ''}
-  Job Level: ${formData.overview?.jobLevel || ''}
+  Posted: ${formData.createdAt ? new Date(formData.createdAt).toLocaleDateString() : ''}
+  Expire: ${formData.expiredDate || ''}
+  Education: ${getDisplayValue(formData.education)}
+  Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''}
+  Location: ${formData.location || ''}
+  Job Type: ${getDisplayValue(formData.jobType)}
+  Experience: ${getDisplayValue(formData.experience)}
+  Vacancies: ${formData.vacancies || ''}
+  Job Level: ${getDisplayValue(formData.jobLevel)}
 Company:
-  Name: ${formData.company?.name || ''}
+  Name: ${formData.company?.companyName || formData.company?.name || ''}
   Description: ${formData.company?.description || ''}
   Founded: ${formData.company?.founded || ''}
   Organization: ${formData.company?.organization || ''}
@@ -309,7 +345,7 @@ Company:
 
   return (
     <div className={cx('container', { 'editable-container': editable })} ref={jobDetailRef}>
-      {/* Phần bên trái */}
+      {/* Bên trái */}
       <div className={cx('left')}>
         <div className={cx('header')}>
           <img
@@ -318,7 +354,7 @@ Company:
               formData.company?.logoUrl ||
               'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/120px-Instagram_logo_2016.svg.png'
             }
-            alt={formData.company?.name || 'Company Logo'}
+            alt={formData.company?.companyName || formData.company?.name || 'Company Logo'}
             className={cx('logo')}
           />
           <div className={cx('job-info')}>
@@ -477,14 +513,23 @@ Company:
         </div>
       </div>
 
-      {/* Right Section */}
+      {/* Bên phải */}
       <div className={cx('right')}>
         <div className={cx('job-overview')}>
           <div className={cx('job-overview__title')}>Job Overview</div>
           <div className={cx('job-overview__items', !editable && 'editable')}>
             {[
-              { key: 'posted', label: 'Job Posted', icon: <CalendarIcon /> },
-              { key: 'expiredDate', label: 'Job Expire', icon: <IconStopwatch /> },
+              {
+                key: 'createdAt',
+                label: 'Job Posted',
+                icon: <CalendarIcon />,
+                render: (value) => (value ? new Date(value).toLocaleDateString() : ''),
+              },
+              {
+                key: 'expiredDate',
+                label: 'Job Expire',
+                icon: <IconStopwatch />,
+              },
               {
                 key: 'education',
                 label: 'Education',
@@ -495,6 +540,7 @@ Company:
                 key: 'salary',
                 label: 'Salary',
                 icon: <IconWallet />,
+                render: () => `${formData.salaryMin || ''} - ${formData.salaryMax || ''}`,
               },
               {
                 key: 'location',
@@ -524,7 +570,7 @@ Company:
                 icon: <IconBrightnessAuto />,
                 options: jobLevels,
               },
-            ].map(({ key, label, icon, options }) => (
+            ].map(({ key, label, icon, options, render }) => (
               <div key={key} className={cx('overview-item')}>
                 <span className={cx('overview-item__icon')}>{icon}</span>
                 <div className={cx('overview-item__content', editable && 'editable_content')}>
@@ -566,7 +612,9 @@ Company:
                       />
                     )
                   ) : (
-                    <strong className={cx('overview-item__value')}>{getDisplayValue(formData[key])}</strong>
+                    <strong className={cx('overview-item__value')}>
+                      {render ? render(formData[key]) : getDisplayValue(formData[key])}
+                    </strong>
                   )}
                 </div>
               </div>
@@ -660,20 +708,12 @@ Company:
         {editable && (
           <div style={{ marginTop: 20 }}>
             {!formData.id ? (
-              <button
-                onClick={handleCreateJob}
-                className={cx('save-btn')}
-                disabled={loading}
-              >
+              <button onClick={handleCreateJob} className={cx('save-btn')} disabled={loading}>
                 {loading ? 'Creating...' : 'Create Job'}
               </button>
             ) : (
               <>
-                <button
-                  onClick={handleUpdateJob}
-                  className={cx('save-btn')}
-                  disabled={loading}
-                >
+                <button onClick={handleUpdateJob} className={cx('save-btn')} disabled={loading}>
                   {loading ? 'Saving...' : 'Save Changes'}
                 </button>
                 <button

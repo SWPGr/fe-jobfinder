@@ -21,36 +21,49 @@ const cx = classNames.bind(styles);
 
 // Hàm chuẩn hóa dữ liệu job từ API để tránh lỗi React khi render object
 const normalizeJobData = (data) => {
-  
+  const expiredDateStr = data.expiredDate; // định dạng yyyy-MM-dd hoặc ISO string
+  let isActive = false;
+
+  if (expiredDateStr) {
+    const today = new Date();
+    const expiredDate = new Date(expiredDateStr);
+
+    // Nếu ngày hết hạn >= ngày hôm nay thì job còn active
+    isActive = expiredDate >= today;
+  }
+
   return {
     id: data.id,
-    title: data.title,
-    description: data.description,
-    location: data.location,
-    salaryMin: data.salaryMin,
-    salaryMax: data.salaryMax,
-    responsibility: data.responsibility,
-    expiredDate: data.expiredDate, // định dạng yyyy-MM-dd
+    title: data.title || '',
+    description: data.description || '',
+    location: data.location || '',
+    salaryMin: data.salaryMin || 0,
+    salaryMax: data.salaryMax || 0,
+    responsibility: data.responsibility || '',
+    expiredDate: expiredDateStr,
     category: data.category || null,
     jobLevel: data.jobLevel || null,
     jobType: data.jobType || null,
-    // giữ nguyên các object khác nếu có
-    company: data.employer ? {
-      name: data.employer.companyName,
-      description: data.employer.description || '',
-      phone: data.employer.phone || '',
-      email: data.employer.email || '',
-      website: data.employer.website || '',
-      founded: data.employer.yearOfEstablishment || '',
-      organization: data.employer.organizationType || '',
-      size: data.employer.teamSize || '',
-      avatarUrl: data.employer.avatarUrl || '',
-      logoUrl: data.employer.avatarUrl || '',
-    } : null,
+    isActive,
+    numberApplications: data.numberApplications || 0,  // Thêm trường số ứng viên
+    company: data.employer
+      ? {
+          name: data.employer.companyName || '',
+          description: data.employer.description || '',
+          phone: data.employer.phone || '',
+          email: data.employer.email || '',
+          website: data.employer.website || '',
+          founded: data.employer.yearOfEstablishment || '',
+          organization: data.employer.organizationType || '',
+          size: data.employer.teamSize || '',
+          avatarUrl: data.employer.avatarUrl || '',
+          logoUrl: data.employer.avatarUrl || '',
+        }
+      : null,
     badges: data.badges || null,
-    // các trường khác nếu cần
   };
 };
+
 // Hàm fetch tổng quát ngoài component, bổ sung bắt lỗi 404 riêng
 const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) => {
   try {
@@ -59,9 +72,7 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
       return response.data || {};
     }
     if (updatedData) {
-      console.log('Data to update:', updatedData);
       const normalizedData = normalizeJobData(updatedData);
-      console.log('Normalized data:', normalizedData);
       const response = await EmployerService.updateJob(id, normalizedData);
       return response.data || {};
     }
@@ -70,7 +81,7 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
   } catch (error) {
     if (error.response?.status === 404) {
       alert(`Job with ID ${id} not found.`);
-      return null; // Trả về null để xử lý ở component
+      return null;
     }
     console.error('Error fetching/updating/deleting job:', error);
     throw error;
@@ -81,23 +92,14 @@ function JobItemOwner({
   image = Images.default_image,
   jobDescription = {},
   isVIP = false,
-  onDeleteSuccess, // callback khi xóa job thành công
+  onDeleteSuccess,
 }) {
-  // Chuẩn hóa jobDescription nếu có jobId mà không có id
   const [jobData, setJobData] = useState(() => {
     if (jobDescription && !jobDescription.id && jobDescription.jobId) {
       return { ...jobDescription, id: jobDescription.jobId };
     }
     return jobDescription;
   });
-
-  useEffect(() => {
-    if (jobDescription && !jobDescription.id && jobDescription.jobId) {
-      setJobData({ ...jobDescription, id: jobDescription.jobId });
-    } else {
-      setJobData(jobDescription);
-    }
-  }, [jobDescription]);
 
   const [modalType, setModalType] = useState(null);
   const [showApplications, setShowApplications] = useState(false);
@@ -111,8 +113,34 @@ function JobItemOwner({
     };
   }, []);
 
+  // Fetch chi tiết job ngay khi nhận jobDescription có id
+  useEffect(() => {
+    const fetchDetailOnInit = async () => {
+      if (jobDescription && jobDescription.id) {
+        setLoading(true);
+        try {
+          const data = await fetchJobDetailFake(jobDescription.id);
+          if (data) {
+            setJobData(normalizeJobData(data));
+          } else {
+            setJobData(jobDescription);
+          }
+        } catch {
+          setJobData(jobDescription);
+        } finally {
+          setLoading(false);
+        }
+      } else if (jobDescription && jobDescription.jobId && !jobDescription.id) {
+        setJobData({ ...jobDescription, id: jobDescription.jobId });
+      } else {
+        setJobData(jobDescription);
+      }
+    };
+    fetchDetailOnInit();
+  }, [jobDescription]);
+
   const classes = cx('wrapper', { isVIP });
-  const { jobTitle, workTime, remainDay, isActive, numberApplications, id } = jobData || {};
+  const { title, workTime, remainDay, isActive, numberApplications, id } = jobData || {};
 
   const openModal = async (type) => {
     if (!id) {
@@ -127,7 +155,11 @@ function JobItemOwner({
         return;
       }
       if (isMounted.current) {
-        setJobData(normalizeJobData(data));
+        const normalized = normalizeJobData(data);
+        setJobData(prev => ({
+          ...prev,
+          ...normalized,
+        }));
         setModalType(type);
       }
     } catch (error) {
@@ -197,7 +229,7 @@ function JobItemOwner({
           </div>
           <div className={cx('job-description')}>
             <div className={cx('top')}>
-              <div className={cx('title')}>{jobTitle}</div>
+              <div className={cx('title')}>{title}</div>
             </div>
             <div className={cx('bottom')}>
               <div className={cx('work-time')}>{workTime}</div>
