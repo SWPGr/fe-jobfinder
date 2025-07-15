@@ -23,15 +23,15 @@ function FindCandidate() {
 
             const rawData = {
                 experiences: { name: 'Experience', type: 'Radio', options: [], grid: true },
-                jobTypes: { name: 'Job Type', type: 'Radio', options: [], grid: true },
+                // jobTypes: { name: 'Job Type', type: 'Radio', options: [], grid: true },
                 educations: { name: 'Education', type: 'Radio', options: [] },
-                candidateLevel: { name: 'Candidate Level', type: 'Radio', options: [] },
+                // candidateLevel: { name: 'Candidate Level', type: 'Radio', options: [] },
             };
 
-            rawData.experiences.options = data.experiences;
-            rawData.jobTypes.options = data.jobTypes;
-            rawData.educations.options = data.educations;
-            rawData.candidateLevel.options = data.jobLevels;
+            rawData.experiences.options = [{ name: 'All', id: '' }, ...data.experiences];
+            // rawData.jobTypes.options = [{ name: 'All', id: '' }, ...data.jobTypes];
+            rawData.educations.options = [{ name: 'All', id: '' }, ...data.educations];
+            // rawData.candidateLevel.options = [{ name: 'All', id: '' }, ...data.jobLevels];
 
             setEmployerFilter(rawData);
             setCategoryOptions(data.categories);
@@ -44,13 +44,14 @@ function FindCandidate() {
     return (
         <div className={cx('find-job__wrapper')}>
             <div className={cx('find-job__title')}>
-                <h1>Find Job</h1>
+                <h1>Find Candidate</h1>
             </div>
 
             <Filter
+                searchLabel="Find your potential candidates"
                 filters={employerFilter}
                 categoryOptions={categoryOptions}
-                buttonLabel="Find "
+                buttonLabel="Find Candidate"
                 onSearch={handleFilterSearch}
             />
         </div>

@@ -55,7 +55,7 @@ const privateRoutes = [
     {
         path: config.routes.dashboard + '/:page',
         component: DashboardPage,
-        allowedRoles: ['EMPLOYER', 'ADMIN'],
+        allowedRoles: ['EMPLOYER', 'ADMIN', 'JOB_SEEKER'],
     },
     {
         path: config.routes.findEmployer,
@@ -85,7 +85,7 @@ const privateRoutes = [
         path: config.routes.payment,
         component: Payment,
         layout: HeaderOnly,
-        allowedRoles: ['EMPLOYER'],
+        allowedRoles: ['EMPLOYER, JOB_SEEKER, ADMIN'],
     },
 ];
 

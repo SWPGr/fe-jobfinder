@@ -29,6 +29,9 @@
     border-radius: var(--border-radius);
     padding: 1rem;
 }
+.not-find-job {
+    grid-template-columns: 7fr 3fr 2fr;
+}
 
 .search-input-root {
     height: 100%;

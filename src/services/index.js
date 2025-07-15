@@ -8,3 +8,4 @@ export { default as socialTypeService } from './SocialType.js';
 export { default as educationService } from './Education.js';
 export { default as categoryService } from './CategoryService.js';
 export { default as jobMarketTrendsService } from './JobMarketTrendsService.js';
+export { default as searchService } from './SearchService.js';

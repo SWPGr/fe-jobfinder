@@ -1,36 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Filter } from '~/components';
 import classNames from 'classnames/bind';
 import styles from './FindEmployer.module.scss';
-import { jobService } from '~/services';
+import { useSearchParams } from 'react-router-dom';
+
+import { jobService, searchService } from '~/services';
 
 const cx = classNames.bind(styles);
 
 function FindEmployer() {
     const [jobFilters, setJobFilter] = React.useState({});
+    const [dataset, setDataset] = useState([]);
     const [categoryOptions, setCategoryOptions] = React.useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [totalHits, setTotalHits] = useState(0);
 
-    const handleFilterSearch = (values) => {
-        console.log('User filters:', values);
-        // TODO: gọi API tìm kiếm với các giá trị filter truyền về
-    };
-    React.useEffect(() => {
-        const fetchData = async () => {
+    // ===== useEffect 1: Lấy filter options khi load trang =====
+    useEffect(() => {
+        const fetchOptions = async () => {
             const data = await jobService.getAllOptions();
 
-            const rawData = {
-                organizationTypeId: { name: 'Organization Type', type: 'Radio', options: [] },
+            const filters = {
+                organizationId: {
+                    name: 'Organization Type',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data?.organizations],
+                },
             };
 
-            rawData.organizationTypeId.options = data?.organizations;
-
-            setJobFilter(rawData);
+            setJobFilter(filters);
             setCategoryOptions(data.categories);
-            console.log('rawData', rawData);
         };
 
-        fetchData();
+        fetchOptions();
     }, []);
+
+    useEffect(() => {
+        const fetchJobs = async () => {
+            const cleanedParams = Object.fromEntries(
+                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null),
+            );
+
+            const result = await searchService.searchEmployer(cleanedParams);
+            const formatted = result.data;
+            setDataset(formatted);
+            setTotalHits(result.totalHits);
+        };
+
+        fetchJobs();
+    }, [searchParams]);
 
     return (
         <div className={cx('find-job__wrapper')}>
@@ -39,10 +57,16 @@ function FindEmployer() {
             </div>
 
             <Filter
+                searchLabel="Enter company name or keyword"
                 filters={jobFilters}
                 categoryOptions={categoryOptions}
-                buttonLabel="Find Job"
-                onSearch={handleFilterSearch}
+                buttonLabel="Find Company"
+                onSearch={(formValues) => {
+                    setSearchParams(formValues);
+                }}
+                totalHits={totalHits}
+                dataset={dataset}
+                type="company"
             />
         </div>
     );

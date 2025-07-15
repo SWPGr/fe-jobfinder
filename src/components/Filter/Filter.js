@@ -9,7 +9,7 @@ import classNames from 'classnames/bind';
 import styles from './Filter.module.scss';
 
 import { Button } from '~/components';
-import { JobItemList } from '~/components';
+import { JobItemList, CompanyItem } from '~/components';
 import SearchRecommend from './SearchRecommend';
 
 const cx = classNames.bind(styles);
@@ -63,7 +63,10 @@ function Filter({
     totalHits = 0,
     categoryOptions = [],
     buttonLabel = 'Find Job',
+    searchLabel = 'Enter job title or keyword',
     onSearch = async () => {},
+    isFindJob = false,
+    type = 'job',
 }) {
     const [scroll, scrollTo] = useWindowScroll();
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
@@ -87,7 +90,7 @@ function Filter({
             experienceId: searchParams.get('experienceId') || '',
             jobTypeId: searchParams.get('jobTypeId') || '',
             jobLevelId: searchParams.get('jobLevelId') || '',
-            organizationTypeId: searchParams.get('organizationId') || '',
+            organizationId: searchParams.get('organizationId') || '',
             sort: searchParams.get('sort') || '',
         },
     });
@@ -105,7 +108,7 @@ function Filter({
             experienceId: searchParams.get('experienceId') || '',
             jobTypeId: searchParams.get('jobTypeId') || '',
             jobLevelId: searchParams.get('jobLevelId') || '',
-            organizationTypeId: searchParams.get('organizationId') || '',
+            organizationId: searchParams.get('organizationId') || '',
             sort: searchParams.get('sort') || '',
         });
 
@@ -142,7 +145,7 @@ function Filter({
         const entries = Object.entries(form.values).filter(([_, v]) => v !== '');
         console.log(entries);
 
-        await onSearch(entries); // gửi lên FindJob để gọi setSearchParams
+        await onSearch(entries);
     };
 
     // Giữ nguyên giá trị của 'category' và reset các field khác về initialValues
@@ -215,13 +218,17 @@ function Filter({
             {/* Search inputs */}
             <div className={cx('search__wrapper')}>
                 <div className={cx('search__container')}>
-                    <form className={cx('search-form')} onSubmit={(e) => e.preventDefault()}>
-                        <SearchRecommend form={form} />
+                    <form
+                        className={cx('search-form', { 'not-find-job': !isFindJob })}
+                        onSubmit={(e) => e.preventDefault()}
+                    >
+                        <SearchRecommend form={form} searchLabel={searchLabel} />
 
                         <Select
                             placeholder="Select location"
                             data={locations.map((option) => ({ value: option.name + '', label: option.name }))}
                             value={form.values.location}
+                            onChange={(_value, option) => form.setFieldValue('location', option.value)}
                             {...form.getInputProps('location')}
                             leftSection={<IconMapPin />}
                             classNames={{
@@ -233,21 +240,23 @@ function Filter({
                             }}
                         />
 
-                        <Select
-                            placeholder="Select category"
-                            data={categoryOptions.map((option) => ({ value: option.id + '', label: option.name }))}
-                            value={form.values.category}
-                            onChange={(_value, option) => form.setFieldValue('category', option.value)}
-                            {...form.getInputProps('category')}
-                            leftSection={<IconStack2 />}
-                            classNames={{
-                                input: cx('search-input'),
-                                root: cx('search-input-root'),
-                                wrapper: cx('search-input-wrapper'),
-                                option: cx('select-option'),
-                                dropdown: cx('select-dropdown'),
-                            }}
-                        />
+                        {isFindJob && (
+                            <Select
+                                placeholder="Select category"
+                                data={categoryOptions.map((option) => ({ value: option.id + '', label: option.name }))}
+                                value={form.values.category}
+                                onChange={(_value, option) => form.setFieldValue('category', option.value)}
+                                {...form.getInputProps('category')}
+                                leftSection={<IconStack2 />}
+                                classNames={{
+                                    input: cx('search-input'),
+                                    root: cx('search-input-root'),
+                                    wrapper: cx('search-input-wrapper'),
+                                    option: cx('select-option'),
+                                    dropdown: cx('select-dropdown'),
+                                }}
+                            />
+                        )}
 
                         <Button className={cx('find-job')} onClick={handleSearch}>
                             {buttonLabel}
@@ -374,7 +383,14 @@ function Filter({
                         </div>
                         <div className={cx('result__content')} ref={resultRef}>
                             {/* Bạn có thể render danh sách kết quả thực tế ở đây */}
-                            {dataset && dataset.map((job, index) => <JobItemList key={index} jobDescription={job} />)}
+                            {dataset &&
+                                dataset.map((description, index) => {
+                                    let Item = JobItemList;
+                                    if (type === 'company') {
+                                        Item = CompanyItem;
+                                    }
+                                    return <Item key={index} description={description} long />;
+                                })}
                         </div>
                         <div className={cx('pagination')}>
                             <Pagination

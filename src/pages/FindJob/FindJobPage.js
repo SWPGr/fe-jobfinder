@@ -23,11 +23,17 @@ function FindJob() {
             const data = await jobService.getAllOptions();
 
             const filters = {
-                experienceId: { name: 'Experience', type: 'Radio', options: data.experiences, grid: true },
+                experienceId: {
+                    name: 'Experience',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data.experiences],
+                    grid: true,
+                },
                 salary: {
                     name: 'Salary',
                     type: 'Radio',
                     options: [
+                        { id: '', name: 'All', salaryMin: '', salaryMax: '' },
                         { id: 1, name: 'Under $80k', salaryMin: 0, salaryMax: 80000 },
                         { id: 2, name: '$80k - $120k', salaryMin: 80000, salaryMax: 120000 },
                         { id: 3, name: '$120k - $160k', salaryMin: 120000, salaryMax: 160000 },
@@ -37,9 +43,18 @@ function FindJob() {
                     ],
                     grid: true,
                 },
-                jobTypeId: { name: 'Job Type', type: 'Radio', options: data.jobTypes, grid: true },
-                educationId: { name: 'Education', type: 'Radio', options: data.educations },
-                jobLevelId: { name: 'Job Level', type: 'Radio', options: data.jobLevels },
+                jobTypeId: {
+                    name: 'Job Type',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data.jobTypes],
+                    grid: true,
+                },
+                educationId: {
+                    name: 'Education',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data.educations],
+                },
+                jobLevelId: { name: 'Job Level', type: 'Radio', options: [{ name: 'All', id: '' }, ...data.jobLevels] },
             };
 
             setJobFilter(filters);
@@ -82,6 +97,7 @@ function FindJob() {
                 onSearch={(formValues) => {
                     setSearchParams(formValues);
                 }}
+                isFindJob
             />
         </div>
     );
