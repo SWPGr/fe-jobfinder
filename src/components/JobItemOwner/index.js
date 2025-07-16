@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobItemOwner.module.scss';
-import {
-  IconDotsVertical,
-  IconCircleX,
-  IconCircleCheck,
-  IconUsers,
-  IconPencil,
-  IconX,
-} from '@tabler/icons-react';
+import { IconDotsVertical, IconCircleX, IconCircleCheck, IconUsers, IconPencil, IconX } from '@tabler/icons-react';
 import { Menu } from '@mantine/core';
 import { Images } from '~/assets';
 import { Button } from '~/components';
@@ -30,6 +23,7 @@ const calcDaysBetween = (startDateStr, endDateStr) => {
 
 // Chuẩn hóa dữ liệu job nhận từ API
 const normalizeJobData = (data) => {
+
   const expiredDateStr = data.expiredDate;
   const createdAtStr = data.createdAt;
 
@@ -106,6 +100,7 @@ const prepareUpdatePayload = (job) => {
 
 // Hàm fetch tổng quát
 const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) => {
+
   try {
     if (deleteFlag) {
       const response = await EmployerService.deleteJob(id);
@@ -122,63 +117,86 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
       alert(`Job with ID ${id} not found.`);
       return null;
     }
-    console.error('Error fetching/updating/deleting job:', error);
-    throw error;
-  }
 };
 
-function JobItemOwner({
-  image = Images.default_image,
-  jobDescription = {},
-  isVIP = false,
-  onDeleteSuccess,
-}) {
-  const [jobData, setJobData] = useState(() => {
-    if (jobDescription && !jobDescription.id && jobDescription.jobId) {
-      return { ...jobDescription, id: jobDescription.jobId };
-    }
-    return jobDescription;
-  });
+function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
+    const [jobData, setJobData] = useState(() => {
+        if (jobDescription && !jobDescription.id && jobDescription.jobId) {
+            return { ...jobDescription, id: jobDescription.jobId };
+        }
+        return jobDescription;
+    });
 
-  const [modalType, setModalType] = useState(null);
-  const [showApplications, setShowApplications] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const isMounted = useRef(true);
+    const [modalType, setModalType] = useState(null);
+    const [showApplications, setShowApplications] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const isMounted = useRef(true);
 
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
+    useEffect(() => {
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+        };
+    }, []);
 
+    // Fetch chi tiết job ngay khi nhận jobDescription có id
+    useEffect(() => {
+        const fetchDetailOnInit = async () => {
+            if (jobDescription && jobDescription.id) {
+                setLoading(true);
+                try {
+                    const data = await fetchJobDetailFake(jobDescription.id);
+                    if (data) {
+                        setJobData(normalizeJobData(data));
+                    } else {
+                        setJobData(jobDescription);
+                    }
+                } catch {
+                    setJobData(jobDescription);
+                } finally {
+                    setLoading(false);
+                }
+            } else if (jobDescription && jobDescription.jobId && !jobDescription.id) {
+                setJobData({ ...jobDescription, id: jobDescription.jobId });
+            } else {
+                setJobData(jobDescription);
+            }
+        };
+        fetchDetailOnInit();
+    }, [jobDescription]);
+
+    const classes = cx('wrapper', { isVIP });
+    const { title, workTime, remainDay, isActive, numberApplications, id } = jobData || {};
+
+    const openModal = async (type) => {
+        if (!id) {
+            alert('Job ID is missing');
+            return;
+        }
   useEffect(() => {
     const fetchDetailOnInit = async () => {
       if (jobDescription && jobDescription.id) {
         setLoading(true);
         try {
-          const data = await fetchJobDetailFake(jobDescription.id);
-          if (data) {
-            setJobData(normalizeJobData(data));
-          } else {
-            setJobData(jobDescription);
-          }
-        } catch {
-          setJobData(jobDescription);
+            const data = await fetchJobDetailFake(id);
+            if (!data) {
+                setLoading(false);
+                return;
+            }
+            if (isMounted.current) {
+                const normalized = normalizeJobData(data);
+                setJobData((prev) => ({
+                    ...prev,
+                    ...normalized,
+                }));
+                setModalType(type);
+            }
+        } catch (error) {
+            alert('Error loading job details.');
         } finally {
-          setLoading(false);
+            if (isMounted.current) setLoading(false);
         }
-      } else if (jobDescription && jobDescription.jobId && !jobDescription.id) {
-        setJobData({ ...jobDescription, id: jobDescription.jobId });
-      } else {
-        setJobData(jobDescription);
-      }
     };
-    fetchDetailOnInit();
-  }, [jobDescription]);
-
-  const classes = cx('wrapper', { isVIP });
-  const { title, workTime, remainDay, isActive, numberApplications, id } = jobData || {};
 
   const openModal = async (type) => {
     if (!id) {
@@ -233,32 +251,32 @@ function JobItemOwner({
     }
   };
 
-  const handleDelete = async () => {
-    if (!id) {
-      alert('Job ID is missing');
-      return;
-    }
-    if (window.confirm('Are you sure you want to delete this job?')) {
-      setLoading(true);
-      try {
-        await fetchJobDetailFake(id, null, true);
-        alert('Job deleted successfully');
-        if (isMounted.current) {
-          setModalType(null);
-          if (typeof onDeleteSuccess === 'function') {
-            onDeleteSuccess(id);
-          }
+    const handleDelete = async () => {
+        if (!id) {
+            alert('Job ID is missing');
+            return;
         }
-      } catch (error) {
-        alert('Error deleting job.');
-      } finally {
-        if (isMounted.current) setLoading(false);
-      }
-    }
-  };
+        if (window.confirm('Are you sure you want to delete this job?')) {
+            setLoading(true);
+            try {
+                await fetchJobDetailFake(id, null, true);
+                alert('Job deleted successfully');
+                if (isMounted.current) {
+                    setModalType(null);
+                    if (typeof onDeleteSuccess === 'function') {
+                        onDeleteSuccess(id);
+                    }
+                }
+            } catch (error) {
+                alert('Error deleting job.');
+            } finally {
+                if (isMounted.current) setLoading(false);
+            }
+        }
+    };
 
-  const closeModal = () => setModalType(null);
-  const closeApplications = () => setShowApplications(false);
+    const closeModal = () => setModalType(null);
+    const closeApplications = () => setShowApplications(false);
 
   return (
     <>
@@ -282,17 +300,18 @@ function JobItemOwner({
           </div>
         </div>
 
-        <div className={cx('status')}>
-          {isActive ? (
-            <p className={cx('active')}>
-              <IconCircleCheck size={20} /> Active
-            </p>
-          ) : (
-            <p className={cx('inactive')}>
-              <IconCircleX size={20} /> Expire
-            </p>
-          )}
-        </div>
+                <div className={cx('status')}>
+                    {isActive ? (
+                        <p className={cx('active')}>
+                            <IconCircleCheck size={20} /> Active
+                        </p>
+                    ) : (
+                        <p className={cx('inactive')}>
+                            <IconCircleX size={20} /> Expire
+                        </p>
+                    )}
+                </div>
+
 
         <div className={cx('applications')}>
           {numberApplications} applications
@@ -327,37 +346,37 @@ function JobItemOwner({
         </div>
       </div>
 
-      {loading && (
-        <div className={cx('loadingOverlay')}>
-          <p>Loading...</p>
-        </div>
-      )}
+            {loading && (
+                <div className={cx('loadingOverlay')}>
+                    <p>Loading...</p>
+                </div>
+            )}
 
-      {modalType && jobData && (
-        <div className={cx('modalOverlay')}>
-          <div className={cx('modalBox')}>
-            <button className={cx('closeBtn')} onClick={closeModal}>
-              ×
-            </button>
+            {modalType && jobData && (
+                <div className={cx('modalOverlay')}>
+                    <div className={cx('modalBox')}>
+                        <button className={cx('closeBtn')} onClick={closeModal}>
+                            ×
+                        </button>
 
-            {modalType === 'view' && <JobDetail key="view" job={jobData} />}
-            {modalType === 'edit' && <JobDetail key="edit" job={jobData} editable onSave={handleSave} />}
-          </div>
-        </div>
-      )}
+                        {modalType === 'view' && <JobDetail key="view" job={jobData} />}
+                        {modalType === 'edit' && <JobDetail key="edit" job={jobData} editable onSave={handleSave} />}
+                    </div>
+                </div>
+            )}
 
-      {showApplications && (
-        <div className={cx('modalOverlay')}>
-          <div className={cx('modalBox')}>
-            <button className={cx('closeBtn')} onClick={closeApplications}>
-              ×
-            </button>
-            <JobApplications />
-          </div>
-        </div>
-      )}
-    </>
-  );
+            {showApplications && (
+                <div className={cx('modalOverlay')}>
+                    <div className={cx('modalBox')}>
+                        <button className={cx('closeBtn')} onClick={closeApplications}>
+                            ×
+                        </button>
+                        <JobApplications />
+                    </div>
+                </div>
+            )}
+        </>
+    );
 }
 
 export default JobItemOwner;

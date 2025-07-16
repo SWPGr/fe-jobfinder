@@ -7,6 +7,13 @@ import { format } from '~/utils';
 const cx = classNames.bind(styles);
 
 function RecommendItem({ title, date, isRecommend = false, onClick = () => {} }) {
+    if (!title) {
+        return <div className={cx('recommend__empty')}>No recommendations available</div>;
+    }
+
+    const handleDelete = (e) => {
+        e.stopPropagation();
+    };
     return (
         <div className={cx('recommend__item')} onClick={onClick}>
             <div className={cx('left')}>
@@ -19,7 +26,12 @@ function RecommendItem({ title, date, isRecommend = false, onClick = () => {} })
                 </div>
             </div>
             {!isRecommend && (
-                <div className={cx('recommend__item-icon', 'clear')}>
+                <div
+                    className={cx('recommend__item-icon', 'delete')}
+                    onClick={(e) => {
+                        handleDelete(e);
+                    }}
+                >
                     <IconX />
                 </div>
             )}
