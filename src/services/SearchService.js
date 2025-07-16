@@ -9,8 +9,18 @@ const searchEmployer = async (params) => {
     }
 };
 
+const searchCandidate = async (params) => {
+    try {
+        const response = await get('job-seekers/search', params);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const searchService = {
     searchEmployer,
+    searchCandidate,
 };
 
 export default searchService;
