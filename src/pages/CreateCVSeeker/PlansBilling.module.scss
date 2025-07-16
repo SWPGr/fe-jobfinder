@@ -15,7 +15,7 @@
 .box {
   background: var(--white);
   border-radius: 0.8rem;
-  box-shadow: 0 0 0.8rem rgb(0 0 0 / 0.05);
+  //box-shadow: 0 0 0.8rem rgb(0 0 0 / 0.05);
   padding: 2rem;
 }
 
@@ -123,8 +123,8 @@
 
 /* Tăng chiều ngang box của Payment */
 .payment-card {
-  max-width: 80rem; /* Tăng chiều ngang container của Payment */
-  margin: 0 auto; /* Đảm bảo căn giữa */
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .latest-invoices {
@@ -246,3 +246,4 @@
     }
   }
 }
+

@@ -10,9 +10,7 @@ const Payment = ({ onClose }) => {
   return (
     <div className={cx('modalOverlay')}>
       <div className={cx('modalContent')}>
-        <button className={cx('closeBtn')} onClick={onClose}>
-          <FaTimes />
-        </button>
+        
         <img src={images} alt="Job Posting Illustration" className={cx('illustration')} />
         <div className={cx('paymentContainer__title')}>Buy Premium Subscription to Post a Job</div>
         <div className={cx('plans')}>

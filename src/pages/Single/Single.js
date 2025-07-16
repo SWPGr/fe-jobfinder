@@ -115,15 +115,15 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
 
               <div className={cx('shareProfile')}>
                 <button className={cx('linkButton', 'noUnderline')} aria-label="Facebook">
-                  <FaFacebookF />
+                  <FaFacebookF className={cx('socialIcon', 'facebook')} />
                   Facebook
                 </button>
                 <button className={cx('linkButton', 'noUnderline')} aria-label="Twitter">
-                  <FaTwitter />
+                  <FaTwitter className={cx('socialIcon', 'twitter')} />
                   Twitter
                 </button>
                 <button className={cx('linkButton', 'noUnderline')} aria-label="Instagram">
-                  <FaInstagram />
+                  <FaInstagram className={cx('socialIcon', 'instagram')} />
                   Instagram
                 </button>
               </div>
@@ -167,34 +167,31 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
             <div className={cx('card')}>
               <h4 className={cx('cardTitle')}>Contact Information</h4>
               <div className={cx('contactRow')}>
-                <IconWorld className={cx('icon')} />
+                <IconWorld className={cx('contactIcon')} />
                 <button
-                  className={cx('linkButton', 'noUnderline')}
+                  className={cx('linkButton', 'noUnderline', 'websiteButton')}
                   onClick={() => openLink(companyInfo.companyWebsite)}
                 >
-                  <p className={cx('contactLabel')}>WEBSITE:</p>
-                  <p className={cx('contactLink')}>
+                  <span className={cx('contactLabel')}>WEBSITE:</span>
+                  <span className={cx('contactLink')}>
                     {companyInfo.companyWebsite || 'N/A'}
-                  </p>
+                  </span>
                 </button>
               </div>
-              <div className={cx('contactRow')}></div>
+
               <div className={cx('contactRow')}>
-                <AiOutlineMail className={cx('icon')} />
-                <div>
-                  <p className={cx('contactLabel')}>EMAIL:</p>
-                  {companyInfo.email ? (
-                    <button
-                      className={cx('linkButton', 'noUnderline')}
-                      onClick={() => (window.location.href = `mailto:${companyInfo.email}`)}
-                    >
-                      {companyInfo.email}
-                    </button>
-                  ) : (
-                    'N/A'
-                  )}
-                </div>
+                <AiOutlineMail className={cx('contactIcon')} />
+                <button
+                  className={cx('linkButton', 'noUnderline', 'emailButton')}
+                  onClick={() => (window.location.href = `mailto:${companyInfo.email}`)}
+                >
+                  <span className={cx('contactLabel')}>EMAIL:</span>
+                  <span className={cx('contactLink')}>
+                    {companyInfo.email || 'N/A'}
+                  </span>
+                </button>
               </div>
+
               <div className={cx('socialLinks')}>
                 {social.facebook && (
                   <button
