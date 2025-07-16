@@ -118,6 +118,16 @@ export const items = {
                 icon: <IconNotebook />,
                 page: <PlansBilling />,
                 link: '/dashboard/plans',
+                children: [
+                    {
+                        title: 'Manage Plans',
+                        icon: <IconSettings />,
+                    },
+                    {
+                        title: 'Payment History',
+                        icon: <CreditCard size={20} />,
+                    },
+                ],
             },
             {
                 title: 'All Companies',

@@ -6,6 +6,7 @@ import styles from './Sidebar.module.scss';
 import { IconLogout } from '@tabler/icons-react';
 import { useAuth } from '~/context/AuthContext';
 import { items } from './Items';
+import { NavLink } from '@mantine/core';
 
 const cx = classNames.bind(styles);
 
@@ -50,23 +51,46 @@ function Sidebar({ setSelectedMenu, className }) {
             <div className={cx('header')}>{itemList?.header}</div>
             <div className={cx('body')}>
                 <div className={cx('top')}>
-                    {itemList.items.map((item, index) => (
-                        <div
-                            key={index}
-                            className={cx('nav-item', { active: active === item.title })}
-                            onClick={() => {
-                                setActive(item.title);
-                                setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
-                                if (item.link) navigate(item.link);
-                            }}
-                        >
-                            <span>
-                                {item.icon}
-                                <div className={cx('title')}>{item.title}</div>
-                            </span>
-                            {item.rightSection && item.rightSection}
-                        </div>
-                    ))}
+                    {itemList.items.map((item, index) =>
+                        item?.children ? (
+                            <NavLink
+                                href="#required-for-focus"
+                                label={item.title}
+                                leftSection={item.icon}
+                                classNames={{
+                                    root: cx('nav-item', { active: active === item.title }),
+                                    label: cx('title-label'),
+                                }}
+                                childrenOffset={28}
+                                defaultOpened
+                                onClick={() => {
+                                    setActive(item.title);
+                                    setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
+                                    if (item.link) navigate(item.link);
+                                }}
+                            >
+                                <NavLink label="First child link" href="#required-for-focus" />
+                                <NavLink label="Second child link" href="#required-for-focus" />
+                                <NavLink label="Third child link" href="#required-for-focus" />
+                            </NavLink>
+                        ) : (
+                            <div
+                                key={index}
+                                className={cx('nav-item', { active: active === item.title })}
+                                onClick={() => {
+                                    setActive(item.title);
+                                    setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
+                                    if (item.link) navigate(item.link);
+                                }}
+                            >
+                                <span>
+                                    {item.icon}
+                                    <div className={cx('title')}>{item.title}</div>
+                                </span>
+                                {item.rightSection && item.rightSection}
+                            </div>
+                        ),
+                    )}
                 </div>
                 <div className={cx('bottom')}>
                     <div
