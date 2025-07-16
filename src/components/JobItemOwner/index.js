@@ -295,13 +295,12 @@ function JobItemOwner({
         </div>
 
         <div className={cx('applications')}>
-          <IconUsers size={20} />
           {numberApplications} applications
         </div>
 
         <div className={cx('action')}>
           <Button className={cx('view-applications')} onClick={() => setShowApplications(true)}>
-            View Applications
+             Applications
           </Button>
           <Menu
             shadow="md"
