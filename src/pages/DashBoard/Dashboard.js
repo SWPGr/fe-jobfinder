@@ -4,7 +4,6 @@ import styles from './Dashboard.module.scss';
 import JobItemApplied from '~/components/JobItemApplied';
 import { Pagination } from '@mantine/core';
 import { Link } from 'react-router-dom';
-import Setting from './Setting/Setting';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 import JobSeekerProfileService from '~/services/JobSeekerProfileService'; // import service profile
 
@@ -16,24 +15,24 @@ function Dashboard1() {
     // State userName
     const [userName, setUserName] = useState('');
 
-    // State cho stats tổng quan
+    // State for summary stats
     const [summary, setSummary] = useState({
         totalAppliedJobs: 0,
         totalSavedJobs: 0,
         totalJobRecommendations: 0,
     });
 
-    // State cho danh sách recently applied jobs
+    // State for recently applied jobs
     const [recentlyAppliedJobs, setRecentlyAppliedJobs] = useState([]);
     const [recentlyTotalPages, setRecentlyTotalPages] = useState(1);
     const [recentlyPage, setRecentlyPage] = useState(1);
     const [recentlyLoading, setRecentlyLoading] = useState(false);
 
-    // State để kiểm tra xem profile đã hoàn thiện hay chưa
+    // State to check if the profile is complete
     const [isProfileComplete, setIsProfileComplete] = useState(true);
     const [profileData, setProfileData] = useState(null);
 
-    // Lấy tên user và thống kê khi component mount
+    // Fetch user profile and statistics when component mounts
     useEffect(() => {
         const fetchUserNameAndSummary = async () => {
             try {
@@ -43,7 +42,7 @@ function Dashboard1() {
                     setProfileData(pData);
                     setUserName(pData.fullName || '');
 
-                    // Kiểm tra xem profile đã hoàn thiện chưa
+                    // Check if profile is complete
                     const isProfileComplete =
                         pData.fullName &&
                         pData.location &&
@@ -51,7 +50,7 @@ function Dashboard1() {
                         pData.experienceId &&
                         pData.educationId &&
                         pData.resumeUrl;
-                    setIsProfileComplete(isProfileComplete); // Set trạng thái profile đã hoàn thiện hay chưa
+                    setIsProfileComplete(isProfileComplete); // Set profile completeness status
                 }
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -63,7 +62,7 @@ function Dashboard1() {
         fetchUserNameAndSummary();
     }, []);
 
-    // Lấy danh sách recently applied jobs khi recentlyPage thay đổi
+    // Fetch recently applied jobs when recentlyPage changes
     useEffect(() => {
         const fetchRecentlyApplied = async () => {
             setRecentlyLoading(true);
@@ -108,7 +107,7 @@ function Dashboard1() {
                 </div>
             </div>
 
-            {/* Chỉ hiển thị cảnh báo nếu profile chưa hoàn thiện */}
+            {/* Show warning if profile is incomplete */}
             {!isProfileComplete && (
                 <div className={cx('profile-warning')}>
                     <div className={cx('warning-text')}>
@@ -147,15 +146,25 @@ function Dashboard1() {
                                 <JobItemApplied
                                     image={job.employer?.avatarUrl || ''}
                                     jobDescription={{
-                                        companyName: job.employer?.companyName || '',
-                                        companyAddress: job.location || job.employer?.location || '',
-                                        jobTitle: job.title || '',
-                                        workTime: job.jobType?.name || '',
+                                        companyName: job.employer?.companyName || '', // Company name
+                                        companyAddress: job.employer?.location || '', // Company address
+                                        jobTitle: job.title || '', // Job title
+                                        workTime: job.jobType?.name || '', // Work time (Full-time/Part-time)
                                         salary:
                                             job.salaryMin && job.salaryMax
                                                 ? `$${job.salaryMin} - $${job.salaryMax}`
-                                                : 'Negotiable',
-                                        dueDate: job.appliedAt ? new Date(job.appliedAt).toLocaleDateString() : '',
+                                                : 'Negotiable', // Salary
+                                        dateApplied: new Date(job.createdAt).toLocaleDateString('en-GB', {
+                                            day: 'numeric',
+                                            month: 'numeric',
+                                        }),
+                                        dueDate: job.expiredDate
+                                            ? new Date(job.expiredDate).toLocaleDateString('en-GB', {
+                                                  day: 'numeric',
+                                                  month: 'numeric',
+                                              })
+                                            : '',
+                                        isActive: job.active, // Job status (active or expired)
                                     }}
                                     isVIP={job.employer?.isPremium || false}
                                 />
@@ -163,7 +172,8 @@ function Dashboard1() {
                         ))
                     )}
                 </div>
-                {/* Phân trang Mantine */}
+
+                {/* Pagination */}
                 <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
                     <Pagination
                         total={recentlyTotalPages}
