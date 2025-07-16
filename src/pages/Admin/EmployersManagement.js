@@ -62,8 +62,8 @@ const EmployerRowDropdown = ({ onAction, employerId }) => {
                 </button>
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
-                <Combobox.Option value="delete" className={cx('dropdownItem', 'dropdownItem--delete')}>
-                    Delete
+                <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                    Block
                 </Combobox.Option>
                 <Combobox.Option value="view" className={cx('dropdownItem')}>
                     View
@@ -107,12 +107,14 @@ const EmployersManagement = () => {
 
     const handleAction = (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
-        if (action === 'delete') {
-            console.log(`Deleting employer ${employerId}`);
-            if (
-                window.confirm(`Are you sure you want to delete employer ${employer.fullName || 'ID ' + employerId}?`)
-            ) {
-                setEmployers((prevEmployers) => prevEmployers.filter((employer) => employer.id !== employerId));
+        if (action === 'block') {
+            console.log(`Blocking employer ${employerId}`);
+            if (window.confirm(`Are you sure you want to block employer ${employer.fullName || 'ID ' + employerId}?`)) {
+                setEmployers((prevEmployers) =>
+                    prevEmployers.map((employer) =>
+                        employer.id === employerId ? { ...employer, isBlocked: true } : employer,
+                    ),
+                );
             }
         } else if (action === 'view') {
             console.log(`Viewing employer ${employerId}`);

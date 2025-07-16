@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import styles from './Application.module.scss';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -37,7 +37,7 @@ const JobApplications = () => {
   const [sortOrder, setSortOrder] = useState('newest');
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
-  const seekerRef = useRef();
+
   const [filters, setFilters] = useState({
     name: '',
     title: '',
@@ -195,6 +195,21 @@ const JobApplications = () => {
           ))
         ) : (
           <div className={styles.noResults}>No results found</div>
+        )}
+
+        {selectedApplicant && (
+          <div className={styles.overlay} onClick={() => setSelectedApplicant(null)}>
+            <div className={styles.seekerBox} onClick={(e) => e.stopPropagation()}>
+              <button
+                className={styles.closeBtn}
+                onClick={() => setSelectedApplicant(null)}
+                aria-label="Close"
+              >
+                &times;
+              </button>
+              <SeekerDetail applicant={selectedApplicant} />
+            </div>
+          </div>
         )}
       </div>
     </div>

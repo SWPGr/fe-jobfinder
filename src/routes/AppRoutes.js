@@ -18,6 +18,7 @@ import {
     Term,
     ResetPassword,
     CustomerSupport,
+    PaymentManagement,
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
@@ -43,6 +44,7 @@ const publicRoutes = [
     // { path: '/unauthorized', component: UnauthorizedPage, layout: null }, // xử lý khi truy cập trái phép
     { path: config.routes.findJob, component: FindJobPage, layout: HeaderOnly },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
+    { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
 ];
 
 // Các route yêu cầu đăng nhập, kèm role tương ứng

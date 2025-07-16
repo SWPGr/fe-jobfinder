@@ -1,243 +1,271 @@
 .container {
-    font-family: var(--font-family);
-    width: 100%;
-    color: var(--gray-900);
-    font-size: 2.4rem;
-    line-height: 1.8;
-    box-sizing: border-box;
+  font-family: var(--font-family);
+  width: 100%;
+  color: var(--gray-900);
+  font-size: 2.4rem;
+  line-height: 1.8;
+  box-sizing: border-box;
 }
+
 .wrapperBox {
-    margin: 0 auto;
+  border-radius: 1.2rem;
+  padding: 3.2rem 4.4rem;
+  background-color: var(--white);
+  box-sizing: border-box;
 }
 
 .header {
-    position: relative; /* cho phép vị trí tuyệt đối bên trong */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--white);
-    padding: 10rem 2rem 1rem;
-    border-radius: 0.8rem;
-    box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.1);
-    margin-bottom: 3rem;
+  position: relative; /* cho phép vị trí tuyệt đối bên trong */
+  height: 200px; /* chiều cao banner */
+  /* padding: 0 2rem 1rem 2rem; */ /* comment hợp lệ */
+  border-radius: 0.8rem;
+  box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.1);
+  margin-bottom: 3rem;
+  overflow: hidden; /* để banner không tràn */
+  display: flex;
+  align-items: flex-end; /* đẩy nội dung xuống đáy */
+  background: var(--white);
 }
-.header .instagramIcon {
-    position: absolute;
-    bottom: 1rem; /* cách đáy 1rem */
-    right: 1rem; /* cách phải 1rem */
-    width: 40px;
-    height: 40px;
-    color: #e4405f; /* màu Instagram */
-    z-index: 10;
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .companyInfo {
-    display: flex;
-    align-items: center;
-    gap: 1.4rem;
+  position: relative;
+  z-index: 2; /* nổi lên trên banner */
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  color: var(--white);
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
 }
 
 .companyLogo {
-    width: 5.2rem;
-    height: 5.2rem;
-    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-    border-radius: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--white);
-    font-weight: 700;
-    font-size: 3rem;
+  width: 5.2rem;
+  height: 5.2rem;
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-radius: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 3rem;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.companyLogo img {
+  border-radius: 1rem;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .companyDetails {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .companyName {
-    font-weight: 600;
-    font-size: 2.8rem;
-    margin-bottom: 0.5rem;
-    color: var(--gray-900);
+  font-weight: 600;
+  font-size: 2.8rem;
+  margin-bottom: 0.5rem;
+  color: inherit; /* kế thừa màu chữ white từ companyInfo */
 }
 
 .industry {
-    color: var(--gray-600);
-    font-size: 1.3rem;
+  color: inherit;
+  font-size: 1.3rem;
 }
 
+/* Phần nội dung chính bên dưới header */
+
 .section {
-    display: flex;
-    gap: 4.5rem;
-    margin-bottom: 4rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 4.5rem;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
 }
 
 .leftColumn {
-    flex: 3;
-    min-width: 300px;
+  flex: 3;
+  min-width: 300px;
 }
 
 .title1 {
-    font-weight: 600;
-    font-size: 2.2rem;
-    margin-bottom: 1.8rem;
-    color: var(--gray-900);
+  font-weight: 600;
+  font-size: 2.2rem;
+  margin-bottom: 1.8rem;
+  color: var(--gray-900);
 }
 
 .description {
-    line-height: 1.8;
-    font-size: 1.3rem;
-    color: var(--gray-700);
-    margin-bottom: 3rem;
+  line-height: 1.8;
+  font-size: 1.3rem;
+  color: var(--gray-700);
+  margin-bottom: 3rem;
 }
 
 .benefitsList {
-    list-style: disc;
-    margin-left: 2rem;
-    margin-bottom: 3rem;
-    color: var(--gray-700);
-    font-size: 1.3rem;
+  list-style: disc;
+  margin-left: 2rem;
+  margin-bottom: 3rem;
+  color: var(--gray-700);
+  font-size: 1.3rem;
 }
 
 .companyVision {
-    margin-bottom: 2rem;
-    color: var(--gray-700);
-    font-size: 1.3rem;
+  margin-bottom: 2rem;
+  color: var(--gray-700);
+  font-size: 1.3rem;
 }
 
 .shareProfile {
-    display: flex;
-    gap: 1.8rem;
+  display: flex;
+  gap: 1.8rem;
 }
 
 .shareProfile button {
-    background: none;
-    border: none;
-    color: #3b5998;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1.3rem;
+  background: none;
+  border: none;
+  color: #3b5998;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.3rem;
 }
 
 .shareProfile button:nth-child(3) {
-    color: #c8232c;
+  color: #c8232c;
 }
 
 .rightColumn {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-    min-width: 240px;
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  min-width: 240px;
 }
 
 .title2 {
-    font-weight: 600;
-    font-size: 1.8rem;
-    margin-bottom: 1.4rem;
-    color: var(--gray-900);
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 1.4rem;
+  color: var(--gray-900);
 }
 
 .card {
-    border: 0.1rem solid var(--gray-200);
-    border-radius: 0.8rem;
-    padding: 2.4rem 2.8rem;
-    font-size: 1.3rem;
-    color: var(--gray-700);
-    background: var(--white);
-    box-sizing: border-box;
+  border: 0.1rem solid var(--gray-200);
+  border-radius: 0.8rem;
+  padding: 2.4rem 2.8rem;
+  font-size: 1.3rem;
+  color: var(--gray-700);
+  background: var(--white);
+  box-sizing: border-box;
 }
+
 .cardTitle {
-    font-weight: 600;
-    margin-bottom: 1.4rem;
-    color: var(--gray-900);
-    font-size: var(--font-size-16px);
+  font-weight: 600;
+  margin-bottom: 1.4rem;
+  color: var(--gray-900);
+  font-size: var(--font-size-16px);
 }
 
 .cardRow {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.4rem;
 }
 
 .cardLabel {
-    font-weight: 600;
-    color: var(--gray-500);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.3rem;
 }
 
 .cardValue {
-    color: var(--gray-400);
-    text-align: right;
-    font-size: 1.3rem;
+  color: var(--gray-400);
+  text-align: right;
+  font-size: 1.3rem;
 }
 
 .contactRow {
-    display: flex;
-    align-items: center;
-    gap: 1.4rem;
-    margin-bottom: 1.4rem;
-    color: var(--gray-900);
-    font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  margin-bottom: 1.4rem;
+  color: var(--gray-900);
+  font-size: 1.3rem;
 }
 
 .contactIcon {
-    width: 2.4rem;
-    height: 2.4rem;
-    fill: var(--blue-500);
+  width: 2.4rem;
+  height: 2.4rem;
+  fill: var(--blue-500);
 }
+
 .contactLabel {
-    text-transform: uppercase;
-    font-size: 1.3rem;
-    color: var(--gray-600);
+  text-transform: uppercase;
+  font-size: 1.3rem;
+  color: var(--gray-600);
 }
-.contactLink {
-    &:hover {
-        text-decoration: underline;
-    }
+
+.contactLink:hover {
+  text-decoration: underline;
 }
 
 .followUs {
-    margin-top: 1.4rem;
-    font-size: 1.3rem;
-    color: var(--gray-600);
+  margin-top: 1.4rem;
+  font-size: 1.3rem;
+  color: var(--gray-600);
 }
 
 .socialLinks {
-    margin-top: 1rem;
-    display: flex;
-    gap: 2rem;
+  margin-top: 1rem;
+  display: flex;
+  gap: 2rem;
 }
 
 .socialLink {
-    color: var(--blue-500);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1.7rem;
+  color: var(--blue-500);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.7rem;
 }
 
-.wrapperBox {
-    border-radius: 1.2rem;
-    padding: 3.2rem 4.4rem;
-    background-color: var(--white);
-    box-sizing: border-box;
+.linkButton {
+  background: none;
+  color: blue;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
-.icon {
-    width: 2.4rem;
-    height: 2.4rem;
-    color: var(--blue-500);
+.linkButton:hover {
+  color: darkblue;
 }
 
-// OPENING JOBS
-
-.openings {
-    width: 100%;
-    height: 500px;
-    border-top: 1px solid var(--gray-100);
+.infoBox {
+  border: 1px solid var(--gray-300);
+  border-radius: 0.8rem;
+  padding: 2rem;
+  background-color: var(--white);
+  box-sizing: border-box;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }

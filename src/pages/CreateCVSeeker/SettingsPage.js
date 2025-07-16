@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconUpload, IconX, IconPhoto } from '@tabler/icons-react';
 import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
+import EmployerService from '~/services/EmployerService';
 
 const cx = classNames.bind(styles);
 
@@ -25,11 +26,15 @@ const SaveNextButton = ({ onClick, style }) => (
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Company Info');
+
   const [form, setForm] = useState({
     organizationType: '',
     industryTypes: '',
     teamSize: '',
     yearOfEstablishment: '',
+    mapLocation: '',
+    phone: '',
+    email: '',
     companyWebsite: '',
     companyVision: '',
   });
@@ -37,9 +42,10 @@ function SettingsPage() {
   const [socialLinks, setSocialLinks] = useState([{ id: 1, type: 'facebook', url: '' }]);
   const [logoFile, setLogoFile] = useState(null);
   const [bannerFile, setBannerFile] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
+  const [bannerUrl, setBannerUrl] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [aboutUs, setAboutUs] = useState('');
-
   const [modalOpened, setModalOpened] = useState(false);
   const [imageName, setImageName] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -47,6 +53,43 @@ function SettingsPage() {
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
 
+  // Load data profile từ API
+  const loadData = async () => {
+    try {
+      let data = await EmployerService.fetchSettingFake();
+      if (Array.isArray(data)) data = data[0];
+      if (data && data.companyName) {
+        setCompanyName(data.companyName || '');
+        setAboutUs(data.description || '');
+
+        setForm({
+          organizationType: data.organizationType || '',
+          industryTypes: data.industryTypes || '',
+          teamSize: data.teamSize || '',
+          yearOfEstablishment: data.yearOfEstablishment ? `${data.yearOfEstablishment}-01-01` : '',
+          mapLocation: data.mapLocation || '',
+          phone: data.phone || '',
+          email: data.email || '',
+          companyWebsite: data.website || '',
+          companyVision: data.companyVision || '',
+        });
+
+        if (data.socialLinks && data.socialLinks.length) setSocialLinks(data.socialLinks);
+        if (data.logoUrl) setLogoUrl(data.logoUrl);
+        if (data.banner) setBannerUrl(data.banner);
+      } else {
+        setCompanyName('Unknown Company');
+      }
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // Xử lý input form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -60,6 +103,12 @@ function SettingsPage() {
     setImagePreview(null);
     setError('');
   };
+  const goToNextTab = () => {
+  const currentIndex = tabsOrder.indexOf(activeTab);
+  if (currentIndex < tabsOrder.length - 1) {
+    setActiveTab(tabsOrder[currentIndex + 1]);
+  }
+};
 
   const handleImageChange = (files) => {
     if (files.length === 0) return;
@@ -70,8 +119,7 @@ function SettingsPage() {
     }
     setImageFile(file);
     setError('');
-    const previewURL = URL.createObjectURL(file);
-    setImagePreview(previewURL);
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const handleAddImage = () => {
@@ -81,8 +129,10 @@ function SettingsPage() {
     }
     if (uploadTarget === 'logo') {
       setLogoFile(imageFile);
+      setLogoUrl(null);
     } else if (uploadTarget === 'banner') {
       setBannerFile(imageFile);
+      setBannerUrl(null);
     }
     setModalOpened(false);
     setImageName('');
@@ -91,33 +141,79 @@ function SettingsPage() {
     setError('');
   };
 
-  const handleSave = () => {
-    console.log({
-      companyName,
-      aboutUs,
-      form,
-      socialLinks,
-      logoFile,
-      bannerFile,
-    });
-  };
-
-  const goToNextTab = () => {
-    const currentIndex = tabsOrder.indexOf(activeTab);
-    if (currentIndex < tabsOrder.length - 1) {
-      setActiveTab(tabsOrder[currentIndex + 1]);
+  const handleSave = async () => {
+  if (!companyName || companyName.trim() === '') {
+    setError('Company name is required');
+    return;
+  }
+  if (!aboutUs || aboutUs.trim() === '') {
+    setError('About Us is required');
+    return;
+  }
+  try {
+    let logoUrlUploaded = logoUrl;
+    if (logoFile) {
+      const formData = new FormData();
+      formData.append('file', logoFile);
+      const res = await EmployerService.uploadFile(formData);
+      logoUrlUploaded = res.data.url;
     }
-  };
 
+    let bannerUrlUploaded = bannerUrl;
+    if (bannerFile) {
+      const formData = new FormData();
+      formData.append('file', bannerFile);
+      const res = await EmployerService.uploadFile(formData);
+      bannerUrlUploaded = res.data.url;
+    }
+
+    // Chuyển đổi yearOfEstablishment sang số nguyên (năm)
+    const year = form.yearOfEstablishment
+      ? parseInt(form.yearOfEstablishment.substring(0, 4), 10)
+      : null;
+
+    const updatedProfile = {
+      companyName: companyName.trim(),
+      description: aboutUs,
+      organizationType: form.organizationType,
+      industryTypes: form.industryTypes,
+      teamSize: form.teamSize,
+      yearOfEstablishment: year,
+      mapLocation: form.mapLocation,
+      phone: form.phone,
+      email: form.email,
+      website: form.companyWebsite,
+      companyVision: form.companyVision,
+      socialLinks: socialLinks,
+      logoUrl: logoUrlUploaded,
+      banner: bannerUrlUploaded,  // lưu ý đổi bannerUrl thành banner
+    };
+
+    console.log('companyName before API call:', updatedProfile.companyName);
+    console.log('updatedProfile:', updatedProfile);
+
+    const response = await EmployerService.fetchSettingFake(updatedProfile);
+    console.log('Company info updated successfully!', response);
+
+    await loadData();
+    setError('');
+  } catch (error) {
+    console.error('Error updating company info:', error);
+    setError('Update failed. Please check your input.');
+  }
+};
+
+
+  // Xử lý social links
   const handleSocialTypeChange = (id, newType) => {
     setSocialLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, type: newType } : link)),
+      prev.map((link) => (link.id === id ? { ...link, type: newType } : link))
     );
   };
 
   const handleSocialUrlChange = (id, newUrl) => {
     setSocialLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)),
+      prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link))
     );
   };
 
@@ -133,13 +229,14 @@ function SettingsPage() {
   return (
     <div className={cx('main')}>
       <div className={cx('title')}>Settings</div>
+
       <div className={cx('tabs')}>
         {tabsOrder.map((tab) => (
           <button
             key={tab}
+            type="button"
             className={cx('tab', { active: activeTab === tab })}
             onClick={() => setActiveTab(tab)}
-            type="button"
           >
             {tab}
           </button>
@@ -148,12 +245,18 @@ function SettingsPage() {
 
       {activeTab === 'Company Info' && (
         <div className={cx('companyInfoTab')}>
-          <div className={cx('sectionTitle')}></div>
           <div className={cx('uploadSection')}>
             <div className={cx('uploadBox')} onClick={() => openUploadModal('logo')}>
               {logoFile ? (
                 <img
                   src={URL.createObjectURL(logoFile)}
+                  alt="logo preview"
+                  className={cx('previewImage')}
+                  style={{ maxHeight: 140, objectFit: 'contain' }}
+                />
+              ) : logoUrl ? (
+                <img
+                  src={logoUrl}
                   alt="logo preview"
                   className={cx('previewImage')}
                   style={{ maxHeight: 140, objectFit: 'contain' }}
@@ -195,6 +298,13 @@ function SettingsPage() {
               {bannerFile ? (
                 <img
                   src={URL.createObjectURL(bannerFile)}
+                  alt="banner preview"
+                  className={cx('previewImage')}
+                  style={{ maxHeight: 140, objectFit: 'contain' }}
+                />
+              ) : bannerUrl ? (
+                <img
+                  src={bannerUrl}
                   alt="banner preview"
                   className={cx('previewImage')}
                   style={{ maxHeight: 140, objectFit: 'contain' }}
@@ -249,6 +359,7 @@ function SettingsPage() {
             <SimpleRichTextEditor
               placeholder="Write down about your company here. Let the candidate know who we are..."
               onChange={(html) => setAboutUs(html)}
+              value={typeof aboutUs === 'string' ? aboutUs : ''}
             />
           </div>
 
@@ -326,7 +437,8 @@ function SettingsPage() {
             <label>Company Vision</label>
             <SimpleRichTextEditor
               placeholder="Tell us about your company vision..."
-              onChange={(value) => setForm((prev) => ({ ...prev, companyVision: value }))}
+              onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
+              value={typeof form.companyVision === 'string' ? form.companyVision : ''}
             />
           </div>
 
@@ -383,6 +495,7 @@ function SettingsPage() {
               </div>
             </div>
           ))}
+
           <button type="button" className={cx('addSocialBtn')} onClick={handleAddSocialLink}>
             + Add New Social Link
           </button>
@@ -404,60 +517,48 @@ function SettingsPage() {
       {activeTab === 'Contact' && (
         <div className={cx('contactTab')}>
           <div className={cx('sectionTitle')}>Contact Information</div>
+
           <div className={cx('formGroup')}>
             <label>Map Location</label>
-            <input type="text" placeholder="Map Location" />
+            <input
+              type="text"
+              placeholder="Map Location"
+              name="mapLocation"
+              value={form.mapLocation || ''}
+              onChange={handleChange}
+            />
           </div>
+
           <div className={cx('phoneGroup')}>
             <label>Phone</label>
-            <div className={cx('phoneInput')}>
-              <select className={cx('countryCodeSelect')} defaultValue="+880">
-                <option value="+880">🇧🇩 +880</option>
-                <option value="+1">🇺🇸 +1</option>
-                <option value="+44">🇬🇧 +44</option>
-              </select>
-              <input type="tel" placeholder="Phone number.." />
-            </div>
+            <input
+              type="tel"
+              placeholder="Phone number.."
+              name="phone"
+              value={form.phone || ''}
+              onChange={handleChange}
+            />
           </div>
+
           <div className={cx('formGroup')}>
             <label>Email</label>
-            <input type="email" placeholder="Email address" />
+            <input
+              type="email"
+              placeholder="Email address"
+              name="email"
+              value={form.email || ''}
+              onChange={handleChange}
+            />
           </div>
-          <button className={cx('saveBtn')}>Save Changes</button>
+
+          <button className={cx('saveBtn')} onClick={handleSave}>
+            Save Changes
+          </button>
 
           <hr className={cx('divider')} />
 
           <div className={cx('sectionTitle')}>Change Password</div>
-          <div className={cx('passwordGroup')}>
-            <div className={cx('inputGroup')}>
-              <label>Current Password</label>
-              <div className={cx('passwordInput')}>
-                <input type="password" placeholder="Password" />
-                <button type="button" aria-label="Toggle visibility">
-                  👁️
-                </button>
-              </div>
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>New Password</label>
-              <div className={cx('passwordInput')}>
-                <input type="password" placeholder="Password" />
-                <button type="button" aria-label="Toggle visibility">
-                  👁️
-                </button>
-              </div>
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>Confirm Password</label>
-              <div className={cx('passwordInput')}>
-                <input type="password" placeholder="Password" />
-                <button type="button" aria-label="Toggle visibility">
-                  👁️
-                </button>
-              </div>
-            </div>
-          </div>
-          <button className={cx('saveBtn')}>Change Password</button>
+          {/* Change password UI here */}
 
           <hr className={cx('divider')} />
 
@@ -476,16 +577,19 @@ function SettingsPage() {
         onClose={() => setModalOpened(false)}
         title="Add Image"
         centered
-        overlayBlur={3}
-        overlayOpacity={0.55}
-        closeButtonLabel="Close modal"
         size="sm"
+        overlayProps={{
+          blur: 3,
+          opacity: 0.55,
+        }}
+        withCloseButton
+        closeButtonProps={{ 'aria-label': 'Close modal' }}
       >
         <TextInput
           label="Image Name"
           placeholder="Enter image name"
           value={imageName}
-          onChange={(event) => setImageName(event.currentTarget.value)}
+          onChange={(e) => setImageName(e.currentTarget.value)}
           mb="md"
           required
           error={error && !imageName.trim() ? error : null}
@@ -547,7 +651,7 @@ function SettingsPage() {
                 ) : (
                   <IconPhoto size={48} color="#868e96" />
                 )}
-                <Text size="md" color="dimmed" align="center">
+                <Text size="md" color="dimmed" style={{ textAlign: 'center' }}>
                   Drag image here or click to select (PNG, JPG, JPEG). Max 12 MB.
                 </Text>
               </>
@@ -561,12 +665,7 @@ function SettingsPage() {
           <Button variant="outline" onClick={() => setModalOpened(false)}>
             Cancel
           </Button>
-          <Button
-            onClick={handleAddImage}
-            color="blue"
-            radius="md"
-            disabled={!imageFile || !imageName.trim()}
-          >
+          <Button onClick={handleAddImage} color="blue" radius="md" disabled={!imageFile || !imageName.trim()}>
             Add Image
           </Button>
         </Group>

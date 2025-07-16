@@ -10,41 +10,6 @@ import JobCategoryPieChart from './components/JobCategoryChart';
 
 const cx = classNames.bind(styles);
 
-const statCardsConfig = [
-    {
-        title: 'Total Job Seekers',
-        icon: <Users size={24} />,
-        key: 'totalJobSeekers',
-        change: '12%',
-        isPositive: true,
-        desc: 'from last month',
-    },
-    {
-        title: 'Total Employers',
-        icon: <Briefcase size={24} />,
-        key: 'totalEmployers',
-        change: '8%',
-        isPositive: true,
-        desc: 'from last month',
-    },
-    {
-        title: 'Active Jobs',
-        icon: <FileText size={24} />,
-        key: 'totalJobs',
-        change: '5%',
-        isPositive: false,
-        desc: 'from last month',
-    },
-    {
-        title: 'Successful Matches',
-        icon: <CheckCircle size={24} />,
-        key: 'totalAppliedJobs',
-        change: '15%',
-        isPositive: true,
-        desc: 'from last month',
-    },
-];
-
 const DashboardOverview = () => {
     const [stats, setStats] = useState({
         totalJobSeekers: '...',
@@ -55,7 +20,53 @@ const DashboardOverview = () => {
     const [activityData, setActivityData] = useState([]);
     const [selectedRange, setSelectedRange] = useState(7);
     const [chartKey, setChartKey] = useState(0);
+    const [statCardData, setStatCardData] = useState(null);
 
+    const statCardsConfig = statCardData
+        ? [
+              {
+                  title: 'Total Job Seekers',
+                  value: statCardData.currentMonthTotalJobSeekers,
+                  change: statCardData.jobSeekersChangePercentage,
+                  status: statCardData.jobSeekersStatus,
+                  icon: <Users size={24} />,
+              },
+              {
+                  title: 'Total Employers',
+                  value: statCardData.currentMonthTotalEmployers,
+                  change: statCardData.employersChangePercentage,
+                  status: statCardData.employersStatus,
+                  icon: <Briefcase size={24} />,
+              },
+              {
+                  title: 'Active Jobs',
+                  value: statCardData.currentMonthTotalJobs,
+                  change: statCardData.jobsChangePercentage,
+                  status: statCardData.jobsStatus,
+                  icon: <FileText size={24} />,
+              },
+              {
+                  title: 'Successful Matches',
+                  value: statCardData.currentMonthTotalAppliedJobs,
+                  change: statCardData.appliedJobsChangePercentage,
+                  status: statCardData.appliedJobsStatus,
+                  icon: <CheckCircle size={24} />,
+              },
+          ]
+        : [];
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem('user'))?.token;
+        if (!token) return;
+
+        statisticsService
+            .fetchMonthOverMonthComparison(token)
+            .then((result) => {
+                setStatCardData(result);
+            })
+            .catch(() => {
+                setStatCardData(null);
+            });
+    }, []);
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('user'))?.token;
         if (!token) return;
@@ -103,16 +114,23 @@ const DashboardOverview = () => {
             <div className={cx('statsGrid')}>
                 {statCardsConfig.map((card) => (
                     <StatCard
-                        key={card.key}
+                        key={card.title}
                         title={card.title}
-                        value={stats[card.key]}
+                        value={card.value}
                         icon={card.icon}
-                        change={card.change}
-                        isPositive={card.isPositive}
-                        desc={card.desc}
+                        change={card.status === 'nochange' ? '--' : `${card.change}%`}
+                        isPositive={card.status === 'increase'}
+                        desc={
+                            card.status === 'nochange'
+                                ? 'no change'
+                                : card.status === 'increase'
+                                ? 'from last month (up)'
+                                : 'from last month (down)'
+                        }
                     />
                 ))}
             </div>
+
             <div className={cx('mainGrid')}>
                 <div className={cx('card-activity')} style={{ minHeight: '380px' }}>
                     <div className={cx('selectRow')}>
