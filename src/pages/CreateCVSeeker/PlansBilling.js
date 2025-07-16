@@ -1,20 +1,10 @@
 import React, { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./PlansBilling.module.scss";
+import Payment from "../Payment/Payment";
 
 const cx = classNames.bind(styles);
 
-const plansBenefits = [
-  { icon: "✓", text: "6 Active Jobs", type: "active" },
-  { icon: "✓", text: "Highlights Job with Colors", type: "active" },
-  { icon: "✓", text: "60 Days Resume Visibility", type: "active" },
-  { icon: "✓", text: "Urgents & Featured Jobs", type: "active" },
-  { icon: "✓", text: "Access & Saved 20 Candidates", type: "active" },
-  { icon: "✓", text: "24/7 Critical Support", type: "active" },
-  { icon: "✗", text: "9 Resume Access", type: "inactive" },
-  { icon: "✗", text: "4 Active Jobs", type: "inactive" },
-  { icon: "✗", text: "21 Days resume visibility", type: "inactive" },
-];
 
 const latestInvoices = [
   { id: "#487441", date: "Dec 7, 2019 23:26", plan: "Premium", amount: "$999 USD" },
@@ -31,27 +21,18 @@ const PlansBilling = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
 
-  // Hàm chuyển đổi định dạng ngày để so sánh
-  const parseDate = (dateStr) => {
-    return new Date(dateStr);
-  };
+  const parseDate = (dateStr) => new Date(dateStr);
 
-  // Lọc invoices dựa trên khoảng thời gian
   const filteredInvoices = latestInvoices.filter(({ date }) => {
     const invoiceDate = parseDate(date);
     const start = startDate ? parseDate(startDate) : null;
     const end = endDate ? parseDate(endDate) : null;
 
-    if (start && end) {
-      return invoiceDate >= start && invoiceDate <= end;
-    }
-    if (start) {
-      return invoiceDate >= start;
-    }
-    if (end) {
-      return invoiceDate <= end;
-    }
+    if (start && end) return invoiceDate >= start && invoiceDate <= end;
+    if (start) return invoiceDate >= start;
+    if (end) return invoiceDate <= end;
     return true;
   });
 
@@ -61,74 +42,19 @@ const PlansBilling = () => {
   const currentInvoices = filteredInvoices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   return (
     <div className={cx("container")}>
       <div className={cx("top-grid")}>
-        <div className={cx("box", "current-plan")}>
-          <div className={cx("title-small")}>Current Plan</div>
-          <div className={cx("plan-name")}>Premium</div>
-          <div className={cx("description")}>
-            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere.
-          </div>
-          <div className={cx("actions")}>
-            <button className={cx("btn", "btn-primary")}>Change Plans</button>
-            <button className={cx("btn", "btn-cancel")}>Cancel Plan</button>
-          </div>
-        </div>
-
         <div className={cx("box", "plan-benefits")}>
-          <div className={cx("title-small")}>Plan Benefits</div>
-          <div className={cx("benefits-text")}>
-            Proin porta enim sit amet placerat finibus. Sed eget laoreet lorem.
-          </div>
+          
           <div className={cx("benefits-list-row")}>
-            <ul className={cx("benefits-list")}>
-              {plansBenefits
-                .filter((b, i) => i < 6)
-                .map(({ icon, text }, index) => (
-                  <li key={index} className={cx("benefit-active")}>
-                    <span className={cx("icon")}>✔</span> {text}
-                  </li>
-                ))}
-            </ul>
-            <ul className={cx("benefits-list")}>
-              {plansBenefits
-                .filter((b, i) => i >= 6)
-                .map(({ icon, text }, index) => (
-                  <li key={index} className={cx("benefit-inactive")}>
-                    <span className={cx("icon")}>✗</span> {text}
-                  </li>
-                ))}
-            </ul>
+            <Payment onClose={() => setShowPayment(false)} />
           </div>
-        </div>
-
-        <div className={cx("box", "next-invoices")}>
-          <div className={cx("amount")}>$59.00 USD</div>
-          <div className={cx("date")}>Nov 28, 2021</div>
-          <div className={cx("package-start")}>Package started: Jan 28, 2021</div>
-          <div className={cx("notice")}>You have to pay this amount of money every month.</div>
-          <button className={cx("btn", "btn-pay")}>Pay Now →</button>
-        </div>
-
-        <div className={cx("box", "payment-card")}>
-          <div className={cx("card-header")}>
-            <div className={cx("card-logo")}>Mastercard</div>
-            <div>
-              <div className={cx("card-name")}>Esther Howard</div>
-              <div className={cx("expire-date")}>Expire date 12/29</div>
-            </div>
-            <button className={cx("btn-edit")}>Edit Card</button>
-          </div>
-          <div className={cx("card-number")}>6714 **** **** ****</div>
         </div>
       </div>
-
       <div className={cx("latest-invoices")}>
         <h3>Latest Invoices</h3>
         <div className={cx("filter-section")}>
@@ -208,6 +134,9 @@ const PlansBilling = () => {
           </button>
         </div>
       </div>
+
+      {/* Hiển thị modal Payment khi showPayment = true */}
+      {showPayment && <Payment onClose={() => setShowPayment(false)} />}
     </div>
   );
 };
