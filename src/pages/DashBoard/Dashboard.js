@@ -29,13 +29,29 @@ function Dashboard1() {
     const [recentlyPage, setRecentlyPage] = useState(1);
     const [recentlyLoading, setRecentlyLoading] = useState(false);
 
+    // State để kiểm tra xem profile đã hoàn thiện hay chưa
+    const [isProfileComplete, setIsProfileComplete] = useState(true);
+    const [profileData, setProfileData] = useState(null);
+
     // Lấy tên user và thống kê khi component mount
     useEffect(() => {
         const fetchUserNameAndSummary = async () => {
             try {
                 const profileRes = await JobSeekerProfileService.getProfile();
                 if (profileRes && profileRes.length > 0) {
-                    setUserName(profileRes[0].fullName || '');
+                    const pData = profileRes[0];
+                    setProfileData(pData);
+                    setUserName(pData.fullName || '');
+
+                    // Kiểm tra xem profile đã hoàn thiện chưa
+                    const isProfileComplete =
+                        pData.fullName &&
+                        pData.location &&
+                        pData.phone &&
+                        pData.experienceId &&
+                        pData.educationId &&
+                        pData.resumeUrl;
+                    setIsProfileComplete(isProfileComplete); // Set trạng thái profile đã hoàn thiện hay chưa
                 }
             } catch (error) {
                 console.error('Error fetching user profile:', error);
@@ -92,23 +108,27 @@ function Dashboard1() {
                 </div>
             </div>
 
-            <div className={cx('profile-warning')}>
-                <div className={cx('warning-text')}>
-                    <span className={cx('warning-title')}>Your profile editing is not completed.</span>
-                    <span className={cx('warning-desc')}>Complete your profile editing & build your custom Resume</span>
-                </div>
+            {/* Chỉ hiển thị cảnh báo nếu profile chưa hoàn thiện */}
+            {!isProfileComplete && (
+                <div className={cx('profile-warning')}>
+                    <div className={cx('warning-text')}>
+                        <span className={cx('warning-title')}>Your profile editing is not completed.</span>
+                        <span className={cx('warning-desc')}>
+                            Complete your profile editing & build your custom Resume
+                        </span>
+                    </div>
 
-                <button className={cx('edit-profile-btn')}>
-                    <Link to={Setting}>Edit Profile →</Link>
-                </button>
-            </div>
+                    <button className={cx('edit-profile-btn')}>
+                        <Link to="/settings">Edit Profile →</Link>
+                    </button>
+                </div>
+            )}
 
             <div className={cx('job-list-container')}>
                 <div className={cx('job-list-header')}>
                     <div>
                         <b>Recently Applied</b>
                     </div>
-                    <button className={cx('view-all-btn')}>View all →</button>
                 </div>
                 <div className={cx('job-table-head')}>
                     <span>Job</span>
