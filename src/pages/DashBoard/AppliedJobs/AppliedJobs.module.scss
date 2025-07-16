@@ -15,9 +15,10 @@
 }
 
 /* Header bảng */
+
 .table-header {
     display: grid;
-    grid-template-columns: 5.5fr 1.8fr 1.6fr 1.3fr;
+    grid-template-columns: 3.7fr 1.8fr 1.6fr 1.3fr;
     font-size: var(--font-size-18px);
     font-weight: 700;
     color: var(--gray-500);
@@ -49,11 +50,11 @@
     font-weight: 700;
 }
 
-.item>* {
+.item > * {
     border-bottom: 1px solid var(--gray-200);
 }
 
-.item>*:last-child {
+.item > *:last-child {
     border-bottom: none;
     margin-bottom: 0;
     padding-bottom: 0;
@@ -168,18 +169,18 @@
         padding: 6px 10px;
         font-size: var(--font-size-11px);
     }
- 
+
     .view-details-btn {
         font-size: var(--font-size-11px);
         padding: 7px 14px;
     }
 }
 
-.job-list{
+.job-list {
     display: flex;
-        flex-direction: column;
-        gap: 2px;
-        /* Khoảng cách giữa các item, chỉnh tuỳ ý */
+    flex-direction: column;
+    gap: 2px;
+    /* Khoảng cách giữa các item, chỉnh tuỳ ý */
 }
 @media screen and (max-width: 480px) {
     .title {

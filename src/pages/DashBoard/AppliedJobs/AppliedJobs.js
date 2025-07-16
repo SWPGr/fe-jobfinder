@@ -29,7 +29,7 @@ function AppliedJobs() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
 
-    const token = getTokenFromLocalStorage(); // SỬ DỤNG ĐÚNG TOKEN
+    const token = getTokenFromLocalStorage(); // Sử dụng token đã có sẵn
 
     // Option cho pageSize
     const pageSizeOptions = [
@@ -73,16 +73,29 @@ function AppliedJobs() {
                     jobs.map((job, index) => (
                         <div key={job.id || index} className={cx('job-item')}>
                             <JobItemApplied
-                                image={job.companyImage || ''}
+                                image={job.employer?.avatarUrl || ''} // Company image
                                 jobDescription={{
-                                    companyName: job.companyName,
-                                    companyAddress: job.companyAddress,
-                                    jobTitle: job.jobTitle,
-                                    workTime: job.workTime,
-                                    salary: job.salary,
-                                    dueDate: job.dueDate,
+                                    companyName: job.employer?.companyName || '', // Company name
+                                    companyAddress: job.employer?.location || '', // Company address
+                                    jobTitle: job.title || '', // Job title
+                                    workTime: job.jobType?.name || '', // Work time (Full-time/Part-time)
+                                    salary:
+                                        job.salaryMin && job.salaryMax
+                                            ? `$${job.salaryMin} - $${job.salaryMax}`
+                                            : 'Negotiable', // Salary
+                                    dateApplied: new Date(job.createdAt).toLocaleDateString('en-GB', {
+                                        day: 'numeric',
+                                        month: 'numeric',
+                                    }),
+                                    dueDate: job.expiredDate
+                                        ? new Date(job.expiredDate).toLocaleDateString('en-GB', {
+                                              day: 'numeric',
+                                              month: 'numeric',
+                                          })
+                                        : '',
+                                    isActive: job.active, // Job status (active or expired)
                                 }}
-                                isVIP={job.isVIP}
+                                isVIP={job.employer?.isPremium || false} // Check if the employer is VIP
                             />
                         </div>
                     ))

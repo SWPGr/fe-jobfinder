@@ -27,7 +27,6 @@ function JobItemList({ image = Images.default_image, description = {}, saved, is
     const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
 
     // save job status
-
     const { companyName, companyAddress, jobTitle, workTime, salary, remainDay, isSave } = description;
     const [save, setSave] = useState(isSave || false);
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;

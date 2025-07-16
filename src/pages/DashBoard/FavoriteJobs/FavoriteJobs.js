@@ -8,8 +8,6 @@ import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 
 const cx = classNames.bind(styles);
 
-// Hàm lấy token đúng format (theo interceptor)
-
 function FavoriteJobs() {
     const [jobs, setJobs] = useState([]);
     const [page, setPage] = useState(1);
@@ -29,34 +27,35 @@ function FavoriteJobs() {
             setLoading(true);
             setError('');
 
-            const data = await JobSeekerDashboardService.getSavedJobs({ page, size });
-            if (data && Array.isArray(data.content)) {
-                setJobs(data.content);
-                setTotalPages(data.totalPages || 1);
-                setSize(data.size || size);
-            } else if (data === null) {
-                setJobs([]);
-                setTotalPages(1);
-                setError('Lỗi mạng hoặc chưa đăng nhập.');
-            } else {
-                setJobs([]);
-                setTotalPages(1);
-                setError('Không có dữ liệu favorite jobs.');
+            try {
+                const data = await JobSeekerDashboardService.getSavedJobs({ page, size });
+                if (data && Array.isArray(data.content)) {
+                    setJobs(data.content);
+                    setTotalPages(data.totalPages || 1);
+                    setSize(data.size || size);
+                } else if (data === null) {
+                    setJobs([]);
+                    setTotalPages(1);
+                    setError('Network error or not logged in.');
+                } else {
+                    setJobs([]);
+                    setTotalPages(1);
+                    setError('No favorite jobs found.');
+                }
+            } catch (err) {
+                setError('Failed to fetch jobs.');
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
+
         fetchJobs();
-        // eslint-disable-next-line
     }, [page, size]);
 
     return (
         <div className={cx('favorite-jobs-wrapper')}>
             <h3 className={cx('title')}>Favorite Jobs</h3>
-            <div className={cx('table-header')}>
-                <span>JOBS</span>
-                <span>STATUS</span>
-                <span>ACTION</span>
-            </div>
+
             <div className={cx('job-list')}>
                 {loading ? (
                     <div>Loading...</div>
@@ -70,7 +69,7 @@ function FavoriteJobs() {
                             <JobItemList
                                 image={job.employer?.avatarUrl || Images.google_image}
                                 description={{
-                                    id: job.id, // <-- quan trọng để mở chi tiết
+                                    id: job.id,
                                     companyName: job.employer?.companyName || '',
                                     companyAddress: job.location || job.employer?.location || '',
                                     jobTitle: job.title || '',
@@ -89,7 +88,9 @@ function FavoriteJobs() {
                                               ),
                                           )
                                         : '',
-                                    isSave: job.isSave, // Nếu có trạng thái đã lưu từ BE
+                                    isSave: job.isSave,
+                                    dateApplied: new Date(job.createdAt).toLocaleDateString(),
+                                    isActive: job.active, // Display active status
                                 }}
                                 isLogin
                                 isVIP={job.employer?.isPremium}
