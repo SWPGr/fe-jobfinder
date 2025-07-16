@@ -18,7 +18,7 @@ const routes = {
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
     jobDetails: '/jobDetails/:id',
-    seekerDetailPage: '/seekerDetailPage',
+    seekerDetailPage: '/seekerDetailPage/:id',
     singleJob: '/singleJob',
     findJob: '/find-job',
     findCandidate: '/find-candidate',

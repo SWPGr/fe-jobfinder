@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 
 function JobItemApplied({ image = Images.default_image, jobDescription = {}, isLogin = false, isVIP = false }) {
     const classes = cx('wrapper', { isLogin, isVIP });
-    const { companyName, companyAddress, jobTitle, workTime, salary, dueDate, isActive } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, createdAt, dueDate, isActive } = jobDescription;
 
     return (
         <div className={classes}>
@@ -61,7 +61,7 @@ function JobItemApplied({ image = Images.default_image, jobDescription = {}, isL
             {/* End content */}
 
             {/* END DATE */}
-            <div className={cx('end-date')}>{dueDate}</div>
+            <div className={cx('create-date')}>{createdAt}</div>
 
             {/* STATUS */}
             <div className={cx('status')}>

@@ -60,7 +60,7 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
                             </>
                         ) : (
                             <Button
-                                to={`/candidate/${fullName}`}
+                                to={`/seekerDetailPage/1`}
                                 rightIcon={<IconArrowRight />}
                                 className={cx('view-resume')}
                             >
@@ -88,7 +88,7 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
                 </div>
                 {long && (
                     <Button
-                        to={`/candidate/${fullName}`}
+                        to={`/seekerDetailPage/1`}
                         blue_lighter
                         rightIcon={<IconArrowRight />}
                         className={cx('view-profile-btn')}
