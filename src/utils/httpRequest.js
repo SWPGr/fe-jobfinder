@@ -53,6 +53,7 @@ httpRequest.interceptors.request.use(
                     config.headers.Authorization = `Bearer ${user.token}`;
                 }
             }
+
         } catch (error) {
             console.warn('Failed to parse user data from localStorage:', error);
         }

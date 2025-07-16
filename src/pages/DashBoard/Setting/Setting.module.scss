@@ -825,63 +825,113 @@
         font-size: var(--font-size-10px);
     }
 }
+/* ===== PERSONAL PROFILE CUSTOM ===== */
 
-//css trang personal bổ sung:
 .personal-form-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
     gap: 56px;
     align-items: flex-start;
     margin-bottom: 32px;
 }
+
+.profile-pic-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 320px;
+}
+
 .profile-pic {
-    width: 270px;
-    height: 270px;
-    border: 2px dashed var(--gray-400);
-    border-radius: var(--border-radius);
+    width: 220px;
+    height: 220px;
+    border: 2.5px dashed #b2c3e0; /* màu xanh nhạt kiểu dropzone */
+    border-radius: 50%;
+    background: #f7fafd;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: var(--gray-600);
-    font-size: var(--font-size-14px);
+    color: #97a3bc;
+    font-size: 15px;
     cursor: pointer;
     text-align: center;
-    transition: border-color var(--transition), color var(--transition);
+    transition: border-color 0.22s, color 0.22s, box-shadow 0.22s, background 0.22s;
+    box-shadow: 0 2px 18px 0 rgba(28, 62, 120, 0.07);
+    overflow: hidden;
+    margin-bottom: 8px;
+    outline: none;
+    position: relative;
+}
+
+.profile-pic:hover,
+.profile-pic:focus {
+    border-color: #2962ef; /* xanh đậm khi hover */
+    color: #2962ef;
+    background: #eaf2ff;
+    box-shadow: 0 2px 28px 0 rgba(41, 98, 239, 0.13);
+}
+
+.profile-pic .upload-icon {
+    font-size: 46px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #b2c3e0;
+    transition: color 0.18s;
+}
+.profile-pic:hover .upload-icon {
+    color: #2962ef;
+}
+
+.profile-pic p {
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #2d3a54;
+    font-size: 17px;
+}
+
+.profile-pic small {
+    font-size: 13px;
+    color: #bfcbe6;
+    font-weight: 400;
 }
 
 .profile-pic img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 50%;
+    display: block;
+    background: #fff;
 }
 
-.profile-pic-col {
-    min-width: 320px;
-    display: flex;
-    margin-bottom: 10px;
-    justify-content: flex-start;
-}
+/* Form Fields Vertical */
 .fields-vertical {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: 20px;
+    width: 100%;
 }
 
+/* Mỗi trường */
 .field-item {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
+/* Label chuẩn form */
 .input-label {
     font-weight: 600;
     margin-bottom: 7px;
     color: #1a2542;
     font-size: 15px;
     letter-spacing: 0.01em;
+    font-family: var(--font-family, 'Inter', sans-serif);
 }
 
+/* Input và Select */
 .field-item input,
 .field-item select {
     width: 100%;
@@ -892,24 +942,26 @@
     border-radius: 7px;
     background: #fff;
     color: #222e3a;
+    font-family: var(--font-family, 'Inter', sans-serif);
     box-sizing: border-box;
-    transition: border-color 0.18s;
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.15s;
 }
-
 .field-item input:focus,
 .field-item select:focus {
     border-color: #2962ef;
+    box-shadow: 0 0 8px #2962ef1a;
 }
 
+/* Nút SAVE */
 .save-btn-wrap {
     display: flex;
     justify-content: flex-end;
     margin-top: 12px;
 }
-
 .save-btn {
     min-width: 160px;
-    background: #2962ef;
+    background: var(--primary-color, #2962ef);
     border: none;
     border-radius: 8px;
     color: #fff;
@@ -917,22 +969,164 @@
     font-size: 16px;
     padding: 12px 0;
     cursor: pointer;
-    transition: background 0.18s;
+    font-family: var(--font-family, 'Inter', sans-serif);
+    transition: background 0.18s, box-shadow 0.12s;
+    box-shadow: 0 1px 10px rgba(44, 62, 100, 0.07);
 }
-
 .save-btn:hover {
-    background: #1541b0;
+    background: var(--primary-color-dark, #153e8c);
 }
 
-@media (max-width: 900px) {
+/* Responsive */
+@media (max-width: 1024px) {
     .personal-form-layout {
-        flex-direction: column;
-        gap: 36px;
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .profile-pic-col {
+        min-width: unset;
+        align-items: center;
+    }
+    .profile-pic {
+        width: 160px;
+        height: 160px;
     }
     .fields-vertical {
         gap: 14px;
     }
-    .save-btn-wrap {
-        justify-content: stretch;
+}
+@media (max-width: 600px) {
+    .personal-form-layout {
+        gap: 12px;
     }
+    .profile-pic {
+        width: 110px;
+        height: 110px;
+    }
+    .fields-vertical {
+        gap: 9px;
+    }
+    .input-label,
+    .field-item input,
+    .field-item select {
+        font-size: 13px;
+    }
+    .save-btn {
+        min-width: 100px;
+        font-size: 14px;
+    }
+}
+
+/* ===== END PERSONAL PROFILE CUSTOM ===== */
+/* Display the file information */
+.file-info {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.file-info p {
+    font-weight: 600;
+    margin: 0;
+}
+
+.file-info small {
+    font-size: 12px;
+    color: #777;
+}
+/* CV / Resume Section */
+.cv-list {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+/* Add CV Section */
+.cv-add {
+    border: 2px dashed var(--gray-400);
+    border-radius: var(--border-radius);
+    width: 230px; /* Increased width for better spacing */
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--gray-600);
+    transition: border-color var(--transition), color var(--transition);
+}
+
+.cv-add:hover {
+    border-color: var(--primary-color-dark);
+    color: var(--primary-color-dark);
+}
+
+.cv-item {
+    background: var(--gray-50);
+    padding: 20px; /* Increased padding for more space */
+    border-radius: var(--border-radius);
+    width: 230px; /* Increased width for better spacing */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    position: relative;
+    box-shadow: var(--box-shadow);
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+/* Increase the font size for file name and size */
+.cv-item .cv-title {
+    font-size: var(--font-size-20px); /* Increased font size */
+    font-weight: 600;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cv-item .cv-size {
+    font-size: var(--font-size-20px); /* Increased font size */
+    color: var(--gray-700);
+    margin: 0;
+}
+
+/* Make the Resume file preview more prominent */
+.file-info {
+    margin-top: 10px;
+    padding: 15px; /* More padding for clarity */
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    font-size: 20px; /* Larger text */
+    color: #333;
+}
+
+.file-info p {
+    font-weight: 600;
+    margin: 0;
+}
+
+.file-info small {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Adjust button size */
+.save-btn {
+    min-width: 180px; /* Increased width */
+    background: var(--primary-color, #2962ef);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 15px 0; /* Increased padding */
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.12s;
+}
+
+.save-btn:hover {
+    background: var(--primary-color-dark, #153e8c);
 }
