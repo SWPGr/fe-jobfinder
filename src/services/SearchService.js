@@ -1,4 +1,4 @@
-import { get } from '~/utils/httpRequest';
+import { get, del } from '~/utils/httpRequest';
 
 const searchEmployer = async (params) => {
     try {
@@ -27,10 +27,30 @@ const searchHistory = async () => {
     }
 };
 
+const deleteSearchHistory = async (id) => {
+    try {
+        const response = await del(`search-history/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const deleteAllSearchHistory = async () => {
+    try {
+        const response = await del('search-history/my');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const searchService = {
     searchEmployer,
     searchCandidate,
     searchHistory,
+    deleteSearchHistory,
+    deleteAllSearchHistory,
 };
 
 export default searchService;
