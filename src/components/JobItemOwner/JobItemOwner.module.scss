@@ -130,22 +130,24 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-right: 7rem;
+    margin-right: 8rem;
 }
 .inactive {
     color: var(--red-500);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-right: 7rem;
+    margin-right: 3rem;
 }
 
 .applications {
     display: flex;
-    align-items: center;
+    flex-direction: column; /* cho nội dung chạy theo cột, xuống dòng */
+    align-items: flex-start; /* canh trái */
     gap: 0.5rem;
-    margin-right: 2rem;
-    width: 200px;
+    margin-right: 8rem;
+    width: 400px;
+    
 
 }
 

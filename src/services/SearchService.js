@@ -18,9 +18,19 @@ const searchCandidate = async (params) => {
     }
 };
 
+const searchHistory = async () => {
+    try {
+        const response = await get('search-history/my');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const searchService = {
     searchEmployer,
     searchCandidate,
+    searchHistory,
 };
 
 export default searchService;

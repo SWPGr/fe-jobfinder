@@ -1,63 +1,84 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
-import { AiOutlineCalendar, AiOutlinePhone, AiOutlineMail } from 'react-icons/ai';
+import { AiOutlineCalendar, AiOutlineMail } from 'react-icons/ai';
 import { IconBuildingCommunity, IconBriefcase, IconUsersGroup, IconWorld } from '@tabler/icons-react';
 import styles from './Single.module.scss';
-import EmployerService from '~/services/EmployerService'; // dùng fetchSettingFake lấy profile
+import EmployerService from '~/services/EmployerService';
 
 const cx = classNames.bind(styles);
 
 export default function Single({ companyInfo: propsCompanyInfo }) {
   const [companyInfo, setCompanyInfo] = useState(propsCompanyInfo);
+  const [loading, setLoading] = useState(!propsCompanyInfo);
 
   useEffect(() => {
+    let isMounted = true;
     if (!propsCompanyInfo) {
       const getCompanyInfo = async () => {
         try {
+          setLoading(true);
           let response = await EmployerService.fetchSettingFake();
           if (response?.result) response = response.result;
           if (Array.isArray(response)) response = response[0];
-          setCompanyInfo(response || {});
+          if (isMounted) {
+            setCompanyInfo(response || {});
+          }
         } catch (error) {
           console.error('Error fetching company info:', error);
+        } finally {
+          if (isMounted) setLoading(false);
         }
       };
       getCompanyInfo();
     }
+    return () => {
+      isMounted = false;
+    };
   }, [propsCompanyInfo]);
 
-  if (!companyInfo) return <div>Loading...</div>;
+  if (loading) return <div className={cx('loading')}>Loading company info...</div>;
+  if (!companyInfo) return <div className={cx('error')}>Company info not available.</div>;
 
-  // Chuẩn hóa social links thành object { facebook: url, twitter: url, ... }
   const social = {};
   if (Array.isArray(companyInfo.socialLinks)) {
     companyInfo.socialLinks.forEach(({ type, url }) => {
-      social[type] = url;
+      if (type && url) social[type.toLowerCase()] = url;
     });
   }
+
+  const openLink = (url) => {
+    if (!url) return;
+    const link = url.startsWith('http') ? url : `https://${url}`;
+    window.open(link, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <div className={cx('container')}>
       <div className={cx('wrapperBox')}>
         <div className={cx('header')}>
-          {/* Banner bao phủ full khung header */}
-          {(companyInfo.banner || companyInfo.bannerUrl) && (
+          {(companyInfo.banner || companyInfo.bannerUrl) ? (
             <img
               src={companyInfo.banner || companyInfo.bannerUrl}
               alt="Company Banner"
               className={cx('bannerImage')}
             />
+          ) : (
+            <div className={cx('bannerPlaceholder')}>No Banner Available</div>
           )}
 
           <div className={cx('companyInfo')}>
             <div className={cx('companyLogo')}>
-              <img
-                src={companyInfo.logoUrl || companyInfo.avatarUrl}
-                alt="Company Logo"
-                width={28}
-                height={28}
-              />
+              {(companyInfo.logoUrl || companyInfo.avatarUrl) ? (
+                <img
+                  src={companyInfo.logoUrl || companyInfo.avatarUrl}
+                  alt="Company Logo"
+                  width={28}
+                  height={28}
+                />
+              ) : (
+                <div className={cx('logoPlaceholder')}>Logo</div>
+              )}
             </div>
             <div className={cx('companyDetails')}>
               <div className={cx('companyName')}>
@@ -93,14 +114,17 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
               </p>
 
               <div className={cx('shareProfile')}>
-                <button className={cx('linkButton')}>
-                  <FaFacebookF /> Facebook
+                <button className={cx('linkButton', 'noUnderline')} aria-label="Facebook">
+                  <FaFacebookF />
+                  Facebook
                 </button>
-                <button className={cx('linkButton')}>
-                  <FaTwitter /> Twitter
+                <button className={cx('linkButton', 'noUnderline')} aria-label="Twitter">
+                  <FaTwitter />
+                  Twitter
                 </button>
-                <button className={cx('linkButton')}>
-                  <FaInstagram /> Instagram
+                <button className={cx('linkButton', 'noUnderline')} aria-label="Instagram">
+                  <FaInstagram />
+                  Instagram
                 </button>
               </div>
             </div>
@@ -145,36 +169,23 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
               <div className={cx('contactRow')}>
                 <IconWorld className={cx('icon')} />
                 <button
-                  className={cx('linkButton')}
-                  onClick={() =>
-                    window.open(
-                      companyInfo.companyWebsite?.startsWith('http')
-                        ? companyInfo.companyWebsite
-                        : `https://${companyInfo.companyWebsite}`,
-                      '_blank'
-                    )
-                  }
+                  className={cx('linkButton', 'noUnderline')}
+                  onClick={() => openLink(companyInfo.companyWebsite)}
                 >
-                  <p className={cx('contactLabel')}>WEBSITE</p>
+                  <p className={cx('contactLabel')}>WEBSITE:</p>
                   <p className={cx('contactLink')}>
                     {companyInfo.companyWebsite || 'N/A'}
                   </p>
                 </button>
               </div>
-              <div className={cx('contactRow')}>
-                <AiOutlinePhone className={cx('icon')} />
-                <span>
-                  <p className={cx('contactLabel')}>PHONE</p>
-                  {companyInfo.phone || 'N/A'}
-                </span>
-              </div>
+              <div className={cx('contactRow')}></div>
               <div className={cx('contactRow')}>
                 <AiOutlineMail className={cx('icon')} />
                 <div>
-                  <p className={cx('contactLabel')}>EMAIL ADDRESS</p>
+                  <p className={cx('contactLabel')}>EMAIL:</p>
                   {companyInfo.email ? (
                     <button
-                      className={cx('linkButton')}
+                      className={cx('linkButton', 'noUnderline')}
                       onClick={() => (window.location.href = `mailto:${companyInfo.email}`)}
                     >
                       {companyInfo.email}
@@ -184,13 +195,11 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                   )}
                 </div>
               </div>
-
-              <div className={cx('followUs')}>Follow us on:</div>
               <div className={cx('socialLinks')}>
                 {social.facebook && (
                   <button
-                    className={cx('linkButton')}
-                    onClick={() => window.open(social.facebook, '_blank')}
+                    className={cx('linkButton', 'noUnderline')}
+                    onClick={() => openLink(social.facebook)}
                     aria-label="Facebook"
                   >
                     <FaFacebookF className={cx('icon')} />
@@ -198,8 +207,8 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 )}
                 {social.twitter && (
                   <button
-                    className={cx('linkButton')}
-                    onClick={() => window.open(social.twitter, '_blank')}
+                    className={cx('linkButton', 'noUnderline')}
+                    onClick={() => openLink(social.twitter)}
                     aria-label="Twitter"
                   >
                     <FaTwitter className={cx('icon')} />
@@ -207,8 +216,8 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 )}
                 {social.instagram && (
                   <button
-                    className={cx('linkButton')}
-                    onClick={() => window.open(social.instagram, '_blank')}
+                    className={cx('linkButton', 'noUnderline')}
+                    onClick={() => openLink(social.instagram)}
                     aria-label="Instagram"
                   >
                     <FaInstagram className={cx('icon')} />
@@ -216,8 +225,8 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 )}
                 {social.youtube && (
                   <button
-                    className={cx('linkButton')}
-                    onClick={() => window.open(social.youtube, '_blank')}
+                    className={cx('linkButton', 'noUnderline')}
+                    onClick={() => openLink(social.youtube)}
                     aria-label="Youtube"
                   >
                     <FaYoutube className={cx('icon')} />
