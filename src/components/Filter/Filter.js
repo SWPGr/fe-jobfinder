@@ -9,7 +9,7 @@ import classNames from 'classnames/bind';
 import styles from './Filter.module.scss';
 
 import { Button } from '~/components';
-import { JobItemList } from '~/components';
+import { JobItemList, CompanyItem, CandidateItem } from '~/components';
 import SearchRecommend from './SearchRecommend';
 
 const cx = classNames.bind(styles);
@@ -63,7 +63,10 @@ function Filter({
     totalHits = 0,
     categoryOptions = [],
     buttonLabel = 'Find Job',
+    searchLabel = 'Enter job title or keyword',
     onSearch = async () => {},
+    isFindJob = false,
+    type = 'job',
 }) {
     const [scroll, scrollTo] = useWindowScroll();
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
@@ -79,15 +82,15 @@ function Filter({
             keyword: searchParams.get('keyword') || '',
             location: searchParams.get('location') || '',
             categoryId: searchParams.get('categoryId') || '',
-            min: searchParams.get('min') || '',
-            max: searchParams.get('max') || '',
+            salaryMin: searchParams.get('salaryMin') || '',
+            salaryMax: searchParams.get('salaryMax') || '',
             page: searchParams.get('page') || '1',
             salary: searchParams.get('salary') || '',
             educationId: searchParams.get('educationId') || '',
             experienceId: searchParams.get('experienceId') || '',
             jobTypeId: searchParams.get('jobTypeId') || '',
             jobLevelId: searchParams.get('jobLevelId') || '',
-            organizationTypeId: searchParams.get('organizationId') || '',
+            organizationId: searchParams.get('organizationId') || '',
             sort: searchParams.get('sort') || '',
         },
     });
@@ -97,15 +100,15 @@ function Filter({
             keyword: searchParams.get('keyword') || '',
             location: searchParams.get('location') || '',
             categoryId: searchParams.get('categoryId') || '',
-            min: searchParams.get('min') || '',
-            max: searchParams.get('max') || '',
+            salaryMin: searchParams.get('salaryMin') || '',
+            salaryMax: searchParams.get('salaryMax') || '',
             page: searchParams.get('page') || '1',
             salary: searchParams.get('salary') || '',
             educationId: searchParams.get('educationId') || '',
             experienceId: searchParams.get('experienceId') || '',
             jobTypeId: searchParams.get('jobTypeId') || '',
             jobLevelId: searchParams.get('jobLevelId') || '',
-            organizationTypeId: searchParams.get('organizationId') || '',
+            organizationId: searchParams.get('organizationId') || '',
             sort: searchParams.get('sort') || '',
         });
 
@@ -129,17 +132,28 @@ function Filter({
     const handleRadioChange = (field, value) => {
         form.setFieldValue(field, value);
         if (field === 'salary') {
-            form.setFieldValue('min', filters['salary'].options[value - 1].min + '');
-            form.setFieldValue('max', filters['salary'].options[value - 1].max + '');
+            if (value === '') {
+                value = 1; // Đảm bảo value là số nếu không có lựa chọn nào được chọn
+            }
+            form.setFieldValue('salaryMin', filters['salary'].options[value - 1]?.salaryMin + '');
+            form.setFieldValue('salaryMax', filters['salary'].options[value - 1]?.salaryMax + '');
+
+            form.setFieldValue('isNegotiable', ''); // Reset isNegotiable
+            // Nếu lựa chọn là 'Negotiable', đánh dấu isNegotiable là true
+            // để có thể xử lý logic khác nếu cần
+
+            if (filters['salary'].options[value - 1]?.name === 'Negotiable') {
+                form.setFieldValue('isNegotiable', true);
+            }
         }
     };
 
     // Xử lý nút tìm kiếm
     const handleSearch = async () => {
-        const entries = Object.entries(form.values).filter(([_, v]) => v !== '');
-        console.log(entries);
+        console.log(form.values);
 
-        await onSearch(entries); // gửi lên FindJob để gọi setSearchParams
+        const entries = Object.entries(form.values).filter(([_, v]) => v !== '' && v !== null && v !== undefined);
+        await onSearch(entries);
     };
 
     // Giữ nguyên giá trị của 'category' và reset các field khác về initialValues
@@ -157,6 +171,8 @@ function Filter({
         console.log(newValues);
 
         form.setValues(newValues);
+
+        setSearchParams({});
     };
 
     const matchSalaryOption = (min, max) => {
@@ -170,7 +186,7 @@ function Filter({
         const newMin = e.target.value;
         const currentMax = form.values.max;
 
-        form.setFieldValue('min', newMin);
+        form.setFieldValue('salaryMin', newMin);
 
         const matchedRadio = matchSalaryOption(newMin, currentMax);
         form.setFieldValue('salary', matchedRadio);
@@ -178,9 +194,9 @@ function Filter({
 
     const handleSalaryMaxChange = (e) => {
         const newMax = e.target.value;
-        const currentMin = form.values.min;
+        const currentMin = form.values.salaryMin;
 
-        form.setFieldValue('max', newMax);
+        form.setFieldValue('salaryMax', newMax);
 
         const matchedRadio = matchSalaryOption(currentMin, newMax);
         form.setFieldValue('salary', matchedRadio);
@@ -210,14 +226,17 @@ function Filter({
             {/* Search inputs */}
             <div className={cx('search__wrapper')}>
                 <div className={cx('search__container')}>
-                    <form className={cx('search-form')} onSubmit={(e) => e.preventDefault()}>
-                        <SearchRecommend form={form} />
+                    <form
+                        className={cx('search-form', { 'not-find-job': !isFindJob })}
+                        onSubmit={(e) => e.preventDefault()}
+                    >
+                        <SearchRecommend form={form} searchLabel={searchLabel} />
 
                         <Select
                             placeholder="Select location"
                             data={locations.map((option) => ({ value: option.name + '', label: option.name }))}
                             value={form.values.location}
-                            // onChange={(_value, option) => form.setFieldValue('location', option.name)}
+                            onChange={(_value, option) => form.setFieldValue('location', option.value)}
                             {...form.getInputProps('location')}
                             leftSection={<IconMapPin />}
                             classNames={{
@@ -229,21 +248,23 @@ function Filter({
                             }}
                         />
 
-                        <Select
-                            placeholder="Select category"
-                            data={categoryOptions.map((option) => ({ value: option.id + '', label: option.name }))}
-                            value={form.values.category}
-                            onChange={(_value, option) => form.setFieldValue('category', option.value)}
-                            {...form.getInputProps('category')}
-                            leftSection={<IconStack2 />}
-                            classNames={{
-                                input: cx('search-input'),
-                                root: cx('search-input-root'),
-                                wrapper: cx('search-input-wrapper'),
-                                option: cx('select-option'),
-                                dropdown: cx('select-dropdown'),
-                            }}
-                        />
+                        {isFindJob && (
+                            <Select
+                                placeholder="Select category"
+                                data={categoryOptions.map((option) => ({ value: option.id + '', label: option.name }))}
+                                value={form.values.category}
+                                onChange={(_value, option) => form.setFieldValue('category', option.value)}
+                                {...form.getInputProps('category')}
+                                leftSection={<IconStack2 />}
+                                classNames={{
+                                    input: cx('search-input'),
+                                    root: cx('search-input-root'),
+                                    wrapper: cx('search-input-wrapper'),
+                                    option: cx('select-option'),
+                                    dropdown: cx('select-dropdown'),
+                                }}
+                            />
+                        )}
 
                         <Button className={cx('find-job')} onClick={handleSearch}>
                             {buttonLabel}
@@ -301,7 +322,7 @@ function Filter({
                                                 {key === 'salary' && (
                                                     <div className={cx('salary-range')}>
                                                         <input
-                                                            {...form.getInputProps('min')}
+                                                            {...form.getInputProps('salaryMin')}
                                                             className={cx('salary-input')}
                                                             type="number"
                                                             min={0}
@@ -311,7 +332,7 @@ function Filter({
                                                         />{' '}
                                                         -{' '}
                                                         <input
-                                                            {...form.getInputProps('max')}
+                                                            {...form.getInputProps('salaryMax')}
                                                             className={cx('salary-input')}
                                                             type="number"
                                                             min={0}
@@ -370,11 +391,22 @@ function Filter({
                         </div>
                         <div className={cx('result__content')} ref={resultRef}>
                             {/* Bạn có thể render danh sách kết quả thực tế ở đây */}
-                            {dataset && dataset.map((job, index) => <JobItemList key={index} jobDescription={job} />)}
+                            {dataset &&
+                                dataset.map((description, index) => {
+                                    let Item = JobItemList;
+                                    if (type === 'company') {
+                                        Item = CompanyItem;
+                                    }
+                                    if (type === 'candidate') {
+                                        Item = CandidateItem;
+                                    }
+                                    return <Item key={index} description={description} long />;
+                                })}
                         </div>
                         <div className={cx('pagination')}>
                             <Pagination
                                 total={totalPages}
+                                value={Number(form.values.page)}
                                 onChange={handlePageChange}
                                 radius="xl"
                                 classNames={{ root: cx('pagination-root'), control: cx('control') }}

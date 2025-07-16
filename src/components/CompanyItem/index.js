@@ -17,10 +17,10 @@ import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
-function CompanyItem({ image = Images.default_image, company_description = {}, isFeatured, saved, long, className }) {
+function CompanyItem({ image = Images.default_image, description = {}, isFeatured, saved, long, className }) {
     const [save, setSave] = useState(saved || false);
 
-    const { company_name, location, openJobs = 3 } = company_description;
+    const { companyName, location, openJobs = 3 } = description;
 
     const classes = cx('wrapper', {
         [className]: className,
@@ -33,8 +33,8 @@ function CompanyItem({ image = Images.default_image, company_description = {}, i
             <div className={cx('header')}>
                 <div className={cx('logo-company')}>
                     <img
-                        src={image}
-                        alt={`${company_name} logo`}
+                        src={description.avatarUrl || image}
+                        alt={`${companyName} logo`}
                         onError={(e) => (e.target.src = Images.default_image)}
                     />
                 </div>{' '}
@@ -44,8 +44,8 @@ function CompanyItem({ image = Images.default_image, company_description = {}, i
                             <p>Featured</p>
                         </span>
                     )}
-                    <Link to={`/company/${company_name}`} className={cx('company-name')}>
-                        {company_name}
+                    <Link to={`/company/${companyName}`} className={cx('company-name')}>
+                        {companyName}
                     </Link>
                     <div className={cx('description')}>
                         <p className={cx('location')}>
@@ -67,7 +67,12 @@ function CompanyItem({ image = Images.default_image, company_description = {}, i
                 <div className={cx('save')} onClick={() => setSave(!save)}>
                     {long ? save ? <IconStarFilled /> : <IconStar /> : save ? <IconBookmarkFilled /> : <IconBookmark />}
                 </div>
-                <Button blue_lighter className={cx('button')} rightIcon={long ? <IconArrowRight /> : null}>
+                <Button
+                    to={`/company/${description.id}`}
+                    blue_lighter
+                    className={cx('button')}
+                    rightIcon={long ? <IconArrowRight /> : null}
+                >
                     Open Position
                 </Button>
             </div>

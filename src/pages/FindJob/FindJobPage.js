@@ -23,23 +23,38 @@ function FindJob() {
             const data = await jobService.getAllOptions();
 
             const filters = {
-                experienceId: { name: 'Experience', type: 'Radio', options: data.experiences, grid: true },
+                experienceId: {
+                    name: 'Experience',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data.experiences],
+                    grid: true,
+                },
                 salary: {
                     name: 'Salary',
                     type: 'Radio',
                     options: [
-                        { id: 1, name: 'Under $80k', min: 0, max: 80000 },
-                        { id: 2, name: '$80k - $120k', min: 80000, max: 120000 },
-                        { id: 3, name: '$120k - $160k', min: 120000, max: 160000 },
-                        { id: 4, name: '$160k - $200k', min: 160000, max: 200000 },
-                        { id: 5, name: '$200k+', min: 200000, max: null },
-                        { id: 6, name: 'Negotiable', min: null, max: null },
+                        { id: '', name: 'All', salaryMin: '', salaryMax: '' },
+                        { id: 2, name: 'Under $80k', salaryMin: 0, salaryMax: 80000 },
+                        { id: 3, name: '$80k - $120k', salaryMin: 80000, salaryMax: 120000 },
+                        { id: 4, name: '$120k - $160k', salaryMin: 120000, salaryMax: 160000 },
+                        { id: 5, name: '$160k - $200k', salaryMin: 160000, salaryMax: 200000 },
+                        { id: 6, name: '$200k+', salaryMin: 200000, salaryMax: '' },
+                        { id: 7, name: 'Negotiable', salaryMin: 0, salaryMax: 0, isNegotiable: true },
                     ],
                     grid: true,
                 },
-                jobTypeId: { name: 'Job Type', type: 'Radio', options: data.jobTypes, grid: true },
-                educationId: { name: 'Education', type: 'Radio', options: data.educations },
-                jobLevelId: { name: 'Job Level', type: 'Radio', options: data.jobLevels },
+                jobTypeId: {
+                    name: 'Job Type',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data.jobTypes],
+                    grid: true,
+                },
+                educationId: {
+                    name: 'Education',
+                    type: 'Radio',
+                    options: [{ name: 'All', id: '' }, ...data.educations],
+                },
+                jobLevelId: { name: 'Job Level', type: 'Radio', options: [{ name: 'All', id: '' }, ...data.jobLevels] },
             };
 
             setJobFilter(filters);
@@ -53,7 +68,7 @@ function FindJob() {
     useEffect(() => {
         const fetchJobs = async () => {
             const cleanedParams = Object.fromEntries(
-                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null),
+                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null && v !== undefined),
             );
 
             const result = await jobService.searchJob(cleanedParams);
@@ -82,6 +97,7 @@ function FindJob() {
                 onSearch={(formValues) => {
                     setSearchParams(formValues);
                 }}
+                isFindJob
             />
         </div>
     );
