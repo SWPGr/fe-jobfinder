@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
-import { TextInput, Avatar } from '@mantine/core';
-import { IconSearch } from '@tabler/icons-react';
-import { IconBellRinging } from '@tabler/icons-react';
 
 import images from '~/assets/Images/index';
 import { useAuth } from '~/context/AuthContext';
@@ -31,11 +28,11 @@ function Header({ className }) {
                     </div>
 
                     <div className={cx('search')}>
-                        <TextInput
+                        {/* <TextInput
                             placeholder="Job title, keyword, company"
                             leftSection={<IconSearch size={20} />}
                             classNames={{ input: cx('input'), section: cx('search-icon') }}
-                        />
+                        /> */}
                     </div>
                 </div>
 

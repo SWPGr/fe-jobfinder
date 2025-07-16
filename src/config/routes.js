@@ -17,7 +17,7 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
-    jobDetails: '/jobDetails/:jobId',
+    jobDetails: '/jobDetails/:id',
     seekerDetailPage: '/seekerDetailPage',
     singleJob: '/singleJob',
     findJob: '/find-job',
