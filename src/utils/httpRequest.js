@@ -57,11 +57,6 @@ httpRequest.interceptors.request.use(
                 }
             }
             // Nếu data là FormData, không thêm Content-Type để trình duyệt tự xử lý
-            if (config.data instanceof FormData) {
-                delete config.headers['Content-Type'];
-            } else {
-                config.headers['Content-Type'] = 'application/json'; // Mặc định cho JSON
-            }
         } catch (error) {
             console.warn('Failed to parse user data from localStorage:', error);
         }

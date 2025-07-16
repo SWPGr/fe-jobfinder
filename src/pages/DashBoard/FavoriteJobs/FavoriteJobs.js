@@ -8,14 +8,16 @@ import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 
 const cx = classNames.bind(styles);
 
+// Hàm lấy token đúng format (theo interceptor)
+
 function FavoriteJobs() {
     const [jobs, setJobs] = useState([]);
     const [page, setPage] = useState(1);
     const [size, setSize] = useState(5);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const token = localStorage.getItem('accessToken');
     const pageSizeOptions = [
         { value: '5', label: '5 / page' },
         { value: '10', label: '10 / page' },
@@ -25,20 +27,28 @@ function FavoriteJobs() {
     useEffect(() => {
         const fetchJobs = async () => {
             setLoading(true);
-            const data = await JobSeekerDashboardService.getSavedJobs({ page, size, token });
-            if (data && data.content) {
+            setError('');
+
+            const data = await JobSeekerDashboardService.getSavedJobs({ page, size });
+            if (data && Array.isArray(data.content)) {
                 setJobs(data.content);
                 setTotalPages(data.totalPages || 1);
                 setSize(data.size || size);
+            } else if (data === null) {
+                setJobs([]);
+                setTotalPages(1);
+                setError('Lỗi mạng hoặc chưa đăng nhập.');
             } else {
                 setJobs([]);
                 setTotalPages(1);
+                setError('Không có dữ liệu favorite jobs.');
             }
             setLoading(false);
         };
         fetchJobs();
-    }, [page, size, token]);
-    console.log(jobs);
+        // eslint-disable-next-line
+    }, [page, size]);
+
     return (
         <div className={cx('favorite-jobs-wrapper')}>
             <h3 className={cx('title')}>Favorite Jobs</h3>
@@ -50,6 +60,8 @@ function FavoriteJobs() {
             <div className={cx('job-list')}>
                 {loading ? (
                     <div>Loading...</div>
+                ) : error ? (
+                    <div style={{ padding: 32, textAlign: 'center', color: 'red' }}>{error}</div>
                 ) : jobs.length === 0 ? (
                     <div style={{ padding: 32, textAlign: 'center', color: '#888' }}>No favorite jobs found.</div>
                 ) : (
@@ -57,7 +69,8 @@ function FavoriteJobs() {
                         <div key={job.id || index} className={cx('job-item')}>
                             <JobItemList
                                 image={job.employer?.avatarUrl || Images.google_image}
-                                jobDescription={{
+                                description={{
+                                    id: job.id, // <-- quan trọng để mở chi tiết
                                     companyName: job.employer?.companyName || '',
                                     companyAddress: job.location || job.employer?.location || '',
                                     jobTitle: job.title || '',
@@ -65,6 +78,8 @@ function FavoriteJobs() {
                                     salary:
                                         job.salaryMin && job.salaryMax
                                             ? `$${job.salaryMin} - $${job.salaryMax}`
+                                            : job.salaryMin
+                                            ? `$${job.salaryMin}`
                                             : 'Negotiable',
                                     remainDay: job.expiredDate
                                         ? Math.max(
@@ -74,6 +89,7 @@ function FavoriteJobs() {
                                               ),
                                           )
                                         : '',
+                                    isSave: job.isSave, // Nếu có trạng thái đã lưu từ BE
                                 }}
                                 isLogin
                                 isVIP={job.employer?.isPremium}
