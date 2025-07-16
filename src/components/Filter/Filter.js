@@ -9,7 +9,7 @@ import classNames from 'classnames/bind';
 import styles from './Filter.module.scss';
 
 import { Button } from '~/components';
-import { JobItemList, CompanyItem } from '~/components';
+import { JobItemList, CompanyItem, CandidateItem } from '~/components';
 import SearchRecommend from './SearchRecommend';
 
 const cx = classNames.bind(styles);
@@ -132,9 +132,17 @@ function Filter({
     const handleRadioChange = (field, value) => {
         form.setFieldValue(field, value);
         if (field === 'salary') {
-            form.setFieldValue('salaryMin', filters['salary'].options[value - 1].salaryMin + '');
-            form.setFieldValue('salaryMax', filters['salary'].options[value - 1].salaryMax + '');
-            if (filters['salary'].options[value - 1].name === 'Negotiable') {
+            if (value === '') {
+                value = 1; // Đảm bảo value là số nếu không có lựa chọn nào được chọn
+            }
+            form.setFieldValue('salaryMin', filters['salary'].options[value - 1]?.salaryMin + '');
+            form.setFieldValue('salaryMax', filters['salary'].options[value - 1]?.salaryMax + '');
+
+            form.setFieldValue('isNegotiable', ''); // Reset isNegotiable
+            // Nếu lựa chọn là 'Negotiable', đánh dấu isNegotiable là true
+            // để có thể xử lý logic khác nếu cần
+
+            if (filters['salary'].options[value - 1]?.name === 'Negotiable') {
                 form.setFieldValue('isNegotiable', true);
             }
         }
@@ -142,9 +150,9 @@ function Filter({
 
     // Xử lý nút tìm kiếm
     const handleSearch = async () => {
-        const entries = Object.entries(form.values).filter(([_, v]) => v !== '');
-        console.log(entries);
+        console.log(form.values);
 
+        const entries = Object.entries(form.values).filter(([_, v]) => v !== '' && v !== null && v !== undefined);
         await onSearch(entries);
     };
 
@@ -388,6 +396,9 @@ function Filter({
                                     let Item = JobItemList;
                                     if (type === 'company') {
                                         Item = CompanyItem;
+                                    }
+                                    if (type === 'candidate') {
+                                        Item = CandidateItem;
                                     }
                                     return <Item key={index} description={description} long />;
                                 })}

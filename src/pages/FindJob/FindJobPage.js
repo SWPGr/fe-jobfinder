@@ -34,12 +34,12 @@ function FindJob() {
                     type: 'Radio',
                     options: [
                         { id: '', name: 'All', salaryMin: '', salaryMax: '' },
-                        { id: 1, name: 'Under $80k', salaryMin: 0, salaryMax: 80000 },
-                        { id: 2, name: '$80k - $120k', salaryMin: 80000, salaryMax: 120000 },
-                        { id: 3, name: '$120k - $160k', salaryMin: 120000, salaryMax: 160000 },
-                        { id: 4, name: '$160k - $200k', salaryMin: 160000, salaryMax: 200000 },
-                        { id: 5, name: '$200k+', salaryMin: 200000, salaryMax: '' },
-                        { id: 6, name: 'Negotiable', salaryMin: '', salaryMax: '', isNegotiable: true },
+                        { id: 2, name: 'Under $80k', salaryMin: 0, salaryMax: 80000 },
+                        { id: 3, name: '$80k - $120k', salaryMin: 80000, salaryMax: 120000 },
+                        { id: 4, name: '$120k - $160k', salaryMin: 120000, salaryMax: 160000 },
+                        { id: 5, name: '$160k - $200k', salaryMin: 160000, salaryMax: 200000 },
+                        { id: 6, name: '$200k+', salaryMin: 200000, salaryMax: '' },
+                        { id: 7, name: 'Negotiable', salaryMin: 0, salaryMax: 0, isNegotiable: true },
                     ],
                     grid: true,
                 },
@@ -68,7 +68,7 @@ function FindJob() {
     useEffect(() => {
         const fetchJobs = async () => {
             const cleanedParams = Object.fromEntries(
-                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null),
+                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null && v !== undefined),
             );
 
             const result = await jobService.searchJob(cleanedParams);
