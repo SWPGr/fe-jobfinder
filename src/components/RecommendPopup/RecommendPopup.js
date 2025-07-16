@@ -3,10 +3,12 @@ import styles from './RecommendPopup.module.scss';
 import Tippy from '@tippyjs/react/headless';
 import { useSearchParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import { PopperWrapper } from '..';
 import RecommendItem from './RecommendItem';
 import SuggestedItem from './SuggestedItem';
+import { searchService } from '~/services';
 
 const cx = classNames.bind(styles);
 const defaultFn = () => {
@@ -30,6 +32,7 @@ function RecommendPopup({
     const classes = cx('recommend__container', {
         [className]: className,
     });
+    const [history, setHistory] = useState([]);
 
     const handleOnClick = (title) => {
         if (forwardLink) {
@@ -41,6 +44,22 @@ function RecommendPopup({
         }
         handleHidePopup();
     };
+
+    useEffect(() => {
+        const fetchSearchHistory = async () => {
+            try {
+                const response = await searchService.searchHistory();
+                if (response && response.result) {
+                    setHistory(response.result);
+                }
+            } catch (error) {
+                console.error('Failed to fetch search history:', error);
+            }
+        };
+
+        fetchSearchHistory();
+    }, []);
+
     return (
         <Tippy
             delay={[0, 700]}
@@ -59,7 +78,9 @@ function RecommendPopup({
                                         <p className={cx('recommend__title')}>
                                             {items.length > 0 ? 'Suggestions' : 'Recent search keywords'}
                                         </p>
-                                        {!(items.length > 0) && <p className={cx('recommend__clear')}>Clear all</p>}
+                                        {!items.length > 0 && history.length > 0 && (
+                                            <p className={cx('recommend__clear')}>Clear all</p>
+                                        )}
                                     </div>
                                     <div className={cx('recommend__list')}>
                                         {items.length > 0 ? (
@@ -73,18 +94,18 @@ function RecommendPopup({
                                             ))
                                         ) : (
                                             <>
-                                                <RecommendItem
-                                                    title={'software engineer'}
-                                                    onClick={(title) => handleOnClick(items)}
-                                                />
-                                                <RecommendItem
-                                                    title={'software engineer'}
-                                                    onClick={(title) => handleOnClick(items)}
-                                                />
-                                                <RecommendItem
-                                                    title={'software engineer'}
-                                                    onClick={(title) => handleOnClick(items)}
-                                                />
+                                                {history.length > 0 ? (
+                                                    history.map((item, index) => (
+                                                        <RecommendItem
+                                                            title={item.searchQuery}
+                                                            date={item.createdAt}
+                                                            key={index}
+                                                            onClick={() => handleOnClick(item.searchQuery)}
+                                                        />
+                                                    ))
+                                                ) : (
+                                                    <p className={cx('recommend__empty')}>No recent search keywords</p>
+                                                )}
                                             </>
                                         )}
                                     </div>
