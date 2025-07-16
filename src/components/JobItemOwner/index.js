@@ -19,18 +19,38 @@ import EmployerService from '~/services/EmployerService';
 
 const cx = classNames.bind(styles);
 
-// Hàm chuẩn hóa dữ liệu job từ API để tránh lỗi React khi render object
-const normalizeJobData = (data) => {
-  const expiredDateStr = data.expiredDate; // định dạng yyyy-MM-dd hoặc ISO string
-  let isActive = false;
+// Hàm tính số ngày giữa 2 ngày
+const calcDaysBetween = (startDateStr, endDateStr) => {
+  if (!startDateStr || !endDateStr) return null;
+  const start = new Date(startDateStr);
+  const end = new Date(endDateStr);
+  const diffTime = end - start;
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
 
+// Chuẩn hóa dữ liệu job nhận từ API
+const normalizeJobData = (data) => {
+  const expiredDateStr = data.expiredDate;
+  const createdAtStr = data.createdAt;
+
+  let isActive = false;
   if (expiredDateStr) {
     const today = new Date();
     const expiredDate = new Date(expiredDateStr);
-
-    // Nếu ngày hết hạn >= ngày hôm nay thì job còn active
     isActive = expiredDate >= today;
   }
+
+  const workTime = createdAtStr ? calcDaysBetween(createdAtStr, new Date().toISOString()) : null;
+  const remainDay = (expiredDateStr && new Date(expiredDateStr) > new Date())
+    ? calcDaysBetween(new Date().toISOString(), expiredDateStr)
+    : 0;
+
+  // Chuẩn hóa các trường category, jobLevel, jobType nếu là object hoặc id
+  const normalizeField = (field) => {
+    if (!field) return null;
+    if (typeof field === 'object') return field;
+    return { id: field, name: '' };
+  };
 
   return {
     id: data.id,
@@ -41,11 +61,14 @@ const normalizeJobData = (data) => {
     salaryMax: data.salaryMax || 0,
     responsibility: data.responsibility || '',
     expiredDate: expiredDateStr,
-    category: data.category || null,
-    jobLevel: data.jobLevel || null,
-    jobType: data.jobType || null,
+    createdAt: createdAtStr,
+    category: normalizeField(data.category),
+    jobLevel: normalizeField(data.jobLevel),
+    jobType: normalizeField(data.jobType),
     isActive,
-    numberApplications: data.numberApplications || 0,  // Thêm trường số ứng viên
+    numberApplications: data.numberApplications || 0,
+    workTime,
+    remainDay,
     company: data.employer
       ? {
           name: data.employer.companyName || '',
@@ -64,7 +87,24 @@ const normalizeJobData = (data) => {
   };
 };
 
-// Hàm fetch tổng quát ngoài component, bổ sung bắt lỗi 404 riêng
+// Hàm chuẩn hóa dữ liệu trước khi gửi update lên backend
+const prepareUpdatePayload = (job) => {
+  return {
+    title: job.title,
+    description: job.description,
+    location: job.location,
+    salaryMin: job.salaryMin,
+    salaryMax: job.salaryMax,
+    responsibility: job.responsibility,
+    expiredDate: job.expiredDate,
+    categoryId: job.category?.id || job.category || null,
+    jobLevelId: job.jobLevel?.id || job.jobLevel || null,
+    jobTypeId: job.jobType?.id || job.jobType || null,
+    // Thêm các trường khác nếu backend yêu cầu
+  };
+};
+
+// Hàm fetch tổng quát
 const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) => {
   try {
     if (deleteFlag) {
@@ -72,8 +112,7 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
       return response.data || {};
     }
     if (updatedData) {
-      const normalizedData = normalizeJobData(updatedData);
-      const response = await EmployerService.updateJob(id, normalizedData);
+      const response = await EmployerService.updateJob(id, updatedData);
       return response.data || {};
     }
     const response = await EmployerService.getJobDetail(id);
@@ -113,7 +152,6 @@ function JobItemOwner({
     };
   }, []);
 
-  // Fetch chi tiết job ngay khi nhận jobDescription có id
   useEffect(() => {
     const fetchDetailOnInit = async () => {
       if (jobDescription && jobDescription.id) {
@@ -176,7 +214,9 @@ function JobItemOwner({
     }
     setLoading(true);
     try {
-      const data = await fetchJobDetailFake(id, updatedJob, false);
+      // Chuẩn hóa dữ liệu gửi lên API
+      const payload = prepareUpdatePayload(updatedJob);
+      const data = await fetchJobDetailFake(id, payload, false);
       if (!data) {
         setLoading(false);
         alert('Failed to save job because job does not exist.');
@@ -232,8 +272,12 @@ function JobItemOwner({
               <div className={cx('title')}>{title}</div>
             </div>
             <div className={cx('bottom')}>
-              <div className={cx('work-time')}>{workTime}</div>
-              <div className={cx('remain-date')}>{remainDay} days remaining</div>
+              <div className={cx('work-time')}>
+                {workTime !== null ? `${workTime} days posted` : ''}
+              </div>
+              <div className={cx('remain-date')}>
+                {remainDay !== null ? `${remainDay} days remaining` : ''}
+              </div>
             </div>
           </div>
         </div>
@@ -251,13 +295,12 @@ function JobItemOwner({
         </div>
 
         <div className={cx('applications')}>
-          <IconUsers size={20} />
           {numberApplications} applications
         </div>
 
         <div className={cx('action')}>
           <Button className={cx('view-applications')} onClick={() => setShowApplications(true)}>
-            View Applications
+             Applications
           </Button>
           <Menu
             shadow="md"
