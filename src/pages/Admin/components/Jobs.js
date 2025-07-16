@@ -71,6 +71,7 @@ const Jobs = () => {
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [loading, setLoading] = useState(true); // Add loading state
 
     const handleAction = (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
@@ -84,7 +85,7 @@ const Jobs = () => {
     };
 
     const loadMoreJobs = () => {
-        setVisibleJobs(visibleJobs + 10);
+        setVisibleJobs((prev) => prev + 10);
     };
 
     const closeModal = () => {
@@ -93,20 +94,35 @@ const Jobs = () => {
     };
 
     const handleSave = (updatedJob) => {
-        setJobs(jobs.map((j) => (j.id === updatedJob.id ? updatedJob : j)));
+        setJobs((prevJobs) => prevJobs.map((j) => (j.id === updatedJob.id ? updatedJob : j)));
         closeModal();
     };
 
     useEffect(() => {
         const fetchJobs = async () => {
-            const data = await statisticsService.fetchAllJobs();
-            console.log('Jobs from API:', data);
-            setJobs(data || []);
+            setLoading(true); // Start loading
+            try {
+                const data = await statisticsService.fetchAllJobs();
+                console.log('Jobs from API:', data); // Debug API response
+                // Extract the content array from the response
+                const jobArray = data?.content || [];
+                setJobs(jobArray);
+                console.log('Jobs state after set:', jobArray); // Debug state update
+            } catch (err) {
+                console.error('Error fetching jobs:', err);
+                setJobs([]); // Default to empty array on error
+            } finally {
+                setLoading(false); // Stop loading
+            }
         };
         fetchJobs();
     }, []);
 
     const filteredJobs = React.useMemo(() => {
+        if (!Array.isArray(jobs)) {
+            console.warn('Jobs is not an array:', jobs); // Warn if jobs is invalid
+            return [];
+        }
         if (!searchTerm) return jobs;
         const s = searchTerm.toLowerCase();
         return jobs.filter(
@@ -117,7 +133,11 @@ const Jobs = () => {
         );
     }, [searchTerm, jobs]);
 
-    const jobsToDisplay = filteredJobs.slice(0, visibleJobs);
+    const jobsToDisplay = filteredJobs.slice(0, visibleJobs); // Safe to use slice now
+
+    if (loading) {
+        return <div>Loading...</div>; // Show loading state while fetching
+    }
 
     return (
         <div className={cx('managementWrapper')}>
@@ -135,7 +155,7 @@ const Jobs = () => {
                     />
                 </div>
                 <div className={cx('toolbar-actions')}>
-                    <button className={cx('primary')}> Add New Job</button>
+                    <button className={cx('primary')}>Add New Job</button>
                 </div>
             </div>
             <div className={cx('tableWrapper')}>
@@ -153,46 +173,52 @@ const Jobs = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobsToDisplay.map((job) => (
-                            <tr key={job.id}>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={cx('avatarCircle')}>
-                                            {job.employer?.email?.charAt(0) || 'U'}
+                        {jobsToDisplay.length > 0 ? (
+                            jobsToDisplay.map((job) => (
+                                <tr key={job.id}>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <div className={cx('avatarCircle')}>
+                                                {job.employer?.email?.charAt(0) || 'U'}
+                                            </div>
+                                            <div>
+                                                <div className={cx('job-title')}>{job.title}</div>
+                                                <div className={cx('job-company')}>{job.employer?.email}</div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div className={cx('job-title')}>{job.title}</div>
-                                            <div className={cx('job-company')}>{job.employer?.email}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>{job.location}</td>
-                                <td>
-                                    <span className={cx('job-type')}>{job.jobType?.name || '--'}</span>
-                                </td>
-                                <td>
-                                    ${job.salaryMin} - ${job.salaryMax}
-                                </td>
-                                <td>{job.jobApplicationCounts || 0}</td>
-                                <td>
-                                    <span
-                                        className={cx('statusText', {
-                                            active: job.employer.isPremium,
-                                            inactive: !job.employer.isPremium,
-                                        })}
-                                    >
-                                        {job.employer.isPremium ? 'Premium' : 'Normal'}
-                                    </span>
-                                </td>
-                                <td>{job.createdAt?.split(' ')[0]}</td>
-                                <td>
-                                    <JobRowDropdown
-                                        onAction={(action) => handleAction(action, job.id)}
-                                        jobId={job.id}
-                                    />
-                                </td>
+                                    </td>
+                                    <td>{job.location}</td>
+                                    <td>
+                                        <span className={cx('job-type')}>{job.jobType?.name || '--'}</span>
+                                    </td>
+                                    <td>
+                                        ${job.salaryMin} - ${job.salaryMax}
+                                    </td>
+                                    <td>{job.jobApplicationCounts || 0}</td>
+                                    <td>
+                                        <span
+                                            className={cx('statusText', {
+                                                active: job.employer.isPremium,
+                                                inactive: !job.employer.isPremium,
+                                            })}
+                                        >
+                                            {job.employer.isPremium ? 'Premium' : 'Normal'}
+                                        </span>
+                                    </td>
+                                    <td>{job.createdAt?.split(' ')[0]}</td>
+                                    <td>
+                                        <JobRowDropdown
+                                            onAction={(action) => handleAction(action, job.id)}
+                                            jobId={job.id}
+                                        />
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="8">No jobs available</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
                 {filteredJobs.length > visibleJobs && (
