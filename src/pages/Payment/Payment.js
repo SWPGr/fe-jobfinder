@@ -25,7 +25,9 @@ const Payment = ({ onClose }) => {
               <li><FaCheck /> 10 Days Resume Visibility</li>
               <li><FaCheck /> 24/7 Critical Support</li>
             </ul>
-            <button><FaArrowRight /> Choose Plan</button>
+            <button>
+  Choose Plan <FaArrowRight />
+</button>
           </div>
           <div className={cx('plan', 'recommended')}>
             <div className={cx('plan__title')}>STANDARD</div>
@@ -39,7 +41,9 @@ const Payment = ({ onClose }) => {
               <li><FaCheck /> 24/7 Critical Support</li>
             </ul>
             <span>Recommendation</span>
-            <button><FaArrowRight /> Choose Plan</button>
+            <button>
+  Choose Plan <FaArrowRight />
+</button>
           </div>
           <div className={cx('plan')}>
             <div className={cx('plan__title')}>PREMIUM</div>
@@ -52,7 +56,9 @@ const Payment = ({ onClose }) => {
               <li><FaCheck /> 30 Days Resume Visibility</li>
               <li><FaCheck /> 24/7 Critical Support</li>
             </ul>
-            <button><FaArrowRight /> Choose Plan</button>
+            <button>
+  Choose Plan <FaArrowRight />
+</button>
           </div>
         </div>
       </div>

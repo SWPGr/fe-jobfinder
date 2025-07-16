@@ -30,13 +30,14 @@
   border: 0.1rem solid var(--border-color);
   padding: 2rem;
   border-radius: 0.8rem;
-  width: 25rem;
+  width: 29rem;
   background: var(--white);
-  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2rem 3rem rgba(0, 0, 0, 0.1);
   position: relative;
   box-sizing: border-box;
   color: var(--gray-900);
   font-family: var(--font-family);
+  
 }
 
 .plan__title {
@@ -84,7 +85,19 @@
   font-weight: 600;
   transition: background-color 0.2s ease-in-out;
   font-family: var(--font-family);
+  width: 15rem;
+  display: flex;
+  justify-content: space-between; /* Căn giữa nội dung */
+  align-items: center;           /* Căn chỉnh các phần tử theo chiều dọc */
+  margin-left: 4.5rem;
+  margin-top: 3rem;
 }
+
+.plan button svg {
+  margin-left: 0.8rem; /* Khoảng cách giữa văn bản và logo */
+  flex-shrink: 0;      /* Đảm bảo logo không bị co lại */
+}
+
 
 .plan button:hover {
   background-color: var(--primary-color-dark);
@@ -112,8 +125,9 @@
 .illustration {
   display: block;      // chuyển ảnh thành block để margin auto hoạt động
   margin: 0 auto;      // canh giữa ngang
-  max-width: 100%;     // tránh ảnh tràn container
+  max-width:45%;     // tránh ảnh tràn container
   height: auto;        // giữ tỉ lệ ảnh
+
 }
 .paymentContainer__title{
   text-align: center;

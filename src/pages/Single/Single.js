@@ -99,15 +99,6 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 {companyInfo.description || 'No description available.'}
               </p>
 
-              <h4 className={cx('title2')}>Company Benefits</h4>
-              <ul className={cx('benefitsList')}>
-                {companyInfo.benefits && companyInfo.benefits.length > 0 ? (
-                  companyInfo.benefits.map((item, i) => <li key={i}>{item}</li>)
-                ) : (
-                  <li>No benefits listed.</li>
-                )}
-              </ul>
-
               <h4 className={cx('title2')}>Company Vision</h4>
               <p className={cx('companyVision')}>
                 {companyInfo.vision || 'No vision statement available.'}
