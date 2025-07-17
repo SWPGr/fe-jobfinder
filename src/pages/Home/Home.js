@@ -1,16 +1,17 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { useWindowScroll } from '@mantine/hooks';
 
-import { LandingPage } from '../components';
-import PopularVacancy from './PopularVacancy';
-import Instruction from './Instruction';
-import PopularCategory from './PopularCategory';
-import FeaturedJob from './FeaturedJob';
-import TopCompanies from './TopCompanies';
-import CTA from './CTA';
-import JobMarketTrends from './JobMarketTrends';
+const JobMarketTrends = lazy(() => import('./JobMarketTrends'));
+const FeaturedJob = lazy(() => import('./FeaturedJob'));
+const TopCompanies = lazy(() => import('./TopCompanies'));
+const PopularVacancy = lazy(() => import('./PopularVacancy'));
+const Instruction = lazy(() => import('./Instruction'));
+const PopularCategory = lazy(() => import('./PopularCategory'));
+const LandingPage = lazy(() => import('../components/LandingPage'));
+const CTA = lazy(() => import('./CTA'));
+
 const cx = classNames.bind(styles);
 
 function Home() {
@@ -21,18 +22,17 @@ function Home() {
     }, []);
 
     return (
-        <>
-            <div className={cx('wrapper')}>
+        <div className={cx('wrapper')}>
+            <Suspense fallback={<div>Loading...</div>}>
                 <LandingPage />
-                {/* <PopularVacancy /> */}
                 <JobMarketTrends />
                 <Instruction />
                 <PopularCategory />
                 <FeaturedJob />
                 <TopCompanies />
                 <CTA />
-            </div>
-        </>
+            </Suspense>
+        </div>
     );
 }
 
