@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './AppliedJobs.module.scss';
 import JobItemApplied from '~/components/JobItemApplied';
-import { Pagination, Select } from '@mantine/core';
+import { Pagination } from '@mantine/core';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
+import JobDetail from '~/pages/JobDetail/JobDetail';
+import { useNotification } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
-// Dùng hàm lấy token chuẩn
 function getTokenFromLocalStorage() {
     let token = '';
     const storedUser = localStorage.getItem('user');
@@ -28,15 +29,11 @@ function AppliedJobs() {
     const [size, setSize] = useState(20);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
-
-    const token = getTokenFromLocalStorage(); // Sử dụng token đã có sẵn
-
-    // Option cho pageSize
-    const pageSizeOptions = [
-        { value: '10', label: '10 / page' },
-        { value: '20', label: '20 / page' },
-        { value: '50', label: '50 / page' },
-    ];
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedJob, setSelectedJob] = useState(null);
+    const [loadingJobDetail, setLoadingJobDetail] = useState(false);
+    const { showError } = useNotification();
+    const token = getTokenFromLocalStorage();
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -46,14 +43,94 @@ function AppliedJobs() {
                 setJobs(data.content);
                 setTotalPages(data.totalPages || 1);
                 setSize(data.size || size);
+                console.log(
+                    'Available job IDs:',
+                    data.content.map((job) => job.id),
+                );
             } else {
                 setJobs([]);
                 setTotalPages(1);
+                showError('No applied jobs found');
             }
             setLoading(false);
         };
         fetchJobs();
     }, [page, size, token]);
+
+    // ✅ ESC key close handler
+    useEffect(() => {
+        const handleEsc = (event) => {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        };
+
+        if (isModalOpen) {
+            document.addEventListener('keydown', handleEsc);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEsc);
+        };
+    }, [isModalOpen]);
+
+    const handleViewDetails = async (jobId) => {
+        if (!token) {
+            showError('Please log in to view job details');
+            return;
+        }
+        setLoadingJobDetail(true);
+        try {
+            const jobData = await JobSeekerDashboardService.getJobDetail(jobId, token);
+            if (jobData) {
+                const normalizedJob = {
+                    id: jobData.id,
+                    title: jobData.title || 'N/A',
+                    salaryMin: jobData.salaryMin || 0,
+                    salaryMax: jobData.salaryMax || 0,
+                    employer: {
+                        companyName: jobData.employer?.companyName || 'N/A',
+                        email: jobData.employer?.email || 'N/A',
+                        phone: jobData.employer?.phone || 'N/A',
+                        website: jobData.employer?.website || 'N/A',
+                        avatarUrl: jobData.employer?.avatarUrl || '',
+                        description: jobData.employer?.description || 'N/A',
+                        yearOfEstablishment: jobData.employer?.yearOfEstablishment || 'N/A',
+                        organizationType: jobData.employer?.organizationType || 'N/A',
+                        teamSize: jobData.employer?.teamSize || 'N/A',
+                    },
+                    jobType: jobData.jobType || { name: 'N/A' },
+                    category: jobData.category || { name: 'N/A' },
+                    jobLevel: jobData.jobLevel || { name: 'N/A' },
+                    createdAt: jobData.createdAt || 'N/A',
+                    expiredDate: jobData.expiredDate || 'N/A',
+                    description: jobData.description || '<p>No description available</p>',
+                    location: jobData.location || 'N/A',
+                    isApplied: jobData.isApplied || true,
+                };
+                setSelectedJob(normalizedJob);
+                setIsModalOpen(true);
+            } else {
+                const existingJob = jobs.find((j) => j.id === jobId);
+                if (existingJob) {
+                    setSelectedJob(existingJob);
+                    setIsModalOpen(true);
+                } else {
+                    showError('Job details not found');
+                }
+            }
+        } catch (error) {
+            showError('Failed to load job details');
+            console.error('Error fetching job details:', error);
+        } finally {
+            setLoadingJobDetail(false);
+        }
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedJob(null);
+    };
 
     return (
         <div className={cx('applied-jobs-wrapper')}>
@@ -73,16 +150,16 @@ function AppliedJobs() {
                     jobs.map((job, index) => (
                         <div key={job.id || index} className={cx('job-item')}>
                             <JobItemApplied
-                                image={job.employer?.avatarUrl || ''} // Company image
+                                image={job.employer?.avatarUrl || ''}
                                 jobDescription={{
-                                    companyName: job.employer?.companyName || '', // Company name
-                                    companyAddress: job.employer?.location || '', // Company address
-                                    jobTitle: job.title || '', // Job title
-                                    workTime: job.jobType?.name || '', // Work time (Full-time/Part-time)
+                                    companyName: job.employer?.companyName || '',
+                                    companyAddress: job.employer?.location || '',
+                                    jobTitle: job.title || '',
+                                    workTime: job.jobType?.name || '',
                                     salary:
                                         job.salaryMin && job.salaryMax
                                             ? `$${job.salaryMin} - $${job.salaryMax}`
-                                            : 'Negotiable', // Salary
+                                            : 'Negotiable',
                                     dateApplied: new Date(job.createdAt).toLocaleDateString('en-GB', {
                                         day: 'numeric',
                                         month: 'numeric',
@@ -93,9 +170,10 @@ function AppliedJobs() {
                                               month: 'numeric',
                                           })
                                         : '',
-                                    isActive: job.active, // Job status (active or expired)
+                                    isActive: job.active,
                                 }}
-                                isVIP={job.employer?.isPremium || false} // Check if the employer is VIP
+                                isVIP={job.employer?.isPremium || false}
+                                onViewDetails={() => handleViewDetails(job.id)}
                             />
                         </div>
                     ))
@@ -104,22 +182,12 @@ function AppliedJobs() {
             <div
                 style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                     alignItems: 'center',
                     marginTop: 32,
                     fontSize: '18px',
                 }}
             >
-                <Select
-                    data={pageSizeOptions}
-                    value={String(size)}
-                    onChange={(val) => {
-                        setSize(Number(val));
-                        setPage(1);
-                    }}
-                    size="md"
-                    style={{ width: 120 }}
-                />
                 <Pagination
                     total={totalPages}
                     value={page}
@@ -132,6 +200,26 @@ function AppliedJobs() {
                     }}
                 />
             </div>
+
+            {isModalOpen && selectedJob && (
+                <div
+                    className={cx('modalOverlay')}
+                    role="dialog"
+                    aria-labelledby="job-detail-modal"
+                    onClick={closeModal}
+                >
+                    <div className={cx('modalBox')} onClick={(e) => e.stopPropagation()}>
+                        <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close job details modal">
+                            ×
+                        </button>
+                        {loadingJobDetail ? (
+                            <div>Loading job details...</div>
+                        ) : (
+                            <JobDetail job={selectedJob} editable={false} onCancel={closeModal} isApplied={true} />
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

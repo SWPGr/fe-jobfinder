@@ -2,15 +2,20 @@ import classNames from 'classnames/bind';
 import styles from './JobItemApplied.module.scss';
 import { IconMapPin, IconCurrencyDollar, IconCheck, IconX } from '@tabler/icons-react';
 import { Badge } from '@mantine/core';
-
 import { Images } from '~/assets';
 import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
-function JobItemApplied({ image = Images.default_image, jobDescription = {}, isLogin = false, isVIP = false }) {
+function JobItemApplied({
+    image = Images.default_image,
+    jobDescription = {},
+    isLogin = false,
+    isVIP = false,
+    onViewDetails,
+}) {
     const classes = cx('wrapper', { isLogin, isVIP });
-    const { companyName, companyAddress, jobTitle, workTime, salary, dueDate, isActive } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, dueDate, isActive, isApplied } = jobDescription;
 
     return (
         <div className={classes}>
@@ -23,7 +28,6 @@ function JobItemApplied({ image = Images.default_image, jobDescription = {}, isL
                     />
                 </div>
                 <div className={cx('job-description')}>
-                    {/* Top */}
                     <div className={cx('top')}>
                         <div className={cx('title')}>{jobTitle}</div>
                         {isVIP && (
@@ -42,9 +46,16 @@ function JobItemApplied({ image = Images.default_image, jobDescription = {}, isL
                         >
                             {workTime}
                         </Badge>
+                        {isApplied && (
+                            <Badge
+                                color="#d4edda"
+                                size="lg"
+                                classNames={{ label: cx('label-badge', 'applied'), root: cx('root-badge') }}
+                            >
+                                Applied
+                            </Badge>
+                        )}
                     </div>
-
-                    {/* Bottom */}
                     <div className={cx('bottom')}>
                         <div className={cx('company-address')}>
                             <IconMapPin size={20} />
@@ -55,15 +66,9 @@ function JobItemApplied({ image = Images.default_image, jobDescription = {}, isL
                             {salary}
                         </div>
                     </div>
-                    {/*  */}
                 </div>
             </div>
-            {/* End content */}
-
-            {/* END DATE */}
             <div className={cx('end-date')}>{dueDate}</div>
-
-            {/* STATUS */}
             <div className={cx('status')}>
                 {isActive ? (
                     <p className={cx('active')}>
@@ -77,10 +82,9 @@ function JobItemApplied({ image = Images.default_image, jobDescription = {}, isL
                     </p>
                 )}
             </div>
-
             <div className={cx('action')}>
                 <div className={cx('apply-job')}>
-                    <Button to={'#'}>View Details</Button>
+                    <Button onClick={onViewDetails}>View Details</Button>
                 </div>
             </div>
         </div>

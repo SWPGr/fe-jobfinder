@@ -39,7 +39,7 @@ export default function Setting() {
 
     return (
         <div className={cx('setting-container')}>
-            <h2 className={cx('title')}>Settings</h2>
+            <div className={cx('heading2')}>Settings</div>
             <div className={cx('tabs')}>
                 {tabs.map((tab) => (
                     <button

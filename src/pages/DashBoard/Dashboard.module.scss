@@ -373,3 +373,59 @@
         gap: 8px;
     }
 }
+/* Modal Styling */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modalBox {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 2rem; /* Thêm khoảng thụt 2rem (32px) vào tất cả các phía */
+    padding-bottom: 4rem; /* ✅ Thêm dòng này để tạo thêm khoảng cách phía dưới */
+    box-shadow: var(--box-shadow);
+    max-width: 90vw;
+    width: 70%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    flex-direction: column; /* Đảm bảo layout dọc */
+}
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.closeBtn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    border: none;
+    background: none;
+    font-size: var(--font-size-18px);
+    cursor: pointer;
+    color: var(--gray-600);
+    transition: var(--transition);
+    z-index: 1001;
+
+    &:hover {
+        color: var(--red-600);
+    }
+}
