@@ -123,7 +123,11 @@ function JobItemList({ image = Images.default_image, description = {}, saved, is
                     </div>
 
                     <div className={cx('apply-job')}>
-                        <Button to={'#'} rightIcon={<IconArrowRight />} className={cx('apply-job-btn')}>
+                        <Button
+                            to={`/jobDetails/${description.id}`}
+                            rightIcon={<IconArrowRight />}
+                            className={cx('apply-job-btn')}
+                        >
                             Apply Now
                         </Button>
                     </div>

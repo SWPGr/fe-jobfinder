@@ -52,7 +52,7 @@ const PlansBilling = () => {
             const el = document.getElementById(item);
             if (el) {
                 const y = el.getBoundingClientRect().top + window.pageYOffset;
-                window.scrollTo({ top: y - 80, behavior: 'smooth' }); // scroll lệch 80px
+                window.scrollTo({ top: y - 50, behavior: 'smooth' }); // scroll lệch 80px
             }
         }
     }, [item]);
