@@ -7,6 +7,7 @@ import { IconLogout } from '@tabler/icons-react';
 import { useAuth } from '~/context/AuthContext';
 import { items } from './Items';
 import { NavLink } from '@mantine/core';
+import { useParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,7 @@ function Sidebar({ setSelectedMenu, className }) {
     const [active, setActive] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+    const { page, item } = useParams(); // Extracting page and item from the URL parameters
 
     const { user, logout } = useAuth();
     const role = user?.role;
@@ -21,15 +23,14 @@ function Sidebar({ setSelectedMenu, className }) {
 
     useEffect(() => {
         if (itemList) {
-            const currentPath = location.pathname.split('/').pop();
-
             const found = itemList.items.find((item) => {
-                const lastSegment = item.link?.split('/').pop();
-                return lastSegment === currentPath;
+                // const lastSegment = item.link?.split('/').pop();
+                // return lastSegment === page;
+                return item.link?.includes(page);
             });
 
             if (found) {
-                setActive(found.title);
+                setActive(found.link);
                 setSelectedMenu(typeof found.page === 'function' ? found.page() : found.page);
             } else {
                 // fallback nếu không có route cụ thể
@@ -58,27 +59,42 @@ function Sidebar({ setSelectedMenu, className }) {
                                 label={item.title}
                                 leftSection={item.icon}
                                 classNames={{
-                                    root: cx('nav-item', { active: active === item.title }),
+                                    root: cx('nav-item', { active: active?.includes(item.link) }),
                                     label: cx('title-label'),
+                                    children: cx('children'),
                                 }}
                                 childrenOffset={28}
                                 defaultOpened
                                 onClick={() => {
-                                    setActive(item.title);
+                                    setActive(item.link);
                                     setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
                                     if (item.link) navigate(item.link);
                                 }}
                             >
-                                <NavLink label="First child link" href="#required-for-focus" />
-                                <NavLink label="Second child link" href="#required-for-focus" />
-                                <NavLink label="Third child link" href="#required-for-focus" />
+                                {item.children.map((child) => (
+                                    <NavLink
+                                        label={child.title}
+                                        leftSection={child.icon}
+                                        classNames={{
+                                            root: cx('nav-item', { active: active?.includes(child.link) }),
+                                            label: cx('title-label'),
+                                        }}
+                                        onClick={() => {
+                                            setActive(child.link);
+                                            setSelectedMenu(
+                                                typeof child.page === 'function' ? child.page() : child.page,
+                                            );
+                                            navigate(child.link); // ✅ không reload
+                                        }}
+                                    />
+                                ))}
                             </NavLink>
                         ) : (
                             <div
                                 key={index}
-                                className={cx('nav-item', { active: active === item.title })}
+                                className={cx('nav-item', { active: active?.includes(item.link) })}
                                 onClick={() => {
-                                    setActive(item.title);
+                                    setActive(item.link);
                                     setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
                                     if (item.link) navigate(item.link);
                                 }}

@@ -10,7 +10,7 @@ const itemsNav = {
     true: {
         ADMIN: [
             { name: 'Home', link: '/' },
-            { name: 'Dashboard', link: '/dashboard' },
+            { name: 'Dashboard', link: '/dashboard/overview' },
             { name: 'Manage Users', link: '/dashboard/jobseekers' },
             { name: 'Manage Jobs', link: '/dashboard/jobs' },
             { name: 'Reports', link: '/reports' },
@@ -20,14 +20,14 @@ const itemsNav = {
             { name: 'Home', link: '/' },
             { name: 'Find Job', link: '/find-job' },
             { name: 'Find Employers', link: '/find-employer' },
-            { name: 'Dashboard', link: '/dashboard' },
+            { name: 'Dashboard', link: '/dashboard/overview' },
             { name: 'Job Alerts', link: '/dashboard/alerts' },
             { name: 'Feed Back', link: '/feedback' },
         ],
         EMPLOYER: [
             { name: 'Home', link: '/' },
             { name: 'Find Candidate', link: '/find-candidate' },
-            { name: 'Dashboard', link: '/dashboard' },
+            { name: 'Dashboard', link: '/dashboard/overview' },
             { name: 'My Jobs', link: '/dashboard/my-jobs' },
             { name: 'Applications', link: '/dashboard/saved-candidates' },
             { name: 'Feed Back', link: '/feedback' },

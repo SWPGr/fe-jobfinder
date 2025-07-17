@@ -55,7 +55,7 @@ const privateRoutes = [
         allowedRoles: ['EMPLOYER', 'ADMIN', 'JOB_SEEKER'],
     },
     {
-        path: config.routes.dashboard + '/:page',
+        path: config.routes.dashboard + '/:page?/:item?',
         component: DashboardPage,
         allowedRoles: ['EMPLOYER', 'ADMIN', 'JOB_SEEKER'],
     },
