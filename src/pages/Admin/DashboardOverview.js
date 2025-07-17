@@ -118,14 +118,21 @@ const DashboardOverview = () => {
                         title={card.title}
                         value={card.value}
                         icon={card.icon}
-                        change={card.status === 'nochange' ? '--' : `${card.change}%`}
+                        status={card.status}
+                        change={
+                            card.status === 'nochange'
+                                ? '0.00%' // hoặc '±0%' tùy bạn
+                                : parseFloat(card.change) === 100
+                                ? '100%' // không có phần thập phân
+                                : `${parseFloat(card.change).toFixed(2)}%`
+                        }
                         isPositive={card.status === 'increase'}
                         desc={
                             card.status === 'nochange'
-                                ? 'no change'
+                                ? 'unchanged from last month'
                                 : card.status === 'increase'
-                                ? 'from last month (up)'
-                                : 'from last month (down)'
+                                ? 'from last month'
+                                : 'from last month'
                         }
                     />
                 ))}
