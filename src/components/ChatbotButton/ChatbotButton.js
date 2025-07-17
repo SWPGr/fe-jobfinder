@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Smile } from 'lucide-react';
 
 import { chatbotService } from '~/services';
+import { format } from '~/utils';
 
 const ChatButton = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -30,15 +31,6 @@ const ChatButton = () => {
             e.preventDefault();
             handleSendMessage();
         }
-    };
-
-    const formatTime = (date) => {
-        return new Date(date).toLocaleTimeString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true,
-            timeZone: 'Asia/Ho_Chi_Minh', // 👈 Múi giờ Việt Nam
-        });
     };
 
     function formatBoldJSX(text) {
@@ -126,7 +118,9 @@ const ChatButton = () => {
                                     <div className="flex justify-end mb-2">
                                         <div className="max-w-xs px-4 py-2 rounded-2xl bg-gradient-to-r from-blue-400 to-blue-500 text-white">
                                             <p className="text-md">{item.message}</p>
-                                            <p className="text-sm mt-1 text-white/70">{formatTime(item.createdAt)}</p>
+                                            <p className="text-sm mt-1 text-white/70">
+                                                {format.formatTime(item.createdAt)}
+                                            </p>
                                         </div>
                                     </div>
                                 )}
@@ -137,7 +131,9 @@ const ChatButton = () => {
                                             <p className="text-md whitespace-pre-wrap">
                                                 {formatBoldJSX(item.response)}
                                             </p>
-                                            <p className="text-sm mt-1 text-gray-500">{formatTime(item.createdAt)}</p>
+                                            <p className="text-sm mt-1 text-gray-500">
+                                                {format.formatTime(item.createdAt)}
+                                            </p>
                                         </div>
                                     </div>
                                 )}

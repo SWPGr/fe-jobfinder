@@ -116,11 +116,21 @@ function formatTimeRemaining(expiredAt) {
     return days;
 }
 
+const formatTime = (date) => {
+    return new Date(date).toLocaleTimeString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Ho_Chi_Minh', // 👈 Múi giờ Việt Nam
+    });
+};
+
 const format = {
     transformJobData,
     formatSalary,
     formatDueDate,
     formatTimeAgo,
+    formatTime,
 };
 
 export default format;

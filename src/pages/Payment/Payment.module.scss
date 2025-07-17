@@ -21,8 +21,9 @@
 
 .plans {
     display: flex;
-    justify-content: space-around;
-    gap: 2rem;
+    justify-content: center;
+    // justify-content: space-around;
+    gap: 4rem;
     flex-wrap: wrap;
 }
 
@@ -30,7 +31,7 @@
     border: 0.1rem solid var(--border-color);
     padding: 2rem;
     border-radius: 0.8rem;
-    width: 25rem;
+    width: 28rem;
     background: var(--white);
     box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
     position: relative;
@@ -44,6 +45,7 @@
     color: var(--gray-900);
     margin-bottom: 1rem;
     font-weight: 600;
+    text-align: center;
 }
 
 .price {

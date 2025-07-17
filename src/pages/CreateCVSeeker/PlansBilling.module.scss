@@ -245,3 +245,11 @@
         }
     }
 }
+
+.no-data-cell {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: var(--gray-500);
+    background-color: var(--white);
+}

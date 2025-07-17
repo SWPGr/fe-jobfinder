@@ -55,6 +55,7 @@ function Sidebar({ setSelectedMenu, className }) {
                     {itemList.items.map((item, index) =>
                         item?.children ? (
                             <NavLink
+                                key={index}
                                 href="#required-for-focus"
                                 label={item.title}
                                 leftSection={item.icon}
@@ -74,6 +75,7 @@ function Sidebar({ setSelectedMenu, className }) {
                             >
                                 {item.children.map((child) => (
                                     <NavLink
+                                        key={child.link}
                                         label={child.title}
                                         leftSection={child.icon}
                                         classNames={{
