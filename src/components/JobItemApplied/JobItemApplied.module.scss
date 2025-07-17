@@ -8,10 +8,11 @@
     font-size: 1.4rem;
     border: 1px transparent;
     transition: var(--transition);
+    border: 1px solid;
+    border-color: var(--gray-200);
+    border-radius: var(--border-radius);
     &:hover {
-        border-radius: var(--border-radius);
         box-shadow: var(--box-shadow);
-        border: 1px solid; 
         border-color: var(--blue-500);
 
         .title {
@@ -179,7 +180,7 @@
         margin-top: 1rem;
     }
 
-    .end-date {
+    .create-date {
         flex: 1 1 25%;
         margin-top: 1rem;
         text-align: center;

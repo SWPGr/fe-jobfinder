@@ -29,6 +29,9 @@
     border-radius: var(--border-radius);
     padding: 1rem;
 }
+.not-find-job {
+    grid-template-columns: 7fr 3fr 2fr;
+}
 
 .search-input-root {
     height: 100%;
@@ -66,6 +69,8 @@
     }
 }
 .select-dropdown {
+    width: 320px !important;
+    margin-top: 2rem;
     .select-option {
         font-size: var(--font-size-14px);
     }

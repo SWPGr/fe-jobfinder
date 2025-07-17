@@ -17,8 +17,8 @@ const routes = {
     serviceAndPolicy: '/service-and-policy',
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
-    jobDetails: '/jobDetails/:jobId',
-    seekerDetailPage: '/seekerDetailPage',
+    jobDetails: '/jobDetails/:id',
+    seekerDetailPage: '/seekerDetailPage/:id',
     singleJob: '/singleJob',
     findJob: '/find-job',
     findCandidate: '/find-candidate',
@@ -26,10 +26,8 @@ const routes = {
     verify: '/api/auth/verify',
     company: '/company/:id',
     dashboardOverview: '/dashboard-overview',
-
     term: '/term',
     payment: '/payment',
-
     resetPassword: 'api/auth/reset-password', // Reset password page
     FeedBack: '/feedback',
     PaymentManagement: '/payment',

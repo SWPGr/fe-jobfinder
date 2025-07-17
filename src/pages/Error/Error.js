@@ -14,23 +14,23 @@ function ErrorPage() {
                         <h1 className={cs('error-404')}>404</h1>
                     </div>
                 </div>
-                <h2 className={cs('error-title')}>Rất tiếc! Trang không tồn tại</h2>
+                <h2 className={cs('error-title')}>The site is not available at the moment.</h2>
                 <p className={cs('error-message')}>
-                    Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không khả dụng.
+                    We will back soon. In the meantime, you can return to the homepage or refresh the page.
                 </p>
                 <div className={cs('error-buttons')}>
                     <Link to={'/'} className={cs('button-primary')}>
                         <HomeIcon size={20} />
-                        <span>Về trang chủ</span>
+                        <span>Home page</span>
                     </Link>
                     <Link className={cs('button-secondary')}>
                         <RefreshCwIcon size={20} />
-                        <span>Tải lại trang</span>
+                        <span>Refresh</span>
                     </Link>
                 </div>
                 <div className={cs('error-footer')}>
-                    <p>Nếu bạn cho rằng đây là lỗi, vui lòng liên hệ với chúng tôi.</p>
-                    <p>Mã lỗi: 404 | Trang không tìm thấy</p>
+                    {/* <p>Learn more</p> */}
+                    {/* <p>Mã lỗi: 404 | Trang không tìm thấy</p> */}
                 </div>
             </div>
         </div>

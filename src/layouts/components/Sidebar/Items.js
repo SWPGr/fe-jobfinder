@@ -9,6 +9,7 @@ import {
     IconCirclePlus,
     IconNotebook,
     IconBuildingCommunity,
+    IconChecklist,
 } from '@tabler/icons-react';
 
 import classNames from 'classnames/bind';
@@ -44,7 +45,7 @@ export const items = {
                 title: 'Overview',
                 icon: <IconStack2 />,
                 page: (chartKey = 0) => <DashboardOverview chartKey={chartKey} />,
-                link: '/dashboard',
+                link: '/dashboard/overview',
             },
             {
                 title: 'Manage Jobs',
@@ -87,7 +88,7 @@ export const items = {
                 title: 'Overview',
                 icon: <IconStack2 />,
                 page: <Overview1 />,
-                link: '/dashboard',
+                link: '/dashboard/overview',
             },
             {
                 title: 'Employer Profile',
@@ -118,13 +119,27 @@ export const items = {
                 icon: <IconNotebook />,
                 page: <PlansBilling />,
                 link: '/dashboard/plans',
+                children: [
+                    {
+                        title: 'Manage Plans',
+                        icon: <IconChecklist />,
+                        page: <PlansBilling />,
+                        link: '/dashboard/plans/manage-plans',
+                    },
+                    {
+                        title: 'Payment History',
+                        icon: <CreditCard size={20} />,
+                        page: <PlansBilling />,
+                        link: '/dashboard/plans/payment-history',
+                    },
+                ],
             },
-            {
-                title: 'All Companies',
-                icon: <IconBuildingCommunity />,
-                page: null,
-                link: '/dashboard/companies',
-            },
+            // {
+            //     title: 'All Companies',
+            //     icon: <IconBuildingCommunity />,
+            //     page: null,
+            //     link: '/dashboard/companies',
+            // },
             {
                 title: 'Settings',
                 icon: <IconSettings />,
@@ -141,7 +156,7 @@ export const items = {
                 title: 'Overview',
                 icon: <IconStack2 />,
                 page: <Dashboard1 />,
-                link: '/dashboard',
+                link: '/dashboard/overview',
             },
             {
                 title: 'Applied Jobs',

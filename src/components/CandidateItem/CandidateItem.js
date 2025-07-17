@@ -26,18 +26,24 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
 
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
 
-    const { name, job_role, location, experience } = description;
+    console.log(description);
+
+    const { fullName, job_role = 'BA', location, experience, avatarUrl } = description;
 
     return (
         <div className={classes}>
             <div className={cx('main')}>
                 <div className={cx('avatar')}>
-                    <img src={image} alt={`${name} logo`} onError={(e) => (e.target.src = Images.default_image)} />
+                    <img
+                        src={avatarUrl || image}
+                        alt={`${fullName} logo`}
+                        onError={(e) => (e.target.src = Images.default_image)}
+                    />
                 </div>
                 {/*  */}
                 <div className={cx('inf')}>
                     <div className={cx('top')}>
-                        <div className={cx('name')}>{name}</div>
+                        <div className={cx('name')}>{fullName}</div>
                         <div className={cx('job_role')}>{job_role}</div>
                     </div>
                     <div className={cx('bottom')}>
@@ -49,12 +55,12 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
                                 </div>
                                 <div className={cx('experience')}>
                                     <IconCurrencyDollar />
-                                    {experience}
+                                    {experience?.name} experience
                                 </div>
                             </>
                         ) : (
                             <Button
-                                to={`/candidate/${name}`}
+                                to={`/seekerDetailPage/1`}
                                 rightIcon={<IconArrowRight />}
                                 className={cx('view-resume')}
                             >
@@ -82,7 +88,7 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
                 </div>
                 {long && (
                     <Button
-                        to={`/candidate/${name}`}
+                        to={`/seekerDetailPage/1`}
                         blue_lighter
                         rightIcon={<IconArrowRight />}
                         className={cx('view-profile-btn')}

@@ -5,6 +5,7 @@ import { DefaultLayout } from './layouts';
 import { publicRoutes, privateRoutes } from './routes/AppRoutes';
 import { ErrorPage } from './pages';
 import ProtectedRoute from './routes/ProtectedRoute';
+import ChatButton from './components/ChatbotButton/ChatbotButton';
 
 function App() {
     return (
@@ -70,6 +71,7 @@ function App() {
                         }
                     />
                 </Routes>
+                <ChatButton />
             </div>
         </Router>
     );

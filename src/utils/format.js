@@ -1,3 +1,5 @@
+import { NumberFormatter } from '@mantine/core';
+
 function transformJobData(rawJob) {
     return {
         id: rawJob.id,
@@ -6,15 +8,22 @@ function transformJobData(rawJob) {
         jobTitle: rawJob.title,
         workTime: rawJob.jobType?.name || 'Không rõ',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
-        remainDay: getTimeUntilDueDate(rawJob.createdAt),
+        remainDay: timeAgo(rawJob.createdAt),
         isSave: rawJob.isSave,
     };
 }
 
 function formatSalary(min, max) {
-    if (!min || !max) return 'Thỏa thuận';
-    const toUSD = (vnd) => `$${(vnd / 23000).toFixed(0).toLocaleString()}`;
-    return `${toUSD(min)} - ${toUSD(max)}`;
+    const isEmpty = (value) => value === null || value === undefined || value === '';
+
+    if (isEmpty(min) && isEmpty(max)) return 'Negotiable';
+
+    return (
+        <p>
+            <NumberFormatter prefix="$ " value={min} thousandSeparator />
+            - <NumberFormatter prefix="$ " value={max} thousandSeparator />
+        </p>
+    );
 }
 
 function formatDueDate(createdAt) {
@@ -24,28 +33,58 @@ function formatDueDate(createdAt) {
     return due.toISOString().split('T')[0]; // Trả về yyyy-mm-dd
 }
 
-function getTimeUntilDueDate(dueDate) {
-    const created = new Date(dueDate);
+// function getTimeUntilDueDate(dueDate) {
+//     const created = new Date(dueDate);
 
+//     const now = new Date();
+//     const diffMs = now - created;
+
+//     if (diffMs <= 0) {
+//         return 'expired';
+//     }
+
+//     const totalSeconds = Math.floor(diffMs / 1000);
+//     const days = Math.floor(totalSeconds / (3600 * 24));
+//     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+//     const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+//     if (minutes < 60) {
+//         return `${minutes} minutes remaining`;
+//     } else if (hours < 24) {
+//         return `${hours} hours remaining`;
+//     } else {
+//         return `${days} days remaining`;
+//     }
+// }
+
+function timeAgo(date) {
+    const target = new Date(date);
     const now = new Date();
-    const diffMs = created - now;
 
-    if (diffMs <= 0) {
-        return 'expired';
-    }
+    const diffMs = now - target; // dương nếu quá khứ, âm nếu tương lai
+    const diffSec = Math.round(Math.abs(diffMs) / 1000);
 
-    const totalSeconds = Math.floor(diffMs / 1000);
-    const days = Math.floor(totalSeconds / (3600 * 24));
-    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const MIN = 60;
+    const HOUR = 60 * MIN;
+    const DAY = 24 * HOUR;
 
-    if (minutes < 60) {
-        return `${minutes} minutes remaining`;
-    } else if (hours < 24) {
-        return `${hours} hours remaining`;
+    const plural = (num, unit) => `${num} ${unit}${num === 1 ? '' : 's'}`;
+
+    let result;
+    if (diffSec < 5) {
+        result = 'just now';
+    } else if (diffSec < MIN) {
+        result = plural(diffSec, 'second');
+    } else if (diffSec < HOUR) {
+        result = plural(Math.floor(diffSec / MIN), 'minute');
+    } else if (diffSec < DAY) {
+        result = plural(Math.floor(diffSec / HOUR), 'hour');
     } else {
-        return `${days} days remaining`;
+        result = plural(Math.floor(diffSec / DAY), 'day');
     }
+
+    // Nếu là thời gian trong tương lai
+    return diffMs >= 0 ? `${result} ago` : `in ${result}`;
 }
 
 function formatTimeAgo(createdAt) {

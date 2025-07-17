@@ -1,4 +1,4 @@
-import { get, put, post } from '~/utils/httpRequest';
+import { get, put } from '~/utils/httpRequest';
 
 const updateProfileWithFile = async (formData) => {
     return await put('/profiles', formData, { headers: {} });
@@ -6,7 +6,7 @@ const updateProfileWithFile = async (formData) => {
 
 const getProfile = async () => {
     try {
-        const response = await get('/profiles/me', {}); // Updated to /profile/me
+        const response = await get('/profiles/me', {});
         return response;
     } catch (error) {
         throw error;

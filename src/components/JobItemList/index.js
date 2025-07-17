@@ -8,6 +8,7 @@ import {
     IconCalendarWeek,
     IconArrowRight,
     IconBookmarkFilled,
+    IconCoin,
 } from '@tabler/icons-react';
 import { Badge } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
@@ -20,14 +21,13 @@ import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
-function JobItemList({ image = Images.default_image, jobDescription = {}, saved, isLogin = false, isVIP = false }) {
+function JobItemList({ image = Images.default_image, description = {}, saved, isLogin = false, isVIP = false }) {
     const { showSuccess, showError } = useNotification();
     const { user } = useAuth();
     const isJOB_SEEKER = user?.role === 'JOB_SEEKER';
 
     // save job status
-
-    const { companyName, companyAddress, jobTitle, workTime, salary, remainDay, isSave } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, remainDay, isSave } = description;
     const [save, setSave] = useState(isSave || false);
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
     const classes = cx('wrapper', { isLogin, isVIP, saved: save });
@@ -58,7 +58,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
     };
 
     const handelDirectToJobDetails = () => {
-        navigate(`/jobDetails/${jobDescription.id}`);
+        navigate(`/jobDetails/${description.id}`);
     };
 
     return (
@@ -100,7 +100,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                             {companyAddress}
                         </div>
                         <div className={cx('salary')}>
-                            <IconCurrencyDollar size={20} />
+                            <IconCoin size={20} />
                             {salary}
                         </div>
                         <div className={cx('remain-date')}>
@@ -116,7 +116,7 @@ function JobItemList({ image = Images.default_image, jobDescription = {}, saved,
                     <div
                         className={cx('save-job')}
                         onClick={(e) => {
-                            save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
+                            save ? handelUnsaveJob(e, description.id) : handelSaveJob(e, description.id);
                         }}
                     >
                         <IconComponent size={22} color="#0a65cc" />

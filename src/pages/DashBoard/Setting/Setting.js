@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 export default function Setting() {
     const tabs = [
         { id: 'personal', label: 'Personal', icon: <IconUserCircle /> }, // Thêm biểu tượng cho tab Personal
-        // { id: 'profile', label: 'Profile', icon: <IconUser /> },
+
         { id: 'Social Media Profile', label: 'Social Media Profile', icon: <IconWorld /> },
         { id: 'accountSetting', label: 'Account Setting', icon: <IconSettings /> },
     ];
@@ -21,7 +21,6 @@ export default function Setting() {
     const [activeTab, setActiveTab] = useState('personal'); // Mặc định là Personal
     const tabComponents = {
         personal: Personal,
-        // profile: Profile,
         'Social Media Profile': SocialLinks,
         accountSetting: AccountSetting,
     };
@@ -40,6 +39,7 @@ export default function Setting() {
 
     return (
         <div className={cx('setting-container')}>
+            <h2 className={cx('title')}>Settings</h2>
             <div className={cx('tabs')}>
                 {tabs.map((tab) => (
                     <button

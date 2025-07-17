@@ -1,354 +1,375 @@
 .dashboard-content {
-  margin: 0 auto;
-  padding: 40px 0 0 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    margin: 0 auto;
+    padding: 40px 0 0 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .dashboard-header {
-  margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .dashboard-header h2 {
-  font-size: var(--font-size-header);
-  margin-bottom: 2px;
-  font-weight: 600;
+    font-size: var(--font-size-header);
+    margin-bottom: 2px;
+    font-weight: 600;
 }
 
 .dashboard-header .desc {
-  font-size: var(--font-size-16px);
-  color: var(--gray-400);
+    font-size: var(--font-size-16px);
+    color: var(--gray-400);
 }
 
 .stats-cards {
-  display: flex;
-  gap: 24px;
-  font-size: var(--font-size-20px);
-  margin-bottom: 20px;
-  width: 100%;
-  flex-wrap: wrap;
-  justify-content: space-between;
+    display: flex;
+    gap: 24px;
+    font-size: var(--font-size-20px);
+    margin-bottom: 20px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .stats-cards .stat-card {
-  flex: 1 1 20rem;
-  padding: 24px;
-  border-radius: var(--border-radius);
-  background: var(--gray-100);
+    flex: 1 1 20rem;
+    padding: 24px;
+    border-radius: var(--border-radius);
+    background: var(--gray-100);
 }
 
 .stats-cards .stat-card.blue {
-  background: var(--blue-100);
+    background: var(--blue-100);
 }
 
 .stats-cards .stat-card.yellow {
-  background: var(--orange-100);
+    background: var(--orange-100);
 }
 
 .stats-cards .stat-card.green {
-  background: var(--green-100);
+    background: var(--green-100);
 }
 
 .stats-cards .stat-card .stat-number {
-  font-size: var(--font-size-20px);
-  font-weight: bold;
+    font-size: var(--font-size-20px);
+    font-weight: bold;
 }
 
 .stats-cards .stat-card .stat-label {
-  font-size: var(--font-size-15px);
-  color: var(--gray-600);
+    font-size: var(--font-size-15px);
+    color: var(--gray-600);
 }
-
 .profile-warning {
-  background: var(--red-100);
-  border-radius: 1.2rem;
-  padding: 32px 44px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 7px 0 20px 0;
-  min-height: 110px;
-  position: relative;
-  gap: 36px;
-  width: 100%;
-  max-width: unset;
-  box-sizing: border-box; // Đảm bảo padding không làm tràn
-
-  .warning-left {
+    background: var(--red-100);
+    border-radius: 1.2rem;
+    padding: 32px 44px;
     display: flex;
     align-items: center;
-    gap: 28px;
-  }
+    justify-content: space-between;
+    margin: 7px 0 20px 0;
+    min-height: 110px;
+    position: relative;
+    gap: 36px;
+    width: 100%;
+    max-width: unset;
+    box-sizing: border-box;
 
-  .warning-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: var(--white);
-    border: 2.5px solid var(--white);
-    box-shadow: 0 2px 12px var(--red-100);
-  }
-
-  .warning-text {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .warning-title {
-    color: var(--red-600);
-    font-weight: 700;
-    font-size: 1.22rem;
-    margin-bottom: 2px;
-    display: block;
-  }
-
-  .warning-desc {
-    color: var(--red-600);
-    font-size: 1.08rem;
-    opacity: 0.88;
-    font-weight: 400;
-  }
-
-  .edit-profile-btn {
-    background: var(--white);
-    color: var(--red-500);
-    border: none;
-    border-radius: 0.8rem;
-    padding: 16px 38px;
-    font-weight: 700;
-    font-size: 1.08rem;
-    cursor: pointer;
-    box-shadow: 0 2px 8px var(--red-100);
-    transition: background 0.15s, color 0.15s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    &:hover {
-      background: var(--red-50);
-      color: var(--red-700);
+    .warning-left {
+        display: flex;
+        align-items: center;
+        gap: 28px;
     }
-  }
+
+    .warning-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: var(--white);
+        border: 2.5px solid var(--white);
+        box-shadow: 0 2px 12px var(--red-100);
+    }
+
+    .warning-text {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .warning-title {
+        color: var(--red-600);
+        font-weight: 700;
+        font-size: 1.22rem;
+        margin-bottom: 2px;
+        display: block;
+    }
+
+    .warning-desc {
+        color: var(--red-600);
+        font-size: 1.08rem;
+        opacity: 0.88;
+        font-weight: 400;
+    }
+
+    .edit-profile-btn {
+        background: var(--white);
+        color: var(--red-500);
+        border: none;
+        border-radius: 0.8rem;
+        padding: 16px 38px;
+        font-weight: 700;
+        font-size: 1.08rem;
+        cursor: pointer;
+        box-shadow: 0 2px 8px var(--red-100);
+        transition: background 0.15s, color 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        &:hover {
+            background: var(--red-50);
+            color: var(--red-700);
+        }
+    }
+
+    /* Responsive cho mobile */
+    @media (max-width: 768px) {
+        .profile-warning {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .edit-profile-btn {
+            width: 100%;
+            padding: 12px 28px;
+            font-size: 1rem;
+        }
+
+        .warning-left {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+    }
 }
 
 .job-list {
-  display: flex;
+    display: flex;
     flex-direction: column;
     margin-top: 5px;
     gap: 2px;
-    /* Khoảng cách giữa các item, chỉnh tuỳ ý */}
+    /* Khoảng cách giữa các item, chỉnh tuỳ ý */
+}
 
 .job-list-container {
-  margin-top: 28px;
-  background: var(--white);
-  width: 100%;
-  padding: 2rem;
+    margin-top: 28px;
+    background: var(--white);
+    width: 100%;
+    padding: 2rem;
 }
 
 .job-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
 }
 
 .job-list-header b {
-  font-size: var(--font-size-18px);
+    font-size: var(--font-size-18px);
 }
 
 .job-list-header .view-all-btn {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  font-size: var(--font-size-15px);
-  cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: var(--font-size-15px);
+    cursor: pointer;
 }
 
 .job-table-head,
 .job-table-row {
-  display: grid;
-  grid-template-columns: 4fr 1.2fr 0.95fr 1.1fr;
-  align-items: center;
-  padding: 12px 0;
+    display: grid;
+    grid-template-columns: 2.8fr 1.4fr 1.3fr 0.9fr;
+    align-items: center;
+    padding: 12px 0;
 }
 
 .job-table-head {
-  font-size: var(--font-size-18px);
-  font-weight: 600;
-  color: var(--gray-400);
-  border-bottom: 1px solid var(--gray-200);
+    font-size: var(--font-size-18px);
+    font-weight: 600;
+    color: var(--gray-400);
+    border-bottom: 1px solid var(--gray-200);
 }
 
 .job-table-row {
-  border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--gray-100);
 }
 
 .job-table-row:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .job-title-col {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
 .job-title-col .company-logo {
-  width: 38px;
-  height: 38px;
-  border-radius: var(--border-radius);
-  background: var(--gray-200);
+    width: 38px;
+    height: 38px;
+    border-radius: var(--border-radius);
+    background: var(--gray-200);
 }
 
 /* Demo icon styles */
 .job-title-col .company-logo.upwork {
-  background: var(--green-400);
+    background: var(--green-400);
 }
 
 .job-title-col .company-logo.dribbble {
-  background: var(--red-500);
+    background: var(--red-500);
 }
 
 .job-title-col .company-logo.apple {
-  background: var(--gray-800);
+    background: var(--gray-800);
 }
 
 .job-title-col .company-logo.microsoft {
-  background: var(--blue-400);
+    background: var(--blue-400);
 }
 
 .job-title-col .main-title {
-  font-weight: 500;
-  font-size: var(--font-size-16px);
+    font-weight: 500;
+    font-size: var(--font-size-16px);
 }
 
 .job-title-col .job-badge {
-  display: inline-block;
-  background: var(--blue-100);
-  color: var(--primary-color);
-  font-size: var(--font-size-12px);
-  border-radius: 6px;
-  margin-left: 8px;
-  padding: 2px 10px;
+    display: inline-block;
+    background: var(--blue-100);
+    color: var(--primary-color);
+    font-size: var(--font-size-12px);
+    border-radius: 6px;
+    margin-left: 8px;
+    padding: 2px 10px;
 }
 
 .job-title-col .job-badge.remote {
-  background: var(--blue-50);
-  color: var(--blue-400);
+    background: var(--blue-50);
+    color: var(--blue-400);
 }
 
 .job-title-col .job-badge.fulltime {
-  background: var(--blue-100);
-  color: var(--blue-600);
+    background: var(--blue-100);
+    color: var(--blue-600);
 }
 
 .job-title-col .job-badge.temporary {
-  background: var(--orange-100);
-  color: var(--orange-600);
+    background: var(--orange-100);
+    color: var(--orange-600);
 }
 
 .job-title-col .job-badge.contractbase {
-  background: var(--purple-100, #f5eaff);
-  color: var(--purple-400, #8a4de8);
+    background: var(--purple-100, #f5eaff);
+    color: var(--purple-400, #8a4de8);
 }
 
 .job-title-col .meta {
-  font-size: var(--font-size-13px);
-  color: var(--gray-400);
-  margin-top: 4px;
+    font-size: var(--font-size-13px);
+    color: var(--gray-400);
+    margin-top: 4px;
 }
 
 .job-title-col .meta span {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 .job-date-applied {
-  font-size: var(--font-size-14px);
-  color: var(--gray-400);
+    font-size: var(--font-size-14px);
+    color: var(--gray-400);
 }
 
 .job-status {
-  font-size: var(--font-size-14px);
-  font-weight: 500;
+    font-size: var(--font-size-14px);
+    font-weight: 500;
 }
 
 .job-status.active {
-  color: var(--green-500);
+    color: var(--green-500);
 }
 
 .job-status.inactive {
-  color: var(--error-color);
+    color: var(--error-color);
 }
 
 .job-detail-btn {
-  background: var(--primary-color);
-  color: var(--white);
-  border: none;
-  border-radius: 7px;
-  padding: 7px 18px;
-  font-size: var(--font-size-14px);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background var(--transition);
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 7px;
+    padding: 7px 18px;
+    font-size: var(--font-size-14px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--transition);
 }
 
 .job-detail-btn:hover {
-  background: var(--primary-color-dark);
+    background: var(--primary-color-dark);
 }
 
 /* RESPONSIVE STYLES */
 @media screen and (max-width: 1024px) {
-  .stats-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-    font-size: var(--font-size-14px);
-  }
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        font-size: var(--font-size-14px);
+    }
 
-  .stat-card {
-    padding: 16px;
-    flex: none;
-  }
+    .stat-card {
+        padding: 16px;
+        flex: none;
+    }
 
-  .stat-number {
-    font-size: var(--font-size-20px);
-  }
+    .stat-number {
+        font-size: var(--font-size-20px);
+    }
 
-  .stat-label {
-    font-size: var(--font-size-13px);
-  }
+    .stat-label {
+        font-size: var(--font-size-13px);
+    }
 
-  .stats-cards .stat-card:nth-child(3) {
-    grid-column: 1 / -1;
-  }
+    .stats-cards .stat-card:nth-child(3) {
+        grid-column: 1 / -1;
+    }
 }
 
 @media screen and (max-width: 768px) {
-  .stats-cards {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    font-size: var(--font-size-18px);
-  }
+    .stats-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        font-size: var(--font-size-18px);
+    }
 
-  .stat-card {
-    padding: 12px;
-  }
+    .stat-card {
+        padding: 12px;
+    }
 
-  .stat-number {
-    font-size: var(--font-size-18px);
-  }
+    .stat-number {
+        font-size: var(--font-size-18px);
+    }
 
-  .stat-label {
-    font-size: var(--font-size-12px);
-  }
+    .stat-label {
+        font-size: var(--font-size-12px);
+    }
 
-  .job-table-head {
-    font-size: var(--font-size-11px);
-    gap: 8px;
-  }
+    .job-table-head {
+        font-size: var(--font-size-11px);
+        gap: 8px;
+    }
 }

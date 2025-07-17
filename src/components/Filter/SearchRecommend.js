@@ -10,7 +10,7 @@ import { jobService } from '~/services';
 
 const cx = classNames.bind(styles);
 
-function SearchRecommend({ form, props }) {
+function SearchRecommend({ form, searchLabel }) {
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
     const handleShowPopup = () => setShowRecommendPopup(true);
     const handleHidePopup = () => setShowRecommendPopup(false);
@@ -38,7 +38,7 @@ function SearchRecommend({ form, props }) {
             items={popupContent}
         >
             <TextInput
-                placeholder="Enter job title"
+                placeholder={searchLabel}
                 {...form.getInputProps('keyword')}
                 leftSection={<IconSearch />}
                 onFocus={handleShowPopup}

@@ -1,159 +1,59 @@
-import { useWindowScroll } from '@mantine/hooks';
-import { Button, Text, Group } from '@mantine/core';
-import { Images } from '~/assets';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './AppliedJobs.module.scss';
 import JobItemApplied from '~/components/JobItemApplied';
-import { Pagination } from '@mantine/core';
+import { Pagination, Select } from '@mantine/core';
+import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 
 const cx = classNames.bind(styles);
-const allJobs = React.Children.toArray([
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    // ... gọi tiếp các JobItemApplied khác tương tự
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    // tiếp tục ...
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-        isVIP
-    />,
-    <JobItemApplied
-        image={Images.google_image}
-        jobDescription={{
-            companyName: 'Google',
-            companyAddress: '1600 Amphitheatre Parkway Mountain',
-            jobTitle: 'Software Engineer asdasd asdasds asdadasd',
-            workTime: 'Full-time',
-            salary: '$100 - $200',
-            dueDate: 'June 15, 2021',
-        }}
-        isVIP
-    />,
-]);
-function AppliedJobs() {
-    const itemsPerPage = 5;
-    const [page, setPage] = useState(1);
-    const totalPages = Math.ceil(allJobs.length / itemsPerPage);
-    const startIdx = (page - 1) * itemsPerPage;
-    const currentJobs = allJobs.slice(startIdx, startIdx + itemsPerPage);
 
-    // Lấy tất cả children JobItemApplied dưới dạng mảng
+// Dùng hàm lấy token chuẩn
+function getTokenFromLocalStorage() {
+    let token = '';
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+        try {
+            const user = JSON.parse(storedUser);
+            if (user?.token) token = user.token;
+        } catch (e) {
+            token = '';
+        }
+    }
+    return token;
+}
+
+function AppliedJobs() {
+    const [jobs, setJobs] = useState([]);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(20);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
+
+    const token = getTokenFromLocalStorage(); // Sử dụng token đã có sẵn
+
+    // Option cho pageSize
+    const pageSizeOptions = [
+        { value: '10', label: '10 / page' },
+        { value: '20', label: '20 / page' },
+        { value: '50', label: '50 / page' },
+    ];
+
+    useEffect(() => {
+        const fetchJobs = async () => {
+            setLoading(true);
+            const data = await JobSeekerDashboardService.getAppliedJobs({ page, size, token });
+            if (data && data.content) {
+                setJobs(data.content);
+                setTotalPages(data.totalPages || 1);
+                setSize(data.size || size);
+            } else {
+                setJobs([]);
+                setTotalPages(1);
+            }
+            setLoading(false);
+        };
+        fetchJobs();
+    }, [page, size, token]);
 
     return (
         <div className={cx('applied-jobs-wrapper')}>
@@ -164,16 +64,62 @@ function AppliedJobs() {
                 <span>STATUS</span>
                 <span>ACTION</span>
             </div>
-            {/* {currentJobs} */}
             <div className={cx('job-list')}>
-                {currentJobs.map((jobComponent, index) => (
-                    <div key={index} className={cx('job-item')}>
-                        {jobComponent}
-                    </div>
-                ))}
+                {loading ? (
+                    <div>Loading...</div>
+                ) : jobs.length === 0 ? (
+                    <div style={{ padding: 32, textAlign: 'center', color: '#888' }}>No jobs found.</div>
+                ) : (
+                    jobs.map((job, index) => (
+                        <div key={job.id || index} className={cx('job-item')}>
+                            <JobItemApplied
+                                image={job.employer?.avatarUrl || ''} // Company image
+                                jobDescription={{
+                                    companyName: job.employer?.companyName || '', // Company name
+                                    companyAddress: job.employer?.location || '', // Company address
+                                    jobTitle: job.title || '', // Job title
+                                    workTime: job.jobType?.name || '', // Work time (Full-time/Part-time)
+                                    salary:
+                                        job.salaryMin && job.salaryMax
+                                            ? `$${job.salaryMin} - $${job.salaryMax}`
+                                            : 'Negotiable', // Salary
+                                    dateApplied: new Date(job.createdAt).toLocaleDateString('en-GB', {
+                                        day: 'numeric',
+                                        month: 'numeric',
+                                    }),
+                                    dueDate: job.expiredDate
+                                        ? new Date(job.expiredDate).toLocaleDateString('en-GB', {
+                                              day: 'numeric',
+                                              month: 'numeric',
+                                          })
+                                        : '',
+                                    isActive: job.active, // Job status (active or expired)
+                                }}
+                                isVIP={job.employer?.isPremium || false} // Check if the employer is VIP
+                            />
+                        </div>
+                    ))
+                )}
             </div>
-            {/* Phân trang Mantine */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: 32,
+                    fontSize: '18px',
+                }}
+            >
+                <Select
+                    data={pageSizeOptions}
+                    value={String(size)}
+                    onChange={(val) => {
+                        setSize(Number(val));
+                        setPage(1);
+                    }}
+                    size="md"
+                    style={{ width: 120 }}
+                />
                 <Pagination
                     total={totalPages}
                     value={page}
