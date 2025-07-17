@@ -62,11 +62,23 @@
 .title-label {
     font-size: var(--font-size-14px) !important;
 }
+.children {
+    font-size: 14px !important;
+    width: 100%;
+
+    a {
+        div {
+            span {
+                font-size: 13px !important;
+            }
+        }
+    }
+}
 
 .active {
-    border-left: 2px solid var(--blue-500);
-    background: var(--blue-50);
-    color: var(--blue-500);
+    border-left: 2px solid var(--blue-500) !important;
+    background: var(--blue-50) !important;
+    color: var(--blue-500) !important;
 
     .badge {
         background: var(--white);

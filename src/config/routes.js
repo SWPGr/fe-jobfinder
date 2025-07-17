@@ -26,10 +26,8 @@ const routes = {
     verify: '/api/auth/verify',
     company: '/company/:id',
     dashboardOverview: '/dashboard-overview',
-
     term: '/term',
     payment: '/payment',
-
     resetPassword: 'api/auth/reset-password', // Reset password page
     FeedBack: '/feedback',
     PaymentManagement: '/payment',
