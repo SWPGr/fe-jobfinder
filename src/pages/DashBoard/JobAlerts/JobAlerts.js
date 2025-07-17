@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 const jobsData = [
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -22,7 +22,7 @@ const jobsData = [
     />,
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -34,7 +34,7 @@ const jobsData = [
     />,
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -46,7 +46,7 @@ const jobsData = [
     />,
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -59,7 +59,7 @@ const jobsData = [
 
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -71,7 +71,7 @@ const jobsData = [
     />,
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -83,7 +83,7 @@ const jobsData = [
     />,
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',
@@ -95,7 +95,7 @@ const jobsData = [
     />,
     <JobItemList
         image={Images.google_image}
-        jobDescription={{
+        description={{
             companyName: 'Google',
             companyAddress: '1600 Amphitheatre Parkway Mountain ',
             jobTitle: 'Software Engineer asdsa asdas asdasdasdad asdas',

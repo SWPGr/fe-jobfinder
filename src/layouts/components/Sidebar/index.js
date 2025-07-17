@@ -39,7 +39,7 @@ function Sidebar({ setSelectedMenu, className }) {
                 setSelectedMenu(typeof defaultItem.page === 'function' ? defaultItem.page() : defaultItem.page);
             }
         }
-    }, [itemList, location.pathname, setSelectedMenu]);
+    }, [itemList, location.pathname, setSelectedMenu, page]);
 
     if (!itemList) {
         return <div>Error: No items available for the role: {role}</div>;
@@ -62,9 +62,10 @@ function Sidebar({ setSelectedMenu, className }) {
                                     root: cx('nav-item', { active: active?.includes(item.link) }),
                                     label: cx('title-label'),
                                     children: cx('children'),
+                                    section: cx('section'),
                                 }}
                                 childrenOffset={28}
-                                defaultOpened
+                                // defaultOpened
                                 onClick={() => {
                                     setActive(item.link);
                                     setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
