@@ -8,7 +8,7 @@ import { IconMapPin, IconStack2, IconAdjustments, IconAdjustmentsOff } from '@ta
 import classNames from 'classnames/bind';
 import styles from './Filter.module.scss';
 
-import { Button } from '~/components';
+import { Button, NoResultsFound } from '~/components';
 import { JobItemList, CompanyItem, CandidateItem } from '~/components';
 import SearchRecommend from './SearchRecommend';
 
@@ -391,17 +391,20 @@ function Filter({
                         </div>
                         <div className={cx('result__content')} ref={resultRef}>
                             {/* Bạn có thể render danh sách kết quả thực tế ở đây */}
-                            {dataset &&
+                            {dataset.length > 0 ? (
                                 dataset.map((description, index) => {
                                     let Item = JobItemList;
-                                    if (type === 'company') {
+                                    if (type === 'companies') {
                                         Item = CompanyItem;
                                     }
-                                    if (type === 'candidate') {
+                                    if (type === 'candidates') {
                                         Item = CandidateItem;
                                     }
                                     return <Item key={index} description={description} long />;
-                                })}
+                                })
+                            ) : (
+                                <NoResultsFound searchType={type} searchQuery={form.values.query} />
+                            )}
                         </div>
                         <div className={cx('pagination')}>
                             <Pagination

@@ -56,12 +56,19 @@ const ChatButton = () => {
 
     useEffect(() => {
         const fetchMessages = async () => {
-            const response = await chatbotService.getMessageHistory();
-            console.log('Fetched messages:', response.result);
-            setMessages(response.result.reverse() || []);
+            try {
+                const response = await chatbotService.getMessageHistory();
+                console.log('Fetched messages:', response.result);
+                setMessages(response.result.reverse() || []);
+            } catch (error) {
+                console.error('Failed to load chat history', error);
+            }
         };
-        fetchMessages();
-    }, []);
+
+        if (isOpen && messages.length === 0) {
+            fetchMessages();
+        }
+    }, [isOpen]); // 👈 chỉ chạy khi isOpen thay đổi
 
     useEffect(() => {
         scrollToBottom();

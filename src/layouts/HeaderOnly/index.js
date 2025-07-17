@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header/Header';
 import NavBar from '../components/NavBar/NavBar';
 import Footer from '../components/Footer/Footer';
+import { ChatbotButton } from '~/components';
+
 const cx = classNames.bind(styles);
 
 function HeaderOnly({ children }) {
@@ -16,6 +18,7 @@ function HeaderOnly({ children }) {
                 <div className={cx('content')}>{children}</div>
             </div>
             <Footer dark />
+            <ChatbotButton />
         </div>
     );
 }
