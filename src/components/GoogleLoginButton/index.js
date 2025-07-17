@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './GoogleLoginButton.module.scss';

@@ -1,77 +1,74 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Fragment } from 'react';
+import { Fragment, Suspense, lazy } from 'react';
 
 import { DefaultLayout } from './layouts';
 import { publicRoutes, privateRoutes } from './routes/AppRoutes';
-import { ErrorPage } from './pages';
 import ProtectedRoute from './routes/ProtectedRoute';
-import ChatButton from './components/ChatbotButton/ChatbotButton';
+
+const ErrorPage = lazy(() => import('~/pages/Error/Error'));
 
 function App() {
     return (
         <Router>
             <div className="App">
-                <Routes>
-                    {publicRoutes.map((route, index) => {
-                        const Page = route.component;
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Routes>
+                        {publicRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = route.layout;
 
-                        let Layout = route.layout;
-                        if (route.layout === null) {
-                            Layout = Fragment;
-                        } else if (route.layout) {
-                            Layout = route.layout;
-                        } else {
-                            Layout = DefaultLayout; // Assuming you have a DefaultLayout component
-                        }
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
+                            if (Layout === null) {
+                                Layout = Fragment;
+                            } else if (!Layout) {
+                                Layout = DefaultLayout;
+                            }
 
-                    {privateRoutes.map((route, index) => {
-                        const Page = route.component;
-
-                        let Layout = route.layout;
-                        if (route.layout === null) {
-                            Layout = Fragment;
-                        } else if (route.layout) {
-                            Layout = route.layout;
-                        } else {
-                            Layout = DefaultLayout;
-                        }
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <ProtectedRoute allowedRoles={route.allowedRoles}>
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
                                         <Layout>
                                             <Page />
                                         </Layout>
-                                    </ProtectedRoute>
-                                }
-                            />
-                        );
-                    })}
+                                    }
+                                />
+                            );
+                        })}
+                        {privateRoutes.map((route, index) => {
+                            const Page = route.component;
+                            let Layout = route.layout;
 
-                    <Route
-                        path="*"
-                        element={
-                            <>
-                                <ErrorPage />
-                            </>
-                        }
-                    />
-                </Routes>
-                <ChatButton />
+                            if (Layout === null) {
+                                Layout = Fragment;
+                            } else if (!Layout) {
+                                Layout = DefaultLayout;
+                            }
+
+                            return (
+                                <Route
+                                    key={index}
+                                    path={route.path}
+                                    element={
+                                        <ProtectedRoute allowedRoles={route.allowedRoles}>
+                                            <Layout>
+                                                <Page />
+                                            </Layout>
+                                        </ProtectedRoute>
+                                    }
+                                />
+                            );
+                        })}
+                        <Route
+                            path="*"
+                            element={
+                                <>
+                                    <ErrorPage />
+                                </>
+                            }
+                        />
+                    </Routes>
+                </Suspense>
             </div>
         </Router>
     );
