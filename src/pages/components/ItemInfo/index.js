@@ -3,10 +3,13 @@ import classNames from 'classnames/bind';
 import styles from './ItemInfo.module.scss';
 import { ThemeIcon } from '@mantine/core';
 import { IconBriefcase } from '@tabler/icons-react';
+import CountUp from 'react-countup';
 
 const cx = classNames.bind(styles);
 
 function ItemInfo({ icon = <IconBriefcase />, title, description, onClick, className }) {
+    // Xử lý nếu title là số thì animate, nếu không thì giữ nguyên
+    const isNumericTitle = typeof title === 'string' && !isNaN(Number(title.replace(/,/g, '')));
     return (
         <div className={cx('wrapper', { [className]: className })}>
             <ThemeIcon classNames={{ root: cx('root') }}>
@@ -20,7 +23,11 @@ function ItemInfo({ icon = <IconBriefcase />, title, description, onClick, class
                     })}
                     onClick={onClick}
                 >
-                    {title}
+                    {isNumericTitle ? (
+                        <CountUp start={0} end={Number(title.replace(/,/g, ''))} duration={2} separator="," />
+                    ) : (
+                        title
+                    )}
                 </p>
                 <p className={cx('description')}>{description}</p>
             </div>

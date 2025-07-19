@@ -1,6 +1,29 @@
 // routes.js
 import { lazy } from 'react';
 import config from '~/config';
+
+import {
+    LoginPage,
+    RegisterPage,
+    HomePage,
+    ErrorPage,
+    DashboardPage,
+    ServiceAndPolicyPage,
+    CreateCVSeekerPage,
+    FindJobPage,
+    JobDetail,
+    SeekerDetailPage,
+    VerifyPage,
+    FindEmployer,
+    FindCandidate,
+    DashboardOverview,
+    Term,
+    ResetPassword,
+    CustomerSupport,
+    PaymentManagement,
+    EventDetailPage,
+} from '~/pages';
+
 import { HeaderOnly } from '~/layouts';
 
 // ⚠️ Dùng lazy import từng page (đảm bảo các file export mặc định)
@@ -45,8 +68,12 @@ const publicRoutes = [
     { path: config.routes.verify, component: VerifyPage, layout: null },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
     { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
+
+    { path: config.routes.EventDetailPage, component: EventDetailPage, layout: HeaderOnly },
+
     { path: config.routes.CandidateSearchEvent, component: CandidatesPage, layout: HeaderOnly },
     { path: config.routes.JobSearchEvent, component: JobListingPage, layout: HeaderOnly },
+
 ];
 
 // ✅ Các route yêu cầu đăng nhập

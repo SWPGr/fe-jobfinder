@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './FavoriteJobs.module.scss';
 import JobItemList from '~/components/JobItemList';
 import { Images } from '~/assets';
-import { Pagination, Select } from '@mantine/core';
+import { Pagination } from '@mantine/core';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 
 const cx = classNames.bind(styles);
@@ -15,12 +15,6 @@ function FavoriteJobs() {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-
-    const pageSizeOptions = [
-        { value: '5', label: '5 / page' },
-        { value: '10', label: '10 / page' },
-        { value: '20', label: '20 / page' },
-    ];
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -102,22 +96,12 @@ function FavoriteJobs() {
             <div
                 style={{
                     display: 'flex',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                     alignItems: 'center',
                     marginTop: 32,
                     fontSize: '18px',
                 }}
             >
-                <Select
-                    data={pageSizeOptions}
-                    value={String(size)}
-                    onChange={(val) => {
-                        setSize(Number(val));
-                        setPage(1);
-                    }}
-                    size="md"
-                    style={{ width: 120 }}
-                />
                 <Pagination
                     total={totalPages}
                     value={page}

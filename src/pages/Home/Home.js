@@ -4,15 +4,16 @@ import { useEffect, lazy, Suspense } from 'react';
 import { useWindowScroll } from '@mantine/hooks';
 import { useAuth } from '~/context/AuthContext';
 
-const JobMarketTrends = lazy(() => import('./JobMarketTrends'));
-const FeaturedJob = lazy(() => import('./FeaturedJob'));
-const TopCompanies = lazy(() => import('./TopCompanies'));
-const PopularVacancy = lazy(() => import('./PopularVacancy'));
-const Instruction = lazy(() => import('./Instruction'));
-const PopularCategory = lazy(() => import('./PopularCategory'));
-const LandingPage = lazy(() => import('../components/LandingPage'));
-const JobFairBanner = lazy(() => import('./components/JobFairBanner'));
-const CTA = lazy(() => import('./CTA'));
+import { LandingPage } from '../components';
+import PopularVacancy from './PopularVacancy';
+import Instruction from './Instruction';
+import PopularCategory from './PopularCategory';
+import FeaturedJob from './FeaturedJob';
+import TopCompanies from './TopCompanies';
+import CTA from './CTA';
+import JobMarketTrends from './JobMarketTrends';
+import SectionWrapper from './animation/SectionWrapper';
+import EventBanner from './EventBanner';
 
 const cx = classNames.bind(styles);
 
@@ -27,16 +28,41 @@ function Home() {
 
     return (
         <div className={cx('wrapper')}>
-            <Suspense fallback={<div>Loading...</div>}>
-                <LandingPage />
+
+            {/* Không cần wrapper cho LandingPage vì nó là phần đầu */}
+            <LandingPage />
+
+            <SectionWrapper delay={0.05}>
+                <EventBanner />
+            </SectionWrapper>
+            <SectionWrapper delay={0.1}>
+
                 <JobMarketTrends />
+            </SectionWrapper>
+
+            <SectionWrapper delay={0.2}>
                 <Instruction />
-                <JobFairBanner role={user?.role} />
+
+            </SectionWrapper>
+
+            <SectionWrapper delay={0.3}>
+
                 <PopularCategory />
+            </SectionWrapper>
+
+            <SectionWrapper delay={0.4}>
                 <FeaturedJob />
+            </SectionWrapper>
+
+            <SectionWrapper delay={0.5}>
                 <TopCompanies />
+            </SectionWrapper>
+
+            <SectionWrapper delay={0.6}>
                 <CTA />
-            </Suspense>
+
+            </SectionWrapper>
+
         </div>
     );
 }

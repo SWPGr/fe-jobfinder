@@ -7,19 +7,18 @@
     border-radius: var(--border-radius); /* Updated from 16px */
 }
 
-/* Headings */
-h2 {
-    font-size: var(--font-size-20px); /* Updated from 24px */
-    font-weight: bold;
-    margin-bottom: var(--font-size-16px); /* Updated from 16px */
-    color: var(--text-color); /* Updated from #2d3a54 */
+.heading2 {
+    font-size: var(--font-size-logo);
+    font-weight: 600;
+    margin-bottom: var(--font-size-16px);
+    color: var(--text-color);
 }
 
-h3 {
-    font-size: var(--font-size-18px); /* Updated from 18px */
+.heading3 {
+    font-size: var(--font-size-20px);
     font-weight: 600;
-    margin-bottom: var(--font-size-16px); /* Updated from 16px */
-    color: var(--text-color); /* Updated from #2d3a54 */
+    margin-bottom: var(--font-size-16px);
+    color: var(--text-color);
 }
 
 /* Personal Info Layout */
@@ -95,43 +94,39 @@ h3 {
 .field-item input,
 .field-item select {
     width: 100%;
-    height: 44px; /* Kept as is */
-    padding: 0 14px; /* Kept as is */
-    font-size: var(--font-size-14px); /* Updated from 15px */
-    border: 1.5px solid var(--border-color); /* Updated from #d8dde4 */
-    border-radius: var(--border-radius); /* Updated from 7px */
-    background: var(--white); /* Updated from #fff */
-    color: var(--text-color); /* Updated from #222e3a */
-    font-family: var(--font-family); /* Updated from 'Inter', sans-serif */
+    height: 44px;
+    padding: 0 14px;
+    font-size: var(--font-size-14px);
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--text-color);
+    font-family: var(--font-family);
     outline: none;
-    transition: border-color var(--transition); /* Updated from 0.18s ease */
+    transition: border-color var(--transition);
 }
 
 .field-item input:focus,
 .field-item select:focus {
-    border-color: var(--primary-color); /* Updated from #2962ef */
-    box-shadow: 0 0 8px var(--primary-color-light); /* Updated from #2962ef1a */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color-light);
 }
 
 /* Save Button */
 .save-btn {
-    background: linear-gradient(
-        145deg,
-        var(--primary-color-light),
-        var(--primary-color)
-    ); /* Updated from #4a90e2, #2962ef */
-    color: var(--white); /* Updated from #fff */
-    padding: 10px 30px; /* Kept as is */
-    font-size: var(--font-size-20px); /* Updated from 20px */
+    background: linear-gradient(145deg, var(--primary-color-light), var(--primary-color));
+    color: var(--white);
+    padding: 10px 30px;
+    font-size: var(--font-size-20px);
     font-weight: 700;
-    border-radius: var(--border-radius); /* Updated from 20px */
+    border-radius: var(--border-radius);
     border: none;
     outline: none;
     text-transform: uppercase;
-    display: inline-block; /* Change to inline-block to align left */
-    min-width: 180px; /* Set minimum width to avoid too small button (kept as is) */
-    min-height: 40px; /* Ensure button height is adequate (kept as is) */
-    box-shadow: var(--box-shadow); /* Updated from 0 4px 6px rgba(0, 0, 0, 0.1) */
+    display: inline-block;
+    min-width: 180px;
+    min-height: 40px;
+    box-shadow: var(--box-shadow);
 }
 
 /* Make button more interactive */
@@ -348,14 +343,25 @@ h3 {
 
 /* Save & Next Button */
 .saveNextBtn {
-    background-color: var(--primary-color); /* Updated from #2962ef */
-    color: var(--white); /* Updated from #fff */
-    padding: var(--font-size-16px) var(--font-size-40px); /* Updated from 16px 40px */
-    font-size: var(--font-size-18px); /* Updated from 18px */
-    font-weight: 800; /* Kept as is */
-    border-radius: var(--border-radius); /* Updated from 12px */
+    background: linear-gradient(145deg, var(--primary-color-light), var(--primary-color));
+    color: var(--white);
+    padding: var(--font-size-16px) var(--font-size-40px);
+    font-size: var(--font-size-18px);
+    font-weight: 800;
+    border-radius: var(--border-radius);
+    border: none;
+    outline: none;
+    text-transform: uppercase;
+    display: inline-block;
+    min-width: 180px;
+    min-height: 40px;
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
 }
 
+.saveNextBtn:hover {
+    background: linear-gradient(145deg, var(--primary-color), var(--primary-color-light));
+}
 /* Account Setting */
 .account-setting-form {
     padding: var(--font-size-20px); /* Updated from 24px */
@@ -438,7 +444,6 @@ h3 {
 
 .save-btn:hover {
     background-color: var(--primary-color-dark); /* Updated from dynamic gradient */
-    transform: scale(1.05); /* Added from original design */
 }
 
 .delete-btn {
@@ -498,4 +503,47 @@ h3 {
         padding: var(--font-size-12px) var(--font-size-24px); /* Updated from 12px 24px */
         font-size: var(--font-size-14px); /* Updated from 14px */
     }
+}
+
+// modal
+.modal-dropzone {
+    position: relative;
+    height: 300px;
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9f9f9;
+    padding: 16px;
+    transition: border-color 0.3s;
+}
+
+.modal-dropzone:hover {
+    border-color: #228be6;
+}
+
+.modal-dropzone img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px; // Làm ảnh bo nhẹ góc
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); // Đổ bóng mềm cho ảnh
+    transition: transform 0.3s;
+}
+
+.modal-dropzone img:hover {
+    transform: scale(1.02); // Hiệu ứng zoom nhẹ khi hover
+}
+
+.upload-cv {
+    text-align: center;
+    color: #555;
+    z-index: 2;
+}
+
+.upload-cv-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
 }

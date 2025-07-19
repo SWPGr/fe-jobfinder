@@ -178,7 +178,7 @@ const PaymentManagement = () => {
                             <tr>
                                 <th className={cx('table-header')}>
                                     <div className={cx('header-content')}>
-                                        Transaction ID
+                                        ID
                                         <ArrowUpDown size={14} className={cx('sort-icon')} />
                                     </div>
                                 </th>
@@ -197,14 +197,14 @@ const PaymentManagement = () => {
                                     </div>
                                 </th>
                                 <th className={cx('table-header')}>Status</th>
-                                <th className={cx('table-header')}>Payment Method</th>
+
                                 <th className={cx('table-header')}>Actions</th>
                             </tr>
                         </thead>
                         <tbody className={cx('table-body')}>
                             <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-2023-8765</td>
-                                <td className={cx('table-cell')}>May 15, 2023</td>
+                                <td className={cx('table-cell', 'transaction-id')}>#TRX-8765</td>
+                                <td className={cx('table-cell')}>May 15</td>
                                 <td className={cx('table-cell')}>
                                     <div className={cx('customer-info')}>
                                         <div className={cx('avatarCircle', 'blue')}>T</div>
@@ -219,19 +219,14 @@ const PaymentManagement = () => {
                                 <td className={cx('table-cell')}>
                                     <span className={cx('statusText', 'success')}>Successful</span>
                                 </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <CreditCard size={16} className={cx('method-icon')} />
-                                        Visa •••• 4242
-                                    </div>
-                                </td>
+
                                 <td className={cx('table-cell', 'actions')}>
                                     <button className={cx('action-button', 'view')}>View</button>
                                 </td>
                             </tr>
                             <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-2023-8764</td>
-                                <td className={cx('table-cell')}>May 14, 2023</td>
+                                <td className={cx('table-cell', 'transaction-id')}>#TRX-8764</td>
+                                <td className={cx('table-cell')}>May 14</td>
                                 <td className={cx('table-cell')}>
                                     <div className={cx('customer-info')}>
                                         <div className={cx('avatarCircle', 'purple')}>D</div>
@@ -246,103 +241,13 @@ const PaymentManagement = () => {
                                 <td className={cx('table-cell')}>
                                     <span className={cx('statusText', 'success')}>Successful</span>
                                 </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <CreditCard size={16} className={cx('method-icon')} />
-                                        Mastercard •••• 5678
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell', 'actions')}>
-                                    <button className={cx('action-button', 'view')}>View</button>
-                                </td>
-                            </tr>
-                            <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-2023-8763</td>
-                                <td className={cx('table-cell')}>May 13, 2023</td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('customer-info')}>
-                                        <div className={cx('avatarCircle', 'green')}>P</div>
-                                        <div className={cx('customer-details')}>
-                                            <div className={cx('customer-name')}>ProductLabs</div>
-                                            <div className={cx('customer-email')}>product@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell')}>Resume Database Access</td>
-                                <td className={cx('table-cell')}>$199.00</td>
-                                <td className={cx('table-cell')}>
-                                    <span className={cx('statusText', 'pending')}>Pending</span>
-                                </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <Wallet size={16} className={cx('method-icon')} />
-                                        PayPal
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell', 'actions')}>
-                                    <button className={cx('action-button', 'view')}>View</button>
-                                </td>
-                            </tr>
-                            <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-2023-8762</td>
-                                <td className={cx('table-cell')}>May 12, 2023</td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('customer-info')}>
-                                        <div className={cx('avatarCircle', 'blue')}>C</div>
-                                        <div className={cx('customer-details')}>
-                                            <div className={cx('customer-name')}>CloudTech</div>
-                                            <div className={cx('customer-email')}>cloud@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell')}>Featured Job Listing</td>
-                                <td className={cx('table-cell')}>$349.00</td>
-                                <td className={cx('table-cell')}>
-                                    <span className={cx('statusText', 'failed')}>Failed</span>
-                                </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <CreditCard size={16} className={cx('method-icon')} />
-                                        Visa •••• 1234
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell', 'actions')}>
-                                    <button className={cx('action-button', 'view')}>View</button>
-                                    <button className={cx('action-button', 'retry')}>Retry</button>
-                                </td>
-                            </tr>
-                            <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-2023-8761</td>
-                                <td className={cx('table-cell')}>May 10, 2023</td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('customer-info')}>
-                                        <div className={cx('avatarCircle', 'red')}>D</div>
-                                        <div className={cx('customer-details')}>
-                                            <div className={cx('customer-name')}>DataWorks</div>
-                                            <div className={cx('customer-email')}>data@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell')}>Annual Subscription</td>
-                                <td className={cx('table-cell')}>$1,499.00</td>
-                                <td className={cx('table-cell')}>
-                                    <span className={cx('statusText', 'success')}>Successful</span>
-                                </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <CreditCard size={16} className={cx('method-icon')} />
-                                        Amex •••• 9876
-                                    </div>
-                                </td>
+
                                 <td className={cx('table-cell', 'actions')}>
                                     <button className={cx('action-button', 'view')}>View</button>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div className={cx('load-more')}>
-                        <button className={cx('load-more-button')}>Load More</button>
-                    </div>
                 </div>
             )}
 
