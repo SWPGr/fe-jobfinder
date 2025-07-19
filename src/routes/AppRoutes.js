@@ -2,28 +2,6 @@
 import { lazy } from 'react';
 import config from '~/config';
 
-import {
-    LoginPage,
-    RegisterPage,
-    HomePage,
-    ErrorPage,
-    DashboardPage,
-    ServiceAndPolicyPage,
-    CreateCVSeekerPage,
-    FindJobPage,
-    JobDetail,
-    SeekerDetailPage,
-    VerifyPage,
-    FindEmployer,
-    FindCandidate,
-    DashboardOverview,
-    Term,
-    ResetPassword,
-    CustomerSupport,
-    PaymentManagement,
-    EventDetailPage,
-} from '~/pages';
-
 import { HeaderOnly } from '~/layouts';
 
 // ⚠️ Dùng lazy import từng page (đảm bảo các file export mặc định)
@@ -51,6 +29,7 @@ const FeedBack = lazy(() => import('~/pages/FeedBack/FeedBack'));
 // const UnauthorizedPage = lazy(() => import('~/pages/UnauthorizedPage')); // nếu cần
 const CandidatesPage = lazy(() => import('~/pages/CandidatesPage/CandidatesPage'));
 const JobListingPage = lazy(() => import('~/pages/JobListingsPage/JobListingPage'));
+const EventDetailPage = lazy(() => import('~/pages/Home/EventDetailPage'));
 
 // ✅ Các route ai cũng truy cập được
 const publicRoutes = [
@@ -73,7 +52,6 @@ const publicRoutes = [
 
     { path: config.routes.CandidateSearchEvent, component: CandidatesPage, layout: HeaderOnly },
     { path: config.routes.JobSearchEvent, component: JobListingPage, layout: HeaderOnly },
-
 ];
 
 // ✅ Các route yêu cầu đăng nhập
