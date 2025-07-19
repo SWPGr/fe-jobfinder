@@ -19,6 +19,7 @@ import {
     ResetPassword,
     CustomerSupport,
     PaymentManagement,
+    EventDetailPage,
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
@@ -45,6 +46,7 @@ const publicRoutes = [
     { path: config.routes.findJob, component: FindJobPage, layout: HeaderOnly },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
     { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
+    { path: config.routes.EventDetailPage, component: EventDetailPage, layout: HeaderOnly },
 ];
 
 // Các route yêu cầu đăng nhập, kèm role tương ứng

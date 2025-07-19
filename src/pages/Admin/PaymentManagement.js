@@ -197,7 +197,7 @@ const PaymentManagement = () => {
                                     </div>
                                 </th>
                                 <th className={cx('table-header')}>Status</th>
-                                <th className={cx('table-header')}>Payment Method</th>
+
                                 <th className={cx('table-header')}>Actions</th>
                             </tr>
                         </thead>
@@ -219,12 +219,7 @@ const PaymentManagement = () => {
                                 <td className={cx('table-cell')}>
                                     <span className={cx('statusText', 'success')}>Successful</span>
                                 </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <CreditCard size={16} className={cx('method-icon')} />
-                                        Visa •••• 4242
-                                    </div>
-                                </td>
+
                                 <td className={cx('table-cell', 'actions')}>
                                     <button className={cx('action-button', 'view')}>View</button>
                                 </td>
@@ -246,12 +241,7 @@ const PaymentManagement = () => {
                                 <td className={cx('table-cell')}>
                                     <span className={cx('statusText', 'success')}>Successful</span>
                                 </td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('payment-method')}>
-                                        <CreditCard size={16} className={cx('method-icon')} />
-                                        Mastercard •••• 5678
-                                    </div>
-                                </td>
+
                                 <td className={cx('table-cell', 'actions')}>
                                     <button className={cx('action-button', 'view')}>View</button>
                                 </td>

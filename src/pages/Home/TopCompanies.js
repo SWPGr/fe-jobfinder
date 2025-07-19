@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import { Pagination, Text } from '@mantine/core';
 import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
-
+import { motion } from 'framer-motion';
 import { CompanyItem } from '~/components';
 import { Images } from '~/assets';
 
@@ -27,7 +27,13 @@ const companies = [
     { company_name: 'Tencent', location: 'China' },
 ];
 
-function TopCompanies() {
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * A component that displays a list of companies in a pagination layout.
+ *
+ * @returns {React.ReactElement} A React component that renders a list of companies in a pagination layout.
+ */
+/*******  49c283de-0a70-475b-959e-d1cef89cc028  *******/ function TopCompanies() {
     const [activePage, setActivePage] = useState(1);
 
     const pageSize = 8;
@@ -64,14 +70,15 @@ function TopCompanies() {
                 {/*  */}
                 <div className={cx('top-companies__list')}>
                     {currentPageItems.map((company, index) => (
-                        <CompanyItem
+                        <motion.div
                             key={index}
-                            image={Images.google_image}
-                            company_description={company}
-                            isFeatured
-                            saved
                             className={cx('item')}
-                        />
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                        >
+                            <CompanyItem image={Images.google_image} company_description={company} isFeatured saved />
+                        </motion.div>
                     ))}
                 </div>
             </div>

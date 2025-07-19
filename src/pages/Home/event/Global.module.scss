@@ -1,0 +1,51 @@
+/* Featured Job Section */
+.featured-job {
+    padding: 4rem 0;
+    max-width: 1200px; /* Constrain the section width */
+    margin: 0 auto; /* Center the section */
+}
+.featured-job__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.featured-job__title heading1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+.featured-job__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+.featured-job__item {
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s;
+}
+.featured-job__item:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.featured-job__page {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+}
+.pagination-control {
+    background-color: #16a34a;
+    color: white;
+    border-radius: 1.5rem;
+}
+.pagination-control:hover {
+    background-color: #15803d;
+}
+
+/* Container for consistent framing */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
