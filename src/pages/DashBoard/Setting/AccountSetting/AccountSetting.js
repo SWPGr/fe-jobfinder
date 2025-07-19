@@ -7,9 +7,9 @@ const cx = classNames.bind(styles);
 function AccountSetting() {
     return (
         <div className={cx('setting-content')}>
-            <h2>Account Setting</h2>
+            <div className={cx('heading2')}>Account Setting</div>
             <form className={cx('account-setting-form')}>
-                <h3>Contact Info</h3>
+                <div className={cx('heading3')}>Contact Info</div>
                 <div className={cx('form-row')}>
                     <label>Map Location</label>
                     <input type="text" placeholder="Map Location" />
@@ -23,7 +23,7 @@ function AccountSetting() {
                     <input type="email" placeholder="Email address" />
                 </div>
 
-                <h3>Notification</h3>
+                <div className={cx('heading3')}>Notifications</div>
                 <div className={cx('checkbox-group')}>
                     <label>
                         <input type="checkbox" /> Notify me when employers shortlisted me
@@ -42,7 +42,7 @@ function AccountSetting() {
                     </label>
                 </div>
 
-                <h3>Job Alerts</h3>
+                <div className={cx('heading3')}>Job Alerts</div>
                 <div className={cx('form-row')}>
                     <label>Role</label>
                     <input type="text" placeholder="Your job roles" />
@@ -52,7 +52,7 @@ function AccountSetting() {
                     <input type="text" placeholder="City, state, country name" />
                 </div>
 
-                <h3>Privacy</h3>
+                <div className={cx('heading3')}>Privacy</div>
                 <div className={cx('toggle-group')}>
                     <div className={cx('toggle-item')}>
                         <label>
@@ -66,7 +66,7 @@ function AccountSetting() {
                     </div>
                 </div>
 
-                <h3>Change Password</h3>
+                <div className={cx('heading3')}>Change Password</div>
                 <div className={cx('form-row')}>
                     <label>Current Password</label>
                     <input type="password" placeholder="Password" />
@@ -80,7 +80,7 @@ function AccountSetting() {
                     <input type="password" placeholder="Password" />
                 </div>
 
-                <h3>Delete Your Account</h3>
+                <div className={cx('heading3')}>Delete Your Account</div>
                 <p className={cx('delete-desc')}>
                     If you delete your Jobpilot account, you will no longer be able to get information about matched
                     jobs, following employers, and job alerts, shortlisted jobs and more. You will be abandoned from all

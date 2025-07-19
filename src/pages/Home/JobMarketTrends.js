@@ -23,30 +23,6 @@ import CustomLegend from './components/CustomLegend';
 import { format } from '~/utils';
 import JobItem from './components/JobItem';
 
-const recentJobs = [
-    {
-        id: 1,
-        title: 'Senior Java Developer - 3I094',
-        company: 'Ngân hàng TMCP Hàng Hải Việt Nam',
-        location: 'Hà Nội',
-        logo: 'https://cdn-icons-png.flaticon.com/512/732/732212.png',
-    },
-    {
-        id: 2,
-        title: 'Kế Toán Tổng Hợp (Đi Làm Ngay)',
-        company: 'CÔNG TY TNHH THƯƠNG MẠI V...',
-        location: 'Hà Nội',
-        logo: 'https://cdn-icons-png.flaticon.com/512/906/906324.png',
-    },
-    {
-        id: 3,
-        title: 'Trưởng Phòng Kinh Doanh',
-        company: 'Công ty Cổ Phần Nhựa Thiếu Niên...',
-        location: 'Cần Thơ, Khánh Hoà',
-        logo: 'https://cdn-icons-png.flaticon.com/512/2748/2748558.png',
-    },
-];
-
 const colors = ['#22c55e', '#3b82f6', '#f59e0b', '#06b6d4', '#eab308'];
 
 const valuesSet = [
@@ -64,7 +40,7 @@ const JobMarketTrends = () => {
     const [listTop, setListTop] = useState([]);
     const [date, setDate] = useState('');
     const [topJobs, setTopJobs] = useState([]);
-
+    const [isInitialRender, setIsInitialRender] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -93,15 +69,24 @@ const JobMarketTrends = () => {
                 setListTop(top);
 
                 const res4 = await jobService.getTopLatestJobs();
-                const data = res4.map((job) => {
-                    return format.transformJobData(job);
-                });
+                const data = res4.map((job) => format.transformJobData(job));
                 setTopJobs(data.slice(0, 4));
             } catch (err) {
                 console.log(err);
             }
         };
         fetchData();
+    }, []);
+
+    useEffect(() => {
+        // Chỉ chạy 1 lần lúc load trang
+        setIsInitialRender(true);
+
+        const timeout = setTimeout(() => {
+            setIsInitialRender(false);
+        }, 3000); // sau khi hoàn tất animation
+
+        return () => clearTimeout(timeout);
     }, []);
 
     return (
@@ -120,6 +105,7 @@ const JobMarketTrends = () => {
                     </div>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Left column: Latest Jobs */}
                     <div className="lg:col-span-3 bg-[#18191c] bg-opacity-40 rounded-lg p-4">
                         <h3 className="text-lg font-medium text-white mb-4 flex items-center">
                             <BriefcaseIcon className="mr-2 h-5 w-5 text-[#0a65cc]" />
@@ -132,14 +118,23 @@ const JobMarketTrends = () => {
                         </div>
                     </div>
 
+                    {/* Right column */}
                     <div className="lg:col-span-9 flex flex-col gap-6">
+                        {/* Stats cards */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {figure.map((item, index) => (
-                                <StatCard key={index} number={item.value} label={item.title} />
+                                <StatCard
+                                    key={index}
+                                    number={item.value}
+                                    label={item.title}
+                                    animate={isInitialRender}
+                                />
                             ))}
                         </div>
 
+                        {/* Charts */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Area chart */}
                             <div className="bg-[#18191c] bg-opacity-40 rounded-lg p-4">
                                 <h3 className="text-lg font-medium text-white mb-4 flex items-center">
                                     <TrendingUpIcon className="mr-2 h-5 w-5 text-[#0a65cc]" />
@@ -163,7 +158,7 @@ const JobMarketTrends = () => {
                                                 axisLine={{ stroke: '#555' }}
                                                 angle={-30}
                                                 textAnchor="end"
-                                                interval={4} // hiển thị 1 nhãn mỗi 2 mục
+                                                interval={4}
                                             />
                                             <YAxis
                                                 domain={[46000, 56000]}
@@ -184,12 +179,15 @@ const JobMarketTrends = () => {
                                                 fillOpacity={1}
                                                 fill="url(#colorGrowth)"
                                                 strokeWidth={2}
+                                                isAnimationActive={true}
+                                                animationDuration={1500}
                                             />
                                         </AreaChart>
                                     </ResponsiveContainer>
                                 </div>
                             </div>
 
+                            {/* Bar chart */}
                             <div className="bg-[#18191c] bg-opacity-40 rounded-lg p-4">
                                 <div className="flex justify-between items-center mb-4">
                                     <h3 className="text-lg font-medium text-white flex items-center">
@@ -230,7 +228,11 @@ const JobMarketTrends = () => {
                                                     </linearGradient>
                                                 ))}
                                             </defs>
-                                            <Bar dataKey="job_category_count" isAnimationActive={false}>
+                                            <Bar
+                                                dataKey="job_category_count"
+                                                isAnimationActive={true}
+                                                animationDuration={1500}
+                                            >
                                                 {listTop.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={`url(#gradient-${index})`} />
                                                 ))}
@@ -239,7 +241,10 @@ const JobMarketTrends = () => {
                                     </ResponsiveContainer>
                                 </div>
                                 <CustomLegend
-                                    payload={listTop.map((item, index) => ({ color: colors[index], payload: item }))}
+                                    payload={listTop.map((item, index) => ({
+                                        color: colors[index],
+                                        payload: item,
+                                    }))}
                                 />
                             </div>
                         </div>

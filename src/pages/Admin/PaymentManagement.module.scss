@@ -1,19 +1,17 @@
-.managementWrapper {
-    padding: 1.5rem;
-}
-
 .payment-header {
     margin-bottom: 1.5rem;
 }
 
 .title {
-    font-size: 1.5rem;
+    font-size: var(
+        --font-size-logo
+    ); /* Giảm từ var(--font-size-18px) (~1.8rem) xuống var(--font-size-16px) (~1.6rem) */
     font-weight: bold;
-    color: #1f2937;
+    color: var(--text-color);
 }
 
 .description {
-    color: #4b5563;
+    color: var(--disabled-color);
 }
 
 .summary-grid {
@@ -36,11 +34,11 @@
 }
 
 .summary-card {
-    background: white;
+    background: var(--white);
     padding: 1.5rem;
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    border: 1px solid #f3f4f6;
+    border: 1px solid var(--border-color);
 }
 
 .card-header {
@@ -56,64 +54,66 @@
 }
 
 .card-icon.blue {
-    background: #dbeafe;
+    background: var(--blue-100);
 }
 
 .card-icon.green {
-    background: #d1fae5;
+    background: var(--green-100);
 }
 
 .card-icon.red {
-    background: #fee2e2;
+    background: var(--red-100);
 }
 
 .card-icon.yellow {
-    background: #fef3c7;
+    background: var(--orange-100);
 }
 
 .icon-blue {
-    color: #2563eb;
+    color: var(--blue-600);
 }
 
 .icon-green {
-    color: #059669;
+    color: var(--green-600);
 }
 
 .icon-red {
-    color: #dc2626;
+    color: var(--red-600);
 }
 
 .icon-yellow {
-    color: #d97706;
+    color: var(--orange-600);
 }
 
 .card-period {
-    font-size: 0.875rem;
-    color: #6b7280;
+    font-size: var(--font-size-12px); /* Giảm từ var(--font-size-12px) (~1.2rem) xuống var(--font-size-12px) (~1rem) */
+    color: var(--disabled-color);
 }
 
 .card-value {
-    font-size: 1.5rem;
+    font-size: var(
+        --font-size-16px
+    ); /* Giảm từ var(--font-size-18px) (~1.8rem) xuống var(--font-size-16px) (~1.6rem) */
     font-weight: bold;
 }
 
 .card-label {
-    color: #6b7280;
+    color: var(--disabled-color);
 }
 
 .card-trend {
     margin-top: 0.5rem;
-    font-size: 0.875rem;
+    font-size: var(--font-size-12px); /* Giảm từ var(--font-size-12px) (~1.2rem) xuống var(--font-size-10px) (~1rem) */
     display: flex;
     align-items: center;
 }
 
 .card-trend.up {
-    color: #16a34a;
+    color: var(--success-color);
 }
 
 .card-trend.down {
-    color: #d97706;
+    color: var(--warning-color);
 }
 
 .trend-icon {
@@ -122,7 +122,7 @@
 
 .tabs {
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .tab-nav {
@@ -134,19 +134,21 @@
 .tab-button {
     padding: 1rem 0;
     border-bottom: 2px solid transparent;
-    font-size: 0.875rem;
+    font-size: var(
+        --font-size-12px
+    ); /* Giảm từ var(--font-size-14px) (~1.4rem) xuống var(--font-size-12px) (~1.2rem) */
     font-weight: medium;
-    color: #6b7280;
+    color: var(--disabled-color);
 }
 
 .tab-button:hover {
-    color: #374151;
-    border-color: #d1d5db;
+    color: var(--text-color);
+    border-color: var(--border-color);
 }
 
 .tab-button.active {
-    border-color: #3b82f6;
-    color: #2563eb;
+    border-color: var(--primary-color);
+    color: var(--primary-color-light);
 }
 
 .toolbar {
@@ -165,7 +167,7 @@
 
 .search-box {
     position: relative;
-    width: 16rem;
+    width: 20rem;
 }
 
 .search-icon {
@@ -173,7 +175,7 @@
     left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
-    color: #9ca3af;
+    color: var(--placeholder-color);
 }
 
 .search-input {
@@ -181,7 +183,7 @@
     padding-right: 1rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 0.375rem;
     width: 100%;
     outline: none;
@@ -189,21 +191,21 @@
 
 .search-input:focus {
     ring: 2px;
-    ring-color: #3b82f6;
+    ring-color: var(--primary-color);
 }
 
 .filter-select {
     padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 0.375rem;
-    background: white;
-    color: #374151;
+    background: var(--white);
+    color: var(--text-color);
     outline: none;
 }
 
 .filter-select:focus {
     ring: 2px;
-    ring-color: #3b82f6;
+    ring-color: var(--primary-color);
 }
 
 .toolbar-actions {
@@ -215,23 +217,23 @@
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 0.375rem;
-    background: white;
-    color: #374151;
+    background: var(--white);
+    color: var(--text-color);
 }
 
 .action-button:hover {
-    background: #f9fafb;
+    background: var(--background-color);
 }
 
 .action-button.primary {
-    background: #2563eb;
-    color: white;
+    background: var(--primary-color);
+    color: var(--white);
 }
 
 .action-button.primary:hover {
-    background: #1d4ed8;
+    background: var(--primary-color-dark);
 }
 
 .button-icon {
@@ -239,7 +241,7 @@
 }
 
 .tableWrapper {
-    background: white;
+    background: var(--white);
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -251,15 +253,15 @@
 }
 
 .table-head {
-    background: #f9fafb;
+    background: var(--background-color);
 }
 
 .table-header {
     padding: 0.75rem 1.5rem;
     text-align: left;
-    font-size: 0.75rem;
+    font-size: var(--font-size-10px); /* Giữ nguyên var(--font-size-10px) (~1rem) */
     font-weight: medium;
-    color: #6b7280;
+    color: var(--disabled-color);
     text-transform: uppercase;
 }
 
@@ -273,17 +275,18 @@
 }
 
 .table-body {
-    background: white;
+    background: var(--white);
 }
 
 .table-row {
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .table-cell {
     padding: 1rem 1.5rem;
     white-space: nowrap;
-    font-size: 0.875rem;
+    margin-top: 2px;
+    font-size: var(--font-size-12px); /* Giảm từ var(--font-size-12px) (~1.2rem) xuống var(--font-size-10px) (~1rem) */
 }
 
 .table-cell.actions {
@@ -296,8 +299,8 @@
 }
 
 .avatarCircle {
-    height: 2rem;
-    width: 2rem;
+    height: 2.5rem;
+    width: 2.5rem;
     border-radius: 9999px;
     display: flex;
     align-items: center;
@@ -306,23 +309,23 @@
 }
 
 .avatarCircle.blue {
-    background: #dbeafe;
-    color: #2563eb;
+    background: var(--blue-100);
+    color: var(--blue-600);
 }
 
 .avatarCircle.purple {
-    background: #e9d5ff;
-    color: #7c3aed;
+    background: var(--blue-200);
+    color: var(--blue-700);
 }
 
 .avatarCircle.green {
-    background: #d1fae5;
-    color: #059669;
+    background: var(--green-100);
+    color: var(--green-600);
 }
 
 .avatarCircle.red {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--red-100);
+    color: var(--red-600);
 }
 
 .customer-details {
@@ -330,36 +333,36 @@
 }
 
 .customer-name {
-    font-size: 0.875rem;
+    font-size: var(--font-size-14px); /* Giảm từ var(--font-size-12px) (~1.2rem) xuống var(--font-size-10px) (~1rem) */
     font-weight: medium;
-    color: #111827;
+    color: var(--text-color);
 }
 
 .customer-email {
-    font-size: 0.875rem;
-    color: #6b7280;
+    font-size: var(--font-size-12px); /* Giảm từ var(--font-size-12px) (~1.2rem) xuống var(--font-size-10px) (~1rem) */
+    color: var(--disabled-color);
 }
 
 .statusText {
     padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-10px); /* Giữ nguyên var(--font-size-10px) (~1rem) */
     font-weight: bold;
     border-radius: 9999px;
 }
 
 .statusText.success {
-    background: #d1fae5;
-    color: #059669;
+    background: var(--green-100);
+    color: var(--green-600);
 }
 
 .statusText.pending {
-    background: #fef3c7;
-    color: #d97706;
+    background: var(--orange-100);
+    color: var(--orange-600);
 }
 
 .statusText.failed {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--red-100);
+    color: var(--red-600);
 }
 
 .payment-method {
@@ -383,15 +386,18 @@
 }
 
 .dropdownMenu {
-    /* Define dropdown styles */
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
 }
 
 .dropdownItem {
     padding: 0.5rem 1rem;
+    color: var(--text-color);
 }
 
 .dropdownItem--retry {
-    color: #dc2626;
+    color: var(--error-color);
 }
 
 .load-more {
@@ -401,14 +407,14 @@
 
 .load-more-button {
     padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
     border-radius: 0.375rem;
-    background: white;
-    color: #374151;
+    background: var(--white);
+    color: var(--text-color);
 }
 
 .load-more-button:hover {
-    background: #f9fafb;
+    background: var(--background-color);
 }
 
 .modalOverlay {
@@ -425,13 +431,21 @@
 }
 
 .modalBox {
-    background: white;
+    background: var(--white);
     border-radius: 0.5rem;
     padding: 1.5rem;
     position: relative;
     max-width: 90%;
     max-height: 90%;
     overflow: auto;
+    padding-bottom: 1.5rem;
+}
+
+.modalBox::after {
+    content: '';
+    display: block;
+    height: 1rem;
+    visibility: hidden;
 }
 
 .closeBtn {
@@ -441,11 +455,11 @@
     background: none;
     border: none;
     font-size: 1rem;
-    color: #374151;
+    color: var(--text-color);
 }
 
 .subscriptionsWrapper {
-    background: white;
+    background: var(--white);
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
@@ -465,7 +479,7 @@
 }
 
 .plan-card {
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     padding: 1.5rem;
     display: flex;
@@ -473,16 +487,16 @@
 }
 
 .plan-card.popular {
-    border: 2px solid #3b82f6;
+    border: 2px solid var(--primary-color);
 }
 
 .popular-badge {
     position: absolute;
     top: 0;
     right: 0;
-    background: #3b82f6;
-    color: white;
-    font-size: 0.75rem;
+    background: var(--primary-color);
+    color: var(--white);
+    font-size: var(--font-size-12px); /* Giữ nguyên var(--font-size-10px) (~1rem) */
     font-weight: bold;
     padding: 0.25rem 0.75rem;
     border-bottom-left-radius: 0.5rem;
@@ -496,15 +510,17 @@
 }
 
 .plan-title {
-    font-size: 1.125rem;
+    font-size: var(
+        --font-size-14px
+    ); /* Giảm từ var(--font-size-16px) (~1.6rem) xuống var(--font-size-14px) (~1.4rem) */
     font-weight: medium;
-    color: #111827;
+    color: var(--text-color);
 }
 
 .plan-period {
-    background: #dbeafe;
-    color: #2563eb;
-    font-size: 0.75rem;
+    background: var(--blue-100);
+    color: var(--blue-600);
+    font-size: var(--font-size-12px); /* Giữ nguyên var(--font-size-10px) (~1rem) */
     font-weight: bold;
     padding: 0.125rem 0.625rem;
     border-radius: 0.25rem;
@@ -515,12 +531,14 @@
 }
 
 .price-value {
-    font-size: 1.875rem;
+    font-size: var(
+        --font-size-16px
+    ); /* Giảm từ var(--font-size-18px) (~1.8rem) xuống var(--font-size-16px) (~1.6rem) */
     font-weight: bold;
 }
 
 .price-unit {
-    color: #6b7280;
+    color: var(--disabled-color);
 }
 
 .plan-features {
@@ -534,13 +552,13 @@
 .feature-item {
     display: flex;
     align-items: center;
-    color: #4b5563;
+    color: var(--disabled-color);
 }
 
 .feature-icon {
     height: 1.25rem;
     width: 1.25rem;
-    color: #16a34a;
+    color: var(--success-color);
     margin-right: 0.5rem;
 }
 
@@ -551,13 +569,13 @@
 }
 
 .action-button.edit {
-    border: 1px solid #3b82f6;
-    color: #2563eb;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color-light);
 }
 
 .action-button.deactivate {
-    border: 1px solid #d1d5db;
-    color: #374151;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
 }
 
 .reportsWrapper {
@@ -567,23 +585,25 @@
 }
 
 .report-card {
-    background: white;
+    background: var(--white);
     border-radius: 0.5rem;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
 }
 
 .report-title {
-    font-size: 1.125rem;
+    font-size: var(
+        --font-size-14px
+    ); /* Giảm từ var(--font-size-16px) (~1.6rem) xuống var(--font-size-14px) (~1.4rem) */
     font-weight: medium;
-    color: #111827;
+    color: var(--text-color);
     margin-bottom: 1rem;
 }
 
 .chart-placeholder {
     height: 16rem;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     display: flex;
     align-items: center;
@@ -591,5 +611,5 @@
 }
 
 .chart-text {
-    color: #6b7280;
+    color: var(--disabled-color);
 }

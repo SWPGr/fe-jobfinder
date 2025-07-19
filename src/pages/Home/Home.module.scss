@@ -125,7 +125,9 @@
         width: 6.2rem;
         height: 6.2rem;
         border-radius: 50%;
-        background: var((--white));
+        // background: var((--white));
+        opacity: 1;
+        transition: all 0.3s ease;
     }
     .icon_instruction {
         width: 60%;
@@ -563,5 +565,24 @@
                 margin: 0 auto;
             }
         }
+    }
+}
+
+//Event Banner
+.event-banner {
+    width: 100%;
+    margin: 32px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__image {
+        width: 100%;
+        max-width: 1024px; // giúp ảnh không vượt quá kích thước hợp lý
+        height: auto;
+        aspect-ratio: 3 / 1; // giữ tỉ lệ ảnh, tránh bị quá cao
+        object-fit: cover;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     }
 }

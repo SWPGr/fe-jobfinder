@@ -139,9 +139,10 @@ function Personal() {
 
     return (
         <div className={cx('setting-content')}>
-            <h2>Personal</h2>
+            <h2 className={cx('heading2')}>Personal</h2>
+
             <section className={cx('basic-info')}>
-                <h3>Basic Information</h3>
+                <h3 className={cx('heading3')}>Basic Information</h3>
                 <div className={cx('personal-form-layout')}>
                     {/* Image section styled as square */}
                     <div className={cx('profile-pic-col')}>
@@ -225,26 +226,56 @@ function Personal() {
 
             {message && <Text color={message.startsWith('❌') ? 'red' : 'green'}>{message}</Text>}
 
-            <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Add Cv/Resume" centered>
-                <TextInput placeholder="Cv/Resume Name" mb="md" />
+            <Modal
+                opened={modalOpened}
+                onClose={() => setModalOpened(false)}
+                title="Upload Profile Picture"
+                centered
+                size="xl"
+            >
                 <Dropzone
                     onDrop={handleFileChange}
-                    accept={{ 'application/pdf': [] }}
-                    maxSize={10 * 1024 ** 2}
+                    accept={{
+                        'image/png': [],
+                        'image/jpeg': [],
+                        'image/jpg': [],
+                        'image/webp': [],
+                        'image/gif': [],
+                    }}
+                    maxSize={5 * 1024 ** 2}
                     multiple={false}
                     mb="md"
+                    className={cx('modal-dropzone')}
                 >
                     <div className={cx('upload-cv')}>
-                        <span className={cx('upload-cv-icon')}>📄</span>
-                        <p>Upload your Cv/Resume</p>
-                        <small>Only PDF format available. Max file size 12 MB.</small>
+                        {previewUrl ? (
+                            <img
+                                src={previewUrl}
+                                alt="Preview"
+                                style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover',
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                }}
+                            />
+                        ) : (
+                            <>
+                                <span className={cx('upload-cv-icon')}>🖼️</span>
+                                <p>Upload your Profile Picture</p>
+                                <small>Accepted formats: JPG, PNG, GIF, WEBP. Max size: 5MB.</small>
+                            </>
+                        )}
                     </div>
                 </Dropzone>
+
                 <Group position="right">
                     <Button variant="subtle" onClick={() => setModalOpened(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={handleModalSubmit}>Add Cv/Resume</Button>
+                    <Button onClick={handleModalSubmit}>Upload</Button>
                 </Group>
             </Modal>
         </div>

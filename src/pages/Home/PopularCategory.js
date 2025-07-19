@@ -13,7 +13,7 @@ import {
     IconDatabase,
 } from '@tabler/icons-react';
 import { Carousel } from '@mantine/carousel';
-
+import { motion } from 'framer-motion';
 import { Button } from '~/components';
 import ItemInfo from '../components/ItemInfo';
 import { categoryService } from '~/services';
@@ -90,12 +90,18 @@ function PopularCategory() {
                         <Carousel.Slide key={index}>
                             <div className={cx('popular-category__list')}>
                                 {categories.slice(index * size, (index + 1) * size).map((category, index) => (
-                                    <ItemInfo
+                                    <motion.div
                                         key={index}
-                                        title={category.name}
-                                        description={`${category.total} Open positions`}
                                         className={cx('popular-category__item')}
-                                    />
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                                    >
+                                        <ItemInfo
+                                            title={category.name}
+                                            description={`${category.total} Open positions`}
+                                        />
+                                    </motion.div>
                                 ))}
                             </div>
                         </Carousel.Slide>

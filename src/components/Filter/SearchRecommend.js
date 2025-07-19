@@ -10,7 +10,7 @@ import { jobService } from '~/services';
 
 const cx = classNames.bind(styles);
 
-function SearchRecommend({ form, searchLabel }) {
+function SearchRecommend({ type, form, searchLabel }) {
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
     const handleShowPopup = () => setShowRecommendPopup(true);
     const handleHidePopup = () => setShowRecommendPopup(false);
@@ -32,6 +32,7 @@ function SearchRecommend({ form, searchLabel }) {
 
     return (
         <RecommendPopup
+            type={type}
             visible={showRecommendPopup}
             handleShowPopup={handleShowPopup}
             handleHidePopup={handleHidePopup}
