@@ -1,7 +1,12 @@
 import React from 'react';
 import { MapPinIcon, ClockIcon, TagIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const JobCard = ({ title, company, location, employmentType, skills, logo, postedDate, featured = false }) => {
+    const navigate = useNavigate();
+    const handleNavigate = () => {
+        navigate('/jobDetails/1');
+    };
     return (
         <div
             className={`bg-white rounded-lg shadow-md p-6 border ${
@@ -41,7 +46,10 @@ const JobCard = ({ title, company, location, employmentType, skills, logo, poste
                     </div> */}
                     <div className="flex justify-between items-center mt-4">
                         <span className="text-base text-gray-500">{postedDate}</span>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
+                        <button
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                            onClick={handleNavigate}
+                        >
                             Apply Now
                         </button>
                     </div>

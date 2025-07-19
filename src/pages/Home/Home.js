@@ -14,6 +14,7 @@ import CTA from './CTA';
 import JobMarketTrends from './JobMarketTrends';
 import SectionWrapper from './animation/SectionWrapper';
 import EventBanner from './EventBanner';
+import JobFairBanner from './components/JobFairBanner';
 
 const cx = classNames.bind(styles);
 
@@ -28,7 +29,6 @@ function Home() {
 
     return (
         <div className={cx('wrapper')}>
-
             {/* Không cần wrapper cho LandingPage vì nó là phần đầu */}
             <LandingPage />
 
@@ -36,17 +36,18 @@ function Home() {
                 <EventBanner />
             </SectionWrapper>
             <SectionWrapper delay={0.1}>
-
                 <JobMarketTrends />
             </SectionWrapper>
 
             <SectionWrapper delay={0.2}>
                 <Instruction />
+            </SectionWrapper>
 
+            <SectionWrapper delay={0.25}>
+                <JobFairBanner />
             </SectionWrapper>
 
             <SectionWrapper delay={0.3}>
-
                 <PopularCategory />
             </SectionWrapper>
 
@@ -60,9 +61,7 @@ function Home() {
 
             <SectionWrapper delay={0.6}>
                 <CTA />
-
             </SectionWrapper>
-
         </div>
     );
 }
