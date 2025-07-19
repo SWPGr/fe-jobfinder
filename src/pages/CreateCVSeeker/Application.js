@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./Application.module.scss";
 import SeekerDetail from "../SeekerDetail/SeekerDetail";
 import EmployerService from "~/services/EmployerService";
+import ResumeProfile from "./ResumeProfile";
 
 const Application = ({
   fullName,
@@ -47,6 +48,7 @@ const JobApplications = ({ jobId }) => {
     jobLevel: "",
   });
   const [selectedApplicant, setSelectedApplicant] = useState(null);
+  const [showResumeProfile, setShowResumeProfile] = useState(false);
 
   useEffect(() => {
     if (!jobId) {
@@ -55,25 +57,41 @@ const JobApplications = ({ jobId }) => {
     }
     let mounted = true;
     const fetchData = async () => {
-      const arr = await EmployerService.fetchApplicationFake(jobId);
-      const apps = Array.isArray(arr) ? arr : arr ? [arr] : [];
-      if (mounted) {
-        setApplications(
-          apps.map((app) => ({
-            fullName: app.jobSeeker?.fullName || "",
-            email: app.email || app.jobSeeker?.userEmail || "",
-            title: app.title || app.jobSeeker?.title || "",
-            experience: app.experience || app.jobSeeker?.experienceName || "",
-            education: app.education || app.jobSeeker?.educationName || "",
-            salary: app.salary || "",
-            jobType: app.jobType || "",
-            jobLevel: app.jobLevel || "",
-            appliedDate: app.appliedAt
-              ? new Date(app.appliedAt).toLocaleString()
-              : "",
-            originalData: app,
-          }))
-        );
+      try {
+        const res = await EmployerService.fetchApplicationFake(jobId);
+        const apps = Array.isArray(res) ? res : res ? [res] : [];
+        if (mounted) {
+          setApplications(
+            apps.map((app) => ({
+              fullName: app.jobSeeker?.fullName || "",
+              email: app.email || app.jobSeeker?.userEmail || "",
+              title: app.job?.title || app.title || app.jobSeeker?.title || "",
+              experience:
+                app.experience ||
+                app.jobSeeker?.experienceName ||
+                app.job?.experience?.name ||
+                "",
+              education:
+                app.education ||
+                app.jobSeeker?.educationName ||
+                app.job?.education?.name ||
+                "",
+              salary:
+                app.salary ||
+                (app.job?.salaryMin && app.job?.salaryMax
+                  ? `${app.job.salaryMin} - ${app.job.salaryMax}`
+                  : ""),
+              jobType: app.jobType || app.job?.jobType?.name || "",
+              jobLevel: app.jobLevel || app.job?.jobLevel?.name || "",
+              appliedDate: app.appliedAt
+                ? new Date(app.appliedAt).toLocaleString()
+                : "",
+              originalData: app,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Lỗi khi fetch applications:", error);
       }
     };
     fetchData();
@@ -82,7 +100,6 @@ const JobApplications = ({ jobId }) => {
     };
   }, [jobId]);
 
-  // Lấy chi tiết ứng viên
   const fetchCandidateDetail = async (jobId, applicationId) => {
     try {
       const res = await EmployerService.fetchCandidateDetail(jobId, applicationId);
@@ -93,7 +110,6 @@ const JobApplications = ({ jobId }) => {
     }
   };
 
-  // Xử lý khi chọn ứng viên: gọi API lấy chi tiết rồi set
   const handleSelect = async (app) => {
     if (!jobId) return;
     const detail = await fetchCandidateDetail(jobId, app.originalData.id);
@@ -102,6 +118,7 @@ const JobApplications = ({ jobId }) => {
     } else {
       setSelectedApplicant(app.originalData);
     }
+    setShowResumeProfile(false); // Reset khi chọn ứng viên mới
   };
 
   const handleDownloadCV = (app) => {
@@ -122,7 +139,6 @@ const JobApplications = ({ jobId }) => {
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Lọc và sắp xếp
   const filteredApps = applications
     .filter(
       (app) =>
@@ -166,6 +182,7 @@ const JobApplications = ({ jobId }) => {
           {showFilterPanel && (
             <div className={styles.filterPanel}>
               <div className={styles.filterHeader}>
+                {/* ... các input/select filter như cũ ... */}
                 <input
                   name="fullName"
                   placeholder="Name"
@@ -267,20 +284,42 @@ const JobApplications = ({ jobId }) => {
         {selectedApplicant && (
           <div
             className={styles.overlay}
-            onClick={() => setSelectedApplicant(null)}
+            onClick={() => {
+              setSelectedApplicant(null);
+              setShowResumeProfile(false);
+            }}
           >
             <div
               className={styles.seekerBox}
               onClick={(e) => e.stopPropagation()}
+              style={{ position: "relative" }}
             >
               <button
                 className={styles.closeBtn}
-                onClick={() => setSelectedApplicant(null)}
+                onClick={() => {
+                  setSelectedApplicant(null);
+                  setShowResumeProfile(false);
+                }}
                 aria-label="Close"
               >
                 &times;
               </button>
+
               <SeekerDetail applicant={selectedApplicant} />
+
+              {/* Nút bật/tắt ResumeProfile */}
+              <button
+                className={styles.aiButton}
+                onClick={() => setShowResumeProfile((prev) => !prev)}
+                title="Xem Resume Profile"
+              >
+                AI
+              </button>
+
+              {/* Hiển thị ResumeProfile khi bật */}
+              {showResumeProfile && (
+                <ResumeProfile jobId={jobId} />
+              )}
             </div>
           </div>
         )}

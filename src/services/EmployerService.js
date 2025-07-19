@@ -210,10 +210,17 @@ const fetchSettingFake = async (updatedData) => {
   }
 };
 const fetchApplicationFake = async (jobId) => {
-  const response = await get(`/apply/candidates/${jobId}`);
+  const response = await get(`/apply/${jobId}`);
   return response?.result || [];
 };
-
+const fetchCandidateDetail = async (applicationId) => {
+  const response = await get(`/apply/candidates/${applicationId}`);
+  return response?.result || null;
+};
+const fetchResume = async (applicationId) => {
+  const response = await get(`/apply/${applicationId}/summarize-resume`);
+  return response?.result || null;
+};
 const EmployerService = {
   getJobDetail,
   updateJob,
@@ -224,6 +231,7 @@ const EmployerService = {
   fetchJobLevelFake,
   fetchJobEmployerFake,
   fetchMyJobFake,
+  fetchCandidateDetail,
   fetchEmployerProfile,
   fetchEducationFake,
   fetchSocialLinkFake,
@@ -234,6 +242,7 @@ const EmployerService = {
   fetchJobDetailFake,
   fetchCategoriesFake,
   fetchApplicationFake,
+  fetchResume,
 };
 
 export default EmployerService;
