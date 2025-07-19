@@ -1,5 +1,7 @@
-// routes
+// routes.js
+import { lazy } from 'react';
 import config from '~/config';
+
 import {
     LoginPage,
     RegisterPage,
@@ -23,12 +25,34 @@ import {
 } from '~/pages';
 
 import { HeaderOnly } from '~/layouts';
-import Single from '~/pages/Single/Single';
-import Payment from '~/pages/Payment/Payment';
-// import UnauthorizedPage from '~/pages/UnauthorizedPage'; // Thêm nếu chưa có
-import FeedBack from '~/pages/FeedBack/FeedBack';
 
-// Các route ai cũng truy cập được
+// ⚠️ Dùng lazy import từng page (đảm bảo các file export mặc định)
+
+const LoginPage = lazy(() => import('~/pages/Login/Login'));
+const RegisterPage = lazy(() => import('~/pages/Register/Register'));
+const HomePage = lazy(() => import('~/pages/Home/Home'));
+const ErrorPage = lazy(() => import('~/pages/Error/Error'));
+const DashboardPage = lazy(() => import('~/pages/DashBoard/OverviewDashBoard'));
+const ServiceAndPolicyPage = lazy(() => import('~/pages/ServiceAndPolicy/index'));
+const CreateCVSeekerPage = lazy(() => import('~/pages/CreateCVSeeker/Overview1'));
+const FindJobPage = lazy(() => import('~/pages/FindJob/FindJobPage'));
+const JobDetail = lazy(() => import('~/pages/JobDetail/JobDetail'));
+const SeekerDetailPage = lazy(() => import('~/pages/SeekerDetail/SeekerDetail'));
+const VerifyPage = lazy(() => import('~/pages/Verify/VerifyPage'));
+const FindEmployer = lazy(() => import('~/pages/FindEmployer/FindEmployer'));
+const FindCandidate = lazy(() => import('~/pages/FindCandidate/FindCandidate'));
+const Term = lazy(() => import('~/pages/Term/Term'));
+const ResetPassword = lazy(() => import('~/pages/ResetPassword/ResetPassword'));
+// const CustomerSupport = lazy(() => import('~/pages/'));
+const PaymentManagement = lazy(() => import('~/pages/Payment/Payment'));
+const Single = lazy(() => import('~/pages/Single/Single'));
+const Payment = lazy(() => import('~/pages/Payment/Payment'));
+const FeedBack = lazy(() => import('~/pages/FeedBack/FeedBack'));
+// const UnauthorizedPage = lazy(() => import('~/pages/UnauthorizedPage')); // nếu cần
+const CandidatesPage = lazy(() => import('~/pages/CandidatesPage/CandidatesPage'));
+const JobListingPage = lazy(() => import('~/pages/JobListingsPage/JobListingPage'));
+
+// ✅ Các route ai cũng truy cập được
 const publicRoutes = [
     { path: config.routes.login, component: LoginPage, layout: null },
     { path: config.routes.register, component: RegisterPage, layout: null },
@@ -42,14 +66,17 @@ const publicRoutes = [
     { path: config.routes.term, component: Term, layout: null },
     { path: config.routes.resetPassword, component: ResetPassword, layout: null },
     { path: config.routes.verify, component: VerifyPage, layout: null },
-    // { path: '/unauthorized', component: UnauthorizedPage, layout: null }, // xử lý khi truy cập trái phép
-    { path: config.routes.findJob, component: FindJobPage, layout: HeaderOnly },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
     { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
+
     { path: config.routes.EventDetailPage, component: EventDetailPage, layout: HeaderOnly },
+
+    { path: config.routes.CandidateSearchEvent, component: CandidatesPage, layout: HeaderOnly },
+    { path: config.routes.JobSearchEvent, component: JobListingPage, layout: HeaderOnly },
+
 ];
 
-// Các route yêu cầu đăng nhập, kèm role tương ứng
+// ✅ Các route yêu cầu đăng nhập
 const privateRoutes = [
     {
         path: config.routes.dashboard,
@@ -57,7 +84,7 @@ const privateRoutes = [
         allowedRoles: ['EMPLOYER', 'ADMIN', 'JOB_SEEKER'],
     },
     {
-        path: config.routes.dashboard + '/:page',
+        path: config.routes.dashboard + '/:page?/:item?',
         component: DashboardPage,
         allowedRoles: ['EMPLOYER', 'ADMIN', 'JOB_SEEKER'],
     },
@@ -79,17 +106,12 @@ const privateRoutes = [
         layout: HeaderOnly,
         allowedRoles: ['JOB_SEEKER'],
     },
-    {
-        path: config.routes.dashboardOverview,
-        component: DashboardOverview,
-        layout: HeaderOnly,
-        allowedRoles: ['EMPLOYER', 'ADMIN'],
-    },
+
     {
         path: config.routes.payment,
         component: Payment,
         layout: HeaderOnly,
-        allowedRoles: ['EMPLOYER, JOB_SEEKER, ADMIN'],
+        allowedRoles: ['EMPLOYER', 'JOB_SEEKER', 'ADMIN'],
     },
 ];
 

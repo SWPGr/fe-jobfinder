@@ -1,7 +1,8 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { useWindowScroll } from '@mantine/hooks';
+import { useAuth } from '~/context/AuthContext';
 
 import { LandingPage } from '../components';
 import PopularVacancy from './PopularVacancy';
@@ -19,12 +20,15 @@ const cx = classNames.bind(styles);
 function Home() {
     const [scroll, scrollTo] = useWindowScroll();
 
+    const { user } = useAuth();
+
     useEffect(() => {
         scrollTo({ y: 0 });
     }, []);
 
     return (
         <div className={cx('wrapper')}>
+
             {/* Không cần wrapper cho LandingPage vì nó là phần đầu */}
             <LandingPage />
 
@@ -32,14 +36,17 @@ function Home() {
                 <EventBanner />
             </SectionWrapper>
             <SectionWrapper delay={0.1}>
+
                 <JobMarketTrends />
             </SectionWrapper>
 
             <SectionWrapper delay={0.2}>
                 <Instruction />
+
             </SectionWrapper>
 
             <SectionWrapper delay={0.3}>
+
                 <PopularCategory />
             </SectionWrapper>
 
@@ -53,7 +60,9 @@ function Home() {
 
             <SectionWrapper delay={0.6}>
                 <CTA />
+
             </SectionWrapper>
+
         </div>
     );
 }

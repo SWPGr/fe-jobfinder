@@ -16,6 +16,7 @@ const defaultFn = () => {
 };
 
 function RecommendPopup({
+    type,
     children,
     items = [],
     suggestedItems = [],
@@ -50,15 +51,35 @@ function RecommendPopup({
             try {
                 const response = await searchService.searchHistory();
                 if (response && response.result) {
-                    setHistory(response.result);
+                    const data = response.result.filter(
+                        (item) => item?.searchType?.toLowerCase() === type.toLowerCase(),
+                    );
+                    setHistory(data);
                 }
             } catch (error) {
                 console.error('Failed to fetch search history:', error);
             }
         };
-
         fetchSearchHistory();
     }, []);
+
+    const handleDeleteHistory = async (id) => {
+        try {
+            await searchService.deleteSearchHistory(id);
+            setHistory((prevHistory) => prevHistory.filter((item) => item.id !== id));
+        } catch (error) {
+            console.error('Failed to delete search history:', error);
+        }
+    };
+
+    const handleDeleteAllSearchHistory = async () => {
+        try {
+            await searchService.deleteAllSearchHistory();
+            setHistory([]);
+        } catch (error) {
+            console.error('Failed to delete all search history:', error);
+        }
+    };
 
     return (
         <Tippy
@@ -79,13 +100,19 @@ function RecommendPopup({
                                             {items.length > 0 ? 'Suggestions' : 'Recent search keywords'}
                                         </p>
                                         {!items.length > 0 && history.length > 0 && (
-                                            <p className={cx('recommend__clear')}>Clear all</p>
+                                            <p
+                                                className={cx('recommend__clear')}
+                                                onClick={handleDeleteAllSearchHistory}
+                                            >
+                                                Clear all
+                                            </p>
                                         )}
                                     </div>
                                     <div className={cx('recommend__list')}>
                                         {items.length > 0 ? (
                                             items.map((item, index) => (
                                                 <RecommendItem
+                                                    id={item.id}
                                                     title={item}
                                                     key={index}
                                                     isRecommend
@@ -97,10 +124,12 @@ function RecommendPopup({
                                                 {history.length > 0 ? (
                                                     history.map((item, index) => (
                                                         <RecommendItem
+                                                            id={item.id}
                                                             title={item.searchQuery}
                                                             date={item.createdAt}
                                                             key={index}
                                                             onClick={() => handleOnClick(item.searchQuery)}
+                                                            handleDeleteHistory={handleDeleteHistory}
                                                         />
                                                     ))
                                                 ) : (

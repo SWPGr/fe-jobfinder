@@ -15,7 +15,8 @@ function JobItemApplied({
     onViewDetails,
 }) {
     const classes = cx('wrapper', { isLogin, isVIP });
-    const { companyName, companyAddress, jobTitle, workTime, salary, dueDate, isActive, isApplied } = jobDescription;
+
+    const { companyName, companyAddress, jobTitle, workTime, salary, createdAt, dueDate, isActive,isApplied } = jobDescription;
 
     return (
         <div className={classes}>
@@ -68,7 +69,9 @@ function JobItemApplied({
                     </div>
                 </div>
             </div>
+
             <div className={cx('end-date')}>{dueDate}</div>
+
             <div className={cx('status')}>
                 {isActive ? (
                     <p className={cx('active')}>

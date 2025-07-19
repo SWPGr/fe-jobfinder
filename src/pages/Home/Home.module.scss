@@ -88,7 +88,7 @@
         .arrow-icon-2 {
             position: absolute;
             left: 540px;
-            top: 50px;
+            top: 80px;
         }
         .arrow-icon-3 {
             position: absolute;
@@ -97,12 +97,13 @@
     }
     .instruction__item {
         width: 30rem;
-        height: 22rem;
+        height: 25rem;
         border-radius: var(--border-radius);
         // background: var(--white);
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         text-align: center;
         padding: 2rem;
         gap: 1.5rem;

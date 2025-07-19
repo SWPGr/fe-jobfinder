@@ -66,7 +66,7 @@ function FindEmployer() {
                 }}
                 totalHits={totalHits}
                 dataset={dataset}
-                type="company"
+                type="COMPANY"
             />
         </div>
     );

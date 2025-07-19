@@ -89,6 +89,7 @@ function FindJob() {
             </div>
 
             <Filter
+                type="JOB"
                 filters={jobFilters}
                 categoryOptions={categoryOptions}
                 dataset={dataset}
