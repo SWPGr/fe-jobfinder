@@ -315,14 +315,7 @@ const SeekerDetail = ({ applicant }) => {
               <span className={cx("contactText")}>
                 Beverly Hills, California 90202 <br />
                 Zone/Block Basement 1 Unit B2, 1372 Spring Avenue, Portland,
-              </span><button
-              className={cx("downloadBtn")}
-              aria-label="View Resume Summary"
-              onClick={handleShowResumeSummary}
-              disabled={loadingSummary}
-            >
-              {loadingSummary ? "Loading..." : "📄 View Resume Summary"}
-            </button>
+              </span>
             </div>
           </div>
         </div>
