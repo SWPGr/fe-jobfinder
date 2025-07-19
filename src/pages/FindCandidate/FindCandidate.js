@@ -75,7 +75,7 @@ function FindCandidate() {
                 onSearch={(formValues) => {
                     setSearchParams(formValues);
                 }}
-                type="candidates"
+                type="CANDIDATE"
             />
         </div>
     );

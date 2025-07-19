@@ -54,7 +54,10 @@ function Register() {
             window.location.href = '/login';
             showSuccess('Login successful!');
         } else {
-            showError(data.message);
+            const message =
+                typeof data.message === 'string' ? data.message : data.message?.toString() || 'An error occurred';
+
+            showError(message);
             // setError(data.message);
         }
     };

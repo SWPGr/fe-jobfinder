@@ -26,6 +26,8 @@ const Single = lazy(() => import('~/pages/Single/Single'));
 const Payment = lazy(() => import('~/pages/Payment/Payment'));
 const FeedBack = lazy(() => import('~/pages/FeedBack/FeedBack'));
 // const UnauthorizedPage = lazy(() => import('~/pages/UnauthorizedPage')); // nếu cần
+const CandidatesPage = lazy(() => import('~/pages/CandidatesPage/CandidatesPage'));
+const JobListingPage = lazy(() => import('~/pages/JobListingsPage/JobListingPage'));
 
 // ✅ Các route ai cũng truy cập được
 const publicRoutes = [
@@ -43,6 +45,8 @@ const publicRoutes = [
     { path: config.routes.verify, component: VerifyPage, layout: null },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },
     { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
+    { path: config.routes.CandidateSearchEvent, component: CandidatesPage, layout: HeaderOnly },
+    { path: config.routes.JobSearchEvent, component: JobListingPage, layout: HeaderOnly },
 ];
 
 // ✅ Các route yêu cầu đăng nhập

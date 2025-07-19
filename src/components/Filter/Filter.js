@@ -230,7 +230,7 @@ function Filter({
                         className={cx('search-form', { 'not-find-job': !isFindJob })}
                         onSubmit={(e) => e.preventDefault()}
                     >
-                        <SearchRecommend form={form} searchLabel={searchLabel} />
+                        <SearchRecommend type={type} form={form} searchLabel={searchLabel} />
 
                         <Select
                             placeholder="Select location"
@@ -394,10 +394,10 @@ function Filter({
                             {dataset.length > 0 ? (
                                 dataset.map((description, index) => {
                                     let Item = JobItemList;
-                                    if (type === 'companies') {
+                                    if (type === 'COMPANY') {
                                         Item = CompanyItem;
                                     }
-                                    if (type === 'candidates') {
+                                    if (type === 'CANDIDATE') {
                                         Item = CandidateItem;
                                     }
                                     return <Item key={index} description={description} long />;
