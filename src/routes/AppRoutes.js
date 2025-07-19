@@ -2,8 +2,6 @@
 import { lazy } from 'react';
 import config from '~/config';
 
-
-
 import { HeaderOnly } from '~/layouts';
 
 // ⚠️ Dùng lazy import từng page (đảm bảo các file export mặc định)
@@ -54,7 +52,6 @@ const publicRoutes = [
 
     { path: config.routes.CandidateSearchEvent, component: CandidatesPage, layout: HeaderOnly },
     { path: config.routes.JobSearchEvent, component: JobListingPage, layout: HeaderOnly },
-
 ];
 
 // ✅ Các route yêu cầu đăng nhập
