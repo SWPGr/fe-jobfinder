@@ -2,27 +2,7 @@
 import { lazy } from 'react';
 import config from '~/config';
 
-import {
-    LoginPage,
-    RegisterPage,
-    HomePage,
-    ErrorPage,
-    DashboardPage,
-    ServiceAndPolicyPage,
-    CreateCVSeekerPage,
-    FindJobPage,
-    JobDetail,
-    SeekerDetailPage,
-    VerifyPage,
-    FindEmployer,
-    FindCandidate,
-    DashboardOverview,
-    Term,
-    ResetPassword,
-    CustomerSupport,
-    PaymentManagement,
-    EventDetailPage,
-} from '~/pages';
+
 
 import { HeaderOnly } from '~/layouts';
 
@@ -51,6 +31,7 @@ const FeedBack = lazy(() => import('~/pages/FeedBack/FeedBack'));
 // const UnauthorizedPage = lazy(() => import('~/pages/UnauthorizedPage')); // nếu cần
 const CandidatesPage = lazy(() => import('~/pages/CandidatesPage/CandidatesPage'));
 const JobListingPage = lazy(() => import('~/pages/JobListingsPage/JobListingPage'));
+const EventDetailPage = lazy(() => import('~/pages/Home/EventDetailPage'));
 
 // ✅ Các route ai cũng truy cập được
 const publicRoutes = [
