@@ -209,6 +209,10 @@ const fetchSettingFake = async (updatedData) => {
     return await get('/profiles/me');
   }
 };
+const fetchApplicationFake = async (jobId) => {
+  const response = await get(`/apply/candidates/${jobId}`);
+  return response?.result || [];
+};
 
 const EmployerService = {
   getJobDetail,
@@ -229,6 +233,7 @@ const EmployerService = {
   fetchEmployerProfileFake,
   fetchJobDetailFake,
   fetchCategoriesFake,
+  fetchApplicationFake,
 };
 
 export default EmployerService;

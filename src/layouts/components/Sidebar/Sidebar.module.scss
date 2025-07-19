@@ -75,6 +75,13 @@
     }
 }
 
+.section[data-position='right'] {
+    svg {
+        width: 1.4rem !important;
+        height: 1.4rem !important;
+    }
+}
+
 .active {
     border-left: 2px solid var(--blue-500) !important;
     background: var(--blue-50) !important;

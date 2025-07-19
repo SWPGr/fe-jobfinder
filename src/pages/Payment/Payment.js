@@ -4,13 +4,18 @@ import styles from './Payment.module.scss';
 import { FaCheck, FaArrowRight, FaTimes } from 'react-icons/fa';
 import images from '~/assets/Images/1.png';
 
+import { paymentService } from '~/services';
+import { useLoading } from '~/context/LoadingContext';
+
 const cx = classNames.bind(styles);
 
 const Payment = ({ onClose }) => {
   return (
     <div className={cx('modalOverlay')}>
       <div className={cx('modalContent')}>
-        
+        <button className={cx('closeBtn')} onClick={onClose}>
+          <FaTimes />
+        </button>
         <img src={images} alt="Job Posting Illustration" className={cx('illustration')} />
         <div className={cx('paymentContainer__title')}>Buy Premium Subscription to Post a Job</div>
         <div className={cx('plans')}>
@@ -25,9 +30,7 @@ const Payment = ({ onClose }) => {
               <li><FaCheck /> 10 Days Resume Visibility</li>
               <li><FaCheck /> 24/7 Critical Support</li>
             </ul>
-            <button>
-  Choose Plan <FaArrowRight />
-</button>
+            <button><FaArrowRight /> Choose Plan</button>
           </div>
           <div className={cx('plan', 'recommended')}>
             <div className={cx('plan__title')}>STANDARD</div>
@@ -41,9 +44,7 @@ const Payment = ({ onClose }) => {
               <li><FaCheck /> 24/7 Critical Support</li>
             </ul>
             <span>Recommendation</span>
-            <button>
-  Choose Plan <FaArrowRight />
-</button>
+            <button><FaArrowRight /> Choose Plan</button>
           </div>
           <div className={cx('plan')}>
             <div className={cx('plan__title')}>PREMIUM</div>
@@ -56,9 +57,7 @@ const Payment = ({ onClose }) => {
               <li><FaCheck /> 30 Days Resume Visibility</li>
               <li><FaCheck /> 24/7 Critical Support</li>
             </ul>
-            <button>
-  Choose Plan <FaArrowRight />
-</button>
+            <button><FaArrowRight /> Choose Plan</button>
           </div>
         </div>
       </div>

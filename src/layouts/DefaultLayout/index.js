@@ -15,6 +15,7 @@ import NavBar from '../components/NavBar/NavBar';
 import Sidebar from '../components/Sidebar';
 import { useAuth } from '~/context/AuthContext';
 import { items } from '../components/Sidebar/Items';
+import { ChatbotButton } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -63,6 +64,7 @@ function DefaultLayout({ children }) {
                 </div>
                 <div className={cx('content')}>{selectedMenu}</div>
             </div>
+            <ChatbotButton />
         </div>
     );
 }

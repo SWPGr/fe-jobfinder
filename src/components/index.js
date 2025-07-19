@@ -13,3 +13,4 @@ export { default as AvatarButton } from './AvatarButton/AvatarButton.js';
 export { default as NotificationItem } from './NotificationItem/NotificationItem.js';
 export { default as NotificationButtonButton } from './NotificationButton/NotificationButton.js';
 export { default as ChatbotButton } from './ChatbotButton/ChatbotButton.js';
+export { default as NoResultsFound } from './NoResultsFound/NoResultsFound';

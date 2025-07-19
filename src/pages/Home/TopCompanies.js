@@ -10,21 +10,21 @@ import { Images } from '~/assets';
 const cx = classNames.bind(styles);
 
 const companies = [
-    { company_name: 'Google asdasjd ajsdhkajd asdja skjdask djasdkjs', location: 'United States ' },
-    { company_name: 'Facebook', location: 'United States' },
-    { company_name: 'Amazon', location: 'United States' },
-    { company_name: 'Microsoft', location: 'United States' },
-    { company_name: 'Netflix', location: 'United States' },
-    { company_name: 'Airbnb', location: 'United States' },
-    { company_name: 'Tesla', location: 'United States' },
-    { company_name: 'Spotify', location: 'Sweden' },
-    { company_name: 'Dropbox', location: 'United States' },
-    { company_name: 'Salesforce', location: 'United States' },
-    { company_name: 'Intel', location: 'United States' },
-    { company_name: 'IBM', location: 'United States' },
-    { company_name: 'Adobe', location: 'United States' },
-    { company_name: 'Alibaba', location: 'China' },
-    { company_name: 'Tencent', location: 'China' },
+    { companyName: 'Google asdasjd ajsdhkajd asdja skjdask djasdkjs', location: 'United States ' },
+    { companyName: 'Facebook', location: 'United States' },
+    { companyName: 'Amazon', location: 'United States' },
+    { companyName: 'Microsoft', location: 'United States' },
+    { companyName: 'Netflix', location: 'United States' },
+    { companyName: 'Airbnb', location: 'United States' },
+    { companyName: 'Tesla', location: 'United States' },
+    { companyName: 'Spotify', location: 'Sweden' },
+    { companyName: 'Dropbox', location: 'United States' },
+    { companyName: 'Salesforce', location: 'United States' },
+    { companyName: 'Intel', location: 'United States' },
+    { companyName: 'IBM', location: 'United States' },
+    { companyName: 'Adobe', location: 'United States' },
+    { companyName: 'Alibaba', location: 'China' },
+    { companyName: 'Tencent', location: 'China' },
 ];
 
 function TopCompanies() {
@@ -67,7 +67,7 @@ function TopCompanies() {
                         <CompanyItem
                             key={index}
                             image={Images.google_image}
-                            company_description={company}
+                            description={company}
                             isFeatured
                             saved
                             className={cx('item')}

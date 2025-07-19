@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobItemOwner.module.scss';
-import { IconDotsVertical, IconCircleX, IconCircleCheck, IconUsers, IconPencil, IconX } from '@tabler/icons-react';
+import { IconDotsVertical, IconCircleX, IconCircleCheck, IconPencil, IconX } from '@tabler/icons-react';
 import { Menu } from '@mantine/core';
 import { Images } from '~/assets';
 import { Button } from '~/components';
@@ -37,7 +37,7 @@ const normalizeJobData = (data) => {
     const remainDay =
         expiredDateStr && new Date(expiredDateStr) > new Date()
             ? calcDaysBetween(new Date().toISOString(), expiredDateStr)
-            : 0; // Chuẩn hóa các trường category, jobLevel, jobType nếu là object hoặc id
+            : 0;
 
     const normalizeField = (field) => {
         if (!field) return null;
@@ -130,6 +130,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
     const [modalType, setModalType] = useState(null);
     const [showApplications, setShowApplications] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [numberApplications, setNumberApplications] = useState(0);
     const isMounted = useRef(true);
 
     useEffect(() => {
@@ -164,8 +165,25 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
         fetchDetailOnInit();
     }, [jobDescription]);
 
+    // LẤY SỐ ỨNG VIÊN ỨNG TUYỂN MỖI KHI jobData.id thay đổi
+    useEffect(() => {
+        const fetchApplications = async () => {
+            if (jobData && jobData.id) {
+                try {
+                    const response = await EmployerService.fetchApplicationFake(jobData.id);
+                    setNumberApplications(Array.isArray(response) ? response.length : 0);
+                } catch (error) {
+                    setNumberApplications(0);
+                }
+            } else {
+                setNumberApplications(0);
+            }
+        };
+        fetchApplications();
+    }, [jobData.id]);
+
     const classes = cx('wrapper', { isVIP });
-    const { title, workTime, remainDay, isActive, numberApplications, id } = jobData || {};
+    const { title, workTime, remainDay, isActive, id } = jobData || {};
 
     const openModal = async (type) => {
         if (!id) {
@@ -328,7 +346,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
                         <button className={cx('closeBtn')} onClick={closeApplications}>
                             ×
                         </button>
-                        <JobApplications />
+                        <JobApplications jobId={jobData.id} />
                     </div>
                 </div>
             )}
@@ -337,5 +355,3 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
 }
 
 export default JobItemOwner;
-
-
