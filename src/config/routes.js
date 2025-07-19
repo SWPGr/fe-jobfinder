@@ -1,5 +1,3 @@
-import { CustomerSupport } from '~/pages';
-
 const routes = {
     admin: '/admin', // Admin dashboard
     home: '/',
@@ -31,6 +29,8 @@ const routes = {
     resetPassword: 'api/auth/reset-password', // Reset password page
     FeedBack: '/feedback',
     PaymentManagement: '/payment',
+    JobSearchEvent: '/job-search-event',
+    CandidateSearchEvent: '/candidate-search-event',
 };
 
 export default routes;

@@ -16,6 +16,7 @@ const defaultFn = () => {
 };
 
 function RecommendPopup({
+    type,
     children,
     items = [],
     suggestedItems = [],
@@ -50,7 +51,10 @@ function RecommendPopup({
             try {
                 const response = await searchService.searchHistory();
                 if (response && response.result) {
-                    setHistory(response.result);
+                    const data = response.result.filter(
+                        (item) => item?.searchType?.toLowerCase() === type.toLowerCase(),
+                    );
+                    setHistory(data);
                 }
             } catch (error) {
                 console.error('Failed to fetch search history:', error);
