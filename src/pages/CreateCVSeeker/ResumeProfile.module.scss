@@ -1,0 +1,63 @@
+.container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 24px;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 16px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+}
+
+.resumeContent {
+  white-space: pre-wrap;
+  font-size: 1rem;
+  color: #222;
+  min-height: 220px;
+}
+
+/* Tăng cường style cho phần in đậm */
+.resumeContent b {
+  font-weight: 700;
+  color: #222;
+}
+
+/* Nếu có các đoạn hoặc danh sách, bạn có thể style thêm */
+.resumeContent p {
+  margin-bottom: 12px;
+}
+
+.resumeContent ul {
+  margin: 8px 0 12px 20px;
+  padding: 0;
+  list-style-type: disc;
+  color: #444;
+}
+
+.resumeContent li {
+  margin-bottom: 6px;
+}
+
+/* Style cho br (xuống dòng) nếu cần, nhưng white-space: pre-wrap đã hỗ trợ */
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 480px) {
+  .container {
+    padding: 16px;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+  .resumeContent {
+    font-size: 0.9rem;
+  }
+}

@@ -5,7 +5,7 @@
   font-size: 2.4rem;
   line-height: 1.8;
   box-sizing: border-box;
-  position: relative; /* để các phần tử con position absolute theo container */
+  position: relative;
 }
 
 .wrapperBox {
@@ -16,14 +16,14 @@
 }
 
 .header {
-  position: relative; /* cho phép vị trí tuyệt đối bên trong */
-  height: 200px; /* chiều cao banner */
+  position: relative;
+  height: 200px;
   border-radius: 0.8rem;
   box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.1);
   margin-bottom: 3rem;
-  overflow: hidden; /* để banner không tràn */
+  overflow: hidden;
   display: flex;
-  align-items: flex-end; /* đẩy nội dung xuống đáy */
+  align-items: flex-end;
   background: var(--white);
 }
 
@@ -57,13 +57,13 @@
 
 .companyInfo {
   position: relative;
-  z-index: 2; /* nổi lên trên banner */
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 1.4rem;
   color: var(--white);
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
-  padding: 1rem 2rem; /* thêm padding để không sát viền */
+  padding: 1rem 2rem;
 }
 
 .companyLogo {
@@ -111,15 +111,13 @@
   font-weight: 600;
   font-size: 2.8rem;
   margin-bottom: 0.5rem;
-  color: inherit; /* kế thừa màu chữ white từ companyInfo */
+  color: inherit;
 }
 
 .industry {
   color: inherit;
   font-size: 1.3rem;
 }
-
-/* Phần nội dung chính bên dưới header */
 
 .section {
   display: flex;
@@ -136,7 +134,7 @@
 .title1 {
   font-weight: 600;
   font-size: 2.2rem;
-  margin-bottom: 1.8rem;
+  margin-bottom: 1.0rem;
   color: var(--gray-900);
 }
 
@@ -164,19 +162,39 @@
 .shareProfile {
   display: flex;
   gap: 1.8rem;
+  align-items: center;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: inherit;
+
+    &:hover {
+      color: darkblue;
+    }
+  }
 }
 
-.shareProfile button {
-  background: none;
-  border: none;
-  color: #3b5998;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1.3rem;
-}
+.socialIcon {
+  width: 1.4em;
+  height: 1.4em;
+  flex-shrink: 0;
 
-.shareProfile button:nth-child(3) {
-  color: #c8232c;
+  &.facebook {
+    color: #1877F2;
+  }
+  &.twitter {
+    color: #1DA1F2;
+  }
+  &.instagram {
+    color: #E4405F;
+  }
 }
 
 .rightColumn {
@@ -192,6 +210,7 @@
   font-size: 1.8rem;
   margin-bottom: 1.4rem;
   color: var(--gray-900);
+  margin-top: -1.5rem;
 }
 
 .card {
@@ -213,23 +232,35 @@
 
 .cardRow {
   display: flex;
-  justify-content: space-between;
+  align-items: center;   /* Căn giữa theo chiều ngang */
+  gap: 1.6rem;           /* Khoảng cách icon và chữ */
   margin-bottom: 1.4rem;
 }
 
 .cardLabel {
-  font-weight: 600;
-  color: var(--gray-500);
   display: flex;
   align-items: center;
-  gap: 1rem;
-  font-size: 1.3rem;
+  gap: 0.8rem;          /* Khoảng cách icon và chữ trong label */
+  font-weight: 600;
+  font-size: 1.4rem;    /* Cỡ chữ đồng đều */
+  color: var(--gray-500);
+  flex: 1;              /* Chiếm không gian bên trái */
+  min-width: 160px;     /* Chiều rộng cố định để thẳng hàng */
+}
+
+.cardLabel .icon {
+  width: 1.8rem;        /* Kích thước icon đồng nhất */
+  height: 1.8rem;
+  flex-shrink: 0;
+  color: var(--gray-500);
 }
 
 .cardValue {
+  flex: 1;
+  font-size: 1.4rem;    /* Cỡ chữ đồng đều với label */
   color: var(--gray-400);
-  text-align: right;
-  font-size: 1.3rem;
+  text-align: left;     /* Căn trái */
+  min-width: 120px;
 }
 
 .contactRow {
@@ -245,29 +276,38 @@
   width: 2.4rem;
   height: 2.4rem;
   fill: var(--blue-500);
+  flex-shrink: 0;
 }
 
 .contactLabel {
   text-transform: uppercase;
   font-size: 1.3rem;
   color: var(--gray-600);
+  white-space: nowrap;
 }
 
-/* Bỏ gạch chân cho website, email, các nút liên quan */
 .contactLink {
   text-decoration: none !important;
   cursor: default !important;
   color: inherit !important;
-}
-
-.contactLink:hover {
-  text-decoration: none !important;
+  font-size: 1.3rem;
 }
 
 .noUnderline {
   text-decoration: none !important;
   color: inherit !important;
   cursor: default !important;
+}
+
+.websiteButton,
+.emailButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
 }
 
 .followUs {

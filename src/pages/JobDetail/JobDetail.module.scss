@@ -1,11 +1,11 @@
 .container {
     display: flex;
     gap: 4rem;
-    width: 100%;
-    max-width: var(--default-layout-width);
+    width: calc(var(--default-layout-width) * 0.61);
     margin: 4rem auto;
     font-family: 'segoe ui', tahoma, geneva, verdana, sans-serif;
     color: #333;
+
 }
 .editable-container {
     width: 100%;
