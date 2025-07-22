@@ -63,7 +63,7 @@ export const items = {
                 title: 'Manage Job Seekers',
                 icon: <IconUserCircle />,
                 page: <JobSeekersManagement />,
-                link: '/dashboard/jobseekers',
+                link: '/dashboard/job-seekers',
             },
             {
                 title: 'Settings',

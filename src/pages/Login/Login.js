@@ -29,7 +29,7 @@ function Login() {
         },
         validate: {
             email: (value) => validator.validateEmail(value),
-            password: (value) => validator.validatePassword(value),
+            password: (value) => validator.validateLoginPassword(value),
         },
     });
     const navigate = useNavigate();
