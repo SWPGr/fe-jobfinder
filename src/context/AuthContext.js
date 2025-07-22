@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
                 response = await authService.register(email, password, roleName);
             }
             const data = response.result;
-            const loggedInUser = { role: data.role, token: data.token };
+            const loggedInUser = { role: data?.role, token: data?.token };
             setUser(loggedInUser);
             localStorage.setItem('user', JSON.stringify(loggedInUser));
             setLoading(false);
@@ -65,15 +65,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-
-
-       //user = {
+    //user = {
     //       //role: 'ADMIN',
-           //role: 'JOB_SEEKER',
-           //role: 'EMPLOYER',
-       //};
-
-
+    //role: 'JOB_SEEKER',
+    //role: 'EMPLOYER',
+    //};
 
     return (
         <AuthContext.Provider value={{ user, setUser, login, register, loginWithGoogle, logout, loading, error }}>
