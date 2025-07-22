@@ -6,10 +6,14 @@ import Header from '../components/Header/Header';
 import NavBar from '../components/NavBar/NavBar';
 import Footer from '../components/Footer/Footer';
 import { ChatbotButton } from '~/components';
+import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function HeaderOnly({ children }) {
+    const { user } = useAuth();
+    const role = user?.role;
+
     return (
         <div className={cx('wrapper')}>
             <NavBar />
@@ -18,7 +22,7 @@ function HeaderOnly({ children }) {
                 <div className={cx('content')}>{children}</div>
             </div>
             <Footer dark />
-            <ChatbotButton />
+            {role && <ChatbotButton />}
         </div>
     );
 }

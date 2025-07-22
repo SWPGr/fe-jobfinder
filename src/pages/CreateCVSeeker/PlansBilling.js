@@ -10,17 +10,6 @@ import { useLoading } from '~/context/LoadingContext';
 
 const cx = classNames.bind(styles);
 
-const latestInvoices = [
-    { id: '#487441', date: 'Dec 7, 2019 23:26', plan: 'Premium', amount: '$999 USD' },
-    { id: '#653518', date: 'Dec 7, 2019 23:26', plan: 'Standard', amount: '$999 USD' },
-    { id: '#267400', date: 'Dec 7, 2019 23:26', plan: 'Premium', amount: '$999 USD' },
-    { id: '#651535', date: 'Dec 7, 2019 23:26', plan: 'Premium', amount: '$999 USD' },
-    { id: '#449003', date: 'Dec 7, 2019 23:26', plan: 'Premium', amount: '$999 USD' },
-    { id: '#558612', date: 'Dec 7, 2019 23:26', plan: 'Premium', amount: '$999 USD' },
-];
-
-const ITEMS_PER_PAGE = 7;
-
 const PlansBilling = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [startDate, setStartDate] = useState('');
@@ -34,26 +23,9 @@ const PlansBilling = () => {
     const fromDate = searchParams.get('fromDate') || '';
     const toDate = searchParams.get('toDate') || '';
 
-    const parseDate = (dateStr) => new Date(dateStr);
-
-    const filteredInvoices = latestInvoices.filter(({ date }) => {
-        const invoiceDate = parseDate(date);
-        const start = startDate ? parseDate(startDate) : null;
-        const end = endDate ? parseDate(endDate) : null;
-
-        if (start && end) return invoiceDate >= start && invoiceDate <= end;
-        if (start) return invoiceDate >= start;
-        if (end) return invoiceDate <= end;
-        return true;
-    });
-
-    const totalPages = Math.ceil(filteredInvoices.length / ITEMS_PER_PAGE);
-
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentInvoices = filteredInvoices.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
     const handlePageChange = (page) => {
-        if (page >= 1 && page <= totalPages) setCurrentPage(page);
+        setCurrentPage(page);
+        setSearchParams({ page });
     };
 
     useEffect(() => {
@@ -178,18 +150,6 @@ const PlansBilling = () => {
                 <div className={cx('pagination')}>
                     <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
                         ←
-                    </button>
-                    {[...Array(totalPages)].map((_, i) => (
-                        <button
-                            key={i + 1}
-                            className={cx({ active: currentPage === i + 1 })}
-                            onClick={() => handlePageChange(i + 1)}
-                        >
-                            {i + 1}
-                        </button>
-                    ))}
-                    <button disabled={currentPage === totalPages} onClick={() => handlePageChange(currentPage + 1)}>
-                        →
                     </button>
                 </div>
             </div>

@@ -12,6 +12,8 @@ import { useDebounce } from '~/hooks';
 import { jobService } from '~/services';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuth } from '~/context/AuthContext';
+
 const cx = classNames.bind(styles);
 
 const locations = [
@@ -52,6 +54,7 @@ const locations = [
 ];
 
 function LandingPage() {
+    const { user } = useAuth();
     const [searchJob, setSearchJob] = useState('');
     const [location, setLocation] = useState('');
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
@@ -123,15 +126,32 @@ function LandingPage() {
                             sollicitudin velit vestibulum.
                         </p>
                         <div className={cx('search-input')}>
-                            <RecommendPopup
-                                visible={showRecommendPopup}
-                                handleShowPopup={handleShowPopup}
-                                handleHidePopup={handleHidePopup}
-                                className={cx('popup')}
-                                y={40}
-                                items={popupContent}
-                                forwardLink={'/find-job'}
-                            >
+                            {user?.role ? (
+                                <RecommendPopup
+                                    visible={showRecommendPopup}
+                                    handleShowPopup={handleShowPopup}
+                                    handleHidePopup={handleHidePopup}
+                                    className={cx('popup')}
+                                    y={40}
+                                    items={popupContent}
+                                    forwardLink={'/find-job'}
+                                >
+                                    <TextInput
+                                        placeholder="Job title, Keyword..."
+                                        variant="unstyled"
+                                        leftSection={<IconSearch size={90} />}
+                                        value={searchJob}
+                                        onChange={(e) => setSearchJob(e.target.value)}
+                                        onFocus={handleShowPopup}
+                                        classNames={{
+                                            input: cx('input'),
+                                            wrapper: cx('input-wrapper'),
+                                            root: cx('input-root'),
+                                            section: cx('icon'),
+                                        }}
+                                    />
+                                </RecommendPopup>
+                            ) : (
                                 <TextInput
                                     placeholder="Job title, Keyword..."
                                     variant="unstyled"
@@ -146,7 +166,7 @@ function LandingPage() {
                                         section: cx('icon'),
                                     }}
                                 />
-                            </RecommendPopup>
+                            )}
 
                             <Select
                                 placeholder="Select location"
