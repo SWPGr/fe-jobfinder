@@ -1,3 +1,4 @@
+
 import { CustomerSupport, EventDetailPage } from '~/pages';
 
 const routes = {
@@ -18,7 +19,7 @@ const routes = {
     error: '/error',
     createCVSeekerPage: '/createCVSeekerPage',
     jobDetails: '/jobDetails/:id',
-    seekerDetailPage: '/seekerDetailPage',
+    seekerDetailPage: '/seekerDetailPage/:id',
     singleJob: '/singleJob',
     findJob: '/find-job',
     findCandidate: '/find-candidate',
@@ -26,14 +27,17 @@ const routes = {
     verify: '/api/auth/verify',
     company: '/company/:id',
     dashboardOverview: '/dashboard-overview',
-
     term: '/term',
     payment: '/payment',
-
     resetPassword: 'api/auth/reset-password', // Reset password page
     FeedBack: '/feedback',
     PaymentManagement: '/payment',
+
     EventDetailPage: '/event-detail',
+
+    JobSearchEvent: '/job-search-event',
+    CandidateSearchEvent: '/candidate-search-event',
+
 };
 
 export default routes;
