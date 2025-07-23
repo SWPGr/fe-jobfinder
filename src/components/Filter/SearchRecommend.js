@@ -7,10 +7,12 @@ import { IconSearch } from '@tabler/icons-react';
 import RecommendPopup from '../RecommendPopup/RecommendPopup';
 import { useDebounce } from '~/hooks';
 import { jobService } from '~/services';
+import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function SearchRecommend({ type, form, searchLabel }) {
+    const { user } = useAuth();
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
     const handleShowPopup = () => setShowRecommendPopup(true);
     const handleHidePopup = () => setShowRecommendPopup(false);
@@ -31,25 +33,41 @@ function SearchRecommend({ type, form, searchLabel }) {
     }, [debounceValue]);
 
     return (
-        <RecommendPopup
-            type={type}
-            visible={showRecommendPopup}
-            handleShowPopup={handleShowPopup}
-            handleHidePopup={handleHidePopup}
-            items={popupContent}
-        >
-            <TextInput
-                placeholder={searchLabel}
-                {...form.getInputProps('keyword')}
-                leftSection={<IconSearch />}
-                onFocus={handleShowPopup}
-                classNames={{
-                    input: cx('search-input'),
-                    root: cx('search-input-root'),
-                    wrapper: cx('search-input-wrapper'),
-                }}
-            />
-        </RecommendPopup>
+        <>
+            {user?.role ? (
+                <RecommendPopup
+                    type={type}
+                    visible={showRecommendPopup}
+                    handleShowPopup={handleShowPopup}
+                    handleHidePopup={handleHidePopup}
+                    items={popupContent}
+                >
+                    <TextInput
+                        placeholder={searchLabel}
+                        {...form.getInputProps('keyword')}
+                        leftSection={<IconSearch />}
+                        onFocus={handleShowPopup}
+                        classNames={{
+                            input: cx('search-input'),
+                            root: cx('search-input-root'),
+                            wrapper: cx('search-input-wrapper'),
+                        }}
+                    />
+                </RecommendPopup>
+            ) : (
+                <TextInput
+                    placeholder={searchLabel}
+                    {...form.getInputProps('keyword')}
+                    leftSection={<IconSearch />}
+                    onFocus={handleShowPopup}
+                    classNames={{
+                        input: cx('search-input'),
+                        root: cx('search-input-root'),
+                        wrapper: cx('search-input-wrapper'),
+                    }}
+                />
+            )}
+        </>
     );
 }
 

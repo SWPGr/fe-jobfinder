@@ -2,9 +2,8 @@ const itemsNav = {
     false: [
         { name: 'Home', link: '/' },
         { name: 'Find Job', link: '/find-job' },
-        { name: 'Employers', link: '/dashboard/employers' },
-        { name: 'Candidates', link: '/candidates' },
-        { name: 'Pricing Plans', link: '/pricing-plan' },
+        { name: 'Employers', link: '/find-employer' },
+        { name: 'Candidates', link: '/find-candidate' },
         { name: 'Feed Back', link: '/feedback' },
     ],
     true: {

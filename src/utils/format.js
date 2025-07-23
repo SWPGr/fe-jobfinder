@@ -4,12 +4,17 @@ function transformJobData(rawJob) {
     return {
         id: rawJob.id,
         companyName: rawJob.employer?.fullName || rawJob.employer?.email || 'Unknown',
+        companyLogo: rawJob.employer?.avatarUrl,
         companyAddress: rawJob.location || 'Địa chỉ không xác định',
         jobTitle: rawJob.title,
         workTime: rawJob.jobType?.name || 'Không rõ',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
-        remainDay: timeAgo(rawJob.createdAt),
+        timeAgo: timeAgo(rawJob.createdAt),
+        remainDay: getTimeUntilDueDate(rawJob?.expiredDate),
+        experience: rawJob.experience?.name || 'Không rõ',
         isSave: rawJob.isSave,
+        job_description: rawJob.description || 'Không rõ',
+        responsibility: rawJob.responsibility || 'Không rõ',
     };
 }
 
@@ -33,29 +38,28 @@ function formatDueDate(createdAt) {
     return due.toISOString().split('T')[0]; // Trả về yyyy-mm-dd
 }
 
-// function getTimeUntilDueDate(dueDate) {
-//     const created = new Date(dueDate);
+function getTimeUntilDueDate(dueDate) {
+    const expiredDate = new Date(dueDate);
+    const now = new Date();
+    const diffMs = expiredDate - now;
 
-//     const now = new Date();
-//     const diffMs = now - created;
+    if (diffMs <= 0) {
+        return 'expired';
+    }
 
-//     if (diffMs <= 0) {
-//         return 'expired';
-//     }
+    const totalSeconds = Math.floor(diffMs / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
 
-//     const totalSeconds = Math.floor(diffMs / 1000);
-//     const days = Math.floor(totalSeconds / (3600 * 24));
-//     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-//     const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-//     if (minutes < 60) {
-//         return `${minutes} minutes remaining`;
-//     } else if (hours < 24) {
-//         return `${hours} hours remaining`;
-//     } else {
-//         return `${days} days remaining`;
-//     }
-// }
+    if (days > 0) {
+        return `${days} day${days > 1 ? 's' : ''} remaining`;
+    } else if (hours > 0) {
+        return `${hours} hour${hours > 1 ? 's' : ''} remaining`;
+    } else {
+        return `${minutes} minute${minutes !== 1 ? 's' : ''} remaining`;
+    }
+}
 
 function timeAgo(date) {
     const target = new Date(date);
