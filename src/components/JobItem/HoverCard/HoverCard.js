@@ -4,7 +4,7 @@ import styles from './HoverCard.module.scss';
 import { IconClockRecord, IconMapPin, IconClockHour4 } from '@tabler/icons-react';
 import { Images } from '~/assets';
 import { Button } from '~/components';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -25,25 +25,31 @@ function HoverCardJob({ description, children }) {
     const targetRef = useRef(null);
     const [position, setPosition] = useState('right');
 
-    const handleMouseOver = () => {
-        if (!targetRef.current) return;
-        console.log('handleMouseOver');
+    useLayoutEffect(() => {
+        function handlePositionCheck() {
+            if (!targetRef.current) return;
 
-        const rect = targetRef.current.getBoundingClientRect();
+            const rect = targetRef.current.getBoundingClientRect();
+            const dropdownWidth = 500; // Ước lượng hoặc đúng chiều rộng thực tế của dropdown
 
-        const estimatedDropdownWidth = 500; // hoặc đo đúng bằng CSS thực tế
+            if (rect.right + dropdownWidth > window.innerWidth) {
+                console.log(rect.right + dropdownWidth, window.innerWidth);
 
-        const overflowRight = rect.right + estimatedDropdownWidth > window.innerWidth;
+                setPosition('left');
+            } else {
+                setPosition('right');
+            }
+        }
 
-        setPosition(overflowRight ? 'left' : 'right');
-    };
+        handlePositionCheck();
+        window.addEventListener('resize', handlePositionCheck);
+        return () => window.removeEventListener('resize', handlePositionCheck);
+    }, []);
 
     return (
-        <HoverCard position={position} classNames={{ dropdown: cx('dropdown') }}>
+        <HoverCard position={position} classNames={{ dropdown: cx('dropdown') }} openDelay={1000}>
             <HoverCard.Target>
-                <div ref={targetRef} onMouseOver={handleMouseOver}>
-                    {children}
-                </div>
+                <div ref={targetRef}>{children}</div>
             </HoverCard.Target>
             <HoverCard.Dropdown>
                 <div className={cx('wrapper')}>
