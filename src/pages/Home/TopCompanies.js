@@ -27,13 +27,7 @@ const companies = [
     { companyName: 'Tencent', location: 'China' },
 ];
 
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * A component that displays a list of companies in a pagination layout.
- *
- * @returns {React.ReactElement} A React component that renders a list of companies in a pagination layout.
- */
-/*******  49c283de-0a70-475b-959e-d1cef89cc028  *******/ function TopCompanies() {
+function TopCompanies() {
     const [activePage, setActivePage] = useState(1);
 
     const pageSize = 8;
@@ -74,6 +68,9 @@ const companies = [
                             key={index}
                             image={Images.google_image}
                             description={company}
+                            isFeatured
+                            saved
+
                             className={cx('item')}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}

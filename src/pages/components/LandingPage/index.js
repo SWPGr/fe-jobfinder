@@ -122,9 +122,10 @@ function LandingPage() {
                     <div className={cx('search-field')}>
                         <h1 className={cx('title')}>Find a job that suits your interest & skills.</h1>
                         <p className={cx('description')}>
-                            Aliquam vitae turpis in diam convallis finibus in at risus. Nullam in scelerisque leo, eget
-                            sollicitudin velit vestibulum.
+                            Explore thousands of job opportunities tailored to your passion and strengths. Start
+                            building the career you deserve today.
                         </p>
+
                         <div className={cx('search-input')}>
                             {user?.role ? (
                                 <RecommendPopup
@@ -135,6 +136,7 @@ function LandingPage() {
                                     y={40}
                                     items={popupContent}
                                     forwardLink={'/find-job'}
+                                    type={'job'}
                                 >
                                     <TextInput
                                         placeholder="Job title, Keyword..."
