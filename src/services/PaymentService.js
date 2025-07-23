@@ -36,9 +36,9 @@ const getAllPaymentForAdmin = async () => {
     }
 };
 
-const getAllPayments = async (userId) => {
+const getAllPayments = async (params) => {
     try {
-        const response = await get(`payments/my-history`);
+        const response = await get(`payments/my-history`, params);
         return response;
     } catch (error) {
         throw error;

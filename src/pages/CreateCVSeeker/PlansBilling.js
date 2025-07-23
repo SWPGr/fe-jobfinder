@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './PlansBilling.module.scss';
 import { useSearchParams } from 'react-router-dom';
+import { Pagination } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { DatePickerInput } from '@mantine/dates';
 
 import Payment from '../Payment/Payment';
 import { useParams } from 'react-router-dom';
@@ -9,62 +12,75 @@ import { paymentService } from '~/services';
 
 const cx = classNames.bind(styles);
 
-const ITEMS_PER_PAGE = 7;
-
 const PlansBilling = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
     const [showPayment, setShowPayment] = useState(false);
     const [subscription, setSubscription] = useState([]);
     const [paymentHistory, setPaymentHistory] = useState([]);
     const { item } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
-    const page = searchParams.get('page') || 1;
-    const fromDate = searchParams.get('fromDate') || '';
-    const toDate = searchParams.get('toDate') || '';
+    const [pagination, setPagination] = useState(null);
 
-    const parseDate = (dateStr) => new Date(dateStr);
+    const form = useForm({
+        initialValues: {
+            pageNumber: Number(searchParams.get('pageNumber')) || 1,
+            fromDate: searchParams.get('fromDate') || '',
+            toDate: searchParams.get('toDate') || '',
+        },
+    });
 
-    const handlePageChange = (page) => {};
+    const [value, setValue] = useState([form.values.fromDate, form.values.toDate]);
 
     useEffect(() => {
-        // Giả lập việc lấy dữ liệu từ API
         const fetchSubscription = async () => {
             const response = await paymentService.getAllSubscriptionPlans();
-            console.log('response', response);
-
             setSubscription(response.result || []);
         };
-
         fetchSubscription();
     }, []);
 
+    // ✅ Sync form.values → searchParams
+    useEffect(() => {
+        const entries = Object.entries(form.values).filter(([_, v]) => v !== '' && v !== null && v !== undefined);
+        setSearchParams(entries);
+    }, [form.values, searchParams]);
+
+    // ✅ Fetch data khi searchParams đổi
     useEffect(() => {
         const fetchPaymentHistory = async () => {
-            const response = await paymentService.getAllPayments();
-            console.log('response', response);
+            const params = Object.fromEntries(searchParams.entries());
+            const response = await paymentService.getAllPayments(params);
             if (response?.code === 200) {
-                setPaymentHistory(response.result || []);
+                const { pageNumber, pageSize, totalElements, totalPages, content } = response.result;
+                setPagination({ pageNumber, pageSize, totalElements, totalPages });
+                setPaymentHistory(content || []);
             }
         };
-
         fetchPaymentHistory();
-    }, [page, fromDate, toDate]);
+    }, [searchParams]);
 
     useEffect(() => {
-        if (item) {
-            const el = document.getElementById(item);
-            if (el) {
-                const y = el.getBoundingClientRect().top + window.pageYOffset;
-                window.scrollTo({ top: y - 50, behavior: 'smooth' });
-            }
+        const y = item === 'payment-history' ? 'pagination' : item;
+        const el = document.getElementById(y);
+        if (el) {
+            const y = el.getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo({ top: y - 50, behavior: 'smooth' });
         }
     }, [item]);
 
+    const handelDateChange = (dates) => {
+        setValue(dates);
+        form.setFieldValue('fromDate', dates?.[0] || '');
+        form.setFieldValue('toDate', dates?.[1] || '');
+        form.setFieldValue('pageNumber', 1); // reset về trang 1 khi filter
+    };
+
+    const handlePageChange = (page) => {
+        form.setFieldValue('pageNumber', page);
+    };
+
     const formatTime = (date) => {
         const formatted = new Date(date).toLocaleString('en-US', {
-            timeZone: 'Asia/Ho_Chi_Minh', // 👈 Giờ Việt Nam
+            timeZone: 'Asia/Ho_Chi_Minh',
             month: 'short',
             day: 'numeric',
             year: 'numeric',
@@ -72,7 +88,7 @@ const PlansBilling = () => {
             minute: '2-digit',
             hour12: false,
         });
-        return formatted.replace(',', ''); // Loại bỏ dấu phẩy giữa ngày và giờ
+        return formatted.replace(',', '');
     };
 
     return (
@@ -84,34 +100,27 @@ const PlansBilling = () => {
                     </div>
                 </div>
             </div>
+
             <div className={cx('latest-invoices')}>
-                <h3>Latest Invoices</h3>
-                <div className={cx('filter-section')}>
-                    <div className={cx('filter-group')}>
-                        <label htmlFor="startDate">From Date:</label>
-                        <input
-                            type="date"
-                            id="startDate"
-                            value={startDate}
-                            onChange={(e) => {
-                                setStartDate(e.target.value);
-                                setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
-                            }}
-                        />
-                    </div>
-                    <div className={cx('filter-group')}>
-                        <label htmlFor="endDate">To Date:</label>
-                        <input
-                            type="date"
-                            id="endDate"
-                            value={endDate}
-                            onChange={(e) => {
-                                setEndDate(e.target.value);
-                                setCurrentPage(1); // Reset về trang 1 khi thay đổi bộ lọc
+                <div className={cx('invoice-header')}>
+                    <h3>Latest Invoices</h3>
+                    <div className={cx('filter-section')}>
+                        <DatePickerInput
+                            type="range"
+                            label="Pick dates range"
+                            size="xl"
+                            placeholder="Pick dates range"
+                            value={value}
+                            onChange={handelDateChange}
+                            popoverProps={{
+                                position: 'bottom-end',
+                                offset: 8,
+                                withArrow: true,
                             }}
                         />
                     </div>
                 </div>
+
                 <table id="payment-history">
                     <thead>
                         <tr>
@@ -147,14 +156,17 @@ const PlansBilling = () => {
                     </tbody>
                 </table>
 
-                <div className={cx('pagination')}>
-                    <button disabled={currentPage === 1} onClick={() => handlePageChange(currentPage - 1)}>
-                        ←
-                    </button>
+                <div className={cx('pagination')} id="pagination">
+                    <Pagination
+                        total={pagination?.totalPages || 1}
+                        value={form.values.pageNumber}
+                        onChange={handlePageChange}
+                        radius="xl"
+                        classNames={{ root: cx('pagination-root'), control: cx('control') }}
+                    />
                 </div>
             </div>
 
-            {/* Hiển thị modal Payment khi showPayment = true */}
             {showPayment && <Payment onClose={() => setShowPayment(false)} />}
         </div>
     );

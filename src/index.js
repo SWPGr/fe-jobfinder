@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 import GlobalStyles from './components/GlobalStyles';
 import { AuthContext } from './context';
@@ -12,6 +13,7 @@ import 'tippy.js/dist/tippy.css'; // optional for styling
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import '@mantine/dropzone/styles.css';
+import '@mantine/dates/styles.css';
 
 import { LoadingProvider } from '~/context/LoadingContext';
 

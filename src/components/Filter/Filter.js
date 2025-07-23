@@ -71,7 +71,6 @@ function Filter({
     const [scroll, scrollTo] = useWindowScroll();
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
     const resultRef = useRef(null); // This will hold the location of the search result
-    const [activePage, setActivePage] = useState(1);
     const size = 10; // Số lượng công việc mỗi trang
     const totalPages = Math.ceil(totalHits / size);
 
@@ -151,7 +150,6 @@ function Filter({
     // Xử lý nút tìm kiếm
     const handleSearch = async () => {
         console.log(form.values);
-
         const entries = Object.entries(form.values).filter(([_, v]) => v !== '' && v !== null && v !== undefined);
         await onSearch(entries);
     };
@@ -202,7 +200,6 @@ function Filter({
         form.setFieldValue('salary', matchedRadio);
     };
     const handlePageChange = (page) => {
-        setActivePage(page);
         form.setFieldValue('page', page);
         const params = new URLSearchParams(searchParams);
         params.set('page', page);
@@ -230,7 +227,12 @@ function Filter({
                         className={cx('search-form', { 'not-find-job': !isFindJob })}
                         onSubmit={(e) => e.preventDefault()}
                     >
-                        <SearchRecommend type={type} form={form} searchLabel={searchLabel} />
+                        <SearchRecommend
+                            handleSearch={handleSearch}
+                            type={type}
+                            form={form}
+                            searchLabel={searchLabel}
+                        />
 
                         <Select
                             placeholder="Select location"

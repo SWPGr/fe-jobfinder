@@ -40,15 +40,15 @@
 }
 
 .stats-cards .stat-card.blue {
-    background: var(--blue-100);
+    background: linear-gradient(90deg, var(--blue-100), var(--blue-200), var(--blue-300));
 }
 
 .stats-cards .stat-card.yellow {
-    background: var(--orange-100);
+    background: linear-gradient(90deg, var(--orange-100), var(--orange-200), var(--orange-300));
 }
 
 .stats-cards .stat-card.green {
-    background: var(--green-100);
+    background: linear-gradient(90deg, var(--green-100), var(--green-200), var(--green-300));
 }
 
 .stats-cards .stat-card .stat-number {
