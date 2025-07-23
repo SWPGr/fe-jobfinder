@@ -43,9 +43,6 @@ function Home() {
                 <Instruction />
             </SectionWrapper>
 
-            <SectionWrapper delay={0.25}>
-                <JobFairBanner />
-            </SectionWrapper>
 
             <SectionWrapper delay={0.25}>
                 <JobFairBanner />

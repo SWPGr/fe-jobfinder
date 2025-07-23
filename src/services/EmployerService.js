@@ -209,13 +209,33 @@ const fetchSettingFake = async (updatedData) => {
     return await get('/profiles/me');
   }
 };
-const fetchApplicationFake = async (jobId) => {
-  const response = await get(`/apply/${jobId}`);
-  return response?.result || [];
+const fetchApplicationData = async (id, type = 'application') => {
+  try {
+    let response;
+    if (type === 'application') {
+      // Lấy dữ liệu ứng dụng job
+      response = await get(`/apply/${id}`);
+    } else if (type === 'candidates') {
+      // Lấy dữ liệu chi tiết các ứng viên
+      response = await get(`/apply/candidates/${id}`);
+    } else {
+      throw new Error('Invalid fetch type');
+    }
+    return response?.result || null;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return null;
+  }
 };
-const fetchCandidateDetail = async (applicationId) => {
-  const response = await get(`/apply/candidates/${applicationId}`);
-  return response?.result || null;
+const fetchCandidateDetail = async (jobId, applicationId) => {
+  try {
+    // Sử dụng lại logic fetchApplicationData, với 'candidateDetail' là type
+    const response = await fetchApplicationData(jobId, 'candidateDetail', applicationId);
+    return response || null;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return null;
+  }
 };
 const fetchResume = async (applicationId) => {
   const response = await get(`/apply/${applicationId}/summarize-resume`);
@@ -231,7 +251,6 @@ const EmployerService = {
   fetchJobLevelFake,
   fetchJobEmployerFake,
   fetchMyJobFake,
-  fetchCandidateDetail,
   fetchEmployerProfile,
   fetchEducationFake,
   fetchSocialLinkFake,
@@ -241,8 +260,9 @@ const EmployerService = {
   fetchEmployerProfileFake,
   fetchJobDetailFake,
   fetchCategoriesFake,
-  fetchApplicationFake,
   fetchResume,
+  fetchCandidateDetail,
+  fetchApplicationData
 };
 
 export default EmployerService;
