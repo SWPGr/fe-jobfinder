@@ -6,6 +6,23 @@ import { HeaderOnly } from '~/layouts';
 
 // ⚠️ Dùng lazy import từng page (đảm bảo các file export mặc định)
 
+const LoginPage = lazy(() => import('~/pages/Login/Login'));
+const RegisterPage = lazy(() => import('~/pages/Register/Register'));
+const HomePage = lazy(() => import('~/pages/Home/Home'));
+const ErrorPage = lazy(() => import('~/pages/Error/Error'));
+const DashboardPage = lazy(() => import('~/pages/DashBoard/OverviewDashBoard'));
+const ServiceAndPolicyPage = lazy(() => import('~/pages/ServiceAndPolicy/index'));
+const CreateCVSeekerPage = lazy(() => import('~/pages/CreateCVSeeker/Overview1'));
+const FindJobPage = lazy(() => import('~/pages/FindJob/FindJobPage'));
+const JobDetail = lazy(() => import('~/pages/JobDetail/JobDetail'));
+const SeekerDetailPage = lazy(() => import('~/pages/SeekerDetail/SeekerDetail'));
+const VerifyPage = lazy(() => import('~/pages/Verify/VerifyPage'));
+const FindEmployer = lazy(() => import('~/pages/FindEmployer/FindEmployer'));
+const FindCandidate = lazy(() => import('~/pages/FindCandidate/FindCandidate'));
+const Term = lazy(() => import('~/pages/Term/Term'));
+const ResetPassword = lazy(() => import('~/pages/ResetPassword/ResetPassword'));
+// const CustomerSupport = lazy(() => import('~/pages/'));
+const PaymentManagement = lazy(() => import('~/pages/Payment/Payment'));
 const Single = lazy(() => import('~/pages/Single/Single'));
 const Payment = lazy(() => import('~/pages/Payment/Payment'));
 const FeedBack = lazy(() => import('~/pages/FeedBack/FeedBack'));
