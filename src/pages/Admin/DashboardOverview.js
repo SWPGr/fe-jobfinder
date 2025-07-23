@@ -106,7 +106,7 @@ const DashboardOverview = () => {
     return (
         <div className={cx('container')}>
             <div className={cx('header')}>
-                <h1>Dashboard Overview</h1>
+                <div>Dashboard Overview</div>
                 <div className={cx('subtitle')}>
                     Welcome back! Here's what's happening with your job platform today.
                 </div>

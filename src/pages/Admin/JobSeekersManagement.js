@@ -12,7 +12,6 @@ const cx = classNames.bind(styles);
 const sortColumns = [
     { key: 'fullName', label: 'Name' },
     { key: 'email', label: 'Email' },
-    { key: 'skills', label: 'Skills' },
     { key: 'location', label: 'Location' },
     { key: 'applications', label: 'Applications' },
     { key: 'isPremium', label: 'Premium' },
@@ -21,6 +20,7 @@ const sortColumns = [
 
 const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
     const combobox = useCombobox();
+
     return (
         <Combobox
             store={combobox}
@@ -77,7 +77,6 @@ const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
 };
 
 const getInitials = (name) => {
-    //lấy chữ cái đầu tiên trong tên người dùng
     if (!name || typeof name !== 'string') return '';
     const parts = name.trim().split(' ');
     if (parts.length === 1) return parts[0][0] ? parts[0][0].toUpperCase() : '';
@@ -93,41 +92,40 @@ const JobSeekersManagement = () => {
     const [visibleSeekers, setVisibleSeekers] = useState(10);
     const [selectedSeeker, setSelectedSeeker] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    // Debounce the search value (500ms delay) -> chưa xong đang chờ BE
+    // chờ 500ms để được hiển thị ra
     const dataSearch = useDebounce(search, 500);
 
-    // Fetch job seekers based on search query
     const fetchJobSeekers = useCallback(async (searchQuery) => {
         setError('');
         try {
-            const data = await statisticsService.fetchAllJobSeekers(searchQuery);
-            setJobSeekers(data || []);
+            const data = await statisticsService.fetchAllJobSeekers();
+            // Filter the data based on the search query
+            const filteredData = data.filter(
+                (seeker) =>
+                    seeker.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    seeker.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    seeker.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    seeker.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
+            );
+            setJobSeekers(filteredData);
         } catch (err) {
             setError(err.message || 'Failed to fetch job seekers');
         }
     }, []);
 
-    // Fetch job seekers whenever the search value changes (debounced)
     useEffect(() => {
-        if (dataSearch === '') {
-            fetchJobSeekers('');
-        } else {
-            fetchJobSeekers(dataSearch);
-        }
+        fetchJobSeekers(dataSearch);
     }, [dataSearch, fetchJobSeekers]);
 
     const handleAction = (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
         if (action === 'block') {
-            console.log(`Blocking job seeker ${seekerId}`);
             if (window.confirm(`Are you sure you want to block job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
                 setJobSeekers((prevSeekers) =>
                     prevSeekers.map((seeker) => (seeker.id === seekerId ? { ...seeker, isBlocked: true } : seeker)),
                 );
             }
         } else if (action === 'view') {
-            console.log(`Viewing job seeker ${seekerId}`);
             setSelectedSeeker(seeker);
             setIsModalOpen(true);
         }
@@ -149,7 +147,7 @@ const JobSeekersManagement = () => {
     return (
         <div className={cx('jobs-wrapper')}>
             <div className={cx('jobs-header')}>
-                <h1 className={cx('title')}>Job Seekers Management</h1>
+                <div className={cx('title')}>Job Seekers Management</div>
             </div>
             <div className={cx('jobs-toolbar')}>
                 <div className={cx('search-box')}>
@@ -160,9 +158,6 @@ const JobSeekersManagement = () => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                </div>
-                <div className={cx('toolbar-actions')}>
-                    <button className={cx('primary')}>+ Add New Job Seeker</button>
                 </div>
             </div>
             <div className={cx('jobs-table-wrapper')}>
@@ -187,7 +182,6 @@ const JobSeekersManagement = () => {
                                     </div>
                                 </td>
                                 <td>{seeker.email || '--'}</td>
-                                <td>{seeker.skills?.join(', ') || '--'}</td>
                                 <td>{seeker.location || '--'}</td>
                                 <td>{seeker.applications ?? 0}</td>
                                 <td>
@@ -225,7 +219,7 @@ const JobSeekersManagement = () => {
                                 tags: `Job Seeker, ${selectedSeeker.skills?.join(', ') || 'Skills'}`,
                                 jobRole: selectedSeeker.isPremium ? 'Premium' : 'Normal',
                                 badges: { featured: false, fulltime: 'N/A' },
-                                minSalary: '0', // Job seekers don't have salary
+                                minSalary: '0',
                                 maxSalary: '0',
                                 salaryType: 'N/A',
                                 education: 'N/A',

@@ -8,12 +8,10 @@
 .header {
     margin-bottom: 1.8rem;
 
-    h1 {
-        font-size: var(--font-size-header);
-        font-weight: 700;
-        color: var(--text-color);
-        line-height: 1.2;
-    }
+    font-size: var(--font-size-header);
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1.2;
 }
 
 .subtitle {

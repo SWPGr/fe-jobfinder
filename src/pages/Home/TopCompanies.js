@@ -72,6 +72,10 @@ const companies = [
                     {currentPageItems.map((company, index) => (
                         <motion.div
                             key={index}
+                            image={Images.google_image}
+                            description={company}
+                            isFeatured
+                            saved
                             className={cx('item')}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
