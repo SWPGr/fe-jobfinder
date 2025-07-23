@@ -210,41 +210,39 @@ const fetchSettingFake = async (updatedData) => {
     }
 };
 const fetchApplicationFake = async (jobId) => {
-    const response = await get(`/apply/${jobId}`);
-    console.log('response', response);
-
-    return response?.result || [];
+  const response = await get(`/apply/${jobId}`);
+  return response?.result || [];
 };
 const fetchCandidateDetail = async (applicationId) => {
-    const response = await get(`/apply/candidates/${applicationId}`);
-    return response?.result || null;
+  const response = await get(`/apply/candidates/${applicationId}`);
+  return response?.result || null;
 };
 const fetchResume = async (applicationId) => {
     const response = await get(`/apply/${applicationId}/summarize-resume`);
     return response?.result || null;
 };
 const EmployerService = {
-    getJobDetail,
-    updateJob,
-    deleteJob,
-    fetchTotalJobs,
-    fetchCreateJob,
-    fetchJobTypesFake,
-    fetchJobLevelFake,
-    fetchJobEmployerFake,
-    fetchMyJobFake,
-    fetchCandidateDetail,
-    fetchEmployerProfile,
-    fetchEducationFake,
-    fetchSocialLinkFake,
-    fetchExperienceFake,
-    fetchPostJobFake,
-    fetchSettingFake,
-    fetchEmployerProfileFake,
-    fetchJobDetailFake,
-    fetchCategoriesFake,
-    fetchApplicationFake,
-    fetchResume,
+  getJobDetail,
+  updateJob,
+  deleteJob,
+  fetchTotalJobs,
+  fetchCreateJob,
+  fetchJobTypesFake,
+  fetchJobLevelFake,
+  fetchJobEmployerFake,
+  fetchMyJobFake,
+  fetchCandidateDetail,
+  fetchEmployerProfile,
+  fetchEducationFake,
+  fetchSocialLinkFake,
+  fetchExperienceFake,
+  fetchPostJobFake,
+  fetchSettingFake,
+  fetchEmployerProfileFake,
+  fetchJobDetailFake,
+  fetchCategoriesFake,
+  fetchApplicationFake,
+  fetchResume,
 };
 
 export default EmployerService;
