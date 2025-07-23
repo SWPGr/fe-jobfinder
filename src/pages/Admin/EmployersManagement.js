@@ -4,7 +4,8 @@ import styles from './JobTableManagement.module.scss';
 import { Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
-import JobDetail from '~/pages/JobDetail/JobDetail'; // Reuse JobDetail for view
+import JobDetail from '~/pages/JobDetail/JobDetail';
+import { useDebounce } from '~/hooks'; // Import useDebounce hook
 
 const cx = classNames.bind(styles);
 
@@ -62,12 +63,14 @@ const EmployerRowDropdown = ({ onAction, employerId }) => {
                 </button>
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
-                <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
-                    Block
-                </Combobox.Option>
-                <Combobox.Option value="view" className={cx('dropdownItem')}>
-                    View
-                </Combobox.Option>
+                <Combobox.Options>
+                    <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                        Block
+                    </Combobox.Option>
+                    <Combobox.Option value="view" className={cx('dropdownItem')}>
+                        View
+                    </Combobox.Option>
+                </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
     );
@@ -90,20 +93,29 @@ const EmployersManagement = () => {
     const [visibleEmployers, setVisibleEmployers] = useState(10);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const dataSearch = useDebounce(search, 500); // Debounce search input with 500ms delay
 
     // Fetch employers
-    const fetchEmployers = useCallback(async () => {
+    const fetchEmployers = useCallback(async (searchQuery) => {
         try {
             const data = await statisticsService.fetchAllEmployers();
-            setEmployers(data || []);
+            // Filter the data based on the search query
+            const filteredData = data.filter(
+                (employer) =>
+                    employer.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    employer.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    employer.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    employer.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
+            );
+            setEmployers(filteredData || []);
         } catch (err) {
             setError(err.message || 'Failed to fetch employers');
         }
     }, []);
 
     useEffect(() => {
-        fetchEmployers();
-    }, [fetchEmployers]);
+        fetchEmployers(dataSearch);
+    }, [dataSearch, fetchEmployers]);
 
     const handleAction = (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
@@ -132,27 +144,14 @@ const EmployersManagement = () => {
         setVisibleEmployers((prev) => prev + 10);
     };
 
-    // Filter by search
-    const filteredEmployers = useMemo(() => {
-        if (!search) return employers;
-        const s = search.toLowerCase();
-        return employers.filter(
-            (employer) =>
-                employer.fullName?.toLowerCase().includes(s) ||
-                employer.email?.toLowerCase().includes(s) ||
-                employer.location?.toLowerCase().includes(s) ||
-                employer.phone?.toLowerCase().includes(s),
-        );
-    }, [employers, search]);
-
-    const employersToDisplay = filteredEmployers.slice(0, visibleEmployers);
+    const employersToDisplay = employers.slice(0, visibleEmployers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
     return (
         <div className={cx('managementWrapper')}>
             <div className={cx('jobs-header')}>
-                <h1 className={cx('title')}>Employers Management</h1>
+                <div className={cx('title')}>Employers Management</div>
             </div>
             <div className={cx('toolbar')}>
                 <div className={cx('search-box')}>
@@ -206,7 +205,7 @@ const EmployersManagement = () => {
                         ))}
                     </tbody>
                 </table>
-                {filteredEmployers.length > visibleEmployers && (
+                {employers.length > visibleEmployers && (
                     <div className={cx('load-more')}>
                         <button onClick={loadMoreEmployers}>Load More</button>
                     </div>
@@ -225,7 +224,7 @@ const EmployersManagement = () => {
                                 tags: 'Employer, Management',
                                 jobRole: selectedEmployer.isPremium ? 'Premium' : 'Normal',
                                 badges: { featured: false, fulltime: 'N/A' },
-                                minSalary: '0', // Employers don't have salary
+                                minSalary: '0',
                                 maxSalary: '0',
                                 salaryType: 'N/A',
                                 education: 'N/A',
@@ -263,7 +262,7 @@ const EmployersManagement = () => {
                                     website: selectedEmployer.website || 'N/A',
                                 },
                             }}
-                            editable={false} // No edit functionality for employers
+                            editable={false}
                             onCancel={closeModal}
                         />
                     </div>

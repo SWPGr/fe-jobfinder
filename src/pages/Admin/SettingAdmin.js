@@ -55,7 +55,7 @@ const SettingAdmin = () => {
     return (
         <div className={cx('managementWrapper')}>
             <div className={cx('jobs-header')}>
-                <h1 className={cx('title')}>Settings</h1>
+                <div className={cx('title')}>Settings</div>
                 <p className={cx('desc')}>Configure your JobFinder platform settings.</p>
             </div>
             <div className={cx('settingsContent')}>
