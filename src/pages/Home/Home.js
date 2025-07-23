@@ -14,7 +14,7 @@ import CTA from './CTA';
 import JobMarketTrends from './JobMarketTrends';
 import SectionWrapper from './animation/SectionWrapper';
 import EventBanner from './EventBanner';
-import JobFairBanner  from './components/JobFairBanner'
+import JobFairBanner from './components/JobFairBanner';
 
 const cx = classNames.bind(styles);
 
@@ -43,10 +43,6 @@ function Home() {
                 <Instruction />
             </SectionWrapper>
 
-
-            <SectionWrapper delay={0.25}>
-                <JobFairBanner />
-            </SectionWrapper>
 
             <SectionWrapper delay={0.3}>
                 <PopularCategory />
