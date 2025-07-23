@@ -1,11 +1,11 @@
 .container {
     display: flex;
     gap: 4rem;
-    width: calc(var(--default-layout-width) * 0.61);
+    width: 100%;
+    max-width: var(--default-layout-width);
+    padding: 2rem;
     margin: 4rem auto;
-    font-family: 'segoe ui', tahoma, geneva, verdana, sans-serif;
     color: #333;
-
 }
 .editable-container {
     width: 100%;
@@ -27,10 +27,10 @@
 }
 
 .logo {
-    width: 7rem;
-    height: 7rem;
-    border-radius: 2rem;
-    object-fit: contain;
+    width: 8rem;
+    height: 8rem;
+    border-radius: var(--border-radius);
+    object-fit: cover;
 }
 
 .job-info {
