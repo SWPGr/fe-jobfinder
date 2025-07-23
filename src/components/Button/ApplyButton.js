@@ -14,6 +14,7 @@ import { useForm } from '@mantine/form';
 import classNames from 'classnames/bind';
 import styles from './ApplyButton.module.scss';
 import { useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { validator } from '~/utils';
 import Button from '.';
@@ -24,7 +25,9 @@ import { useLoading } from '~/context/LoadingContext';
 const cx = classNames.bind(styles);
 
 function ApplyButton({ classname, onClick = () => {}, title, jobId }) {
-    const [opened, { open, close }] = useDisclosure(false);
+    const [searchParams] = useSearchParams();
+    const isApply = searchParams.get('isApply') === 'true';
+    const [opened, { open, close }] = useDisclosure(isApply);
     const { showLoading, hideLoading } = useLoading();
     const { showSuccess, showError } = useNotification();
     const openRef = useRef(null);

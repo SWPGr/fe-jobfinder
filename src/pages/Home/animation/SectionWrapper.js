@@ -1,4 +1,3 @@
-// components/SectionWrapper.jsx
 import { motion } from 'framer-motion';
 
 export default function SectionWrapper({ children, delay = 0 }) {

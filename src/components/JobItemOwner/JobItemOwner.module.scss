@@ -133,11 +133,11 @@
     margin-right: 8rem;
 }
 .inactive {
-    color: var(--red-500);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-right: 3rem;
+  color: var(--red-500);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 8rem; /* chỉnh giống .active */
 }
 
 .applications {

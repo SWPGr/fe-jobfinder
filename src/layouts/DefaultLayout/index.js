@@ -64,7 +64,7 @@ function DefaultLayout({ children }) {
                 </div>
                 <div className={cx('content')}>{selectedMenu}</div>
             </div>
-            <ChatbotButton />
+            {role && <ChatbotButton />}
         </div>
     );
 }

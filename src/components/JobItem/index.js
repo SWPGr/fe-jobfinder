@@ -10,6 +10,7 @@ import { Button } from '~/components';
 import { jobService } from '~/services';
 import { useNotification } from '~/hooks';
 import { useAuth } from '~/context/AuthContext';
+import HoverCardJob from './HoverCard/HoverCard';
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +22,7 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
     const { showSuccess, showError } = useNotification();
 
     const classes = cx('wrapper', { isVIP, saved });
-    const { companyName, companyAddress, jobTitle, workTime, salary } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, companyLogo } = jobDescription;
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
     const navigate = useNavigate();
 
@@ -58,60 +59,66 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
     };
 
     return (
-        <div className={classes} onClick={handelDirectToJobDetails}>
-            <div className={cx('header')}>
-                <div className={cx('container')}>
-                    <div className={cx('logo-company')}>
-                        <img
-                            src={image}
-                            alt={`${companyName} logo`}
-                            onError={(e) => (e.target.src = Images.default_image)}
-                        />
-                    </div>
-                    <div className={cx('company-inf')}>
-                        <span className={cx('company-name')}>
-                            <Button text onClick={(e) => handelDireactToCompanyDetails(e, 1)} className={cx('name')}>
-                                {companyName}
-                            </Button>
-                            {isVIP && (
-                                <Badge
-                                    color="#ffeded"
-                                    size="lg"
-                                    classNames={{ label: cx('label-badge'), root: cx('root-badge') }}
+        <HoverCardJob description={jobDescription}>
+            <div className={classes} onClick={handelDirectToJobDetails}>
+                <div className={cx('header')}>
+                    <div className={cx('container')}>
+                        <div className={cx('logo-company')}>
+                            <img
+                                src={companyLogo || image}
+                                alt={`${companyName} logo`}
+                                onError={(e) => (e.target.src = Images.default_image)}
+                            />
+                        </div>
+                        <div className={cx('company-inf')}>
+                            <span className={cx('company-name')}>
+                                <Button
+                                    text
+                                    onClick={(e) => handelDireactToCompanyDetails(e, 1)}
+                                    className={cx('name')}
                                 >
-                                    Featured
-                                </Badge>
-                            )}
-                        </span>
-                        <p className={cx('company-address')}>
-                            <span className={cx('icon-wrapper')}>
-                                <IconMapPin />
+                                    {companyName}
+                                </Button>
+                                {isVIP && (
+                                    <Badge
+                                        color="#ffeded"
+                                        size="lg"
+                                        classNames={{ label: cx('label-badge'), root: cx('root-badge') }}
+                                    >
+                                        Featured
+                                    </Badge>
+                                )}
                             </span>
-                            <span className={cx('text')}>{companyAddress}</span>
-                        </p>
+                            <p className={cx('company-address')}>
+                                <span className={cx('icon-wrapper')}>
+                                    <IconMapPin />
+                                </span>
+                                <span className={cx('text')}>{companyAddress}</span>
+                            </p>
+                        </div>
+                    </div>
+                    {isJOB_SEEKER && (
+                        <div
+                            className={cx('save-job')}
+                            onClick={(e) => {
+                                save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
+                            }}
+                        >
+                            {isJOB_SEEKER && <IconComponent size={22} color="#0a65cc" />}
+                        </div>
+                    )}
+                </div>
+                <div className={cx('body')}>
+                    <Link to={`/find-job?search=${encodeURIComponent(jobTitle)}`} className={cx('job-title')}>
+                        {jobTitle}
+                    </Link>
+                    <div className={cx('job-description')}>
+                        <span className={cx('work-time')}>{workTime}</span>
+                        <span className={cx('job-salary')}>{salary}</span>
                     </div>
                 </div>
-                {isJOB_SEEKER && (
-                    <div
-                        className={cx('save-job')}
-                        onClick={(e) => {
-                            save ? handelUnsaveJob(e, jobDescription.id) : handelSaveJob(e, jobDescription.id);
-                        }}
-                    >
-                        {isJOB_SEEKER && <IconComponent size={22} color="#0a65cc" />}
-                    </div>
-                )}
             </div>
-            <div className={cx('body')}>
-                <Link to={`/find-job?search=${encodeURIComponent(jobTitle)}`} className={cx('job-title')}>
-                    {jobTitle}
-                </Link>
-                <div className={cx('job-description')}>
-                    <span className={cx('work-time')}>{workTime}</span>
-                    <span className={cx('job-salary')}>{salary}</span>
-                </div>
-            </div>
-        </div>
+        </HoverCardJob>
     );
 }
 

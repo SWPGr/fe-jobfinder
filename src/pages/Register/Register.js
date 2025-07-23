@@ -2,13 +2,13 @@ import classNames from 'classnames/bind';
 import styles from './Register.module.scss';
 import { useState } from 'react';
 import { IconMail, IconBrandSamsungpass, IconEyeOff, IconEye } from '@tabler/icons-react';
-import { Checkbox, TextInput, ActionIcon, Radio, Group } from '@mantine/core';
+import { Checkbox, TextInput, ActionIcon, Radio, Group, Button } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 
 import GoogleLoginButton from '~/components/GoogleLoginButton';
 import { LeftSideLogin } from '../components';
-import { Button } from '~/components';
+// import { Button } from '~/components';
 // popup phần chính sách bảo mật
 import { validator } from '~/utils';
 import { useContext } from 'react';
@@ -18,21 +18,20 @@ import { useNotification } from '~/hooks';
 const cx = classNames.bind(styles);
 
 function Register() {
+    const [loading, setLoading] = useState(false);
+
     const formRegister = useForm({
         initialValues: {
-            // firstName: '',
-            // lastName: '',
             email: '',
             password: '',
             confirmPassword: '',
-            userRole: 'JOB_SEEKER', // ban đầu chưa chọn
+            userRole: 'JOB_SEEKER',
             agree: false,
         },
+        validateInputOnChange: true, // 👉 validate ngay khi người dùng nhập
         validate: {
-            // firstName: (value) => (value.trim().length > 0 ? null : 'First name is required'),
-            // lastName: (value) => (value.trim().length > 0 ? null : 'Last name is required'),
             email: (value) => validator.validateEmail(value),
-            password: (value) => validator.validatePassword(value),
+            password: (value) => validator.validatePasswordStrong(value),
             confirmPassword: (value, values) => validator.validateConfirmPassword(value, values.password),
             userRole: (value) => (value ? null : 'Please select your role'),
             agree: (value) => (value ? null : 'You must agree to terms'),
@@ -47,7 +46,9 @@ function Register() {
     const handleSubmitForm = async (values) => {
         console.log('Form submitted:', values);
 
+        setLoading(true);
         const data = await register(values.email, values.password, values.userRole);
+        setLoading(false);
         console.log('Response data:', data);
 
         if (data.success) {
@@ -215,7 +216,16 @@ function Register() {
 
                         {/* Submit button */}
                         <div className={cx('btn-submit')}>
-                            <Button type="submit" className={cx('submit')}>
+                            <Button
+                                type="submit"
+                                classNames={{
+                                    root: cx('submit'),
+                                    label: cx('submit-label'),
+                                    loader: cx('submit-loader'),
+                                }}
+                                loading={loading}
+                                loaderProps={{ type: 'dots' }}
+                            >
                                 Create account
                             </Button>
                         </div>

@@ -208,6 +208,7 @@
   color: #657786;
   padding: 20px;
 }
+
 .closeBtn {
   position: absolute;
   top: 1rem;
@@ -225,6 +226,7 @@
     color: #e0245e;
   }
 }
+
 .seekerBox {
   position: relative;
   background: white;
@@ -235,6 +237,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 20;
 }
+
 .overlay {
   position: fixed;
   top: 0;
@@ -246,4 +249,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* --- style mới cho nút AI ngoài góc phải seekerBox --- */
+.aiButtonWrapper {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  z-index: 25;
 }
