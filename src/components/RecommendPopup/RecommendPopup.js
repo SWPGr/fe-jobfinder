@@ -49,8 +49,10 @@ function RecommendPopup({
     useEffect(() => {
         const fetchSearchHistory = async () => {
             try {
+                if (!type) return; // Không làm gì nếu chưa có type
+
                 const response = await searchService.searchHistory();
-                if (response && response.result) {
+                if (response?.result) {
                     const data = response.result.filter(
                         (item) => item?.searchType?.toLowerCase() === type.toLowerCase(),
                     );
@@ -60,8 +62,9 @@ function RecommendPopup({
                 console.error('Failed to fetch search history:', error);
             }
         };
+
         fetchSearchHistory();
-    }, []);
+    }, [type]);
 
     const handleDeleteHistory = async (id) => {
         try {

@@ -28,16 +28,16 @@
 }
 
 .plan {
-  border: 0.1rem solid var(--border-color);
-  padding: 2rem;
-  border-radius: 0.8rem;
-  width: 25rem;
-  background: var(--white);
-  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
-  position: relative;
-  box-sizing: border-box;
-  color: var(--gray-900);
-  font-family: var(--font-family);
+    border: 0.1rem solid var(--border-color);
+    padding: 2rem;
+    border-radius: 0.8rem;
+    width: 28rem;
+    background: var(--white);
+    box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+    position: relative;
+    box-sizing: border-box;
+    color: var(--gray-900);
+    font-family: var(--font-family);
 }
 
 .plan__title {
@@ -76,16 +76,21 @@
 }
 
 .plan button {
-  background-color: var(--primary-color);
-  color: var(--white);
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 1.4rem;
-  font-weight: 600;
-  transition: background-color 0.2s ease-in-out;
-  font-family: var(--font-family);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+    font-family: var(--font-family);
 }
 
 .plan button:hover {
@@ -112,10 +117,10 @@
     letter-spacing: 0.1rem;
 }
 .illustration {
-  display: block;      // chuyển ảnh thành block để margin auto hoạt động
-  margin: 0 auto;      // canh giữa ngang
-  max-width: 100%;     // tránh ảnh tràn container
-  height: auto;        // giữ tỉ lệ ảnh
+    display: block; // chuyển ảnh thành block để margin auto hoạt động
+    margin: 0 auto; // canh giữa ngang
+    max-width: 100%; // tránh ảnh tràn container
+    height: auto; // giữ tỉ lệ ảnh
 }
 .paymentContainer__title {
     text-align: center;
