@@ -431,7 +431,7 @@
         font-size: 13px;
     }
 }
-
+//ẩn cột
 /* Responsive: Hide columns for JobSeekers table */
 @media (max-width: 900px) {
     /* JobSeekers: Hide Location, Applications, Joined */
@@ -466,5 +466,100 @@
     .dataTable th:nth-child(6),
     .dataTable td:nth-child(6) {
         display: none !important;
+    }
+}
+
+/* Responsive Table for Job Seekers - Cập nhật 2024 */
+@media (max-width: 1024px) {
+    .tableWrapper,
+    .jobs-table-wrapper {
+        max-height: 350px;
+        padding: 0.5rem;
+    }
+    .jobs-table th,
+    .jobs-table td {
+        font-size: 13px;
+        padding: 8px 6px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* Ẩn các cột phụ: Location, Applications, Joined */
+    .jobs-table th:nth-child(3),
+  .jobs-table td:nth-child(3), /* Location */
+  .jobs-table th:nth-child(4),
+  .jobs-table td:nth-child(4), /* Applications */
+  .jobs-table th:nth-child(6),
+  .jobs-table td:nth-child(6)  /* Joined */ {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .managementWrapper,
+    .jobs-wrapper {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+    .tableWrapper,
+    .jobs-table-wrapper {
+        max-height: 180px;
+        border-radius: 0.7rem;
+        padding: 0.2rem;
+    }
+    .jobs-table th,
+    .jobs-table td {
+        font-size: 11px;
+        padding: 5px 2px;
+    }
+    .avatarCircle {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+        margin-right: 4px;
+    }
+    .jobs-header .title {
+        font-size: 1.2rem;
+    }
+}
+
+/* Cho phép cuộn ngang bảng trên mobile */
+.tableWrapper,
+.jobs-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Đảm bảo bảng không bị vỡ layout */
+.jobs-table {
+    min-width: 600px;
+}
+
+/* Style badge Premium/Normal đồng bộ DashboardOverview */
+.statusText {
+    border-radius: 999px;
+    padding: 2px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    &.active,
+    &.premium {
+        background: #d1fae5;
+        color: #059669;
+    }
+    &.normal {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+}
+
+/* Gợi ý: Thêm chú thích vuốt ngang trên mobile */
+.table-note-mobile {
+    display: none;
+    font-size: 12px;
+    color: var(--gray-500);
+    text-align: right;
+    margin-top: 4px;
+    @media (max-width: 600px) {
+        display: block;
     }
 }
