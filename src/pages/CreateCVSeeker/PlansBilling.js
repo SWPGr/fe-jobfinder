@@ -6,9 +6,10 @@ import { useSearchParams } from 'react-router-dom';
 import Payment from '../Payment/Payment';
 import { useParams } from 'react-router-dom';
 import { paymentService } from '~/services';
-import { useLoading } from '~/context/LoadingContext';
 
 const cx = classNames.bind(styles);
+
+const ITEMS_PER_PAGE = 7;
 
 const PlansBilling = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,10 +24,9 @@ const PlansBilling = () => {
     const fromDate = searchParams.get('fromDate') || '';
     const toDate = searchParams.get('toDate') || '';
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-        setSearchParams({ page });
-    };
+    const parseDate = (dateStr) => new Date(dateStr);
+
+    const handlePageChange = (page) => {};
 
     useEffect(() => {
         // Giả lập việc lấy dữ liệu từ API

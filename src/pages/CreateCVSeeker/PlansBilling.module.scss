@@ -13,10 +13,10 @@
 }
 
 .box {
-  background: var(--white);
-  border-radius: 0.8rem;
-  box-shadow: 0 0 0.8rem rgb(0 0 0 / 0.05);
-  padding: 2rem;
+    background: var(--white);
+    // border-radius: 0.8rem;
+    // box-shadow: 0 0 0.8rem rgb(0 0 0 / 0.05);
+    padding: 2rem;
 }
 
 .title-small {
@@ -122,8 +122,8 @@
 
 /* Tăng chiều ngang box của Payment */
 .payment-card {
-  max-width: 80rem; /* Tăng chiều ngang container của Payment */
-  margin: 0 auto; /* Đảm bảo căn giữa */
+    max-width: 80rem; /* Tăng chiều ngang container của Payment */
+    margin: 0 auto; /* Đảm bảo căn giữa */
 }
 
 .latest-invoices {
@@ -244,4 +244,12 @@
             }
         }
     }
+}
+
+.no-data-cell {
+    text-align: center;
+    padding: 20px;
+    font-style: italic;
+    color: var(--gray-500);
+    background-color: var(--white);
 }
