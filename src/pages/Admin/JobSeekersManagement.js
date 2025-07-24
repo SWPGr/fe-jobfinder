@@ -240,6 +240,7 @@ const JobSeekersManagement = () => {
                 </select>
                 {/* Nút Filter và Clear */}
                 <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
+                    <IconAdjustments style={{ marginRight: 8, fontSize: 32, verticalAlign: 'middle' }} />
                     Filter
                 </button>
                 <button
@@ -259,11 +260,11 @@ const JobSeekersManagement = () => {
                         });
                     }}
                 >
+                    <IconAdjustmentsOff style={{ marginRight: 8, fontSize: 32, verticalAlign: 'middle' }} />
                     Clear
                 </button>
             </div>
 
-            {/* Bảng job seekers và các phần còn lại giữ nguyên */}
             <div className={cx('jobs-table-wrapper')}>
                 <table className={cx('jobs-table')}>
                     <thead>

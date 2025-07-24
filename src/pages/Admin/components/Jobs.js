@@ -5,6 +5,7 @@ import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
+import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
@@ -293,6 +294,7 @@ const Jobs = () => {
                     ))}
                 </select>
                 <button className={cx('primary', 'filterBtn')} style={{ minWidth: 120 }} onClick={handleFindJob}>
+                    <IconAdjustments style={{ marginRight: 8, fontSize: 18 }} />
                     Find Job
                 </button>
                 <button
@@ -313,6 +315,7 @@ const Jobs = () => {
                         setSearchApplicationRange('');
                     }}
                 >
+                    <IconAdjustmentsOff style={{ marginRight: 8, fontSize: 18 }} />
                     Clear
                 </button>
             </div>
@@ -326,6 +329,7 @@ const Jobs = () => {
                             <th>Type</th>
                             <th>Salary Range</th>
                             <th>Applicants</th>
+                            <th>Status</th>
                             <th>Posted</th>
                             <th></th>
                         </tr>
@@ -353,7 +357,12 @@ const Jobs = () => {
                                         ${job.salaryMin} - ${job.salaryMax}
                                     </td>
                                     <td>{job.jobApplicationCounts || 0}</td>
-                                    <td>{job.createdAt?.split(' ')[0]}</td>
+                                    <td>
+                                        <span className={cx('job-status', job.active ? 'active' : 'inactive')}>
+                                            {job.active ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td>{job.createdAt ? job.createdAt.split(' ')[0].slice(5) : ''}</td>
                                     <td>
                                         <JobRowDropdown
                                             onAction={(action) => handleAction(action, job.id)}

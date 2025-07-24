@@ -219,6 +219,7 @@ const EmployersManagement = () => {
                     <option value="false">Normal</option>
                 </select>
                 <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
+                    <IconAdjustments style={{ marginRight: 8, fontSize: 32, verticalAlign: 'middle' }} />
                     Filter
                 </button>
                 <button
@@ -230,6 +231,7 @@ const EmployersManagement = () => {
                         setSearch('');
                     }}
                 >
+                    <IconAdjustmentsOff style={{ marginRight: 8, fontSize: 32, verticalAlign: 'middle' }} />
                     Clear
                 </button>
             </div>
@@ -257,7 +259,7 @@ const EmployersManagement = () => {
                                 <td>{employer.email}</td>
                                 <td>{employer.location || '--'}</td>
                                 <td>{employer.phone || '--'}</td>
-                                <td>{employer.createdAt?.slice(0, 10) || '--'}</td>
+                                <td>{employer.createdAt ? employer.createdAt.slice(5, 10) : '--'}</td>
                                 <td>
                                     <span className={premiumClass(employer.isPremium)}>
                                         {employer.isPremium === true ? 'Premium' : 'Normal'}
