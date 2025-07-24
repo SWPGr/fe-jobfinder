@@ -228,6 +228,9 @@ const fetchApplicationData = async (id, type = 'application') => {
       response = await get(`/apply/${id}`);
     } else if (type === 'candidates') {
       response = await get(`/apply/candidates/${id}`);
+    } else if (type === 'user') {
+      // Gọi API lấy resume summary theo userId
+      response = await get(`/apply/${id}/summarize-resume`);
     } else {
       throw new Error('Invalid fetch type');
     }

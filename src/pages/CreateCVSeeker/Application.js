@@ -3,6 +3,7 @@ import styles from "./Application.module.scss";
 import SeekerDetail from "../SeekerDetail/SeekerDetail";
 import EmployerService from "~/services/EmployerService";
 import ResumeProfile from "./ResumeProfile";
+import { Phone } from "lucide-react";
 
 // Application Component
 const Application = ({
@@ -13,34 +14,131 @@ const Application = ({
   resumeUrl,
   handleSelect,
   handleDownloadCV,
-}) => (
-  <div
-    className={styles.application}
-    onClick={handleSelect}
-    style={{ cursor: "pointer" }}
-  >
-    <div className={styles.profile}>
-      <div className={styles.avatar}></div>
-      <div>
-        <div className={styles.name}>{fullName}</div>
-        <div className={styles.email}>{email}</div>
-      </div>
-    </div>
-    <ul className={styles.details}>
-      <li>Experience: {experience}</li>
-      <li>Education: {education}</li>
-    </ul>
-    <button
-      className={styles.download}
-      onClick={(e) => {
-        e.stopPropagation();
-        handleDownloadCV();
-      }}
+  handleAccept,
+  handleRefuse,
+}) => {
+  const [showMessageBox, setShowMessageBox] = useState(false);
+  const [messageText, setMessageText] = useState("");
+  const [actionType, setActionType] = useState(null); // "accept" hoặc "refuse"
+
+  const openMessageBox = (type) => {
+    setActionType(type);
+    setShowMessageBox(true);
+    setMessageText("");
+  };
+
+  const closeMessageBox = () => {
+    setShowMessageBox(false);
+    setMessageText("");
+    setActionType(null);
+  };
+
+  const handleSendMessage = () => {
+    // Ví dụ: Gọi hàm callback truyền message, hoặc console.log
+    if (actionType === "accept") {
+      handleAccept && handleAccept(messageText);
+    } else if (actionType === "refuse") {
+      handleRefuse && handleRefuse(messageText);
+    }
+    closeMessageBox();
+  };
+
+  return (
+    <div
+      className={styles.application}
+      onClick={handleSelect}
+      style={{ cursor: "pointer", position: "relative" }} // thêm relative để dễ định vị box message
     >
-      Download CV
-    </button>
-  </div>
-);
+      <div className={styles.profile}>
+        <div className={styles.avatar}></div>
+        <div>
+          <div className={styles.name}>{fullName}</div>
+          <div className={styles.email}>{email}</div>
+        </div>
+      </div>
+      <ul className={styles.details}>
+        <li>Experience: {experience}</li>
+        <li>Education: {education}</li>
+      </ul>
+      <button
+        className={styles.download}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleDownloadCV();
+        }}
+      >
+        Download CV
+      </button>
+
+      {/* Nút Accept và Refuse */}
+      <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+        <button
+          className={styles.accept}
+          onClick={(e) => {
+            e.stopPropagation();
+            openMessageBox("accept");
+          }}
+          style={{
+            padding: "4px 12px",
+            background: "#4caf50",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "12px",
+          }}
+        >
+          Accept
+        </button>
+        <button
+          className={styles.refuse}
+          onClick={(e) => {
+            e.stopPropagation();
+            openMessageBox("refuse");
+          }}
+          style={{
+            padding: "4px 12px",
+            background: "#f44336",
+            color: "#fff",
+            border: "none",
+            borderRadius: "4px",
+            fontSize: "12px",
+          }}
+        >
+          Refuse
+        </button>
+      </div>
+
+      {/* Box Message */}
+      {showMessageBox && (
+  <>
+    <div className={styles.messageOverlay} onClick={closeMessageBox} />
+    <div className={styles.messageModal} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.header}>
+        Message
+        <button onClick={closeMessageBox} aria-label="Close message box">
+          &times;
+        </button>
+      </div>
+      <textarea
+        rows={6}
+        value={messageText}
+        onChange={(e) => setMessageText(e.target.value)}
+        placeholder="Enter your message here; it will be included in the email notification."
+      />
+      <button
+        className={styles.sendBtn}
+        onClick={handleSendMessage}
+        disabled={!messageText.trim()}
+      >
+        Send
+      </button>
+    </div>
+  </>
+)}
+
+    </div>
+  );
+};
 
 const JobApplications = ({ jobId }) => {
   const [applications, setApplications] = useState([]);
@@ -76,16 +174,23 @@ const JobApplications = ({ jobId }) => {
         if (mounted) {
           const mappedApps = apps.map((app) => {
             console.log("Raw app data:", app);
-            const appId = app.id || app.applicationId || app._id || app.SeekerDetail?.applicationId || app.SeekerDetail?.id || app.SeekerDetail?._id || app.seekerDetail?.userId || app.userId ||null;
+            const userId = app.seekerDetail?.userId || app.userId || null;
+            const appId = app.id || app.applicationId || app._id || app.seekerDetail?.applicationId || app.seekerDetail?.id || app.seekerDetail?._id || app.seekerDetail?.userId || app.userId ||null;
 
             return {
               id: appId,
-              fullName: app.seekerDetail?.fullName || app.fullname || "",
-              email: app.seekerDetail?.userEmail || app.email || "",
-              experience: app.seekerDetail?.experienceName || "N/A",
-              education: app.seekerDetail?.educationName || "N/A",
-              resumeUrl: app.seekerDetail?.resumeUrl || "",
-              applicationId: appId,
+    seekerDetail: {
+      ...app.seekerDetail,
+      userId: userId, // Đảm bảo luôn có userId trong seekerDetail
+    },
+    fullName: app.seekerDetail?.fullName || app.fullname || "",
+    email: app.seekerDetail?.userEmail || app.email || "",
+    experience: app.seekerDetail?.experienceName || "N/A",
+    education: app.seekerDetail?.educationName || "N/A",
+    resumeUrl: app.seekerDetail?.resumeUrl || "",
+    coverLetter: app.seekerDetail?.coverLetter || app.coverLetter || "",
+    phone: app.seekerDetail?.phone || app.phone || "",
+    applicationId: appId,
             };
           });
 
@@ -127,7 +232,11 @@ const JobApplications = ({ jobId }) => {
           item.applicationId === selectedApplicationId ||
           item.userId === selectedApplicationId
       );
-        }
+        }if (!applicant || !applicant.seekerDetail) {
+      console.warn("API trả về thiếu seekerDetail, giữ nguyên dữ liệu cũ");
+      // Không set lại selectedApplicantDetail
+      return;
+    }
 
         setSelectedApplicantDetail({ ...applicant, applicationId: selectedApplicationId });
         console.log("Applicant detail:", { ...applicant, applicationId: selectedApplicationId });
@@ -150,6 +259,7 @@ const JobApplications = ({ jobId }) => {
     }
     setSelectedApplicationId(app.applicationId);  // Set applicationId to fetch details
     setSelectedApplicantDetail(app);
+    console.log("Selected applicant object:", app);
     setShowResumeProfile(false);
   };
 
@@ -190,7 +300,8 @@ const JobApplications = ({ jobId }) => {
         ? a.fullName.localeCompare(b.fullName)
         : b.fullName.localeCompare(a.fullName)
     );
-
+  
+console.log("ResumeProfile userId:", selectedApplicantDetail?.seekerDetail?.userId);
   return (
     <div className={styles.container}>
       <div className={styles.title}>Job Applications</div>
@@ -301,7 +412,7 @@ const JobApplications = ({ jobId }) => {
                 AI
               </button>
 
-              {showResumeProfile && <ResumeProfile applicationId={selectedApplicationId} />}
+              <ResumeProfile userId={selectedApplicantDetail?.seekerDetail?.userId || null} />
             </div>
           </div>
         )}
