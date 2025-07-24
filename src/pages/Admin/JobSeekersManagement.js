@@ -7,6 +7,7 @@ import { useDebounce } from '~/hooks';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
+import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
 
 const cx = classNames.bind(styles);
 
@@ -180,7 +181,8 @@ const JobSeekersManagement = () => {
                 <div className={cx('title')}>Job Seekers Management</div>
             </div>
 
-            <div className={cx('jobs-toolbar')}>
+            {/* Toolbar filter ngang hiện đại */}
+            <div className={cx('toolbar')}>
                 <div className={cx('search-box')}>
                     <Search className={cx('search-icon')} />
                     <input
@@ -190,87 +192,78 @@ const JobSeekersManagement = () => {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-            </div>
-
-            <div className={cx('horizontalFilterBar')}>
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Premium</div>
-                    <select
-                        className={cx('filterSelect')}
-                        value={pendingFilter.isPremium}
-                        onChange={(e) => setPendingFilter((f) => ({ ...f, isPremium: e.target.value }))}
-                    >
-                        <option value="">All</option>
-                        <option value="true">Premium</option>
-                        <option value="false">Normal</option>
-                    </select>
-                </div>
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Applications</div>
-                    <select
-                        className={cx('filterSelect')}
-                        value={
-                            pendingFilter.minApplications === '' && pendingFilter.maxApplications === ''
-                                ? 'all'
-                                : pendingFilter.minApplications === '1' && pendingFilter.maxApplications === '2'
-                                ? '1-2'
-                                : pendingFilter.minApplications === '3' && pendingFilter.maxApplications === '4'
-                                ? '3-4'
-                                : pendingFilter.minApplications === '5' && pendingFilter.maxApplications === '6'
-                                ? '5-6'
-                                : pendingFilter.minApplications === '7' && pendingFilter.maxApplications === ''
-                                ? '7+'
-                                : 'all'
-                        }
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            if (val === 'all')
-                                setPendingFilter((f) => ({ ...f, minApplications: '', maxApplications: '' }));
-                            else if (val === '1-2')
-                                setPendingFilter((f) => ({ ...f, minApplications: '1', maxApplications: '2' }));
-                            else if (val === '3-4')
-                                setPendingFilter((f) => ({ ...f, minApplications: '3', maxApplications: '4' }));
-                            else if (val === '5-6')
-                                setPendingFilter((f) => ({ ...f, minApplications: '5', maxApplications: '6' }));
-                            else if (val === '7+')
-                                setPendingFilter((f) => ({ ...f, minApplications: '7', maxApplications: '' }));
-                        }}
-                    >
-                        <option value="all">All</option>
-                        <option value="1-2">1-2</option>
-                        <option value="3-4">3-4</option>
-                        <option value="5-6">5-6</option>
-                        <option value="7+">7+</option>
-                    </select>
-                </div>
-                <div
-                    style={{ display: 'flex', flexDirection: 'row', gap: 12, alignItems: 'flex-end', marginRight: 24 }}
+                {/* Filter Premium */}
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.isPremium}
+                    onChange={(e) => setPendingFilter((f) => ({ ...f, isPremium: e.target.value }))}
                 >
-                    <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
-                        <IconAdjustments size={20} /> Filter
-                    </button>
-                    <button
-                        className={cx('clearBtn')}
-                        onClick={() => {
-                            setPendingFilter({
-                                location: '',
-                                isPremium: '',
-                                minApplications: '',
-                                maxApplications: '',
-                            });
-                            setFilter({
-                                location: '',
-                                isPremium: '',
-                                minApplications: '',
-                                maxApplications: '',
-                            });
-                        }}
-                    >
-                        <IconAdjustmentsOff size={20} /> Clear
-                    </button>
-                </div>
+                    <option value="">All</option>
+                    <option value="true">Premium</option>
+                    <option value="false">Normal</option>
+                </select>
+                {/* Filter Applications */}
+                <select
+                    className={cx('filterSelect')}
+                    value={
+                        pendingFilter.minApplications === '' && pendingFilter.maxApplications === ''
+                            ? 'all'
+                            : pendingFilter.minApplications === '1' && pendingFilter.maxApplications === '2'
+                            ? '1-2'
+                            : pendingFilter.minApplications === '3' && pendingFilter.maxApplications === '4'
+                            ? '3-4'
+                            : pendingFilter.minApplications === '5' && pendingFilter.maxApplications === '6'
+                            ? '5-6'
+                            : pendingFilter.minApplications === '7' && pendingFilter.maxApplications === ''
+                            ? '7+'
+                            : 'all'
+                    }
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === 'all')
+                            setPendingFilter((f) => ({ ...f, minApplications: '', maxApplications: '' }));
+                        else if (val === '1-2')
+                            setPendingFilter((f) => ({ ...f, minApplications: '1', maxApplications: '2' }));
+                        else if (val === '3-4')
+                            setPendingFilter((f) => ({ ...f, minApplications: '3', maxApplications: '4' }));
+                        else if (val === '5-6')
+                            setPendingFilter((f) => ({ ...f, minApplications: '5', maxApplications: '6' }));
+                        else if (val === '7+')
+                            setPendingFilter((f) => ({ ...f, minApplications: '7', maxApplications: '' }));
+                    }}
+                >
+                    <option value="all">Applicants</option>
+                    <option value="1-2">1-2</option>
+                    <option value="3-4">3-4</option>
+                    <option value="5-6">5-6</option>
+                    <option value="7+">7+</option>
+                </select>
+                {/* Nút Filter và Clear */}
+                <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
+                    Filter
+                </button>
+                <button
+                    className={cx('clearBtn')}
+                    onClick={() => {
+                        setPendingFilter({
+                            location: '',
+                            isPremium: '',
+                            minApplications: '',
+                            maxApplications: '',
+                        });
+                        setFilter({
+                            location: '',
+                            isPremium: '',
+                            minApplications: '',
+                            maxApplications: '',
+                        });
+                    }}
+                >
+                    Clear
+                </button>
             </div>
 
+            {/* Bảng job seekers và các phần còn lại giữ nguyên */}
             <div className={cx('jobs-table-wrapper')}>
                 <table className={cx('jobs-table')}>
                     <thead>
@@ -324,54 +317,7 @@ const JobSeekersManagement = () => {
                         <button className={cx('closeBtn')} onClick={closeModal}>
                             ✕
                         </button>
-                        <JobDetail
-                            job={{
-                                id: selectedSeeker.id,
-                                jobTitle: selectedSeeker.fullName || 'Unknown Job Seeker',
-                                tags: `Job Seeker, ${selectedSeeker.skills?.join(', ') || 'Skills'}`,
-                                jobRole: selectedSeeker.isPremium ? 'Premium' : 'Normal',
-                                badges: { featured: false, fulltime: 'N/A' },
-                                minSalary: '0',
-                                maxSalary: '0',
-                                salaryType: 'N/A',
-                                education: 'N/A',
-                                experience: 'N/A',
-                                jobType: 'N/A',
-                                vacancies: selectedSeeker.applications ?? '0',
-                                expirationDate: 'N/A',
-                                jobLevel: selectedSeeker.isPremium ? 'Premium' : 'Normal',
-                                contactUrl: 'N/A',
-                                phone: selectedSeeker.phone || 'N/A',
-                                email: selectedSeeker.email || 'N/A',
-                                jobDescription: `<p>Details for job seeker ${
-                                    selectedSeeker.fullName || 'ID ' + selectedSeeker.id
-                                }</p><p>Skills: ${selectedSeeker.skills?.join(', ') || 'None'}</p>`,
-                                responsibilities: '<ul><li>Seeking job opportunities</li></ul>',
-                                overview: {
-                                    posted: selectedSeeker.createdAt?.slice(0, 10) || 'N/A',
-                                    expire: 'N/A',
-                                    education: 'N/A',
-                                    salary: 'N/A',
-                                    location: selectedSeeker.location || 'N/A',
-                                    jobType: 'N/A',
-                                    experience: 'N/A',
-                                    vacancies: selectedSeeker.applications ?? '0',
-                                    jobLevel: selectedSeeker.isPremium ? 'Premium' : 'Normal',
-                                },
-                                company: {
-                                    name: selectedSeeker.fullName || 'N/A',
-                                    description: 'N/A',
-                                    founded: 'N/A',
-                                    organization: 'N/A',
-                                    size: 'N/A',
-                                    phone: selectedSeeker.phone || 'N/A',
-                                    email: selectedSeeker.email || 'N/A',
-                                    website: 'N/A',
-                                },
-                            }}
-                            editable={false}
-                            onCancel={closeModal}
-                        />
+                        <SeekerDetail applicant={selectedSeeker} />
                     </div>
                 </div>
             )}
