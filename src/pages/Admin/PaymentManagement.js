@@ -27,7 +27,7 @@ const PaymentManagement = () => {
         <div className={cx('managementWrapper')}>
             {/* Header */}
             <div className={cx('payment-header')}>
-                <h1 className={cx('title')}>Payment Management</h1>
+                <div className={cx('title')}>Payment Management</div>
                 <p className={cx('description')}>Track and manage all payment transactions on your platform.</p>
             </div>
 

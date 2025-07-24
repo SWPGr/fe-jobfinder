@@ -5,7 +5,8 @@ import styles from './JobTableManagement.module.scss';
 import statisticsService from '~/services/statisticsService';
 import { useDebounce } from '~/hooks';
 import { Combobox, useCombobox } from '@mantine/core';
-import JobDetail from '~/pages/JobDetail/JobDetail'; // Reuse JobDetail for view
+import JobDetail from '~/pages/JobDetail/JobDetail';
+import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
@@ -35,16 +36,7 @@ const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
                 <button
                     type="button"
                     className={cx('iconBtn')}
-                    style={{
-                        minWidth: 0,
-                        minHeight: 0,
-                        padding: 0,
-                        background: 'none',
-                        border: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
+                    style={{ background: 'none', border: 'none' }}
                     onClick={() => combobox.toggleDropdown()}
                 >
                     <svg
@@ -79,7 +71,7 @@ const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
 const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '';
     const parts = name.trim().split(' ');
-    if (parts.length === 1) return parts[0][0] ? parts[0][0].toUpperCase() : '';
+    if (parts.length === 1) return parts[0][0]?.toUpperCase() || '';
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
@@ -92,37 +84,75 @@ const JobSeekersManagement = () => {
     const [visibleSeekers, setVisibleSeekers] = useState(10);
     const [selectedSeeker, setSelectedSeeker] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // chờ 500ms để được hiển thị ra
+
+    const [filter, setFilter] = useState({
+        location: '',
+        isPremium: '',
+        minApplications: '',
+        maxApplications: '',
+    });
+    const [pendingFilter, setPendingFilter] = useState({
+        location: '',
+        isPremium: '',
+        minApplications: '',
+        maxApplications: '',
+    });
+
     const dataSearch = useDebounce(search, 500);
 
-    const fetchJobSeekers = useCallback(async (searchQuery) => {
+    function normalizeVN(str) {
+        return (str || '')
+            .normalize('NFD')
+            .replace(/[ -\u036f]/g, '')
+            .replace(/đ/g, 'd')
+            .replace(/Đ/g, 'D')
+            .toLowerCase();
+    }
+
+    const fetchJobSeekers = useCallback(async () => {
         setError('');
         try {
             const data = await statisticsService.fetchAllJobSeekers();
-            // Filter the data based on the search query
-            const filteredData = data.filter(
-                (seeker) =>
-                    seeker.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    seeker.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    seeker.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    seeker.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
-            );
-            setJobSeekers(filteredData);
+            setJobSeekers(data);
         } catch (err) {
             setError(err.message || 'Failed to fetch job seekers');
         }
     }, []);
 
     useEffect(() => {
-        fetchJobSeekers(dataSearch);
-    }, [dataSearch, fetchJobSeekers]);
+        fetchJobSeekers();
+    }, [fetchJobSeekers]);
+
+    const filteredJobSeekers = React.useMemo(() => {
+        return jobSeekers.filter((seeker) => {
+            const keyword = normalizeVN(dataSearch.trim());
+            const matchKeyword =
+                !keyword ||
+                normalizeVN(seeker.fullName).includes(keyword) ||
+                normalizeVN(seeker.email).includes(keyword) ||
+                normalizeVN(seeker.location).includes(keyword) ||
+                normalizeVN(seeker.phone).includes(keyword);
+
+            const matchLocation =
+                filter.location === '' || normalizeVN(seeker.location) === normalizeVN(filter.location);
+
+            const matchPremium = filter.isPremium === '' || String(seeker.isPremium) === filter.isPremium;
+
+            const minApp = Number(filter.minApplications || 0);
+            const maxApp = Number(filter.maxApplications || Infinity);
+            const seekerApps = seeker.applications ?? 0;
+            const matchApplications = seekerApps >= minApp && seekerApps <= maxApp;
+
+            return matchKeyword && matchLocation && matchPremium && matchApplications;
+        });
+    }, [jobSeekers, filter, dataSearch]);
 
     const handleAction = (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
         if (action === 'block') {
             if (window.confirm(`Are you sure you want to block job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
                 setJobSeekers((prevSeekers) =>
-                    prevSeekers.map((seeker) => (seeker.id === seekerId ? { ...seeker, isBlocked: true } : seeker)),
+                    prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: true } : s)),
                 );
             }
         } else if (action === 'view') {
@@ -140,7 +170,7 @@ const JobSeekersManagement = () => {
         setVisibleSeekers((prev) => prev + 10);
     };
 
-    const seekersToDisplay = jobSeekers.slice(0, visibleSeekers);
+    const seekersToDisplay = filteredJobSeekers.slice(0, visibleSeekers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -149,6 +179,7 @@ const JobSeekersManagement = () => {
             <div className={cx('jobs-header')}>
                 <div className={cx('title')}>Job Seekers Management</div>
             </div>
+
             <div className={cx('jobs-toolbar')}>
                 <div className={cx('search-box')}>
                     <Search className={cx('search-icon')} />
@@ -160,6 +191,86 @@ const JobSeekersManagement = () => {
                     />
                 </div>
             </div>
+
+            <div className={cx('horizontalFilterBar')}>
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Premium</div>
+                    <select
+                        className={cx('filterSelect')}
+                        value={pendingFilter.isPremium}
+                        onChange={(e) => setPendingFilter((f) => ({ ...f, isPremium: e.target.value }))}
+                    >
+                        <option value="">All</option>
+                        <option value="true">Premium</option>
+                        <option value="false">Normal</option>
+                    </select>
+                </div>
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Applications</div>
+                    <select
+                        className={cx('filterSelect')}
+                        value={
+                            pendingFilter.minApplications === '' && pendingFilter.maxApplications === ''
+                                ? 'all'
+                                : pendingFilter.minApplications === '1' && pendingFilter.maxApplications === '2'
+                                ? '1-2'
+                                : pendingFilter.minApplications === '3' && pendingFilter.maxApplications === '4'
+                                ? '3-4'
+                                : pendingFilter.minApplications === '5' && pendingFilter.maxApplications === '6'
+                                ? '5-6'
+                                : pendingFilter.minApplications === '7' && pendingFilter.maxApplications === ''
+                                ? '7+'
+                                : 'all'
+                        }
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === 'all')
+                                setPendingFilter((f) => ({ ...f, minApplications: '', maxApplications: '' }));
+                            else if (val === '1-2')
+                                setPendingFilter((f) => ({ ...f, minApplications: '1', maxApplications: '2' }));
+                            else if (val === '3-4')
+                                setPendingFilter((f) => ({ ...f, minApplications: '3', maxApplications: '4' }));
+                            else if (val === '5-6')
+                                setPendingFilter((f) => ({ ...f, minApplications: '5', maxApplications: '6' }));
+                            else if (val === '7+')
+                                setPendingFilter((f) => ({ ...f, minApplications: '7', maxApplications: '' }));
+                        }}
+                    >
+                        <option value="all">All</option>
+                        <option value="1-2">1-2</option>
+                        <option value="3-4">3-4</option>
+                        <option value="5-6">5-6</option>
+                        <option value="7+">7+</option>
+                    </select>
+                </div>
+                <div
+                    style={{ display: 'flex', flexDirection: 'row', gap: 12, alignItems: 'flex-end', marginRight: 24 }}
+                >
+                    <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
+                        <IconAdjustments size={20} /> Filter
+                    </button>
+                    <button
+                        className={cx('clearBtn')}
+                        onClick={() => {
+                            setPendingFilter({
+                                location: '',
+                                isPremium: '',
+                                minApplications: '',
+                                maxApplications: '',
+                            });
+                            setFilter({
+                                location: '',
+                                isPremium: '',
+                                minApplications: '',
+                                maxApplications: '',
+                            });
+                        }}
+                    >
+                        <IconAdjustmentsOff size={20} /> Clear
+                    </button>
+                </div>
+            </div>
+
             <div className={cx('jobs-table-wrapper')}>
                 <table className={cx('jobs-table')}>
                     <thead>
@@ -186,7 +297,7 @@ const JobSeekersManagement = () => {
                                 <td>{seeker.applications ?? 0}</td>
                                 <td>
                                     <span className={premiumClass(seeker.isPremium)}>
-                                        {seeker.isPremium === true ? 'Premium' : 'Normal'}
+                                        {seeker.isPremium ? 'Premium' : 'Normal'}
                                     </span>
                                 </td>
                                 <td>{seeker.createdAt?.slice(0, 10) || '--'}</td>
@@ -200,16 +311,17 @@ const JobSeekersManagement = () => {
                         ))}
                     </tbody>
                 </table>
-                {jobSeekers.length > visibleSeekers && (
+                {filteredJobSeekers.length > visibleSeekers && (
                     <div className={cx('load-more')}>
                         <button onClick={loadMoreSeekers}>Load More</button>
                     </div>
                 )}
             </div>
+
             {isModalOpen && selectedSeeker && (
                 <div className={cx('modalOverlay')}>
                     <div className={cx('modalBox')}>
-                        <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">
+                        <button className={cx('closeBtn')} onClick={closeModal}>
                             ✕
                         </button>
                         <JobDetail

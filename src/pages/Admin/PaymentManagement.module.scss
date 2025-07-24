@@ -3,9 +3,7 @@
 }
 
 .title {
-    font-size: var(
-        --font-size-logo
-    ); /* Giảm từ var(--font-size-18px) (~1.8rem) xuống var(--font-size-16px) (~1.6rem) */
+    font-size: var(--font-size-header);
     font-weight: bold;
     color: var(--text-color);
 }
@@ -510,9 +508,7 @@
 }
 
 .plan-title {
-    font-size: var(
-        --font-size-14px
-    ); /* Giảm từ var(--font-size-16px) (~1.6rem) xuống var(--font-size-14px) (~1.4rem) */
+    font-size: var(--font-size-header);
     font-weight: medium;
     color: var(--text-color);
 }
