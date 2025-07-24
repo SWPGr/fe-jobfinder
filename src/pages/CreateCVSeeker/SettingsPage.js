@@ -6,6 +6,7 @@ import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import EmployerService from '~/services/EmployerService';
+import Single from '../Single/Single';
 
 const cx = classNames.bind(styles);
 
@@ -18,6 +19,7 @@ const socialOptions = [
   { label: 'Youtube', value: 'youtube', icon: '▶️' },
 ];
 
+
 const SaveNextButton = ({ onClick, style }) => (
   <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
     Save & Next →
@@ -26,6 +28,8 @@ const SaveNextButton = ({ onClick, style }) => (
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Company Info');
+  const [showSingle, setShowSingle] = useState(false);
+const [singleData, setSingleData] = useState(null);
 
   const [form, setForm] = useState({
     organizationType: '',
@@ -52,6 +56,7 @@ function SettingsPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
+  
 
   // Load data profile từ API
   const loadData = async () => {

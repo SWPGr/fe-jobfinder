@@ -48,11 +48,11 @@ export default function ResumeProfile({ userId }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-  if (!userId) {
-    setResumeText("");
-    setError("User ID không hợp lệ");
-    return;
-  }
+    if (!userId) {
+      setResumeText("");
+      setError("User ID không hợp lệ");
+      return;
+    }
 
     setError(null);
     setResumeText("");
@@ -60,15 +60,13 @@ export default function ResumeProfile({ userId }) {
     async function loadResume() {
       setLoading(true);
       try {
-        // Lấy object application theo jobId
-        const application = await EmployerService.fetchApplicationData(userId,'user');
-        if (!application) throw new Error("Không có dữ liệu ứng viên");
-
-        // Lấy trường resumeSummary (có thể là chuỗi hoặc undefined)
-        const resumeSummary = application.resumeSummary || "Không có resume summary";
+        console.log("ResumeProfile: fetching resume for userId:", userId);
+        const resumeSummary = await EmployerService.fetchResume(userId);
+        if (!resumeSummary) throw new Error("Không có dữ liệu resume");
 
         setResumeText(resumeSummary);
       } catch (err) {
+        console.error("ResumeProfile loadResume error:", err);
         setError(err.message || "Lỗi tải resume");
       } finally {
         setLoading(false);

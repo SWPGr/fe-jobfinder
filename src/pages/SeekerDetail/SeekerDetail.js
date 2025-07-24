@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import classNames from "classnames/bind";
 import styles from "./SeekerDetail.module.scss";
-import EmployerService from "~/services/EmployerService";
 import ResumeProfile from "../CreateCVSeeker/ResumeProfile";
 import {
   FaFacebookF,
@@ -15,6 +14,7 @@ import {
 const cx = classNames.bind(styles);
 
 // Hàm format resumeSummary theo định dạng markdown đơn giản
+// (vẫn giữ lại nếu bạn cần dùng ở chỗ khác, nhưng trong modal ResumeProfile sẽ xử lý)
 function formatResumeSummary(text) {
   if (!text) return null;
 
@@ -98,11 +98,7 @@ function formatResumeSummary(text) {
 }
 
 const SeekerDetail = ({ applicant }) => {
-  console.log("SeekerDetail received applicant:", applicant);
   const [showSummary, setShowSummary] = useState(false);
-  const [resumeSummary, setResumeSummary] = useState("");
-  const [loadingSummary, setLoadingSummary] = useState(false);
-  
 
   if (!applicant) {
     alert("Không có dữ liệu ứng viên.");
@@ -115,42 +111,20 @@ const SeekerDetail = ({ applicant }) => {
     experienceName,
     educationName,
     email,
-    phone =seekerDetail.phone,
+    phone = seekerDetail.phone,
     id: applicationId,
     title,
   } = applicant;
 
-  const validApplicationId = applicationId || applicant.applicationId || applicant._id || applicant.id || applicant.userId;
+  const userId = seekerDetail.userId || applicant.userId;
 
-  if (!validApplicationId) {
-    alert("No valid application ID found.");
+  if (!userId) {
+    alert("User ID không hợp lệ.");
     return null;
   }
 
-  const handleShowResumeSummary = async () => {
-    console.log("Fetching resume summary for applicationId:", validApplicationId);
-    if (!validApplicationId) {
-      alert("Application ID not found.");
-      return;
-    }
-
-    setLoadingSummary(true);
-    try {
-      const data = await EmployerService.fetchApplicationData(validApplicationId, "application");
-      console.log("Resume summary API response:", data);
-      if (data && data.resumeSummary) {
-        setResumeSummary(data.resumeSummary);
-        setShowSummary(true);
-      } else {
-        setResumeSummary("Không có resume summary cho ứng viên này.");
-      setShowSummary(true);
-      }
-    } catch (error) {
-      setResumeSummary("Lỗi tải resume summary: " + (error.message || "Unknown error"));
-    setShowSummary(true)
-    } finally {
-      setLoadingSummary(false);
-    }
+  const handleShowResumeSummary = () => {
+    setShowSummary(true);
   };
 
   return (
@@ -165,9 +139,7 @@ const SeekerDetail = ({ applicant }) => {
             </div>
             <div className={cx("basic-info")}>
               <h2 className={cx("name")}>{seekerDetail.fullName || "N/A"}</h2>
-              <p className={cx("jobTitle")}>
-                {title || "Website Designer (UI/UX)"}
-              </p>
+              <p className={cx("jobTitle")}>{title || "Website Designer (UI/UX)"}</p>
             </div>
           </div>
 
@@ -214,24 +186,18 @@ const SeekerDetail = ({ applicant }) => {
             <div className={cx("infoRow")}>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>DATE OF BIRTH</p>
-                <p className={cx("infoValue")}>
-                  {seekerDetail.dateOfBirth || "N/A"}
-                </p>
+                <p className={cx("infoValue")}>{seekerDetail.dateOfBirth || "N/A"}</p>
               </div>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>NATIONALITY</p>
-                <p className={cx("infoValue")}>
-                  {seekerDetail.nationality || "N/A"}
-                </p>
+                <p className={cx("infoValue")}>{seekerDetail.nationality || "N/A"}</p>
               </div>
             </div>
 
             <div className={cx("infoRow")}>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>MARITAL STATUS</p>
-                <p className={cx("infoValue")}>
-                  {seekerDetail.maritalStatus || "N/A"}
-                </p>
+                <p className={cx("infoValue")}>{seekerDetail.maritalStatus || "N/A"}</p>
               </div>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>GENDER</p>
@@ -278,9 +244,8 @@ const SeekerDetail = ({ applicant }) => {
               className={cx("downloadBtn")}
               aria-label="View Resume Summary"
               onClick={handleShowResumeSummary}
-              disabled={loadingSummary}
             >
-              {loadingSummary ? "Loading..." : "📄Resume Summary"}
+              📄Resume Summary
             </button>
           </div>
 
@@ -294,9 +259,7 @@ const SeekerDetail = ({ applicant }) => {
                 >
                   ×
                 </button>
-                <div style={{ whiteSpace: "normal", textAlign: "left" }}>
-                  {formatResumeSummary(resumeSummary)}
-                </div>
+                <ResumeProfile userId={userId} />
               </div>
             </div>
           )}

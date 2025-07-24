@@ -174,8 +174,9 @@ const JobApplications = ({ jobId }) => {
         if (mounted) {
           const mappedApps = apps.map((app) => {
             console.log("Raw app data:", app);
-            const userId = app.seekerDetail?.userId || app.userId || null;
+            const userId = app.userId || app.seekerDetail?.userId || null;
             const appId = app.id || app.applicationId || app._id || app.seekerDetail?.applicationId || app.seekerDetail?.id || app.seekerDetail?._id || app.seekerDetail?.userId || app.userId ||null;
+            console.log("Mapping: appId =", appId, "userId =", userId);
 
             return {
               id: appId,
@@ -253,6 +254,9 @@ const JobApplications = ({ jobId }) => {
 
   const handleSelect = (app) => {
     console.log("Selected applicant ID:", app.applicationId);
+    console.log("Selected applicant object:", app);
+  console.log("Selected applicantId:", app.applicationId);
+  console.log("Selected applicant userId:", app.seekerDetail?.userId);
     if (!app.applicationId) {
       alert("No application ID found.");
       return;
@@ -411,8 +415,7 @@ console.log("ResumeProfile userId:", selectedApplicantDetail?.seekerDetail?.user
               >
                 AI
               </button>
-
-              <ResumeProfile userId={selectedApplicantDetail?.seekerDetail?.userId || null} />
+console.log("ResumeProfile userId (prop):", selectedApplicantDetail?.seekerDetail?.userId);              <ResumeProfile userId={selectedApplicantDetail?.seekerDetail?.userId || null} />
             </div>
           </div>
         )}

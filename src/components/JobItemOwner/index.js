@@ -119,7 +119,7 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
   }
 };
 
-function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = true, onDeleteSuccess }) {
+function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
   const [jobData, setJobData] = useState(() => {
     if (jobDescription && !jobDescription.id && jobDescription.jobId) {
       return { ...jobDescription, id: jobDescription.jobId };
