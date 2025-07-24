@@ -41,7 +41,7 @@
 
 .profile-pic {
     width: 200px;
-    height: 220px;
+    height: 200px;
     border-radius: 16px;
     border: 3px solid var(--primary-color);
     background-color: var(--blue-50);
@@ -70,6 +70,7 @@
     height: 100%;
     object-fit: cover;
     border-radius: 0;
+    margin-top: 10px;
 }
 
 .profile-pic .upload-icon {
@@ -186,8 +187,8 @@
     }
 
     .profile-pic {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
         border-radius: 10px;
     }
 
@@ -470,6 +471,7 @@
     font-weight: 800; /* Kept as is */
     border-radius: var(--border-radius); /* Updated from 12px */
     min-width: 200px; /* Kept as is */
+    margin-left: 400px;
 }
 
 .delete-btn:hover {
