@@ -5,7 +5,6 @@ import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
-import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
@@ -68,30 +67,43 @@ const JobRowDropdown = ({ onAction, jobId }) => {
 
 const Jobs = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchLocation, setSearchLocation] = useState('');
+    const [searchType, setSearchType] = useState('');
+    const [searchSalaryRange, setSearchSalaryRange] = useState('');
+    const [searchApplicationRange, setSearchApplicationRange] = useState('');
+    const [pendingFilter, setPendingFilter] = useState({
+        searchTerm: '',
+        searchLocation: '',
+        searchType: '',
+        searchSalaryRange: '',
+        searchApplicationRange: '',
+    });
     const [visibleJobs, setVisibleJobs] = useState(10);
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    // Filter state
-    const [filter, setFilter] = useState({
-        salaryMin: '',
-        salaryMax: '',
-        jobType: '',
-        jobLevel: '',
-        location: '',
-    });
-    const [pendingFilter, setPendingFilter] = useState({
-        salaryMin: '',
-        salaryMax: '',
-        jobType: '',
-        jobLevel: '',
-        location: '',
-    });
-    const [jobTypeOptions, setJobTypeOptions] = useState([]);
-    const [jobLevelOptions, setJobLevelOptions] = useState([]);
     const [locationOptions, setLocationOptions] = useState([]);
-    // const [experienceOptions, setExperienceOptions] = useState([]); // Remove
+    const [jobTypeOptions, setJobTypeOptions] = useState([]);
+
+    // Salary range options
+    const salaryRanges = [
+        { value: '', label: 'All' },
+        { value: '0-80000', label: 'Under $80k' },
+        { value: '80000-120000', label: '$80k - $120k' },
+        { value: '120000-160000', label: '$120k - $160k' },
+        { value: '160000-200000', label: '$160k - $200k' },
+        { value: '200000-', label: '$200k+' },
+    ];
+    // Application range options
+    const applicationRanges = [
+        { value: '', label: 'Applicants' },
+        { value: '0-1', label: '0-1' },
+        { value: '1-2', label: '1-2' },
+        { value: '2-4', label: '2-4' },
+        { value: '4-6', label: '4-6' },
+        { value: '6-', label: '6+' },
+    ];
 
     // Fetch filter options
     useEffect(() => {
@@ -99,20 +111,13 @@ const Jobs = () => {
             try {
                 const data = await statisticsService.fetchAllJobs();
                 const jobsArr = data?.content || [];
-                // Lấy unique các trường
-                const jobTypes = Array.from(new Set(jobsArr.map((j) => j.jobType?.name).filter(Boolean)));
-                const jobLevels = Array.from(new Set(jobsArr.map((j) => j.jobLevel?.name).filter(Boolean)));
                 const locations = Array.from(new Set(jobsArr.map((j) => j.location).filter(Boolean)));
-                // const experiences = Array.from(new Set(jobsArr.map(j => j.experience).filter(Boolean)));
-                setJobTypeOptions(jobTypes);
-                setJobLevelOptions(jobLevels);
                 setLocationOptions(locations);
-                // setExperienceOptions(experiences);
+                const jobTypes = Array.from(new Set(jobsArr.map((j) => j.jobType?.name).filter(Boolean)));
+                setJobTypeOptions(jobTypes);
             } catch (err) {
-                setJobTypeOptions([]);
-                setJobLevelOptions([]);
                 setLocationOptions([]);
-                // setExperienceOptions([]);
+                setJobTypeOptions([]);
             }
         };
         fetchOptions();
@@ -124,7 +129,6 @@ const Jobs = () => {
             setSelectedJob(job);
             setIsModalOpen(true);
         } else if (action === 'block') {
-            console.log(`Blocking job ${jobId}`);
             setJobs((prevJobs) => prevJobs.map((job) => (job.id === jobId ? { ...job, isBlocked: true } : job)));
         }
     };
@@ -162,21 +166,32 @@ const Jobs = () => {
     // Filtered jobs
     const filteredJobs = React.useMemo(() => {
         let result = jobs;
-        if (filter.jobType) {
-            result = result.filter((j) => j.jobType?.name === filter.jobType);
+        if (searchLocation) {
+            result = result.filter((j) => j.location === searchLocation);
         }
-        if (filter.jobLevel) {
-            result = result.filter((j) => j.jobLevel?.name === filter.jobLevel);
+        if (searchType) {
+            result = result.filter((j) => j.jobType?.name === searchType);
         }
-        if (filter.location) {
-            result = result.filter((j) => j.location === filter.location);
+        if (searchSalaryRange) {
+            const [min, max] = searchSalaryRange.split('-');
+            result = result.filter((j) => {
+                const minSalary = Number(j.salaryMin);
+                const maxSalary = Number(j.salaryMax);
+                if (min && max) return minSalary >= Number(min) && maxSalary <= Number(max);
+                if (min && !max) return minSalary >= Number(min);
+                if (!min && max) return maxSalary <= Number(max);
+                return true;
+            });
         }
-        // Remove experience filter
-        if (filter.salaryMin) {
-            result = result.filter((j) => Number(j.salaryMin) >= Number(filter.salaryMin));
-        }
-        if (filter.salaryMax) {
-            result = result.filter((j) => Number(j.salaryMax) <= Number(filter.salaryMax));
+        if (searchApplicationRange) {
+            const [min, max] = searchApplicationRange.split('-');
+            result = result.filter((j) => {
+                const count = Number(j.jobApplicationCounts || 0);
+                if (min && max) return count >= Number(min) && count <= Number(max);
+                if (min && !max) return count >= Number(min);
+                if (!min && max) return count <= Number(max);
+                return true;
+            });
         }
         if (searchTerm) {
             const s = searchTerm.toLowerCase();
@@ -188,102 +203,120 @@ const Jobs = () => {
             );
         }
         return result;
-    }, [jobs, filter, searchTerm]);
+    }, [jobs, searchLocation, searchType, searchSalaryRange, searchApplicationRange, searchTerm]);
 
     const jobsToDisplay = filteredJobs.slice(0, visibleJobs);
 
     if (loading) {
-        return <div>Loading...</div>; // Show loading state while fetching
+        return <div>Loading...</div>;
     }
+
+    // Handler khi nhấn Find Job
+    const handleFindJob = () => {
+        setSearchTerm(pendingFilter.searchTerm);
+        setSearchLocation(pendingFilter.searchLocation);
+        setSearchType(pendingFilter.searchType);
+        setSearchSalaryRange(pendingFilter.searchSalaryRange);
+        setSearchApplicationRange(pendingFilter.searchApplicationRange);
+    };
+
+    // Handler khi thay đổi input/select
+    const handlePendingChange = (field, value) => {
+        setPendingFilter((prev) => ({ ...prev, [field]: value }));
+    };
 
     return (
         <div className={cx('managementWrapper')}>
             <div className={cx('jobs-header')}>
                 <h1 className={cx('title')}>Jobs Management</h1>
             </div>
-            <div className={cx('toolbar')}>
-                <div className={cx('search-box')}>
+            {/* Thanh tìm kiếm ngang với các filter mới */}
+            <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
+                <div className={cx('search-box')} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Search className={cx('search-icon')} />
                     <input
                         type="text"
-                        placeholder="Search jobs..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder="Enter job title or keyword"
+                        value={pendingFilter.searchTerm}
+                        onChange={(e) => handlePendingChange('searchTerm', e.target.value)}
+                        style={{ flex: 1, minWidth: 200 }}
                     />
                 </div>
-            </div>
-            {/* Filter Bar giống FindJob */}
-            <div className={cx('horizontalFilterBar')}>
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Job Type</div>
-                    <select
-                        className={cx('filterSelect')}
-                        value={pendingFilter.jobType}
-                        onChange={(e) => setPendingFilter((f) => ({ ...f, jobType: e.target.value }))}
-                    >
-                        <option value="">All</option>
-                        {jobTypeOptions.map((type) => (
-                            <option key={type.id || type} value={type.id || type}>
-                                {type.name || type}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Location</div>
-                    <select
-                        className={cx('filterSelect')}
-                        value={pendingFilter.location}
-                        onChange={(e) => setPendingFilter((f) => ({ ...f, location: e.target.value }))}
-                    >
-                        <option value="">All</option>
-                        {locationOptions.map((loc) => (
-                            <option key={loc.id || loc} value={loc.id || loc}>
-                                {loc.name || loc}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                {/* Salary filter group moved to the bottom */}
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Salary</div>
-                    <div className={cx('filterOptions')} style={{ display: 'flex', gap: '8px' }}>
-                        <input
-                            type="number"
-                            placeholder="Min"
-                            value={pendingFilter.salaryMin}
-                            onChange={(e) => setPendingFilter((f) => ({ ...f, salaryMin: e.target.value }))}
-                            className={cx('filterInput')}
-                            min={0}
-                        />
-                        <input
-                            type="number"
-                            placeholder="Max"
-                            value={pendingFilter.salaryMax}
-                            onChange={(e) => setPendingFilter((f) => ({ ...f, salaryMax: e.target.value }))}
-                            className={cx('filterInput')}
-                            min={0}
-                        />
-                    </div>
-                </div>
-                <div
-                    style={{ display: 'flex', flexDirection: 'row', gap: 12, alignItems: 'flex-end', marginRight: 24 }}
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.searchLocation}
+                    onChange={(e) => handlePendingChange('searchLocation', e.target.value)}
+                    style={{ minWidth: 150 }}
                 >
-                    <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
-                        <IconAdjustments size={20} /> Filter
-                    </button>
-                    <button
-                        className={cx('clearBtn')}
-                        onClick={() => {
-                            setPendingFilter({ salaryMin: '', salaryMax: '', jobType: '', jobLevel: '', location: '' });
-                            setFilter({ salaryMin: '', salaryMax: '', jobType: '', jobLevel: '', location: '' });
-                        }}
-                    >
-                        <IconAdjustmentsOff size={20} /> Clear
-                    </button>
-                </div>
+                    <option value="">Select location</option>
+                    {locationOptions.map((loc) => (
+                        <option key={loc} value={loc}>
+                            {loc}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.searchType}
+                    onChange={(e) => handlePendingChange('searchType', e.target.value)}
+                    style={{ minWidth: 130 }}
+                >
+                    <option value="">All Types</option>
+                    {jobTypeOptions.map((type) => (
+                        <option key={type} value={type}>
+                            {type}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.searchSalaryRange}
+                    onChange={(e) => handlePendingChange('searchSalaryRange', e.target.value)}
+                    style={{ minWidth: 130 }}
+                >
+                    {salaryRanges.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.searchApplicationRange}
+                    onChange={(e) => handlePendingChange('searchApplicationRange', e.target.value)}
+                    style={{ minWidth: 110 }}
+                >
+                    {applicationRanges.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </option>
+                    ))}
+                </select>
+                <button className={cx('primary', 'filterBtn')} style={{ minWidth: 120 }} onClick={handleFindJob}>
+                    Find Job
+                </button>
+                <button
+                    className={cx('clearBtn')}
+                    style={{ minWidth: 100 }}
+                    onClick={() => {
+                        setPendingFilter({
+                            searchTerm: '',
+                            searchLocation: '',
+                            searchType: '',
+                            searchSalaryRange: '',
+                            searchApplicationRange: '',
+                        });
+                        setSearchTerm('');
+                        setSearchLocation('');
+                        setSearchType('');
+                        setSearchSalaryRange('');
+                        setSearchApplicationRange('');
+                    }}
+                >
+                    Clear
+                </button>
             </div>
+            {/* Bảng jobs và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('jobs-table')}>
                     <thead>

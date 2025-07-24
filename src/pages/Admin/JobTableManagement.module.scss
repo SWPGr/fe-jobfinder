@@ -1,7 +1,6 @@
 /* Wrapper */
 .managementWrapper,
 .jobs-wrapper {
-    // background: var(--background-color); // đồng bộ với DashboardOverview
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -16,6 +15,7 @@
         padding: 2rem;
     }
 }
+
 @media (max-width: 768px) {
     .managementWrapper,
     .jobs-wrapper {
@@ -23,40 +23,24 @@
         gap: 1rem;
     }
 }
-@media (max-width: 600px) {
-    .managementWrapper,
-    .jobs-wrapper {
-        padding: 0.5rem;
-    }
-}
 
 /* Header */
-.jobs-header {
-    margin-bottom: -10px;
-}
+
 .jobs-header .title {
     font-size: var(--font-size-header);
     font-weight: 600;
     color: var(--text-color);
 }
+
 @media (max-width: 1024px) {
     .jobs-header .title {
-        font-size: 3rem;
+        font-size: var(--font-size-header);
     }
 }
+
 @media (max-width: 768px) {
     .jobs-header .title {
-        font-size: 2.5rem;
-    }
-}
-@media (max-width: 600px) {
-    .jobs-header .title {
-        font-size: 2rem;
-    }
-}
-@media (max-width: 400px) {
-    .jobs-header .title {
-        font-size: 1.3rem;
+        font-size: var(--font-size-20px);
     }
 }
 
@@ -66,7 +50,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 18px;
+    gap: 1.8rem;
 }
 
 /* Search box */
@@ -75,16 +59,16 @@
     align-items: center;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
-    padding: 6px 12px;
-    background: var(--gray-50);
-    width: 320px;
+    padding: 0.6rem 1.2rem;
+    background: var(--white);
+    width: 32rem;
     position: relative;
 }
 .search-box .search-icon {
-    margin-right: 8px;
+    margin-right: 0.8rem;
     color: var(--gray-500);
     position: absolute;
-    left: 14px;
+    left: 1.4rem;
     top: 50%;
     transform: translateY(-50%);
     font-size: var(--font-size-14px);
@@ -93,37 +77,37 @@
     border: none;
     outline: none;
     width: 100%;
-    padding: 0 0 0 32px;
+    padding: 0 0 0 3.2rem;
     background: transparent;
     font-size: var(--font-size-14px);
     color: var(--text-color);
 }
-@media (max-width: 600px) {
+
+@media (max-width: 768px) {
     .search-box {
         width: 100%;
-        min-width: 0;
-        padding: 4px 8px;
+        padding: 0.4rem 0.8rem;
     }
     .search-box input {
-        font-size: 13px;
-        padding-left: 28px;
+        font-size: var(--font-size-12px);
+        padding-left: 2.8rem;
     }
     .search-box .search-icon {
-        left: 8px;
-        font-size: 16px;
+        left: 0.8rem;
+        font-size: var(--font-size-12px);
     }
 }
 
 /* Toolbar actions */
 .toolbar-actions {
     display: flex;
-    gap: 12px;
+    gap: 1.2rem;
 }
 .toolbar-actions .primary {
     background-color: var(--primary-color);
     color: var(--white);
     border: none;
-    padding: 9px 20px;
+    padding: 0.9rem 2rem;
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: var(--font-size-12px);
@@ -138,23 +122,24 @@
 .tableWrapper,
 .jobs-table-wrapper {
     background: var(--white);
-    border-radius: 1.2rem;
+    border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     overflow-x: auto;
-    height: auto;
-    max-height: 500px;
+    max-height: 50rem;
     overflow-y: auto;
 }
+
+@media (max-width: 1024px) {
+    .tableWrapper,
+    .jobs-table-wrapper {
+        max-height: 35rem;
+    }
+}
+
 @media (max-width: 768px) {
     .tableWrapper,
     .jobs-table-wrapper {
-        max-height: 350px;
-    }
-}
-@media (max-width: 600px) {
-    .tableWrapper,
-    .jobs-table-wrapper {
-        max-height: 220px;
+        max-height: 22rem;
     }
 }
 
@@ -169,10 +154,10 @@
 .dataTable td,
 .jobs-table th,
 .jobs-table td {
-    padding: 14px 18px;
+    padding: 1.4rem 1.8rem;
     text-align: left;
     border-bottom: 1px solid var(--gray-100);
-    font-size: var(--font-size-11px);
+    font-size: var(--font-size-12px);
 }
 .jobs-table th,
 .dataTable th {
@@ -204,48 +189,41 @@
 .dataTable tbody tr:hover {
     background: var(--gray-50);
 }
-@media (max-width: 600px) {
+
+@media (max-width: 768px) {
     .jobs-table th,
     .jobs-table td,
     .dataTable th,
     .dataTable td {
-        padding: 8px 6px;
-        font-size: 12px;
-    }
-}
-@media (max-width: 400px) {
-    .jobs-table th,
-    .jobs-table td,
-    .dataTable th,
-    .dataTable td {
-        padding: 6px 4px;
-        font-size: 11px;
+        padding: 0.8rem 0.6rem;
+        font-size: var(--font-size-12px);
     }
 }
 
 /* Avatar */
 .avatarCircle,
 .company-avatar {
-    width: 32px;
-    height: 32px;
+    width: 3.2rem;
+    height: 3.2rem;
     background-color: var(--primary-color);
     color: var(--white);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 10px;
+    margin-right: 1rem;
     font-weight: 700;
     font-size: var(--font-size-12px);
     letter-spacing: 0.01em;
 }
-@media (max-width: 600px) {
+
+@media (max-width: 768px) {
     .company-avatar,
     .avatarCircle {
-        width: 24px;
-        height: 24px;
-        font-size: 13px;
-        margin-right: 6px;
+        width: 2.4rem;
+        height: 2.4rem;
+        font-size: var(--font-size-12px);
+        margin-right: 0.6rem;
     }
 }
 
@@ -264,21 +242,19 @@
 .statusText {
     background-color: var(--blue-100);
     color: var(--blue-600);
-    padding: 4px 14px;
+    padding: 0.4rem 1.4rem;
     border-radius: 999px;
     font-size: var(--font-size-10px);
     font-weight: 500;
     display: inline-block;
 }
-.statusText {
-    background: var(--blue-100);
-    color: var(--blue-600);
-}
-.statusText.active {
-    background-color: var(--green-100);
+.statusText.active,
+.statusText.premium {
+    background: var(--green-100);
     color: var(--green-600);
 }
-.statusText.inactive {
+.statusText.inactive,
+.statusText.normal {
     background: var(--red-100);
     color: var(--red-600);
 }
@@ -292,7 +268,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 4px;
+    padding: 0.4rem;
     border-radius: var(--border-radius);
     transition: var(--transition);
 }
@@ -307,16 +283,14 @@
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     z-index: 1000;
-    min-width: 120px;
-    padding: 8px 0;
-    max-height: none;
-    overflow: visible;
+    min-width: 12rem;
+    padding: 0.8rem 0;
 }
 .dropdownItem {
     background: none;
     border: none;
     width: 100%;
-    padding: 8px 16px;
+    padding: 0.8rem 1.6rem;
     text-align: left;
     cursor: pointer;
     font-size: var(--font-size-12px);
@@ -390,32 +364,31 @@
     cursor: pointer;
     color: var(--gray-600);
     transition: var(--transition);
-    z-index: 1001;
-    &:hover {
-        color: var(--red-600);
-    }
+}
+.closeBtn:hover {
+    color: var(--red-600);
 }
 .load-more {
     text-align: center;
     margin-top: 1rem;
-    button {
-        padding: 0.5rem 1rem;
-        background: var(--primary-color);
-        color: var(--white);
-        border: none;
-        border-radius: var(--border-radius);
-        cursor: pointer;
-        &:hover {
-            background: var(--primary-color-dark);
-        }
-    }
 }
-@media (max-width: 600px) {
+.load-more button {
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: var(--font-size-12px);
+}
+.load-more button:hover {
+    background: var(--primary-color-dark);
+}
+
+@media (max-width: 768px) {
     .modalBox {
         width: 98vw;
-        min-width: 0;
-        padding: 0;
-        border-radius: 10px;
+        border-radius: var(--border-radius);
     }
     .modalOverlay {
         align-items: flex-start;
@@ -424,78 +397,53 @@
     .closeBtn {
         top: 0.5rem;
         right: 0.5rem;
-        font-size: 22px;
+        font-size: var(--font-size-16px);
     }
     .load-more button {
         padding: 0.4rem 0.8rem;
-        font-size: 13px;
+        font-size: var(--font-size-12px);
     }
 }
-//ẩn cột
+
 /* Responsive: Hide columns for JobSeekers table */
-@media (max-width: 900px) {
-    /* JobSeekers: Hide Location, Applications, Joined */
+@media (max-width: 1024px) {
     .jobs-table th:nth-child(3),
     .jobs-table td:nth-child(3), /* Location */
     .jobs-table th:nth-child(4),
     .jobs-table td:nth-child(4), /* Applications */
     .jobs-table th:nth-child(6),
-    .jobs-table td:nth-child(6) {
-        /* Joined */
+    .jobs-table td:nth-child(6) /* Joined */ {
         display: none;
     }
 }
+
 /* Responsive: Hide columns for Employers table */
-@media (max-width: 900px) {
-    /* Employers: Hide Location, Phone, Joined */
+@media (max-width: 1024px) {
     .dataTable th:nth-child(3),
     .dataTable td:nth-child(3), /* Location */
     .dataTable th:nth-child(4),
     .dataTable td:nth-child(4), /* Phone */
     .dataTable th:nth-child(5),
-    .dataTable td:nth-child(5) {
-        /* Joined */
-        display: none !important;
-    }
-}
-@media (max-width: 900px) {
-    .dataTable th:nth-child(4),
-    .dataTable td:nth-child(4),
-    .dataTable th:nth-child(5),
-    .dataTable td:nth-child(5),
-    .dataTable th:nth-child(6),
-    .dataTable td:nth-child(6) {
-        display: none !important;
-    }
-}
-
-/* Responsive Table for Job Seekers - Cập nhật 2024 */
-@media (max-width: 1024px) {
-    .tableWrapper,
-    .jobs-table-wrapper {
-        max-height: 350px;
-        padding: 0.5rem;
-    }
-    .jobs-table th,
-    .jobs-table td {
-        font-size: 13px;
-        padding: 8px 6px;
-    }
-}
-
-@media (max-width: 900px) {
-    /* Ẩn các cột phụ: Location, Applications, Joined */
-    .jobs-table th:nth-child(3),
-  .jobs-table td:nth-child(3), /* Location */
-  .jobs-table th:nth-child(4),
-  .jobs-table td:nth-child(4), /* Applications */
-  .jobs-table th:nth-child(6),
-  .jobs-table td:nth-child(6)  /* Joined */ {
+    .dataTable td:nth-child(5) /* Joined */ {
         display: none;
     }
 }
 
-@media (max-width: 600px) {
+/* Responsive Table for Job Seekers */
+@media (max-width: 1024px) {
+    .tableWrapper,
+    .jobs-table-wrapper {
+        max-height: 35rem;
+        padding: 0.5rem;
+    }
+    .jobs-table th,
+    .jobs-table td {
+        font-size: var(--font-size-12px);
+        padding: 0.8rem 0.6rem;
+    }
+}
+
+@media (max-width: 768px) {
     .managementWrapper,
     .jobs-wrapper {
         padding: 0.5rem;
@@ -503,84 +451,88 @@
     }
     .tableWrapper,
     .jobs-table-wrapper {
-        max-height: 180px;
-        border-radius: 0.7rem;
+        max-height: 18rem;
+        border-radius: var(--border-radius);
         padding: 0.2rem;
     }
     .jobs-table th,
     .jobs-table td {
-        font-size: 11px;
-        padding: 5px 2px;
+        font-size: var(--font-size-12px);
+        padding: 0.5rem 0.2rem;
     }
     .avatarCircle {
-        width: 22px;
-        height: 22px;
-        font-size: 11px;
-        margin-right: 4px;
+        width: 2.2rem;
+        height: 2.2rem;
+        font-size: var(--font-size-12px);
+        margin-right: 0.4rem;
     }
     .jobs-header .title {
-        font-size: 1.2rem;
+        font-size: var(--font-size-18px);
     }
 }
 
-/* Cho phép cuộn ngang bảng trên mobile */
+/* Ensure horizontal scrolling on mobile */
 .tableWrapper,
 .jobs-table-wrapper {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
-/* Đảm bảo bảng không bị vỡ layout */
+/* Prevent table layout breaking */
 .jobs-table {
-    min-width: 600px;
+    min-width: 60rem;
 }
 
-/* Style badge Premium/Normal đồng bộ DashboardOverview */
+/* Status badge */
 .statusText {
     border-radius: 999px;
-    padding: 2px 12px;
-    font-size: 12px;
+    padding: 0.2rem 1.2rem;
+    font-size: var(--font-size-12px);
     font-weight: 500;
-    &.active,
-    &.premium {
-        background: #d1fae5;
-        color: #059669;
-    }
-    &.normal {
-        background: #fee2e2;
-        color: #dc2626;
-    }
+}
+.statusText.active,
+.statusText.premium {
+    background: var(--green-100);
+    color: var(--green-600);
+}
+.statusText.normal,
+.statusText.inactive {
+    background: var(--red-100);
+    color: var(--red-600);
 }
 
-/* Gợi ý: Thêm chú thích vuốt ngang trên mobile */
+/* Mobile table note */
 .table-note-mobile {
     display: none;
-    font-size: 12px;
+    font-size: var(--font-size-12px);
     color: var(--gray-500);
     text-align: right;
-    margin-top: 4px;
-    @media (max-width: 600px) {
+    margin-top: 0.4rem;
+}
+@media (max-width: 768px) {
+    .table-note-mobile {
         display: block;
     }
 }
 
+/* Filter Bar Horizontal */
 .filterBarHorizontal {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    gap: 32px;
+    gap: 3.2rem;
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto 24px auto;
+    max-width: var(--default-layout-width);
+    margin: 0 auto 2.4rem auto;
     background: none;
     border: none;
     padding: 0;
 }
 
 .filterBarHorizontal .filter__container {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 32px;
+    display: flex;
+    flex-direction: row;
+    gap: 3.2rem;
     width: 100%;
     background: none;
     border: none;
@@ -589,29 +541,30 @@
 }
 
 .filterBarHorizontal .filter__item {
-    min-width: 160px;
+    min-width: 16rem;
     margin-bottom: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .filterBarHorizontal,
     .filterBarHorizontal .filter__container {
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 1.6rem;
     }
     .filterBarHorizontal .filter__item {
-        min-width: 120px;
+        min-width: 12rem;
     }
 }
 
+/* Simple Filter Bar */
 .simpleFilterBar {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    gap: 24px;
+    gap: 2.4rem;
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto 24px 240px; /* 240px là width sidebar, chỉnh nếu sidebar khác */
+    max-width: var(--default-layout-width);
+    margin: 0 auto 2.4rem 24rem; /* Adjusted for sidebar */
     background: none;
     border: none;
     padding: 0;
@@ -622,92 +575,93 @@
     display: flex;
     flex-direction: column;
     font-weight: 500;
-    font-size: 15px;
-    gap: 4px;
+    font-size: var(--font-size-14px);
+    gap: 0.4rem;
 }
 
 .simpleFilterBar select {
-    min-width: 120px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    font-size: 15px;
+    min-width: 12rem;
+    padding: 0.6rem 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    font-size: var(--font-size-14px);
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
     .simpleFilterBar {
         margin-left: 0;
-        max-width: 100vw;
-        gap: 12px;
+        max-width: 100%;
+        gap: 1.2rem;
     }
     .simpleFilterBar select {
-        min-width: 90px;
-        font-size: 13px;
+        min-width: 9rem;
+        font-size: var(--font-size-12px);
     }
 }
 
+/* Horizontal Filter Bar */
 .horizontalFilterBar {
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    gap: 32px;
+    gap: 3.2rem;
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto 24px auto;
-    background: #f8fafc;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 18px 24px 10px 24px;
+    max-width: var(--default-layout-width);
+    margin: 0 auto 2.4rem auto;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--border-radius);
+    padding: 1.8rem 2.4rem 1rem 2.4rem;
     flex-wrap: wrap;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.03);
+    box-shadow: var(--box-shadow);
 }
 
 .filterGroup {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0.8rem;
 }
 
 .filterLabel {
     font-weight: 600;
-    font-size: 16px;
-    margin-bottom: 2px;
-    color: #1e293b;
+    font-size: var(--font-size-16px);
+    margin-bottom: 0.2rem;
+    color: var(--text-color);
 }
 
 .filterOptions {
     display: flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 1.6rem;
 }
 
 .filterOptions label {
     font-weight: 400;
-    font-size: 15px;
+    font-size: var(--font-size-14px);
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 6px;
-    transition: background 0.15s;
+    gap: 0.4rem;
+    padding: 0.2rem 0.8rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
     cursor: pointer;
 }
 
 .filterOptions label:hover {
-    background: #e0e7ef;
+    background: var(--gray-100);
 }
 
 .filterOptions input[type='radio'] {
-    accent-color: #2563eb;
-    margin-right: 4px;
+    accent-color: var(--primary-color);
+    margin-right: 0.4rem;
 }
 
 .horizontalFilterBar .primary {
-    margin-left: 16px;
-    min-width: 90px;
-    height: 40px;
-    font-size: 15px;
-    border-radius: 8px;
+    margin-left: 1.6rem;
+    min-width: 9rem;
+    height: 4rem;
+    font-size: var(--font-size-14px);
+    border-radius: var(--border-radius);
 }
 
 .horizontalFilterBar select {
@@ -715,11 +669,10 @@
     padding: 0.6rem 1.2rem;
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
-    font-size: var(--font-size-18px);
+    font-size: var(--font-size-14px);
     background: var(--white);
     color: var(--text-color);
-    margin-top: 0.4rem;
-    margin-bottom: 0.4rem;
+    margin: 0.4rem 0;
     transition: border 0.2s;
     font-weight: 500;
 }
@@ -728,18 +681,19 @@
     outline: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
     .horizontalFilterBar {
         flex-wrap: wrap;
-        gap: 16px;
-        padding: 12px 8px 6px 8px;
+        gap: 1.6rem;
+        padding: 1.2rem 0.8rem 0.6rem 0.8rem;
     }
     .filterOptions {
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 0.8rem;
     }
 }
 
+/* Filter Buttons */
 .filterBtn {
     background: var(--primary-color);
     color: var(--white);
@@ -749,48 +703,58 @@
     border-radius: var(--border-radius);
     padding: 0 2.2rem;
     height: 4rem;
-    width: 15rem;
+    width: 10rem;
     transition: var(--transition);
     box-shadow: var(--box-shadow);
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    &:hover {
-        background: var(--primary-color-dark);
-    }
-    svg {
-        color: var(--white);
-    }
 }
 .filterBtn:hover {
-    background: #1746b3;
+    background: var(--primary-color-dark);
+}
+.filterBtn svg {
+    color: var(--white);
 }
 
 .clearBtn {
-    background: #fff;
-    color: #dc2626;
-    border: 1.5px solid #dc2626;
+    background: var(--white);
+    color: var(--red-600);
+    border: 1.5px solid var(--red-600);
     font-weight: 600;
-    font-size: 15px;
-    border-radius: 8px;
-    padding: 0 22px;
-    height: 40px;
-    margin-left: 2px;
-    transition: background 0.18s, color 0.18s;
-    box-shadow: 0 1px 4px 0 rgba(220, 38, 38, 0.07);
+    font-size: var(--font-size-14px);
+    border-radius: var(--border-radius);
+    padding: 0 2.2rem;
+    height: 4rem;
+    margin-left: 0.2rem;
+    transition: var(--transition);
+    box-shadow: var(--box-shadow);
     display: flex;
     align-items: center;
 }
 .clearBtn:hover {
-    background: #fee2e2;
-    color: #b91c1c;
-    border-color: #b91c1c;
-}
-
-.filterBtn svg {
-    color: #fff;
+    background: var(--red-100);
+    color: var(--red-700);
+    border-color: var(--red-700);
 }
 .clearBtn svg {
-    color: #dc2626;
+    color: var(--red-600);
+}
+
+.filterSelect {
+    min-width: 13rem;
+    padding: 0.8rem 1.4rem;
+    border-radius: var(--border-radius);
+    border: 1.5px solid var(--gray-300);
+    background: var(--white);
+    font-size: var(--font-size-14px);
+    color: var(--text-color);
+    transition: border 0.2s;
+    box-shadow: none;
+}
+.filterSelect:focus,
+.filterSelect:hover {
+    border: 1.5px solid var(--primary-color);
+    outline: none;
 }

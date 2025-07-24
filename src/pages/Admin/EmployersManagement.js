@@ -103,16 +103,20 @@ const EmployersManagement = () => {
     const [visibleEmployers, setVisibleEmployers] = useState(10);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [filter, setFilter] = useState({ name: '', email: '', location: '', isPremium: '' });
+    const [filter, setFilter] = useState({ location: '', isPremium: '' });
     // State tạm cho filter/search
-    const [pendingFilter, setPendingFilter] = useState({ name: '', email: '', location: '', isPremium: '' });
+    const [pendingFilter, setPendingFilter] = useState({ location: '', isPremium: '' });
     const [pendingSearch, setPendingSearch] = useState('');
+    const [locationOptions, setLocationOptions] = useState([]);
 
     // Fetch employers
     const fetchEmployers = useCallback(async () => {
         try {
             const data = await statisticsService.fetchAllEmployers();
             setEmployers(data || []);
+            // Lấy location unique
+            const locations = Array.from(new Set((data || []).map((e) => e.location).filter(Boolean)));
+            setLocationOptions(locations);
         } catch (err) {
             setError(err.message || 'Failed to fetch employers');
         }
@@ -141,7 +145,6 @@ const EmployersManagement = () => {
     const handleAction = (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
         if (action === 'block') {
-            console.log(`Blocking employer ${employerId}`);
             if (window.confirm(`Are you sure you want to block employer ${employer.fullName || 'ID ' + employerId}?`)) {
                 setEmployers((prevEmployers) =>
                     prevEmployers.map((employer) =>
@@ -150,7 +153,6 @@ const EmployersManagement = () => {
                 );
             }
         } else if (action === 'view') {
-            console.log(`Viewing employer ${employerId}`);
             setSelectedEmployer(employer);
             setIsModalOpen(true);
         }
@@ -169,75 +171,69 @@ const EmployersManagement = () => {
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
+    // Handler khi nhấn Filter
+    const handleFilter = () => {
+        setFilter(pendingFilter);
+        setSearch(pendingSearch);
+    };
+    // Handler khi thay đổi input/select
+    const handlePendingChange = (field, value) => {
+        if (field === 'search') setPendingSearch(value);
+        else setPendingFilter((prev) => ({ ...prev, [field]: value }));
+    };
+
     return (
         <div className={cx('managementWrapper')}>
             <div className={cx('jobs-header')}>
                 <div className={cx('title')}>Employers Management</div>
             </div>
+            {/* Thanh filter ngang hiện đại, giống trang Jobs */}
             <div className={cx('toolbar')}>
                 <div className={cx('search-box')}>
                     <Search className={cx('search-icon')} />
                     <input
                         placeholder="Search employers..."
                         value={pendingSearch}
-                        onChange={(e) => setPendingSearch(e.target.value)}
+                        onChange={(e) => handlePendingChange('search', e.target.value)}
                     />
                 </div>
-            </div>
-            <div className={cx('horizontalFilterBar')}>
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Premium</div>
-                    <select
-                        className={cx('filterSelect')}
-                        value={pendingFilter.isPremium}
-                        onChange={(e) => setPendingFilter((f) => ({ ...f, isPremium: e.target.value }))}
-                    >
-                        <option value="">All</option>
-                        <option value="true">Premium</option>
-                        <option value="false">Normal</option>
-                    </select>
-                </div>
-                <div className={cx('filterGroup')}>
-                    <div className={cx('filterLabel')}>Location</div>
-                    <select
-                        className={cx('filterSelect')}
-                        value={pendingFilter.location}
-                        onChange={(e) => setPendingFilter((f) => ({ ...f, location: e.target.value }))}
-                    >
-                        <option value="">All</option>
-                        <option value="Hà Nội">Hà Nội</option>
-                        <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
-                        <option value="Đà Nẵng">Đà Nẵng</option>
-                        <option value="Khác">Khác</option>
-                    </select>
-                </div>
-                <div
-                    style={{ display: 'flex', flexDirection: 'row', gap: 12, alignItems: 'flex-end', marginRight: 24 }}
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.location}
+                    onChange={(e) => handlePendingChange('location', e.target.value)}
                 >
-                    <button
-                        className={cx('primary', 'filterBtn')}
-                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-                        onClick={() => {
-                            setFilter(pendingFilter);
-                            setSearch(pendingSearch);
-                        }}
-                    >
-                        <IconAdjustments size={20} /> Filter
-                    </button>
-                    <button
-                        className={cx('clearBtn')}
-                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-                        onClick={() => {
-                            setPendingFilter({ name: '', email: '', location: '', isPremium: '' });
-                            setPendingSearch('');
-                            setFilter({ name: '', email: '', location: '', isPremium: '' });
-                            setSearch('');
-                        }}
-                    >
-                        <IconAdjustmentsOff size={20} /> Clear
-                    </button>
-                </div>
+                    <option value="">Select location</option>
+                    {locationOptions.map((loc) => (
+                        <option key={loc} value={loc}>
+                            {loc}
+                        </option>
+                    ))}
+                </select>
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingFilter.isPremium}
+                    onChange={(e) => handlePendingChange('isPremium', e.target.value)}
+                >
+                    <option value="">All</option>
+                    <option value="true">Premium</option>
+                    <option value="false">Normal</option>
+                </select>
+                <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
+                    Filter
+                </button>
+                <button
+                    className={cx('clearBtn')}
+                    onClick={() => {
+                        setPendingFilter({ location: '', isPremium: '' });
+                        setPendingSearch('');
+                        setFilter({ location: '', isPremium: '' });
+                        setSearch('');
+                    }}
+                >
+                    Clear
+                </button>
             </div>
+            {/* Bảng employers và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('dataTable')}>
                     <thead>

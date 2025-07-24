@@ -78,41 +78,33 @@
 
 .toolbar {
     display: flex;
-    justify-content: space-between;
+    gap: 16px;
     align-items: center;
-    margin-bottom: 2rem;
-    gap: 1.8rem;
+    margin-bottom: 24px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    flex-wrap: wrap;
+    box-sizing: border-box;
 }
 
 .search-box {
+    flex: 1;
     display: flex;
     align-items: center;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 0.6rem 1.2rem;
-    background: var(--gray-50);
-    width: 32rem;
+    gap: 8px;
     position: relative;
+}
 
-    .search-icon {
-        margin-right: 0.8rem;
-        color: var(--gray-500);
-        position: absolute;
-        left: 1.4rem;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: var(--font-size-14px);
-    }
-
-    input {
-        border: none;
-        outline: none;
-        width: 100%;
-        padding: 0 0 0 3.2rem;
-        background: transparent;
-        font-size: var(--font-size-14px);
-        color: var(--text-color);
-    }
+.search-box .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bfc9d9;
+    font-size: 18px;
+    pointer-events: none;
+    z-index: 2;
 }
 
 .toolbar-actions {
@@ -423,20 +415,45 @@
 }
 
 .filterSelect {
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
-    min-width: 12rem;
-    font-size: var(--font-size-18px);
-    background: var(--white);
-    color: var(--text-color);
-    margin-top: 0.4rem;
-    margin-bottom: 0.4rem;
+    min-width: 130px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: 1.5px solid #bfc9d9;
+    background: #fff;
+    font-size: 15px;
+    color: #222;
     transition: border 0.2s;
-    font-weight: 500;
+    box-shadow: none;
+}
+.filterSelect:focus,
+.filterSelect:hover {
+    border: 1.5px solid #1976d2;
+    outline: none;
+}
 
-    &:focus {
-        border: 1.5px solid var(--primary-color);
-        outline: none;
+.search-box input {
+    padding: 8px 14px 8px 38px;
+    border-radius: 6px;
+    border: 1.5px solid #bfc9d9;
+    font-size: 15px;
+    color: #222;
+    background: #fff;
+    transition: border 0.2s;
+    box-shadow: none;
+}
+.search-box input:focus,
+.search-box input:hover {
+    border: 1.5px solid #1976d2;
+    outline: none;
+}
+
+@media (max-width: 900px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .search-box {
+        min-width: 100%;
     }
 }
