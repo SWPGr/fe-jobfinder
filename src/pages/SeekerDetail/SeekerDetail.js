@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./SeekerDetail.module.scss";
 import EmployerService from "~/services/EmployerService";
@@ -106,34 +106,35 @@ const SeekerDetail = ({ applicant }) => {
     return null;
   }
 
-  // Lấy ID từ applicant
+  // Lấy ID từ applicant (kiểm tra cả applicationId, id và _id)
   const {
-    jobSeeker = {},
+    SeekerDetail = {},
     coverLetter,
     experienceName,
     educationName,
     email,
     phone,
-    id: applicationId,
+    id: applicationId, // applicationId từ applicant
     title,
   } = applicant;
 
   // Kiểm tra applicationId
-  if (!applicationId) {
-    alert("No application ID found.");
+  const validApplicationId = applicationId || applicant.applicationId || applicant._id || applicant.id || applicant.userId ;
+
+  if (!validApplicationId) {
+    alert("No valid application ID found.");
     return null;
   }
 
   const handleShowResumeSummary = async () => {
-    const appId = applicationId || applicant.applicationId || null;
-    if (!appId){
+    if (!validApplicationId) {
       alert("Application ID not found.");
       return;
     }
 
     setLoadingSummary(true);
     try {
-      const data = await EmployerService.fetchApplicationData(appId); // Dùng applicationId để fetch
+      const data = await EmployerService.fetchApplicationData(validApplicationId, "application"); // Dùng validApplicationId để fetch
       if (data && data.resumeSummary) {
         setResumeSummary(data.resumeSummary);
         setShowSummary(true);
@@ -153,12 +154,12 @@ const SeekerDetail = ({ applicant }) => {
         <div className={cx("left")}>
           <div className={cx("header")}>
             <div className={cx("avatar")}>
-              {jobSeeker.avatarUrl && (
-                <img src={jobSeeker.avatarUrl} alt={jobSeeker.fullName} />
+              {SeekerDetail.avatarUrl && (
+                <img src={SeekerDetail.avatarUrl} alt={SeekerDetail.fullName} />
               )}
             </div>
             <div className={cx("basic-info")}>
-              <h2 className={cx("name")}>{jobSeeker.fullName || "N/A"}</h2>
+              <h2 className={cx("name")}>{SeekerDetail.fullName || "N/A"}</h2>
               <p className={cx("jobTitle")}>
                 {title || "Website Designer (UI/UX)"}
               </p>
@@ -168,7 +169,7 @@ const SeekerDetail = ({ applicant }) => {
           <section className={cx("section")}>
             <h3 className={cx("sectionTitle")}>BIOGRAPHY</h3>
             <p className={cx("sectionText")}>
-              {jobSeeker.biography ||
+              {SeekerDetail.biography ||
                 "I've been passionate about graphic design and digital art from an early age with a keen interest in Website and Mobile Application User Interfaces. I can create high-quality and aesthetically pleasing designs in a quick turnaround time."}
             </p>
           </section>
@@ -209,13 +210,13 @@ const SeekerDetail = ({ applicant }) => {
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>DATE OF BIRTH</p>
                 <p className={cx("infoValue")}>
-                  {jobSeeker.dateOfBirth || "N/A"}
+                  {SeekerDetail.dateOfBirth || "N/A"}
                 </p>
               </div>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>NATIONALITY</p>
                 <p className={cx("infoValue")}>
-                  {jobSeeker.nationality || "N/A"}
+                  {SeekerDetail.nationality || "N/A"}
                 </p>
               </div>
             </div>
@@ -224,12 +225,12 @@ const SeekerDetail = ({ applicant }) => {
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>MARITAL STATUS</p>
                 <p className={cx("infoValue")}>
-                  {jobSeeker.maritalStatus || "N/A"}
+                  {SeekerDetail.maritalStatus || "N/A"}
                 </p>
               </div>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>GENDER</p>
-                <p className={cx("infoValue")}>{jobSeeker.gender || "N/A"}</p>
+                <p className={cx("infoValue")}>{SeekerDetail.gender || "N/A"}</p>
               </div>
             </div>
 
@@ -237,13 +238,13 @@ const SeekerDetail = ({ applicant }) => {
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>EXPERIENCE</p>
                 <p className={cx("infoValue")}>
-                  {experienceName || jobSeeker.experienceName || "N/A"}
+                  {experienceName || SeekerDetail.experienceName || "N/A"}
                 </p>
               </div>
               <div className={cx("infoItem")}>
                 <p className={cx("infoLabel")}>EDUCATION</p>
                 <p className={cx("infoValue")}>
-                  {educationName || jobSeeker.educationName || "N/A"}
+                  {educationName || SeekerDetail.educationName || "N/A"}
                 </p>
               </div>
             </div>
@@ -251,13 +252,13 @@ const SeekerDetail = ({ applicant }) => {
 
           <div className={cx("infoBox", "resumeBox")}>
             <h3 className={cx("resumeTitle")}>Download My Resume</h3>
-            <p className={cx("resumeName")}>{jobSeeker.fullName || "N/A"}</p>
+            <p className={cx("resumeName")}>{SeekerDetail.fullName || "N/A"}</p>
             <button
               className={cx("downloadBtn")}
               aria-label="Download Resume"
               onClick={() => {
-                if (jobSeeker.resumeUrl) {
-                  window.open(jobSeeker.resumeUrl, "_blank");
+                if (SeekerDetail.resumeUrl) {
+                  window.open(SeekerDetail.resumeUrl, "_blank");
                 } else {
                   alert("Resume not available");
                 }

@@ -221,6 +221,22 @@ const fetchResume = async (applicationId) => {
     const response = await get(`/apply/${applicationId}/summarize-resume`);
     return response?.result || null;
 };
+const fetchApplicationData = async (id, type = 'application') => {
+  try {
+    let response;
+    if (type === 'application') {
+      response = await get(`/apply/${id}`);
+    } else if (type === 'candidates') {
+      response = await get(`/apply/candidates/${id}`);
+    } else {
+      throw new Error('Invalid fetch type');
+    }
+    return response?.result || null;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return null;
+  }
+};
 const EmployerService = {
   getJobDetail,
   updateJob,
@@ -230,6 +246,7 @@ const EmployerService = {
   fetchJobTypesFake,
   fetchJobLevelFake,
   fetchJobEmployerFake,
+  fetchApplicationData,
   fetchMyJobFake,
   fetchCandidateDetail,
   fetchEmployerProfile,
