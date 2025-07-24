@@ -1,6 +1,6 @@
 .container {
     max-width: 100rem; /* Tăng chiều rộng box chứa */
-    margin: 2rem auto;
+    margin: 0 auto;
     font-family: var(--font-family);
     color: var(--gray-900);
     margin-left: 2rem;
@@ -16,7 +16,7 @@
     background: var(--white);
     // border-radius: 0.8rem;
     // box-shadow: 0 0 0.8rem rgb(0 0 0 / 0.05);
-    padding: 2rem;
+    padding: 0 2rem;
 }
 
 .title-small {
@@ -125,6 +125,12 @@
     max-width: 80rem; /* Tăng chiều ngang container của Payment */
     margin: 0 auto; /* Đảm bảo căn giữa */
 }
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+}
 
 .latest-invoices {
     margin-top: 4rem;
@@ -136,15 +142,12 @@
     h3 {
         font-weight: 600;
         font-size: 2rem;
-        margin-bottom: 2rem;
         color: var(--gray-900);
     }
 
     .filter-section {
         display: flex;
         gap: 2rem;
-        margin-bottom: 2rem;
-        margin-left: 60rem;
     }
 
     .filter-group {
@@ -252,4 +255,34 @@
     font-style: italic;
     color: var(--gray-500);
     background-color: var(--white);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-root {
+    .control {
+        width: 4rem;
+        height: 4rem;
+        font-size: var(--font-size-18px);
+        margin: 0 0.5rem;
+        border: 1px solid var(--gray-200);
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--blue-500);
+        }
+
+        svg {
+            width: 4rem !important;
+            height: 2rem !important;
+        }
+
+        &[data-active='true'] {
+            border-color: inherit;
+        }
+    }
 }

@@ -1,7 +1,7 @@
 /* Wrapper */
 .managementWrapper,
 .jobs-wrapper {
-    background: var(--background-color); // đồng bộ với DashboardOverview
+    // background: var(--background-color); // đồng bộ với DashboardOverview
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -562,4 +562,224 @@
     @media (max-width: 600px) {
         display: block;
     }
+}
+
+.filterBarHorizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 32px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 24px auto;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.filterBarHorizontal .filter__container {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 32px;
+    width: 100%;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.filterBarHorizontal .filter__item {
+    min-width: 160px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+    .filterBarHorizontal,
+    .filterBarHorizontal .filter__container {
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .filterBarHorizontal .filter__item {
+        min-width: 120px;
+    }
+}
+
+.simpleFilterBar {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 24px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 24px 240px; /* 240px là width sidebar, chỉnh nếu sidebar khác */
+    background: none;
+    border: none;
+    padding: 0;
+    flex-wrap: wrap;
+}
+
+.simpleFilterBar label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    font-size: 15px;
+    gap: 4px;
+}
+
+.simpleFilterBar select {
+    min-width: 120px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+}
+
+@media (max-width: 1100px) {
+    .simpleFilterBar {
+        margin-left: 0;
+        max-width: 100vw;
+        gap: 12px;
+    }
+    .simpleFilterBar select {
+        min-width: 90px;
+        font-size: 13px;
+    }
+}
+
+.horizontalFilterBar {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 32px;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto 24px auto;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 18px 24px 10px 24px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.03);
+}
+
+.filterGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filterLabel {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 2px;
+    color: #1e293b;
+}
+
+.filterOptions {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.filterOptions label {
+    font-weight: 400;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+
+.filterOptions label:hover {
+    background: #e0e7ef;
+}
+
+.filterOptions input[type='radio'] {
+    accent-color: #2563eb;
+    margin-right: 4px;
+}
+
+.horizontalFilterBar .primary {
+    margin-left: 16px;
+    min-width: 90px;
+    height: 40px;
+    font-size: 15px;
+    border-radius: 8px;
+}
+
+.horizontalFilterBar select {
+    min-width: 12rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    font-size: var(--font-size-18px);
+    background: var(--white);
+    color: var(--text-color);
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    transition: border 0.2s;
+    font-weight: 500;
+}
+.horizontalFilterBar select:focus {
+    border: 1.5px solid var(--primary-color);
+    outline: none;
+}
+
+@media (max-width: 900px) {
+    .horizontalFilterBar {
+        flex-wrap: wrap;
+        gap: 16px;
+        padding: 12px 8px 6px 8px;
+    }
+    .filterOptions {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}
+
+.filterBtn {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 0 22px;
+    height: 40px;
+    transition: background 0.18s;
+    box-shadow: 0 1px 4px 0 rgba(37, 99, 235, 0.07);
+}
+.filterBtn:hover {
+    background: #1746b3;
+}
+
+.clearBtn {
+    background: #fff;
+    color: #dc2626;
+    border: 1.5px solid #dc2626;
+    font-weight: 600;
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 0 22px;
+    height: 40px;
+    margin-left: 2px;
+    transition: background 0.18s, color 0.18s;
+    box-shadow: 0 1px 4px 0 rgba(220, 38, 38, 0.07);
+    display: flex;
+    align-items: center;
+}
+.clearBtn:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+    border-color: #b91c1c;
+}
+
+.filterBtn svg {
+    color: #fff;
+}
+.clearBtn svg {
+    color: #dc2626;
 }

@@ -10,7 +10,7 @@ const itemsNav = {
         ADMIN: [
             { name: 'Home', link: '/' },
             { name: 'Dashboard', link: '/dashboard/overview' },
-            { name: 'Manage Users', link: '/dashboard/jobseekers' },
+            { name: 'Manage Users', link: '/dashboard/job-seekers' },
             { name: 'Manage Jobs', link: '/dashboard/jobs' },
             { name: 'Reports', link: '/reports' },
             { name: 'Settings', link: '/dashboard/settings' },

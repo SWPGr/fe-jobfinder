@@ -5,6 +5,7 @@ import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
+import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
@@ -71,7 +72,51 @@ const Jobs = () => {
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [loading, setLoading] = useState(true); // Add loading state
+    const [loading, setLoading] = useState(true);
+    // Filter state
+    const [filter, setFilter] = useState({
+        salaryMin: '',
+        salaryMax: '',
+        jobType: '',
+        jobLevel: '',
+        location: '',
+    });
+    const [pendingFilter, setPendingFilter] = useState({
+        salaryMin: '',
+        salaryMax: '',
+        jobType: '',
+        jobLevel: '',
+        location: '',
+    });
+    const [jobTypeOptions, setJobTypeOptions] = useState([]);
+    const [jobLevelOptions, setJobLevelOptions] = useState([]);
+    const [locationOptions, setLocationOptions] = useState([]);
+    // const [experienceOptions, setExperienceOptions] = useState([]); // Remove
+
+    // Fetch filter options
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const data = await statisticsService.fetchAllJobs();
+                const jobsArr = data?.content || [];
+                // Lấy unique các trường
+                const jobTypes = Array.from(new Set(jobsArr.map((j) => j.jobType?.name).filter(Boolean)));
+                const jobLevels = Array.from(new Set(jobsArr.map((j) => j.jobLevel?.name).filter(Boolean)));
+                const locations = Array.from(new Set(jobsArr.map((j) => j.location).filter(Boolean)));
+                // const experiences = Array.from(new Set(jobsArr.map(j => j.experience).filter(Boolean)));
+                setJobTypeOptions(jobTypes);
+                setJobLevelOptions(jobLevels);
+                setLocationOptions(locations);
+                // setExperienceOptions(experiences);
+            } catch (err) {
+                setJobTypeOptions([]);
+                setJobLevelOptions([]);
+                setLocationOptions([]);
+                // setExperienceOptions([]);
+            }
+        };
+        fetchOptions();
+    }, []);
 
     const handleAction = (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
@@ -100,40 +145,52 @@ const Jobs = () => {
 
     useEffect(() => {
         const fetchJobs = async () => {
-            setLoading(true); // Start loading
+            setLoading(true);
             try {
                 const data = await statisticsService.fetchAllJobs();
-                console.log('Jobs from API:', data); // Debug API response
-                // Extract the content array from the response
                 const jobArray = data?.content || [];
                 setJobs(jobArray);
-                console.log('Jobs state after set:', jobArray); // Debug state update
             } catch (err) {
-                console.error('Error fetching jobs:', err);
-                setJobs([]); // Default to empty array on error
+                setJobs([]);
             } finally {
-                setLoading(false); // Stop loading
+                setLoading(false);
             }
         };
         fetchJobs();
     }, []);
 
+    // Filtered jobs
     const filteredJobs = React.useMemo(() => {
-        if (!Array.isArray(jobs)) {
-            console.warn('Jobs is not an array:', jobs); // Warn if jobs is invalid
-            return [];
+        let result = jobs;
+        if (filter.jobType) {
+            result = result.filter((j) => j.jobType?.name === filter.jobType);
         }
-        if (!searchTerm) return jobs;
-        const s = searchTerm.toLowerCase();
-        return jobs.filter(
-            (job) =>
-                job.title?.toLowerCase().includes(s) ||
-                job.employer?.email?.toLowerCase().includes(s) ||
-                job.location?.toLowerCase().includes(s),
-        );
-    }, [searchTerm, jobs]);
+        if (filter.jobLevel) {
+            result = result.filter((j) => j.jobLevel?.name === filter.jobLevel);
+        }
+        if (filter.location) {
+            result = result.filter((j) => j.location === filter.location);
+        }
+        // Remove experience filter
+        if (filter.salaryMin) {
+            result = result.filter((j) => Number(j.salaryMin) >= Number(filter.salaryMin));
+        }
+        if (filter.salaryMax) {
+            result = result.filter((j) => Number(j.salaryMax) <= Number(filter.salaryMax));
+        }
+        if (searchTerm) {
+            const s = searchTerm.toLowerCase();
+            result = result.filter(
+                (job) =>
+                    job.title?.toLowerCase().includes(s) ||
+                    job.employer?.email?.toLowerCase().includes(s) ||
+                    job.location?.toLowerCase().includes(s),
+            );
+        }
+        return result;
+    }, [jobs, filter, searchTerm]);
 
-    const jobsToDisplay = filteredJobs.slice(0, visibleJobs); // Safe to use slice now
+    const jobsToDisplay = filteredJobs.slice(0, visibleJobs);
 
     if (loading) {
         return <div>Loading...</div>; // Show loading state while fetching
@@ -154,8 +211,77 @@ const Jobs = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className={cx('toolbar-actions')}>
-                    <button className={cx('primary')}>Add New Job</button>
+            </div>
+            {/* Filter Bar giống FindJob */}
+            <div className={cx('horizontalFilterBar')}>
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Job Type</div>
+                    <select
+                        className={cx('filterSelect')}
+                        value={pendingFilter.jobType}
+                        onChange={(e) => setPendingFilter((f) => ({ ...f, jobType: e.target.value }))}
+                    >
+                        <option value="">All</option>
+                        {jobTypeOptions.map((type) => (
+                            <option key={type.id || type} value={type.id || type}>
+                                {type.name || type}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Location</div>
+                    <select
+                        className={cx('filterSelect')}
+                        value={pendingFilter.location}
+                        onChange={(e) => setPendingFilter((f) => ({ ...f, location: e.target.value }))}
+                    >
+                        <option value="">All</option>
+                        {locationOptions.map((loc) => (
+                            <option key={loc.id || loc} value={loc.id || loc}>
+                                {loc.name || loc}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                {/* Salary filter group moved to the bottom */}
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Salary</div>
+                    <div className={cx('filterOptions')} style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                            type="number"
+                            placeholder="Min"
+                            value={pendingFilter.salaryMin}
+                            onChange={(e) => setPendingFilter((f) => ({ ...f, salaryMin: e.target.value }))}
+                            className={cx('filterInput')}
+                            min={0}
+                        />
+                        <input
+                            type="number"
+                            placeholder="Max"
+                            value={pendingFilter.salaryMax}
+                            onChange={(e) => setPendingFilter((f) => ({ ...f, salaryMax: e.target.value }))}
+                            className={cx('filterInput')}
+                            min={0}
+                        />
+                    </div>
+                </div>
+                <div
+                    style={{ display: 'flex', flexDirection: 'row', gap: 12, alignItems: 'flex-end', marginRight: 24 }}
+                >
+                    <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
+                        <IconAdjustments size={20} /> Filter
+                    </button>
+                    <button
+                        className={cx('clearBtn')}
+                        onClick={() => {
+                            setPendingFilter({ salaryMin: '', salaryMax: '', jobType: '', jobLevel: '', location: '' });
+                            setFilter({ salaryMin: '', salaryMax: '', jobType: '', jobLevel: '', location: '' });
+                        }}
+                    >
+                        <IconAdjustmentsOff size={20} /> Clear
+                    </button>
                 </div>
             </div>
             <div className={cx('tableWrapper')}>
@@ -167,7 +293,6 @@ const Jobs = () => {
                             <th>Type</th>
                             <th>Salary Range</th>
                             <th>Applicants</th>
-                            <th>Premium</th>
                             <th>Posted</th>
                             <th></th>
                         </tr>
@@ -195,16 +320,6 @@ const Jobs = () => {
                                         ${job.salaryMin} - ${job.salaryMax}
                                     </td>
                                     <td>{job.jobApplicationCounts || 0}</td>
-                                    <td>
-                                        <span
-                                            className={cx('statusText', {
-                                                active: job.employer.isPremium,
-                                                inactive: !job.employer.isPremium,
-                                            })}
-                                        >
-                                            {job.employer.isPremium ? 'Premium' : 'Normal'}
-                                        </span>
-                                    </td>
                                     <td>{job.createdAt?.split(' ')[0]}</td>
                                     <td>
                                         <JobRowDropdown

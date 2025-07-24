@@ -56,7 +56,6 @@ function Sidebar({ setSelectedMenu, className }) {
                         item?.children ? (
                             <NavLink
                                 key={index}
-                                href="#required-for-focus"
                                 label={item.title}
                                 leftSection={item.icon}
                                 classNames={{
@@ -68,7 +67,7 @@ function Sidebar({ setSelectedMenu, className }) {
                                 childrenOffset={28}
                                 // defaultOpened
                                 onClick={() => {
-                                    setActive(item.link);
+                                    // setActive(item.link);
                                     setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
                                     if (item.link) navigate(item.link);
                                 }}
@@ -83,7 +82,7 @@ function Sidebar({ setSelectedMenu, className }) {
                                             label: cx('title-label'),
                                         }}
                                         onClick={() => {
-                                            setActive(child.link);
+                                            // setActive(child.link);
                                             setSelectedMenu(
                                                 typeof child.page === 'function' ? child.page() : child.page,
                                             );
@@ -97,7 +96,7 @@ function Sidebar({ setSelectedMenu, className }) {
                                 key={index}
                                 className={cx('nav-item', { active: active?.includes(item.link) })}
                                 onClick={() => {
-                                    setActive(item.link);
+                                    // setActive(item.link);
                                     setSelectedMenu(typeof item.page === 'function' ? item.page() : item.page);
                                     if (item.link) navigate(item.link);
                                 }}

@@ -5,7 +5,8 @@ import { Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
-import { useDebounce } from '~/hooks'; // Import useDebounce hook
+
+import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 
 const cx = classNames.bind(styles);
 
@@ -85,6 +86,15 @@ const getInitials = (name) => {
 };
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
+//đưa về dạng không cần dấu
+function normalizeVN(str) {
+    return (str || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase();
+}
 
 const EmployersManagement = () => {
     const [employers, setEmployers] = useState([]);
@@ -93,29 +103,40 @@ const EmployersManagement = () => {
     const [visibleEmployers, setVisibleEmployers] = useState(10);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const dataSearch = useDebounce(search, 500); // Debounce search input with 500ms delay
+    const [filter, setFilter] = useState({ name: '', email: '', location: '', isPremium: '' });
+    // State tạm cho filter/search
+    const [pendingFilter, setPendingFilter] = useState({ name: '', email: '', location: '', isPremium: '' });
+    const [pendingSearch, setPendingSearch] = useState('');
 
     // Fetch employers
-    const fetchEmployers = useCallback(async (searchQuery) => {
+    const fetchEmployers = useCallback(async () => {
         try {
             const data = await statisticsService.fetchAllEmployers();
-            // Filter the data based on the search query
-            const filteredData = data.filter(
-                (employer) =>
-                    employer.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    employer.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    employer.location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    employer.phone?.toLowerCase().includes(searchQuery.toLowerCase()),
-            );
-            setEmployers(filteredData || []);
+            setEmployers(data || []);
         } catch (err) {
             setError(err.message || 'Failed to fetch employers');
         }
     }, []);
 
     useEffect(() => {
-        fetchEmployers(dataSearch);
-    }, [dataSearch, fetchEmployers]);
+        fetchEmployers();
+    }, [fetchEmployers]);
+
+    // Lọc employers theo filter và search keyword
+    const filteredEmployers = useMemo(() => {
+        return employers.filter((e) => {
+            const keyword = normalizeVN(search.trim());
+            const matchKeyword =
+                !keyword ||
+                normalizeVN(e.fullName).includes(keyword) ||
+                normalizeVN(e.email).includes(keyword) ||
+                normalizeVN(e.location).includes(keyword) ||
+                normalizeVN(e.phone).includes(keyword);
+            const matchLocation = filter.location === '' || normalizeVN(e.location) === normalizeVN(filter.location);
+            const matchPremium = filter.isPremium === '' || String(e.isPremium) === filter.isPremium;
+            return matchKeyword && matchLocation && matchPremium;
+        });
+    }, [employers, filter, search]);
 
     const handleAction = (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
@@ -144,7 +165,7 @@ const EmployersManagement = () => {
         setVisibleEmployers((prev) => prev + 10);
     };
 
-    const employersToDisplay = employers.slice(0, visibleEmployers);
+    const employersToDisplay = filteredEmployers.slice(0, visibleEmployers);
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -158,12 +179,63 @@ const EmployersManagement = () => {
                     <Search className={cx('search-icon')} />
                     <input
                         placeholder="Search employers..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        value={pendingSearch}
+                        onChange={(e) => setPendingSearch(e.target.value)}
                     />
                 </div>
-                <div className={cx('toolbar-actions')}>
-                    <button className={cx('primary')}>Add Employer</button>
+            </div>
+            <div className={cx('horizontalFilterBar')}>
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Premium</div>
+                    <select
+                        className={cx('filterSelect')}
+                        value={pendingFilter.isPremium}
+                        onChange={(e) => setPendingFilter((f) => ({ ...f, isPremium: e.target.value }))}
+                    >
+                        <option value="">All</option>
+                        <option value="true">Premium</option>
+                        <option value="false">Normal</option>
+                    </select>
+                </div>
+                <div className={cx('filterGroup')}>
+                    <div className={cx('filterLabel')}>Location</div>
+                    <select
+                        className={cx('filterSelect')}
+                        value={pendingFilter.location}
+                        onChange={(e) => setPendingFilter((f) => ({ ...f, location: e.target.value }))}
+                    >
+                        <option value="">All</option>
+                        <option value="Hà Nội">Hà Nội</option>
+                        <option value="TP Hồ Chí Minh">TP Hồ Chí Minh</option>
+                        <option value="Đà Nẵng">Đà Nẵng</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div
+                    style={{ display: 'flex', flexDirection: 'row', gap: 12, alignItems: 'flex-end', marginRight: 24 }}
+                >
+                    <button
+                        className={cx('primary', 'filterBtn')}
+                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                        onClick={() => {
+                            setFilter(pendingFilter);
+                            setSearch(pendingSearch);
+                        }}
+                    >
+                        <IconAdjustments size={20} /> Filter
+                    </button>
+                    <button
+                        className={cx('clearBtn')}
+                        style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                        onClick={() => {
+                            setPendingFilter({ name: '', email: '', location: '', isPremium: '' });
+                            setPendingSearch('');
+                            setFilter({ name: '', email: '', location: '', isPremium: '' });
+                            setSearch('');
+                        }}
+                    >
+                        <IconAdjustmentsOff size={20} /> Clear
+                    </button>
                 </div>
             </div>
             <div className={cx('tableWrapper')}>
@@ -205,7 +277,7 @@ const EmployersManagement = () => {
                         ))}
                     </tbody>
                 </table>
-                {employers.length > visibleEmployers && (
+                {filteredEmployers.length > visibleEmployers && (
                     <div className={cx('load-more')}>
                         <button onClick={loadMoreEmployers}>Load More</button>
                     </div>
