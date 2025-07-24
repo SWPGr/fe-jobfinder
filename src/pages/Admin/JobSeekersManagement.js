@@ -7,6 +7,7 @@ import { useDebounce } from '~/hooks';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
+import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
 
 const cx = classNames.bind(styles);
 
@@ -324,54 +325,7 @@ const JobSeekersManagement = () => {
                         <button className={cx('closeBtn')} onClick={closeModal}>
                             ✕
                         </button>
-                        <JobDetail
-                            job={{
-                                id: selectedSeeker.id,
-                                jobTitle: selectedSeeker.fullName || 'Unknown Job Seeker',
-                                tags: `Job Seeker, ${selectedSeeker.skills?.join(', ') || 'Skills'}`,
-                                jobRole: selectedSeeker.isPremium ? 'Premium' : 'Normal',
-                                badges: { featured: false, fulltime: 'N/A' },
-                                minSalary: '0',
-                                maxSalary: '0',
-                                salaryType: 'N/A',
-                                education: 'N/A',
-                                experience: 'N/A',
-                                jobType: 'N/A',
-                                vacancies: selectedSeeker.applications ?? '0',
-                                expirationDate: 'N/A',
-                                jobLevel: selectedSeeker.isPremium ? 'Premium' : 'Normal',
-                                contactUrl: 'N/A',
-                                phone: selectedSeeker.phone || 'N/A',
-                                email: selectedSeeker.email || 'N/A',
-                                jobDescription: `<p>Details for job seeker ${
-                                    selectedSeeker.fullName || 'ID ' + selectedSeeker.id
-                                }</p><p>Skills: ${selectedSeeker.skills?.join(', ') || 'None'}</p>`,
-                                responsibilities: '<ul><li>Seeking job opportunities</li></ul>',
-                                overview: {
-                                    posted: selectedSeeker.createdAt?.slice(0, 10) || 'N/A',
-                                    expire: 'N/A',
-                                    education: 'N/A',
-                                    salary: 'N/A',
-                                    location: selectedSeeker.location || 'N/A',
-                                    jobType: 'N/A',
-                                    experience: 'N/A',
-                                    vacancies: selectedSeeker.applications ?? '0',
-                                    jobLevel: selectedSeeker.isPremium ? 'Premium' : 'Normal',
-                                },
-                                company: {
-                                    name: selectedSeeker.fullName || 'N/A',
-                                    description: 'N/A',
-                                    founded: 'N/A',
-                                    organization: 'N/A',
-                                    size: 'N/A',
-                                    phone: selectedSeeker.phone || 'N/A',
-                                    email: selectedSeeker.email || 'N/A',
-                                    website: 'N/A',
-                                },
-                            }}
-                            editable={false}
-                            onCancel={closeModal}
-                        />
+                        <SeekerDetail applicant={selectedSeeker} />
                     </div>
                 </div>
             )}
