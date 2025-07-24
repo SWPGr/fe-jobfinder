@@ -104,6 +104,8 @@ function Personal() {
 
             const response = await JobSeekerProfileService.updateProfileWithFile(formData);
             setMessage('Update successful');
+            setShowSuccessAlert(true);
+            setTimeout(() => setShowSuccessAlert(false), 2000);
             setProfileData(response);
             if (response.avatarUrl) setProfileImageUrl(response.avatarUrl);
             setAvatarFile(null);
@@ -141,25 +143,46 @@ function Personal() {
         <div className={cx('setting-content')}>
             <h2 className={cx('heading2')}>Personal</h2>
 
+            {showSuccessAlert && (
+                <Alert color="green" radius="md" withCloseButton onClose={() => setShowSuccessAlert(false)}>
+                    ✅ Update successful!
+                </Alert>
+            )}
+
             <section className={cx('basic-info')}>
                 <h3 className={cx('heading3')}>Basic Information</h3>
                 <div className={cx('personal-form-layout')}>
                     {/* Image section styled as square */}
                     <div className={cx('profile-pic-col')}>
-                        <div className={cx('profile-pic')} onClick={() => setModalOpened(true)}>
-                            {previewUrl || profileImageUrl ? (
-                                <img
-                                    src={previewUrl || profileImageUrl}
-                                    alt="Profile"
-                                    className={cx('profile-pic-image')}
-                                />
-                            ) : (
-                                <>
-                                    <div className={cx('upload-icon')}>＋</div>
-                                    <p>Profile Picture</p>
-                                    <small>Browse photo or drop here</small>
-                                </>
-                            )}
+                        <div className={cx('profile-pic')}>
+                            <Dropzone
+                                onDrop={handleFileChange}
+                                accept={{
+                                    'image/png': [],
+                                    'image/jpeg': [],
+                                    'image/jpg': [],
+                                    'image/webp': [],
+                                    'image/gif': [],
+                                }}
+                                maxSize={5 * 1024 ** 2}
+                                multiple={false}
+                                mb="md"
+                                className={cx('modal-dropzone')}
+                            >
+                                {previewUrl || profileImageUrl ? (
+                                    <img
+                                        src={previewUrl || profileImageUrl}
+                                        alt="Profile"
+                                        className={cx('profile-pic-image')}
+                                    />
+                                ) : (
+                                    <>
+                                        <div className={cx('upload-icon')}>＋</div>
+                                        <p>Profile Picture</p>
+                                        <small>Browse photo or drop here</small>
+                                    </>
+                                )}
+                            </Dropzone>
                         </div>
                     </div>
                     <div className={cx('fields-container')}>
@@ -216,68 +239,17 @@ function Personal() {
                                     </div>
                                 )}
                             </div>
+                            <Button type="submit" className={cx('save-btn')}>
+                                Save Changes
+                            </Button>
                         </form>
                     </div>
                 </div>
-                <button type="submit" className={cx('save-btn')}>
-                    Save Changes
-                </button>
             </section>
 
             {message && <Text color={message.startsWith('❌') ? 'red' : 'green'}>{message}</Text>}
 
-            <Modal
-                opened={modalOpened}
-                onClose={() => setModalOpened(false)}
-                title="Upload Profile Picture"
-                centered
-                size="xl"
-            >
-                <Dropzone
-                    onDrop={handleFileChange}
-                    accept={{
-                        'image/png': [],
-                        'image/jpeg': [],
-                        'image/jpg': [],
-                        'image/webp': [],
-                        'image/gif': [],
-                    }}
-                    maxSize={5 * 1024 ** 2}
-                    multiple={false}
-                    mb="md"
-                    className={cx('modal-dropzone')}
-                >
-                    <div className={cx('upload-cv')}>
-                        {previewUrl ? (
-                            <img
-                                src={previewUrl}
-                                alt="Preview"
-                                style={{
-                                    width: '100%',
-                                    height: '100%',
-                                    objectFit: 'cover',
-                                    position: 'absolute',
-                                    top: 0,
-                                    left: 0,
-                                }}
-                            />
-                        ) : (
-                            <>
-                                <span className={cx('upload-cv-icon')}>🖼️</span>
-                                <p>Upload your Profile Picture</p>
-                                <small>Accepted formats: JPG, PNG, GIF, WEBP. Max size: 5MB.</small>
-                            </>
-                        )}
-                    </div>
-                </Dropzone>
-
-                <Group position="right">
-                    <Button variant="subtle" onClick={() => setModalOpened(false)}>
-                        Cancel
-                    </Button>
-                    <Button onClick={handleModalSubmit}>Upload</Button>
-                </Group>
-            </Modal>
+            {/* Xóa Modal upload ảnh riêng vì đã tích hợp vào form chính */}
         </div>
     );
 }

@@ -36,14 +36,12 @@
     text-decoration: underline;
 }
 
-
 .job-list {
     display: flex;
     flex-direction: column;
     gap: 2px;
     /* Khoảng cách giữa các item, chỉnh tuỳ ý */
 }
-
 
 .job-item:last-child {
     border-bottom: none;
@@ -147,6 +145,39 @@
 .pagination button:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+.pagination-root {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+}
+.control {
+    font-size: 22px;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0 18px;
+    border-radius: 12px;
+    background: #f3f6fa;
+    color: #2563eb;
+    border: 1.5px solid #e0e0e0;
+    font-weight: 600;
+    transition: background 0.18s, color 0.18s, border 0.18s;
+    cursor: pointer;
+    margin: 0 2px;
+}
+.control[data-active='true'],
+.control.active {
+    background: #2563eb;
+    color: #fff;
+    border: 1.5px solid #2563eb;
+}
+.control:hover {
+    background: #e3eaff;
+    color: #1746b3;
+    border: 1.5px solid #1976d2;
 }
 
 /* RESPONSIVE STYLES */

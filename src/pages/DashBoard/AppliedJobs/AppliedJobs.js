@@ -6,6 +6,7 @@ import { Pagination } from '@mantine/core';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import { useNotification } from '~/hooks';
+import { Search } from 'lucide-react';
 
 const cx = classNames.bind(styles);
 
@@ -35,6 +36,12 @@ function AppliedJobs() {
     const { showError } = useNotification();
     const token = getTokenFromLocalStorage();
 
+    // Filter state
+    const [searchTerm, setSearchTerm] = useState('');
+    const [pendingSearchTerm, setPendingSearchTerm] = useState('');
+    const [dateFilter, setDateFilter] = useState('all');
+    const [pendingDateFilter, setPendingDateFilter] = useState('all');
+
     useEffect(() => {
         const fetchJobs = async () => {
             setLoading(true);
@@ -56,6 +63,49 @@ function AppliedJobs() {
         };
         fetchJobs();
     }, [page, size, token]);
+
+    // Filtered jobs by search and date
+    const filteredJobs = React.useMemo(() => {
+        let result = jobs;
+        if (searchTerm) {
+            const s = searchTerm.toLowerCase();
+            result = result.filter(
+                (job) =>
+                    job.title?.toLowerCase().includes(s) ||
+                    job.employer?.companyName?.toLowerCase().includes(s) ||
+                    job.employer?.email?.toLowerCase().includes(s),
+            );
+        }
+        if (dateFilter !== 'all') {
+            const now = new Date();
+            result = result.filter((job) => {
+                const appliedDate = new Date(job.createdAt);
+                if (dateFilter === 'today') {
+                    return appliedDate.toDateString() === now.toDateString();
+                } else if (dateFilter === '7days') {
+                    const diff = (now - appliedDate) / (1000 * 60 * 60 * 24);
+                    return diff <= 7;
+                } else if (dateFilter === '30days') {
+                    const diff = (now - appliedDate) / (1000 * 60 * 60 * 24);
+                    return diff <= 30;
+                }
+                return true;
+            });
+        }
+        return result;
+    }, [jobs, searchTerm, dateFilter]);
+
+    // Handler filter
+    const handleFilter = () => {
+        setSearchTerm(pendingSearchTerm);
+        setDateFilter(pendingDateFilter);
+    };
+    const handleClear = () => {
+        setPendingSearchTerm('');
+        setPendingDateFilter('all');
+        setSearchTerm('');
+        setDateFilter('all');
+    };
 
     // ✅ ESC key close handler
     useEffect(() => {
@@ -135,6 +185,35 @@ function AppliedJobs() {
     return (
         <div className={cx('applied-jobs-wrapper')}>
             <h3 className={cx('title')}>Applied Jobs</h3>
+            {/* Thanh filter ngang hiện đại */}
+            <div className={cx('toolbar')}>
+                <div className={cx('search-box')}>
+                    <Search className={cx('search-icon')} />
+                    <input
+                        type="text"
+                        placeholder="Search jobs..."
+                        value={pendingSearchTerm}
+                        onChange={(e) => setPendingSearchTerm(e.target.value)}
+                    />
+                </div>
+                <select
+                    className={cx('filterSelect')}
+                    value={pendingDateFilter}
+                    onChange={(e) => setPendingDateFilter(e.target.value)}
+                >
+                    <option value="all">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="7days">Last 7 days</option>
+                    <option value="30days">Last 30 days</option>
+                </select>
+                <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
+                    Filter
+                </button>
+                <button className={cx('clearBtn')} onClick={handleClear}>
+                    Clear
+                </button>
+            </div>
+            {/* Table header và danh sách jobs giữ nguyên, thay jobs -> filteredJobs */}
             <div className={cx('table-header')}>
                 <span>JOBS</span>
                 <span>DATE APPLIED</span>
@@ -144,10 +223,10 @@ function AppliedJobs() {
             <div className={cx('job-list')}>
                 {loading ? (
                     <div>Loading...</div>
-                ) : jobs.length === 0 ? (
+                ) : filteredJobs.length === 0 ? (
                     <div style={{ padding: 32, textAlign: 'center', color: '#888' }}>No jobs found.</div>
                 ) : (
-                    jobs.map((job, index) => (
+                    filteredJobs.map((job, index) => (
                         <div key={job.id || index} className={cx('job-item')}>
                             <JobItemApplied
                                 image={job.employer?.avatarUrl || ''}
