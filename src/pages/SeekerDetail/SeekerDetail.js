@@ -112,16 +112,18 @@ const SeekerDetail = ({ applicant }) => {
     educationName,
     email,
     phone = seekerDetail.phone,
-    id: applicationId,
     title,
   } = applicant;
 
-  const userId = seekerDetail.userId || applicant.userId;
+  // Lấy userId dùng để truyền vào ResumeProfile
+  //const userId = seekerDetail.userId || applicant.userId || null;
+  const applicationId = applicant.applicationId || applicant.id || null;
+  if (!applicationId) {
+  alert("Application ID không hợp lệ");
+  return null;
+}
 
-  if (!userId) {
-    alert("User ID không hợp lệ.");
-    return null;
-  }
+  
 
   const handleShowResumeSummary = () => {
     setShowSummary(true);
@@ -142,14 +144,6 @@ const SeekerDetail = ({ applicant }) => {
               <p className={cx("jobTitle")}>{title || "Website Designer (UI/UX)"}</p>
             </div>
           </div>
-
-          <section className={cx("section")}>
-            <h3 className={cx("sectionTitle")}>BIOGRAPHY</h3>
-            <p className={cx("sectionText")}>
-              {seekerDetail.biography ||
-                "I've been passionate about graphic design and digital art from an early age with a keen interest in Website and Mobile Application User Interfaces. I can create high-quality and aesthetically pleasing designs in a quick turnaround time."}
-            </p>
-          </section>
 
           <section className={cx("section")}>
             <h3 className={cx("sectionTitle")}>COVER LETTER</h3>
@@ -184,24 +178,14 @@ const SeekerDetail = ({ applicant }) => {
         <div className={cx("right")}>
           <div className={cx("infoBox")}>
             <div className={cx("infoRow")}>
-              <div className={cx("infoItem")}>
-                <p className={cx("infoLabel")}>DATE OF BIRTH</p>
-                <p className={cx("infoValue")}>{seekerDetail.dateOfBirth || "N/A"}</p>
-              </div>
-              <div className={cx("infoItem")}>
-                <p className={cx("infoLabel")}>NATIONALITY</p>
-                <p className={cx("infoValue")}>{seekerDetail.nationality || "N/A"}</p>
-              </div>
             </div>
 
             <div className={cx("infoRow")}>
               <div className={cx("infoItem")}>
-                <p className={cx("infoLabel")}>MARITAL STATUS</p>
-                <p className={cx("infoValue")}>{seekerDetail.maritalStatus || "N/A"}</p>
+                
               </div>
               <div className={cx("infoItem")}>
-                <p className={cx("infoLabel")}>GENDER</p>
-                <p className={cx("infoValue")}>{seekerDetail.gender || "N/A"}</p>
+                
               </div>
             </div>
 
@@ -241,12 +225,12 @@ const SeekerDetail = ({ applicant }) => {
 
           <div style={{ marginTop: "15px", textAlign: "center" }}>
             <button
-              className={cx("downloadBtn")}
-              aria-label="View Resume Summary"
-              onClick={handleShowResumeSummary}
-            >
-              📄Resume Summary
-            </button>
+  className={cx("downloadBtn")}
+  aria-label="View Resume Summary"
+  onClick={handleShowResumeSummary}
+>
+  📄Resume Summary
+</button>
           </div>
 
           {showSummary && (
@@ -259,7 +243,7 @@ const SeekerDetail = ({ applicant }) => {
                 >
                   ×
                 </button>
-                <ResumeProfile userId={userId} />
+                <ResumeProfile applicationId={applicationId} />
               </div>
             </div>
           )}

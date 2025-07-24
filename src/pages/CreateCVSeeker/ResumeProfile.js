@@ -42,15 +42,16 @@ function parseResumeText(text) {
   return parts.flat();
 }
 
-export default function ResumeProfile({ userId }) {
+export default function ResumeProfile({ applicationId, userId }) {
   const [resumeText, setResumeText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!userId) {
+    const idToUse = userId || applicationId;
+    if (!idToUse) {
       setResumeText("");
-      setError("User ID không hợp lệ");
+      setError("Application ID không hợp lệ");
       return;
     }
 
@@ -60,8 +61,8 @@ export default function ResumeProfile({ userId }) {
     async function loadResume() {
       setLoading(true);
       try {
-        console.log("ResumeProfile: fetching resume for userId:", userId);
-        const resumeSummary = await EmployerService.fetchResume(userId);
+        //console.log("ResumeProfile: fetching resume for applicationId:", applicationId);
+        const resumeSummary = await EmployerService.fetchResume({ applicationId, userId });
         if (!resumeSummary) throw new Error("Không có dữ liệu resume");
 
         setResumeText(resumeSummary);
@@ -73,7 +74,7 @@ export default function ResumeProfile({ userId }) {
       }
     }
     loadResume();
-  }, [userId]);
+  }, [applicationId, userId]);
 
   if (loading) return <p>Đang tải resume...</p>;
   if (error) return <p style={{ color: "red" }}>Lỗi: {error}</p>;

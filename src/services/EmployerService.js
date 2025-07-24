@@ -217,9 +217,16 @@ const fetchCandidateDetail = async (applicationId) => {
   const response = await get(`/apply/candidates/${applicationId}`);
   return response?.result || null;
 };
-const fetchResume = async (applicationId) => {
-    const response = await get(`/apply/${applicationId}/summarize-resume`);
-    return response?.result || null;
+
+const fetchResume = async ({ applicationId, userId }) => {
+  const id = userId || applicationId;
+  if (!id) throw new Error("ID is required");
+  const response = await get(`/apply/${id}/summarize-resume`);
+  return response?.result || null;
+};
+const fetchStatus = async () => {
+  const response = await get(`/apply/statuses`);
+  return response?.result || null;
 };
 const fetchApplicationData = async (id, type = 'application') => {
   try {
@@ -258,6 +265,7 @@ const EmployerService = {
   fetchExperienceFake,
   fetchPostJobFake,
   fetchSettingFake,
+  fetchStatus,
   fetchEmployerProfileFake,
   fetchJobDetailFake,
   fetchCategoriesFake,
