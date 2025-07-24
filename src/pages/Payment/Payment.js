@@ -1,26 +1,25 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './Payment.module.scss';
-import { FaCheck, FaArrowRight, FaTimes } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 import images from '~/assets/Images/1.png';
 
 import { paymentService } from '~/services';
 import { useLoading } from '~/context/LoadingContext';
+import { Button } from '~/components';
 
 const cx = classNames.bind(styles);
 
-const Payment = ({ items = [], onClose }) => {
+const Payment = ({ items = [] }) => {
     const { showLoading, hideLoading } = useLoading();
 
     function renderSubscriptionPlan(plan, index) {
         const returnUrl = `${window.location.origin}/`;
-        const cancelUrl = `${window.location.origin}/`;
+        const cancelUrl = `${window.location.origin}/dashboard/plans/manage-plans`;
         return (
-            <div key={plan.id || index} className={cx('plan', { recommended: index === 1 })}>
+            <div key={plan.id || index} className={cx('plan', { recommended: plan.highlightJobs })}>
                 <div className={cx('plan__title')}>{plan.subscriptionPlanName.toUpperCase()}</div>
-                <p className={cx('price')}>
-                    ${plan.price} /{plan.durationDays} Days
-                </p>
+                <p className={cx('price')}>${plan.price} / month</p>
                 <ul className={cx('plan__features')}>
                     <li>
                         <FaCheck /> Post {plan.maxJobsPost} Job{plan.maxJobsPost > 1 ? 's' : ''}
@@ -42,17 +41,24 @@ const Payment = ({ items = [], onClose }) => {
                     </li>
                 </ul>
                 {index === 1 && <span>Recommendation</span>}
-                <button
-                    onClick={() =>
-                        handleSubscription({
-                            planId: plan.id,
-                            returnUrl: returnUrl,
-                            cancelUrl: cancelUrl,
-                        })
-                    }
-                >
-                    <FaArrowRight /> Choose Plan
-                </button>
+                {plan.isActive ? (
+                    <Button disabled className={cx('plan__button')}>
+                        Your current plan
+                    </Button>
+                ) : (
+                    <Button
+                        onClick={() =>
+                            handleSubscription({
+                                planId: plan.id,
+                                returnUrl: returnUrl,
+                                cancelUrl: cancelUrl,
+                            })
+                        }
+                        className={cx('plan__button')}
+                    >
+                        Choose plan
+                    </Button>
+                )}
             </div>
         );
     }

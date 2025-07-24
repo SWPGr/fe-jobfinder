@@ -53,6 +53,7 @@
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-weight: 700;
+    text-align: center;
 }
 
 .plan ul {
@@ -75,7 +76,7 @@
     flex-shrink: 0;
 }
 
-.plan button {
+.plan__button {
     width: 100%;
     display: flex;
     align-items: center;
@@ -93,7 +94,7 @@
     font-family: var(--font-family);
 }
 
-.plan button:hover {
+.plan__button:hover {
     background-color: var(--primary-color-dark);
 }
 

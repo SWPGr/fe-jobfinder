@@ -11,7 +11,7 @@ import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
-function SearchRecommend({ type, form, searchLabel }) {
+function SearchRecommend({ type, form, searchLabel, handleSearch = () => {} }) {
     const { user } = useAuth();
     const [showRecommendPopup, setShowRecommendPopup] = useState(false);
     const handleShowPopup = () => setShowRecommendPopup(true);
@@ -32,6 +32,14 @@ function SearchRecommend({ type, form, searchLabel }) {
         }
     }, [debounceValue]);
 
+    const handleOnKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // tránh reload nếu có form bao ngoài
+            handleSearch();
+            handleHidePopup();
+        }
+    };
+
     return (
         <>
             {user?.role ? (
@@ -47,6 +55,8 @@ function SearchRecommend({ type, form, searchLabel }) {
                         {...form.getInputProps('keyword')}
                         leftSection={<IconSearch />}
                         onFocus={handleShowPopup}
+                        onKeyDown={(e) => handleOnKeyDown(e)}
+                        onInput={handleShowPopup}
                         classNames={{
                             input: cx('search-input'),
                             root: cx('search-input-root'),
