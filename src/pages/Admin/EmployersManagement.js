@@ -190,6 +190,7 @@ const EmployersManagement = () => {
             </div>
             {/* Thanh filter ngang hiện đại, giống trang Jobs */}
             <UserSearchFilters />
+
             {/* Bảng employers và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('dataTable')}>
@@ -214,7 +215,7 @@ const EmployersManagement = () => {
                                 <td>{employer.email}</td>
                                 <td>{employer.location || '--'}</td>
                                 <td>{employer.phone || '--'}</td>
-                                <td>{employer.createdAt?.slice(0, 10) || '--'}</td>
+                                <td>{employer.createdAt ? employer.createdAt.slice(5, 10) : '--'}</td>
                                 <td>
                                     <span className={premiumClass(employer.isPremium)}>
                                         {employer.isPremium === true ? 'Premium' : 'Normal'}

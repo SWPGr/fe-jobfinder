@@ -26,8 +26,8 @@ function getTokenFromLocalStorage() {
 
 function AppliedJobs() {
     const [jobs, setJobs] = useState([]);
-    const [page, setPage] = useState(1);
-    const [size, setSize] = useState(20);
+    const [page, setPage] = useState(1); // UI page (bắt đầu từ 1)
+    const [size, setSize] = useState(undefined); // Không set cứng, sẽ lấy từ BE
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,11 +45,12 @@ function AppliedJobs() {
     useEffect(() => {
         const fetchJobs = async () => {
             setLoading(true);
-            const data = await JobSeekerDashboardService.getAppliedJobs({ page, size, token });
+            // Gửi page - 1 cho API, size lấy từ state (ban đầu undefined, BE sẽ trả về mặc định)
+            const data = await JobSeekerDashboardService.getAppliedJobs({ page: page - 1, size, token });
             if (data && data.content) {
                 setJobs(data.content);
                 setTotalPages(data.totalPages || 1);
-                setSize(data.size || size);
+                setSize(data.size); // Lấy đúng size từ BE trả về
                 console.log(
                     'Available job IDs:',
                     data.content.map((job) => job.id),
@@ -196,16 +197,18 @@ function AppliedJobs() {
                         onChange={(e) => setPendingSearchTerm(e.target.value)}
                     />
                 </div>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingDateFilter}
-                    onChange={(e) => setPendingDateFilter(e.target.value)}
-                >
-                    <option value="all">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="7days">Last 7 days</option>
-                    <option value="30days">Last 30 days</option>
-                </select>
+                <div className={cx('filter-select-container')}>
+                    <select
+                        className={cx('filterSelect')}
+                        value={pendingDateFilter}
+                        onChange={(e) => setPendingDateFilter(e.target.value)}
+                    >
+                        <option value="all">🗓️ All Dates</option>
+                        <option value="today">📅 Today</option>
+                        <option value="7days">📊 Last 7 days</option>
+                        <option value="30days">📈 Last 30 days</option>
+                    </select>
+                </div>
                 <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
                     Filter
                 </button>

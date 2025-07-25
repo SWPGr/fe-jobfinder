@@ -394,3 +394,16 @@ div[role='radiogroup'] {
         height: 40px;
     }
 }
+
+// Thêm style cho select để icon không bị sát viền
+.mantine-Select-input,
+.mantine-Select-root input,
+.mantine-Select-input input,
+.mantine-Select-input {
+    padding-right: 2.5rem !important; // Tăng padding phải để icon không bị sát
+}
+
+// Nếu cần, căn chỉnh icon dropdown
+.mantine-Select-rightSection {
+    right: 1rem !important;
+}

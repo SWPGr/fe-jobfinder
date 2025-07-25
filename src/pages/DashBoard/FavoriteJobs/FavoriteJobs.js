@@ -117,10 +117,10 @@ function FavoriteJobs() {
                     value={pendingExpiredFilter}
                     onChange={(e) => setPendingExpiredFilter(e.target.value)}
                 >
-                    <option value="all">All Expired Dates</option>
-                    <option value="today">Expired Today</option>
-                    <option value="7days">Expire in 7 days</option>
-                    <option value="30days">Expire in 30 days</option>
+                    <option value="all">🗓️ All Dates</option>
+                    <option value="today">📅 Today</option>
+                    <option value="7days">📊 Last 7 days</option>
+                    <option value="30days">📈 Last 30 days</option>
                 </select>
                 <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
                     Filter
@@ -173,15 +173,7 @@ function FavoriteJobs() {
                     ))
                 )}
             </div>
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 32,
-                    fontSize: '18px',
-                }}
-            >
+            <div className={cx('pagination-root')}>
                 <Pagination
                     total={totalPages}
                     value={page}

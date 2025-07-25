@@ -112,48 +112,31 @@
     background-color: var(--primary-color-dark);
 }
 
-.pagination {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.pagination button {
-    background-color: var(--gray-100);
-    border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--gray-600);
-    font-size: var(--font-size-14px);
-    transition: background-color var(--transition), color var(--transition);
-}
-
-.pagination button:hover:not(:disabled) {
-    background-color: var(--blue-200);
-    color: var(--blue-900);
-}
-
-.pagination button.active {
-    background-color: var(--primary-color);
-    color: var(--white);
-}
-
-.pagination button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
 .pagination-root {
     display: flex;
-    gap: 10px;
     justify-content: center;
     align-items: center;
     margin-top: 24px;
+    .control {
+        width: 4rem;
+        height: 4rem;
+        font-size: var(--font-size-18px);
+        margin: 0 0.5rem;
+        border: 1px solid var(--gray-200);
+        cursor: pointer;
+        &:hover {
+            border-color: var(--blue-500);
+        }
+        svg {
+            width: 4rem !important;
+            height: 2rem !important;
+        }
+        &[data-active='true'] {
+            border-color: inherit;
+        }
+    }
 }
+
 .control {
     font-size: 22px;
     min-width: 48px;
