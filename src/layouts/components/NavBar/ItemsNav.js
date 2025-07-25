@@ -12,7 +12,7 @@ const itemsNav = {
             { name: 'Dashboard', link: '/dashboard/overview' },
             { name: 'Manage Users', link: '/dashboard/job-seekers' },
             { name: 'Manage Jobs', link: '/dashboard/jobs' },
-            { name: 'Reports', link: '/reports' },
+            { name: 'Reports', link: '/dashboard/reports' },
             { name: 'Settings', link: '/dashboard/settings' },
         ],
         JOB_SEEKER: [

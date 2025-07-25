@@ -5,6 +5,7 @@ import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
+import { JobSearchFilters } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -230,8 +231,10 @@ const Jobs = () => {
             <div className={cx('jobs-header')}>
                 <h1 className={cx('title')}>Jobs Management</h1>
             </div>
+
+            <JobSearchFilters />
             {/* Thanh tìm kiếm ngang với các filter mới */}
-            <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
+            {/* <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
                 <div className={cx('search-box')} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Search className={cx('search-icon')} />
                     <input
@@ -315,7 +318,7 @@ const Jobs = () => {
                 >
                     Clear
                 </button>
-            </div>
+            </div> */}
             {/* Bảng jobs và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('jobs-table')}>

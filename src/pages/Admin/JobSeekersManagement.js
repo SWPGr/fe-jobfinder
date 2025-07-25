@@ -8,6 +8,7 @@ import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
+import { UserSearchFilters } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -182,86 +183,8 @@ const JobSeekersManagement = () => {
             </div>
 
             {/* Toolbar filter ngang hiện đại */}
-            <div className={cx('toolbar')}>
-                <div className={cx('search-box')}>
-                    <Search className={cx('search-icon')} />
-                    <input
-                        type="text"
-                        placeholder="Search job seekers..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-                {/* Filter Premium */}
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.isPremium}
-                    onChange={(e) => setPendingFilter((f) => ({ ...f, isPremium: e.target.value }))}
-                >
-                    <option value="">All</option>
-                    <option value="true">Premium</option>
-                    <option value="false">Normal</option>
-                </select>
-                {/* Filter Applications */}
-                <select
-                    className={cx('filterSelect')}
-                    value={
-                        pendingFilter.minApplications === '' && pendingFilter.maxApplications === ''
-                            ? 'all'
-                            : pendingFilter.minApplications === '1' && pendingFilter.maxApplications === '2'
-                            ? '1-2'
-                            : pendingFilter.minApplications === '3' && pendingFilter.maxApplications === '4'
-                            ? '3-4'
-                            : pendingFilter.minApplications === '5' && pendingFilter.maxApplications === '6'
-                            ? '5-6'
-                            : pendingFilter.minApplications === '7' && pendingFilter.maxApplications === ''
-                            ? '7+'
-                            : 'all'
-                    }
-                    onChange={(e) => {
-                        const val = e.target.value;
-                        if (val === 'all')
-                            setPendingFilter((f) => ({ ...f, minApplications: '', maxApplications: '' }));
-                        else if (val === '1-2')
-                            setPendingFilter((f) => ({ ...f, minApplications: '1', maxApplications: '2' }));
-                        else if (val === '3-4')
-                            setPendingFilter((f) => ({ ...f, minApplications: '3', maxApplications: '4' }));
-                        else if (val === '5-6')
-                            setPendingFilter((f) => ({ ...f, minApplications: '5', maxApplications: '6' }));
-                        else if (val === '7+')
-                            setPendingFilter((f) => ({ ...f, minApplications: '7', maxApplications: '' }));
-                    }}
-                >
-                    <option value="all">Applicants</option>
-                    <option value="1-2">1-2</option>
-                    <option value="3-4">3-4</option>
-                    <option value="5-6">5-6</option>
-                    <option value="7+">7+</option>
-                </select>
-                {/* Nút Filter và Clear */}
-                <button className={cx('primary', 'filterBtn')} onClick={() => setFilter(pendingFilter)}>
-                    Filter
-                </button>
-                <button
-                    className={cx('clearBtn')}
-                    onClick={() => {
-                        setPendingFilter({
-                            location: '',
-                            isPremium: '',
-                            minApplications: '',
-                            maxApplications: '',
-                        });
-                        setFilter({
-                            location: '',
-                            isPremium: '',
-                            minApplications: '',
-                            maxApplications: '',
-                        });
-                    }}
-                >
-                    Clear
-                </button>
-            </div>
+
+            <UserSearchFilters />
 
             {/* Bảng job seekers và các phần còn lại giữ nguyên */}
             <div className={cx('jobs-table-wrapper')}>
