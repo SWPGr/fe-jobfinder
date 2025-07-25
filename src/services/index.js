@@ -11,3 +11,4 @@ export { default as jobMarketTrendsService } from './JobMarketTrendsService.js';
 export { default as searchService } from './SearchService.js';
 export { default as chatbotService } from './ChatbotService.js';
 export { default as paymentService } from './PaymentService.js';
+export { default as reportService } from './ReportService.js';

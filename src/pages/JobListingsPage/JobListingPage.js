@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { JobCard, JobSearchFilters } from '~/components';
-import { BriefcaseIcon, StarIcon, ChevronRightIcon } from 'lucide-react';
+import { ChevronRightIcon } from 'lucide-react';
 import { useWindowScroll } from '@mantine/hooks';
 
 // Sample job data
