@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
 import classNames from 'classnames/bind';
 import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
-import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
 import { JobSearchFilters } from '~/components';
+import { useSearchParams } from 'react-router-dom';
+import { jobService } from '~/services';
 
 const cx = classNames.bind(styles);
 
@@ -67,62 +67,13 @@ const JobRowDropdown = ({ onAction, jobId }) => {
 };
 
 const Jobs = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchLocation, setSearchLocation] = useState('');
-    const [searchType, setSearchType] = useState('');
-    const [searchSalaryRange, setSearchSalaryRange] = useState('');
-    const [searchApplicationRange, setSearchApplicationRange] = useState('');
-    const [pendingFilter, setPendingFilter] = useState({
-        searchTerm: '',
-        searchLocation: '',
-        searchType: '',
-        searchSalaryRange: '',
-        searchApplicationRange: '',
-    });
+    const [searchParams] = useSearchParams();
+
     const [visibleJobs, setVisibleJobs] = useState(10);
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [locationOptions, setLocationOptions] = useState([]);
-    const [jobTypeOptions, setJobTypeOptions] = useState([]);
-
-    // Salary range options
-    const salaryRanges = [
-        { value: '', label: 'All' },
-        { value: '0-80000', label: 'Under $80k' },
-        { value: '80000-120000', label: '$80k - $120k' },
-        { value: '120000-160000', label: '$120k - $160k' },
-        { value: '160000-200000', label: '$160k - $200k' },
-        { value: '200000-', label: '$200k+' },
-    ];
-    // Application range options
-    const applicationRanges = [
-        { value: '', label: 'Applicants' },
-        { value: '0-1', label: '0-1' },
-        { value: '1-2', label: '1-2' },
-        { value: '2-4', label: '2-4' },
-        { value: '4-6', label: '4-6' },
-        { value: '6-', label: '6+' },
-    ];
-
-    // Fetch filter options
-    useEffect(() => {
-        const fetchOptions = async () => {
-            try {
-                const data = await statisticsService.fetchAllJobs();
-                const jobsArr = data?.content || [];
-                const locations = Array.from(new Set(jobsArr.map((j) => j.location).filter(Boolean)));
-                setLocationOptions(locations);
-                const jobTypes = Array.from(new Set(jobsArr.map((j) => j.jobType?.name).filter(Boolean)));
-                setJobTypeOptions(jobTypes);
-            } catch (err) {
-                setLocationOptions([]);
-                setJobTypeOptions([]);
-            }
-        };
-        fetchOptions();
-    }, []);
 
     const handleAction = (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
@@ -152,8 +103,9 @@ const Jobs = () => {
         const fetchJobs = async () => {
             setLoading(true);
             try {
-                const data = await statisticsService.fetchAllJobs();
-                const jobArray = data?.content || [];
+                const entries = Object.fromEntries(searchParams);
+                const data = await jobService.searchJob(entries);
+                const jobArray = data?.data || [];
                 setJobs(jobArray);
             } catch (err) {
                 setJobs([]);
@@ -162,69 +114,11 @@ const Jobs = () => {
             }
         };
         fetchJobs();
-    }, []);
-
-    // Filtered jobs
-    const filteredJobs = React.useMemo(() => {
-        let result = jobs;
-        if (searchLocation) {
-            result = result.filter((j) => j.location === searchLocation);
-        }
-        if (searchType) {
-            result = result.filter((j) => j.jobType?.name === searchType);
-        }
-        if (searchSalaryRange) {
-            const [min, max] = searchSalaryRange.split('-');
-            result = result.filter((j) => {
-                const minSalary = Number(j.salaryMin);
-                const maxSalary = Number(j.salaryMax);
-                if (min && max) return minSalary >= Number(min) && maxSalary <= Number(max);
-                if (min && !max) return minSalary >= Number(min);
-                if (!min && max) return maxSalary <= Number(max);
-                return true;
-            });
-        }
-        if (searchApplicationRange) {
-            const [min, max] = searchApplicationRange.split('-');
-            result = result.filter((j) => {
-                const count = Number(j.jobApplicationCounts || 0);
-                if (min && max) return count >= Number(min) && count <= Number(max);
-                if (min && !max) return count >= Number(min);
-                if (!min && max) return count <= Number(max);
-                return true;
-            });
-        }
-        if (searchTerm) {
-            const s = searchTerm.toLowerCase();
-            result = result.filter(
-                (job) =>
-                    job.title?.toLowerCase().includes(s) ||
-                    job.employer?.email?.toLowerCase().includes(s) ||
-                    job.location?.toLowerCase().includes(s),
-            );
-        }
-        return result;
-    }, [jobs, searchLocation, searchType, searchSalaryRange, searchApplicationRange, searchTerm]);
-
-    const jobsToDisplay = filteredJobs.slice(0, visibleJobs);
+    }, [searchParams]);
 
     if (loading) {
         return <div>Loading...</div>;
     }
-
-    // Handler khi nhấn Find Job
-    const handleFindJob = () => {
-        setSearchTerm(pendingFilter.searchTerm);
-        setSearchLocation(pendingFilter.searchLocation);
-        setSearchType(pendingFilter.searchType);
-        setSearchSalaryRange(pendingFilter.searchSalaryRange);
-        setSearchApplicationRange(pendingFilter.searchApplicationRange);
-    };
-
-    // Handler khi thay đổi input/select
-    const handlePendingChange = (field, value) => {
-        setPendingFilter((prev) => ({ ...prev, [field]: value }));
-    };
 
     return (
         <div className={cx('managementWrapper')}>
@@ -234,91 +128,7 @@ const Jobs = () => {
 
             <JobSearchFilters />
             {/* Thanh tìm kiếm ngang với các filter mới */}
-            {/* <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
-                <div className={cx('search-box')} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Search className={cx('search-icon')} />
-                    <input
-                        type="text"
-                        placeholder="Enter job title or keyword"
-                        value={pendingFilter.searchTerm}
-                        onChange={(e) => handlePendingChange('searchTerm', e.target.value)}
-                        style={{ flex: 1, minWidth: 200 }}
-                    />
-                </div>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchLocation}
-                    onChange={(e) => handlePendingChange('searchLocation', e.target.value)}
-                    style={{ minWidth: 150 }}
-                >
-                    <option value="">Select location</option>
-                    {locationOptions.map((loc) => (
-                        <option key={loc} value={loc}>
-                            {loc}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchType}
-                    onChange={(e) => handlePendingChange('searchType', e.target.value)}
-                    style={{ minWidth: 130 }}
-                >
-                    <option value="">All Types</option>
-                    {jobTypeOptions.map((type) => (
-                        <option key={type} value={type}>
-                            {type}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchSalaryRange}
-                    onChange={(e) => handlePendingChange('searchSalaryRange', e.target.value)}
-                    style={{ minWidth: 130 }}
-                >
-                    {salaryRanges.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchApplicationRange}
-                    onChange={(e) => handlePendingChange('searchApplicationRange', e.target.value)}
-                    style={{ minWidth: 110 }}
-                >
-                    {applicationRanges.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-                <button className={cx('primary', 'filterBtn')} style={{ minWidth: 120 }} onClick={handleFindJob}>
-                    Find Job
-                </button>
-                <button
-                    className={cx('clearBtn')}
-                    style={{ minWidth: 100 }}
-                    onClick={() => {
-                        setPendingFilter({
-                            searchTerm: '',
-                            searchLocation: '',
-                            searchType: '',
-                            searchSalaryRange: '',
-                            searchApplicationRange: '',
-                        });
-                        setSearchTerm('');
-                        setSearchLocation('');
-                        setSearchType('');
-                        setSearchSalaryRange('');
-                        setSearchApplicationRange('');
-                    }}
-                >
-                    Clear
-                </button>
-            </div> */}
+
             {/* Bảng jobs và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('jobs-table')}>
@@ -334,8 +144,8 @@ const Jobs = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobsToDisplay.length > 0 ? (
-                            jobsToDisplay.map((job) => (
+                        {jobs.length > 0 ? (
+                            jobs.map((job) => (
                                 <tr key={job.id}>
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -372,11 +182,6 @@ const Jobs = () => {
                         )}
                     </tbody>
                 </table>
-                {filteredJobs.length > visibleJobs && (
-                    <div className={cx('load-more')}>
-                        <button onClick={loadMoreJobs}>Load More</button>
-                    </div>
-                )}
             </div>
 
             {/* Modal với JobDetail */}
