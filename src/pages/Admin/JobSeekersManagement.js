@@ -184,7 +184,7 @@ const JobSeekersManagement = () => {
 
             <UserSearchFilters />
 
-            {/* Bảng job seekers và các phần còn lại giữ nguyên */}
+
             <div className={cx('jobs-table-wrapper')}>
                 <table className={cx('jobs-table')}>
                     <thead>

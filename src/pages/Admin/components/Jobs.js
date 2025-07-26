@@ -139,6 +139,7 @@ const Jobs = () => {
                             <th>Type</th>
                             <th>Salary Range</th>
                             <th>Applicants</th>
+                            <th>Status</th>
                             <th>Posted</th>
                             <th></th>
                         </tr>
@@ -166,7 +167,12 @@ const Jobs = () => {
                                         ${job.salaryMin} - ${job.salaryMax}
                                     </td>
                                     <td>{job.jobApplicationCounts || 0}</td>
-                                    <td>{job.createdAt?.split(' ')[0]}</td>
+                                    <td>
+                                        <span className={cx('job-status', job.active ? 'active' : 'inactive')}>
+                                            {job.active ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td>{job.createdAt ? job.createdAt.split(' ')[0].slice(5) : ''}</td>
                                     <td>
                                         <JobRowDropdown
                                             onAction={(action) => handleAction(action, job.id)}

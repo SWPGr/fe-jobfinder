@@ -89,6 +89,7 @@ function AccountSetting() {
                 <button type="submit" className={cx('save-btn')}>
                     Save Changes
                 </button>
+
                 <button className={cx('delete-btn')}>Close Account</button>
             </form>
         </div>
