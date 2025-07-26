@@ -5,8 +5,6 @@ import styles from './JobTableManagement.module.scss';
 import statisticsService from '~/services/statisticsService';
 import { useDebounce } from '~/hooks';
 import { Combobox, useCombobox } from '@mantine/core';
-import JobDetail from '~/pages/JobDetail/JobDetail';
-import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
 import { UserSearchFilters } from '~/components';
 
@@ -239,11 +237,6 @@ const JobSeekersManagement = () => {
                         ))}
                     </tbody>
                 </table>
-                {filteredJobSeekers.length > visibleSeekers && (
-                    <div className={cx('load-more')}>
-                        <button onClick={loadMoreSeekers}>Load More</button>
-                    </div>
-                )}
             </div>
 
             {isModalOpen && selectedSeeker && (

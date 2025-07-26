@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
 import classNames from 'classnames/bind';
 import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
-import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
 import { JobSearchFilters } from '~/components';
+import { useSearchParams } from 'react-router-dom';
+import { jobService } from '~/services';
+import { Pagination } from '@mantine/core';
 
 const cx = classNames.bind(styles);
 
@@ -67,87 +68,23 @@ const JobRowDropdown = ({ onAction, jobId }) => {
 };
 
 const Jobs = () => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchLocation, setSearchLocation] = useState('');
-    const [searchType, setSearchType] = useState('');
-    const [searchSalaryRange, setSearchSalaryRange] = useState('');
-    const [searchApplicationRange, setSearchApplicationRange] = useState('');
-    const [pendingFilter, setPendingFilter] = useState({
-        searchTerm: '',
-        searchLocation: '',
-        searchType: '',
-        searchSalaryRange: '',
-        searchApplicationRange: '',
-    });
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [visibleJobs, setVisibleJobs] = useState(10);
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [locationOptions, setLocationOptions] = useState([]);
-    const [jobTypeOptions, setJobTypeOptions] = useState([]);
-
-    // Salary range options
-    const salaryRanges = [
-        { value: '', label: 'All' },
-        { value: '0-80000', label: 'Under $80k' },
-        { value: '80000-120000', label: '$80k - $120k' },
-        { value: '120000-160000', label: '$120k - $160k' },
-        { value: '160000-200000', label: '$160k - $200k' },
-        { value: '200000-', label: '$200k+' },
-    ];
-    // Application range options
-    const applicationRanges = [
-        { value: '', label: 'Applicants' },
-        { value: '0-1', label: '0-1' },
-        { value: '1-2', label: '1-2' },
-        { value: '2-4', label: '2-4' },
-        { value: '4-6', label: '4-6' },
-        { value: '6-', label: '6+' },
-    ];
-
-    // Fetch filter options
-    useEffect(() => {
-        const fetchOptions = async () => {
-            try {
-                const data = await statisticsService.fetchAllJobs();
-                const jobsArr = data?.content || [];
-                const locations = Array.from(new Set(jobsArr.map((j) => j.location).filter(Boolean)));
-                setLocationOptions(locations);
-                const jobTypes = Array.from(new Set(jobsArr.map((j) => j.jobType?.name).filter(Boolean)));
-                setJobTypeOptions(jobTypes);
-            } catch (err) {
-                setLocationOptions([]);
-                setJobTypeOptions([]);
-            }
-        };
-        fetchOptions();
-    }, []);
-
-    const handleAction = async (action, jobId) => {
+    const [totalHits, setTotalHits] = useState(1);
+    const totalPages = Math.ceil(totalHits / 10);
+    const handleAction = (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
         if (action === 'view') {
             setSelectedJob(job);
             setIsModalOpen(true);
         } else if (action === 'block') {
-            if (window.confirm(`Bạn có chắc muốn chặn công việc ${job.title || 'ID ' + jobId}?`)) {
-                try {
-                    await statisticsService.blockJob(jobId); // Gọi API để block job
-                    setJobs((prevJobs) =>
-                        prevJobs.map((j) => (j.id === jobId ? { ...j, isBlocked: true, active: false } : j)),
-                    );
-                    fetchJobs(); // Reload danh sách jobs để đồng bộ với server
-                    console.log('Job blocked successfully');
-                } catch (err) {
-                    console.error('Lỗi khi chặn công việc:', err);
-                    alert(`Không thể chặn công việc. Lỗi: ${err.message || 'Không xác định'}`);
-                }
-            }
+            setJobs((prevJobs) => prevJobs.map((job) => (job.id === jobId ? { ...job, isBlocked: true } : job)));
         }
-    };
-
-    const loadMoreJobs = () => {
-        setVisibleJobs((prev) => prev + 10);
     };
 
     const closeModal = () => {
@@ -160,86 +97,42 @@ const Jobs = () => {
         closeModal();
     };
 
-    const fetchJobs = async () => {
-        setLoading(true);
-        try {
-            const data = await statisticsService.fetchAllJobs();
-            const jobArray = data?.content || [];
-            setJobs(jobArray);
-            console.log('Fetched jobs:', jobArray); // Log để debug
-        } catch (err) {
-            setJobs([]);
-            console.error('Failed to fetch jobs:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const fetchJobs = async () => {
+            setLoading(true);
+            try {
+                const entries = Object.fromEntries(searchParams);
+                const data = await jobService.searchJob(entries);
+                const jobArray = data?.data || [];
+                setJobs(jobArray);
+                setTotalHits(data.totalHits);
+            } catch (err) {
+                setJobs([]);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchJobs();
-    }, []);
+    }, [searchParams]);
 
-    // Filtered jobs
-    const filteredJobs = React.useMemo(() => {
-        let result = jobs.filter((j) => !j.isBlocked); // Loại bỏ job bị block
-        if (searchLocation) {
-            result = result.filter((j) => j.location === searchLocation);
-        }
-        if (searchType) {
-            result = result.filter((j) => j.jobType?.name === searchType);
-        }
-        if (searchSalaryRange) {
-            const [min, max] = searchSalaryRange.split('-');
-            result = result.filter((j) => {
-                const minSalary = Number(j.salaryMin);
-                const maxSalary = Number(j.salaryMax);
-                if (min && max) return minSalary >= Number(min) && maxSalary <= Number(max);
-                if (min && !max) return minSalary >= Number(min);
-                if (!min && max) return maxSalary <= Number(max);
-                return true;
-            });
-        }
-        if (searchApplicationRange) {
-            const [min, max] = searchApplicationRange.split('-');
-            result = result.filter((j) => {
-                const count = Number(j.jobApplicationCounts || 0);
-                if (min && max) return count >= Number(min) && count <= Number(max);
-                if (min && !max) return count >= Number(min);
-                if (!min && max) return count <= Number(max);
-                return true;
-            });
-        }
-        if (searchTerm) {
-            const s = searchTerm.toLowerCase();
-            result = result.filter(
-                (job) =>
-                    job.title?.toLowerCase().includes(s) ||
-                    job.employer?.email?.toLowerCase().includes(s) ||
-                    job.location?.toLowerCase().includes(s),
-            );
-        }
-        return result;
-    }, [jobs, searchLocation, searchType, searchSalaryRange, searchApplicationRange, searchTerm]);
-
-    const jobsToDisplay = filteredJobs.slice(0, visibleJobs);
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
+    const handlePageChange = (page) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', page);
+        setSearchParams(params);
+    };
 
     if (loading) {
         return <div>Loading...</div>;
     }
-
-    // Handler khi nhấn Find Job
-    const handleFindJob = () => {
-        setSearchTerm(pendingFilter.searchTerm);
-        setSearchLocation(pendingFilter.searchLocation);
-        setSearchType(pendingFilter.searchType);
-        setSearchSalaryRange(pendingFilter.searchSalaryRange);
-        setSearchApplicationRange(pendingFilter.searchApplicationRange);
-    };
-
-    // Handler khi thay đổi input/select
-    const handlePendingChange = (field, value) => {
-        setPendingFilter((prev) => ({ ...prev, [field]: value }));
-    };
 
     return (
         <div className={cx('managementWrapper')}>
@@ -248,13 +141,14 @@ const Jobs = () => {
             </div>
 
             <JobSearchFilters />
+            {/* Thanh tìm kiếm ngang với các filter mới */}
 
             {/* Bảng jobs và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('jobs-table')}>
                     <thead>
                         <tr>
-                            <th>Job Title & Company</th>
+                            <th>Job Title</th>
                             <th>Location</th>
                             <th>Type</th>
                             <th>Salary Range</th>
@@ -265,8 +159,8 @@ const Jobs = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {jobsToDisplay.length > 0 ? (
-                            jobsToDisplay.map((job) => (
+                        {jobs.length > 0 ? (
+                            jobs.map((job) => (
                                 <tr key={job.id}>
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -292,7 +186,7 @@ const Jobs = () => {
                                             {job.active ? 'Active' : 'Inactive'}
                                         </span>
                                     </td>
-                                    <td>{job.createdAt ? job.createdAt.split(' ')[0].slice(5) : ''}</td>
+                                    <td>{job.createdAt ? formatDate(job.createdAt).split(',')[0] : ''}</td>
                                     <td>
                                         <JobRowDropdown
                                             onAction={(action) => handleAction(action, job.id)}
@@ -308,11 +202,16 @@ const Jobs = () => {
                         )}
                     </tbody>
                 </table>
-                {filteredJobs.length > visibleJobs && (
-                    <div className={cx('load-more')}>
-                        <button onClick={loadMoreJobs}>Load More</button>
-                    </div>
-                )}
+            </div>
+
+            <div className={cx('pagination')}>
+                <Pagination
+                    total={totalPages}
+                    value={Number(searchParams.get('page')) || 1}
+                    onChange={handlePageChange}
+                    radius="xl"
+                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
+                />
             </div>
 
             {/* Modal với JobDetail */}
@@ -366,7 +265,6 @@ const Jobs = () => {
                                     email: selectedJob.employer?.email || 'N/A',
                                     website: selectedJob.employer?.website || 'N/A',
                                 },
-                                active: selectedJob.active, // Thêm trạng thái active
                             }}
                             editable={isModalOpen === 'edit'} // Chỉnh sửa khi nhấn Edit
                             onSave={handleSave}

@@ -55,7 +55,7 @@ const ReportDetailModal = ({ report, onClose }) => {
                     <div className="flex items-center gap-3">
                         <TypeIcon className={`w-6 h-6 ${reportTypesIcon[report.id - 1].color}`} />{' '}
                         <div>
-                            <h2 className="text-3xl font-bold text-gray-900">Chi tiết báo cáo #{report.id}</h2>
+                            <h2 className="text-3xl font-bold text-gray-900">Report Detail #{report.id}</h2>
                             <p className="text-md text-gray-500">{report.type.name}</p>
                         </div>
                     </div>
@@ -71,19 +71,19 @@ const ReportDetailModal = ({ report, onClose }) => {
                         <div className="lg:col-span-2 space-y-6">
                             {/* Basic Info */}
                             <div className="bg-gray-50 rounded-lg p-4">
-                                <h3 className="text-2xl font-semibold text-gray-800 mb-3">Thông tin cơ bản</h3>
+                                <h3 className="text-2xl font-semibold text-gray-800 mb-3">Report Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="w-6 h-6 text-gray-500" />
                                         <div>
-                                            <div className="text-xl text-gray-500">Ngày gửi</div>
+                                            <div className="text-xl text-gray-500">Date Created</div>
                                             <div className="text-md font-medium"> {formatDate(report.createdAt)}</div>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <User className="w-6 h-6 text-gray-500" />
                                         <div>
-                                            <div className="text-xl text-gray-500">Người gửi</div>
+                                            <div className="text-xl text-gray-500">From</div>
                                             {/* <div className="text-xl text-gray-900">{report.sender.name}</div> */}
                                         </div>
                                     </div>
@@ -99,7 +99,7 @@ const ReportDetailModal = ({ report, onClose }) => {
 
                             {/* Title and Description */}
                             <div>
-                                <h3 className="text-2xl font-semibold text-gray-800 mb-3">Nội dung báo cáo</h3>
+                                <h3 className="text-2xl font-semibold text-gray-800 mb-3">Description</h3>
                                 <div className="bg-white border border-gray-200 rounded-lg p-4">
                                     <h4 className="text-xl font-semibold text-gray-900 mb-2">{report.subject}</h4>
                                     <p className="text-md text-gray-700 whitespace-pre-wrap">{report.content}</p>
