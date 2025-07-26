@@ -218,10 +218,9 @@ const fetchCandidateDetail = async (applicationId) => {
   return response?.result || null;
 };
 
-const fetchResume = async ({ applicationId, userId }) => {
-  const id = userId || applicationId;
-  if (!id) throw new Error("ID is required");
-  const response = await get(`/apply/${id}/summarize-resume`);
+const fetchResume = async ({ applicationId }) => {
+  if (!applicationId) throw new Error("applicationId is required");
+  const response = await get(`/apply/${applicationId}/summarize-resume`);
   return response?.result || null;
 };
 const fetchStatus = async () => {

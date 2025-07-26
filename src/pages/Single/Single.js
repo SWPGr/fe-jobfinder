@@ -101,7 +101,7 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
 
               <h4 className={cx('title2')}>Company Vision</h4>
               <p className={cx('companyVision')}>
-                {companyInfo.vision || 'No vision statement available.'}
+                <div dangerouslySetInnerHTML={{ __html: companyInfo.companyVision || 'No vision statement available.' }} />
               </p>
 
               <div className={cx('shareProfile')}>
@@ -145,14 +145,7 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 </div>
                 <div className={cx('cardValue')}>{companyInfo.teamSize || 'N/A'}</div>
               </div>
-              <div className={cx('cardRow')}>
-                <div className={cx('cardLabel')}>
-                  <IconBriefcase className={cx('icon')} /> Industry Type
-                </div>
-                <div className={cx('cardValue')}>
-                  {companyInfo.industryTypes || 'N/A'}
-                </div>
-              </div>
+
             </div>
 
             <div className={cx('card')}>
@@ -165,7 +158,7 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 >
                   <span className={cx('contactLabel')}>WEBSITE:</span>
                   <span className={cx('contactLink')}>
-                    {companyInfo.companyWebsite || 'N/A'}
+                    {companyInfo.website || 'N/A'}
                   </span>
                 </button>
               </div>

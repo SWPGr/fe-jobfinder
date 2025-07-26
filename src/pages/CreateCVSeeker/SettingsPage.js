@@ -28,15 +28,13 @@ const SaveNextButton = ({ onClick, style }) => (
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('Company Info');
-  const [showSingle, setShowSingle] = useState(false);
-const [singleData, setSingleData] = useState(null);
 
   const [form, setForm] = useState({
     organizationType: '',
     industryTypes: '',
     teamSize: '',
     yearOfEstablishment: '',
-    mapLocation: '',
+    location: '',
     phone: '',
     email: '',
     companyWebsite: '',
@@ -46,8 +44,10 @@ const [singleData, setSingleData] = useState(null);
   const [socialLinks, setSocialLinks] = useState([{ id: 1, type: 'facebook', url: '' }]);
   const [logoFile, setLogoFile] = useState(null);
   const [bannerFile, setBannerFile] = useState(null);
-  const [logoUrl, setLogoUrl] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState(null);
   const [bannerUrl, setBannerUrl] = useState(null);
+  const [showSingle, setShowSingle] = useState(false);
+  const [singleData, setSingleData] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [aboutUs, setAboutUs] = useState('');
   const [modalOpened, setModalOpened] = useState(false);
@@ -56,7 +56,6 @@ const [singleData, setSingleData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
-  
 
   // Load data profile từ API
   const loadData = async () => {
@@ -72,15 +71,17 @@ const [singleData, setSingleData] = useState(null);
           industryTypes: data.industryTypes || '',
           teamSize: data.teamSize || '',
           yearOfEstablishment: data.yearOfEstablishment ? `${data.yearOfEstablishment}-01-01` : '',
-          mapLocation: data.mapLocation || '',
+          location: data.location || '',
           phone: data.phone || '',
           email: data.email || '',
           companyWebsite: data.website || '',
           companyVision: data.companyVision || '',
+          avatarUrl: data.avatarUrl || '',
+          banner: data.banner || '',
         });
 
         if (data.socialLinks && data.socialLinks.length) setSocialLinks(data.socialLinks);
-        if (data.logoUrl) setLogoUrl(data.logoUrl);
+        if (data.avatarUrl) setAvatarUrl(data.avatarUrl);
         if (data.banner) setBannerUrl(data.banner);
       } else {
         setCompanyName('Unknown Company');
@@ -109,11 +110,11 @@ const [singleData, setSingleData] = useState(null);
     setError('');
   };
   const goToNextTab = () => {
-  const currentIndex = tabsOrder.indexOf(activeTab);
-  if (currentIndex < tabsOrder.length - 1) {
-    setActiveTab(tabsOrder[currentIndex + 1]);
-  }
-};
+    const currentIndex = tabsOrder.indexOf(activeTab);
+    if (currentIndex < tabsOrder.length - 1) {
+      setActiveTab(tabsOrder[currentIndex + 1]);
+    }
+  };
 
   const handleImageChange = (files) => {
     if (files.length === 0) return;
@@ -134,7 +135,7 @@ const [singleData, setSingleData] = useState(null);
     }
     if (uploadTarget === 'logo') {
       setLogoFile(imageFile);
-      setLogoUrl(null);
+      setAvatarUrl(null);
     } else if (uploadTarget === 'banner') {
       setBannerFile(imageFile);
       setBannerUrl(null);
@@ -145,68 +146,80 @@ const [singleData, setSingleData] = useState(null);
     setImagePreview(null);
     setError('');
   };
+  async function urlToFile(url, filename, mimeType) {
+    const res = await fetch(url);
+    const buffer = await res.arrayBuffer();
+    return new File([buffer], filename, { type: mimeType });
+  }
 
   const handleSave = async () => {
-  if (!companyName || companyName.trim() === '') {
-    setError('Company name is required');
-    return;
-  }
-  if (!aboutUs || aboutUs.trim() === '') {
-    setError('About Us is required');
-    return;
-  }
-  try {
-    let logoUrlUploaded = logoUrl;
-    if (logoFile) {
-      const formData = new FormData();
-      formData.append('file', logoFile);
-      const res = await EmployerService.uploadFile(formData);
-      logoUrlUploaded = res.data.url;
+    if (!companyName || companyName.trim() === '') {
+      setError('Company name is required');
+      return;
     }
-
-    let bannerUrlUploaded = bannerUrl;
-    if (bannerFile) {
-      const formData = new FormData();
-      formData.append('file', bannerFile);
-      const res = await EmployerService.uploadFile(formData);
-      bannerUrlUploaded = res.data.url;
+    if (!aboutUs || aboutUs.trim() === '') {
+      setError('About Us is required');
+      return;
     }
+    try {
+      let avatarUrlUploaded = avatarUrl;
+      if (logoFile) {
+        const formData = new FormData();
+        formData.append('file', logoFile);
+        const res = await EmployerService.uploadFile(formData);
+        avatarUrlUploaded = res.data.url;
+      }
 
-    // Chuyển đổi yearOfEstablishment sang số nguyên (năm)
-    const year = form.yearOfEstablishment
-      ? parseInt(form.yearOfEstablishment.substring(0, 4), 10)
-      : null;
+      let bannerUrlUploaded = bannerUrl;
+      if (bannerFile) {
+        const formData = new FormData();
+        formData.append('file', bannerFile);
+        const res = await EmployerService.uploadFile(formData);
+        bannerUrlUploaded = res.data.url;
+      }
 
-    const updatedProfile = {
-      companyName: companyName.trim(),
-      description: aboutUs,
-      organizationType: form.organizationType,
-      industryTypes: form.industryTypes,
-      teamSize: form.teamSize,
-      yearOfEstablishment: year,
-      mapLocation: form.mapLocation,
-      phone: form.phone,
-      email: form.email,
-      website: form.companyWebsite,
-      companyVision: form.companyVision,
-      socialLinks: socialLinks,
-      logoUrl: logoUrlUploaded,
-      banner: bannerUrlUploaded,  // lưu ý đổi bannerUrl thành banner
-    };
+      // Chuyển đổi yearOfEstablishment sang số nguyên (năm)
+      const year = form.yearOfEstablishment
+        ? parseInt(form.yearOfEstablishment.substring(0, 4), 10)
+        : null;
 
-    console.log('companyName before API call:', updatedProfile.companyName);
-    console.log('updatedProfile:', updatedProfile);
+      const profileFormData = new FormData();
 
-    const response = await EmployerService.fetchSettingFake(updatedProfile);
-    console.log('Company info updated successfully!', response);
+      profileFormData.append("companyName", companyName.trim());
+      profileFormData.append("description", aboutUs);
+      profileFormData.append("organization", 1);
+      profileFormData.append("teamSize", form.teamSize);
+      profileFormData.append("yearOfEstablishment", year);
+      profileFormData.append("location", form.location);
+      profileFormData.append("mapLocation", form.location);
+      profileFormData.append("phone", form.phone);
+      profileFormData.append("email", form.email);
+      profileFormData.append("website", form.companyWebsite);
+      profileFormData.append("companyVision", form.companyVision);
+      if (form.avatarUrl) {
+        const avatarFile = await urlToFile(form.avatarUrl, "logo.jpg", "image/jpeg");
+        profileFormData.append("avatarUrl", avatarFile);
+        profileFormData.append("avatar", avatarFile);
+      } else {
+        profileFormData.append("avatarUrl", avatarUrlUploaded);
+        profileFormData.append("avatar", avatarUrlUploaded);
+      }
+      if (form.banner) {
+        const bannerFile = await urlToFile(form.banner, "banner.jpg", "image/jpeg");
+        profileFormData.append("banner", bannerFile);
+      } else {
+        profileFormData.append("banner", bannerUrlUploaded); // lưu ý đổi tên thành banner
+      }
+      const response = await EmployerService.fetchSettingFake(profileFormData);
+      console.log('Company info updated successfully!', response);
 
-    await loadData();
-    setError('');
-  } catch (error) {
-    console.error('Error updating company info:', error);
-    setError('Update failed. Please check your input.');
-  }
-};
+      await loadData();
+      setError('');
+    } catch (error) {
+      console.error('Error updating company info:', error);
+      setError('Update failed. Please check your input.');
+    }
+  };
 
 
   // Xử lý social links
@@ -259,9 +272,9 @@ const [singleData, setSingleData] = useState(null);
                   className={cx('previewImage')}
                   style={{ maxHeight: 140, objectFit: 'contain' }}
                 />
-              ) : logoUrl ? (
+              ) : avatarUrl ? (
                 <img
-                  src={logoUrl}
+                  src={avatarUrl}
                   alt="logo preview"
                   className={cx('previewImage')}
                   style={{ maxHeight: 140, objectFit: 'contain' }}
@@ -382,7 +395,7 @@ const [singleData, setSingleData] = useState(null);
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
-            <div className={cx('inputGroup')}>
+            {/* <div className={cx('inputGroup')}>
               <label>Organization Type</label>
               <select name="organizationType" value={form.organizationType} onChange={handleChange}>
                 <option value="">Select...</option>
@@ -401,7 +414,7 @@ const [singleData, setSingleData] = useState(null);
                 <option value="Healthcare">Healthcare</option>
                 <option value="Education">Education</option>
               </select>
-            </div>
+            </div> */}
             <div className={cx('inputGroup')}>
               <label>Team Size</label>
               <select name="teamSize" value={form.teamSize} onChange={handleChange}>
@@ -528,8 +541,8 @@ const [singleData, setSingleData] = useState(null);
             <input
               type="text"
               placeholder="Map Location"
-              name="mapLocation"
-              value={form.mapLocation || ''}
+              name="location"
+              value={form.location || ''}
               onChange={handleChange}
             />
           </div>
