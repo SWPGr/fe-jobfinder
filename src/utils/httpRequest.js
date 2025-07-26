@@ -27,7 +27,9 @@ httpRequest.interceptors.response.use(
                         }),
                     );
                 case 403:
-                    return Promise.reject(new Error('You do not have permission to perform this action.'));
+                    return Promise.reject(
+                        new Error({ code: 403, message: 'You do not have permission to perform this action.' }),
+                    );
                 case 429:
                     return Promise.reject(new Error('Too many requests. Please try again later.'));
                 default:

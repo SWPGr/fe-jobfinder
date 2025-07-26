@@ -135,7 +135,7 @@ function JobAlerts() {
                 ))}
             </div>
             {/* Phân trang Mantine */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, fontSize: '18px' }}>
+            <div className={cx('pagination-root')}>
                 <Pagination
                     total={totalPages}
                     value={page}

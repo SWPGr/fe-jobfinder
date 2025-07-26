@@ -5,6 +5,8 @@ import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
+import { JobSearchFilters } from '~/components';
+
 
 const cx = classNames.bind(styles);
 
@@ -230,8 +232,10 @@ const Jobs = () => {
             <div className={cx('jobs-header')}>
                 <h1 className={cx('title')}>Jobs Management</h1>
             </div>
+
+            <JobSearchFilters />
             {/* Thanh tìm kiếm ngang với các filter mới */}
-            <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
+            {/* <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
                 <div className={cx('search-box')} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
                     <Search className={cx('search-icon')} />
                     <input
@@ -293,6 +297,7 @@ const Jobs = () => {
                     ))}
                 </select>
                 <button className={cx('primary', 'filterBtn')} style={{ minWidth: 120 }} onClick={handleFindJob}>
+                    <IconAdjustments style={{ marginRight: 8, fontSize: 18 }} />
                     Find Job
                 </button>
                 <button
@@ -313,9 +318,10 @@ const Jobs = () => {
                         setSearchApplicationRange('');
                     }}
                 >
+                    <IconAdjustmentsOff style={{ marginRight: 8, fontSize: 18 }} />
                     Clear
                 </button>
-            </div>
+            </div> */}
             {/* Bảng jobs và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('jobs-table')}>
@@ -326,6 +332,7 @@ const Jobs = () => {
                             <th>Type</th>
                             <th>Salary Range</th>
                             <th>Applicants</th>
+                            <th>Status</th>
                             <th>Posted</th>
                             <th></th>
                         </tr>
@@ -353,7 +360,12 @@ const Jobs = () => {
                                         ${job.salaryMin} - ${job.salaryMax}
                                     </td>
                                     <td>{job.jobApplicationCounts || 0}</td>
-                                    <td>{job.createdAt?.split(' ')[0]}</td>
+                                    <td>
+                                        <span className={cx('job-status', job.active ? 'active' : 'inactive')}>
+                                            {job.active ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td>{job.createdAt ? job.createdAt.split(' ')[0].slice(5) : ''}</td>
                                     <td>
                                         <JobRowDropdown
                                             onAction={(action) => handleAction(action, job.id)}

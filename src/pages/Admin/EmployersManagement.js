@@ -7,6 +7,7 @@ import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 
 import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
+import { UserSearchFilters } from '~/components';
 
 const cx = classNames.bind(styles);
 
@@ -188,51 +189,8 @@ const EmployersManagement = () => {
                 <div className={cx('title')}>Employers Management</div>
             </div>
             {/* Thanh filter ngang hiện đại, giống trang Jobs */}
-            <div className={cx('toolbar')}>
-                <div className={cx('search-box')}>
-                    <Search className={cx('search-icon')} />
-                    <input
-                        placeholder="Search employers..."
-                        value={pendingSearch}
-                        onChange={(e) => handlePendingChange('search', e.target.value)}
-                    />
-                </div>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.location}
-                    onChange={(e) => handlePendingChange('location', e.target.value)}
-                >
-                    <option value="">Select location</option>
-                    {locationOptions.map((loc) => (
-                        <option key={loc} value={loc}>
-                            {loc}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.isPremium}
-                    onChange={(e) => handlePendingChange('isPremium', e.target.value)}
-                >
-                    <option value="">All</option>
-                    <option value="true">Premium</option>
-                    <option value="false">Normal</option>
-                </select>
-                <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
-                    Filter
-                </button>
-                <button
-                    className={cx('clearBtn')}
-                    onClick={() => {
-                        setPendingFilter({ location: '', isPremium: '' });
-                        setPendingSearch('');
-                        setFilter({ location: '', isPremium: '' });
-                        setSearch('');
-                    }}
-                >
-                    Clear
-                </button>
-            </div>
+            <UserSearchFilters />
+
             {/* Bảng employers và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('dataTable')}>
@@ -257,7 +215,7 @@ const EmployersManagement = () => {
                                 <td>{employer.email}</td>
                                 <td>{employer.location || '--'}</td>
                                 <td>{employer.phone || '--'}</td>
-                                <td>{employer.createdAt?.slice(0, 10) || '--'}</td>
+                                <td>{employer.createdAt ? employer.createdAt.slice(5, 10) : '--'}</td>
                                 <td>
                                     <span className={premiumClass(employer.isPremium)}>
                                         {employer.isPremium === true ? 'Premium' : 'Normal'}

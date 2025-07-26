@@ -16,5 +16,5 @@ export { default as ChatbotButton } from './ChatbotButton/ChatbotButton.js';
 export { default as NoResultsFound } from './NoResultsFound/NoResultsFound';
 export { default as CandidateCard } from './CandidateCard/CandidateCard';
 export { default as JobCard } from './JobCard/JobCard';
-export { default as CandidateSearchFilters } from './CandidateSearchFilter/CandidateSearchFilter';
+export { default as UserSearchFilters } from './UserSearchFilter/UserSearchFilter';
 export { default as JobSearchFilters } from './JobSearchFilter/JobSearchFilter';

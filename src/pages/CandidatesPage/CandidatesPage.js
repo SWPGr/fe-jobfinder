@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { CandidateCard, CandidateSearchFilters } from '~/components';
+import { CandidateCard, UserSearchFilters } from '~/components';
 import { UsersIcon, TrendingUpIcon, StarIcon } from 'lucide-react';
 import { useWindowScroll } from '@mantine/hooks';
 
@@ -112,7 +112,7 @@ const CandidatesPage = () => {
                 </div>
             </div>
             <div className="container mx-auto px-4 py-8">
-                <CandidateSearchFilters />
+                <UserSearchFilters />
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Main content - Candidate listings */}
                     <div className="lg:w-2/3">

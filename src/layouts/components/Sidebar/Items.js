@@ -10,6 +10,7 @@ import {
     IconNotebook,
     IconBuildingCommunity,
     IconChecklist,
+    IconFlag,
 } from '@tabler/icons-react';
 
 import classNames from 'classnames/bind';
@@ -35,6 +36,8 @@ import SettingAdmin from '~/pages/Admin/SettingAdmin';
 import Setting from '~/pages/DashBoard/Setting/Setting';
 import { CreditCard } from 'lucide-react';
 import PaymentManagement from '~/pages/Admin/PaymentManagement';
+
+import Reports from '~/pages/Admin/Reports';
 const cx = classNames.bind(styles);
 
 export const items = {
@@ -66,17 +69,23 @@ export const items = {
                 link: '/dashboard/job-seekers',
             },
             {
+                title: 'Payment',
+                icon: <CreditCard size={20} />,
+                link: '/dashboard/payment',
+                page: <PaymentManagement />,
+            },
+            {
+                title: 'Reports',
+                icon: <IconFlag />,
+                link: '/dashboard/reports',
+                page: <Reports />,
+            },
+            {
                 title: 'Settings',
                 icon: <IconSettings />,
 
                 link: '/dashboard/settings',
                 page: <SettingAdmin />,
-            },
-            {
-                title: 'Payment',
-                icon: <CreditCard size={20} />,
-                link: '/dashboard/payment',
-                page: <PaymentManagement />,
             },
         ],
     },
