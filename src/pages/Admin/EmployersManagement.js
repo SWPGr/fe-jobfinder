@@ -5,7 +5,6 @@ import { Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
-
 import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 import { UserSearchFilters } from '~/components';
 
@@ -19,6 +18,7 @@ const sortColumns = [
     { key: 'phone', label: 'Phone' },
     { key: 'createdAt', label: 'Joined' },
     { key: 'isPremium', label: 'Premium' },
+    { key: 'active', label: 'Active' },
 ];
 
 const EmployerRowDropdown = ({ onAction, employerId }) => {
@@ -87,7 +87,7 @@ const getInitials = (name) => {
 };
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
-//đưa về dạng không cần dấu
+
 function normalizeVN(str) {
     return (str || '')
         .normalize('NFD')
@@ -105,17 +105,14 @@ const EmployersManagement = () => {
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [filter, setFilter] = useState({ location: '', isPremium: '' });
-    // State tạm cho filter/search
     const [pendingFilter, setPendingFilter] = useState({ location: '', isPremium: '' });
     const [pendingSearch, setPendingSearch] = useState('');
     const [locationOptions, setLocationOptions] = useState([]);
 
-    // Fetch employers
     const fetchEmployers = useCallback(async () => {
         try {
             const data = await statisticsService.fetchAllEmployers();
             setEmployers(data || []);
-            // Lấy location unique
             const locations = Array.from(new Set((data || []).map((e) => e.location).filter(Boolean)));
             setLocationOptions(locations);
         } catch (err) {
@@ -127,9 +124,9 @@ const EmployersManagement = () => {
         fetchEmployers();
     }, [fetchEmployers]);
 
-    // Lọc employers theo filter và search keyword
     const filteredEmployers = useMemo(() => {
         return employers.filter((e) => {
+            if (e.isBlocked) return false; // Loại bỏ nhà tuyển dụng bị block
             const keyword = normalizeVN(search.trim());
             const matchKeyword =
                 !keyword ||
@@ -143,15 +140,23 @@ const EmployersManagement = () => {
         });
     }, [employers, filter, search]);
 
-    const handleAction = (action, employerId) => {
+    const handleAction = async (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
         if (action === 'block') {
-            if (window.confirm(`Are you sure you want to block employer ${employer.fullName || 'ID ' + employerId}?`)) {
-                setEmployers((prevEmployers) =>
-                    prevEmployers.map((employer) =>
-                        employer.id === employerId ? { ...employer, isBlocked: true } : employer,
-                    ),
-                );
+            if (window.confirm(`Bạn có chắc muốn chặn nhà tuyển dụng ${employer.fullName || 'ID ' + employerId}?`)) {
+                try {
+                    await statisticsService.blockEmployer(employerId);
+                    setEmployers((prevEmployers) =>
+                        prevEmployers.map((emp) =>
+                            emp.id === employerId ? { ...emp, isBlocked: true, active: false } : emp,
+                        ),
+                    );
+                    fetchEmployers();
+                    console.log('Employer blocked successfully');
+                } catch (err) {
+                    console.error('Lỗi khi chặn nhà tuyển dụng:', err);
+                    alert(`Không thể chặn nhà tuyển dụng. Lỗi: ${err.message || 'Không xác định'}`);
+                }
             }
         } else if (action === 'view') {
             setSelectedEmployer(employer);
@@ -172,12 +177,11 @@ const EmployersManagement = () => {
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
-    // Handler khi nhấn Filter
     const handleFilter = () => {
         setFilter(pendingFilter);
         setSearch(pendingSearch);
     };
-    // Handler khi thay đổi input/select
+
     const handlePendingChange = (field, value) => {
         if (field === 'search') setPendingSearch(value);
         else setPendingFilter((prev) => ({ ...prev, [field]: value }));
@@ -188,10 +192,7 @@ const EmployersManagement = () => {
             <div className={cx('jobs-header')}>
                 <div className={cx('title')}>Employers Management</div>
             </div>
-            {/* Thanh filter ngang hiện đại, giống trang Jobs */}
             <UserSearchFilters />
-
-            {/* Bảng employers và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('dataTable')}>
                     <thead>
@@ -217,8 +218,20 @@ const EmployersManagement = () => {
                                 <td>{employer.phone || '--'}</td>
                                 <td>{employer.createdAt ? employer.createdAt.slice(5, 10) : '--'}</td>
                                 <td>
-                                    <span className={premiumClass(employer.isPremium)}>
+                                    <span
+                                        className={cx(
+                                            'statusText',
+                                            employer.isPremium === true ? 'active' : 'inactive',
+                                        )}
+                                    >
                                         {employer.isPremium === true ? 'Premium' : 'Normal'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        className={cx('statusText', employer.active === true ? 'active' : 'inactive')}
+                                    >
+                                        {employer.active === true ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
                                 <td>
@@ -287,6 +300,7 @@ const EmployersManagement = () => {
                                     email: selectedEmployer.email || 'N/A',
                                     website: selectedEmployer.website || 'N/A',
                                 },
+                                active: selectedEmployer.active,
                             }}
                             editable={false}
                             onCancel={closeModal}

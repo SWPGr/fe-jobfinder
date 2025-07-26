@@ -7,6 +7,7 @@ import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import { useNotification } from '~/hooks';
 import { Search } from 'lucide-react';
+import { Badge } from '@mantine/core';
 
 const cx = classNames.bind(styles);
 
@@ -25,9 +26,9 @@ function getTokenFromLocalStorage() {
 }
 
 function AppliedJobs() {
-    const [jobs, setJobs] = useState([]);
-    const [page, setPage] = useState(1); // UI page (bắt đầu từ 1)
-    const [size, setSize] = useState(undefined); // Không set cứng, sẽ lấy từ BE
+    const [applications, setApplications] = useState([]);
+    const [page, setPage] = useState(1);
+    const [size, setSize] = useState(undefined);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,18 +46,27 @@ function AppliedJobs() {
     useEffect(() => {
         const fetchJobs = async () => {
             setLoading(true);
-            // Gửi page - 1 cho API, size lấy từ state (ban đầu undefined, BE sẽ trả về mặc định)
             const data = await JobSeekerDashboardService.getAppliedJobs({ page: page - 1, size, token });
             if (data && data.content) {
-                setJobs(data.content);
+                setApplications(
+                    data.content.map((app) => ({
+                        ...app,
+                        job: {
+                            ...app.job,
+                            salaryMin: app.job?.salaryMin || 0,
+                            salaryMax: app.job?.salaryMax || 0,
+                            location: app.job?.location || 'N/A',
+                        },
+                    })),
+                );
                 setTotalPages(data.totalPages || 1);
-                setSize(data.size); // Lấy đúng size từ BE trả về
+                setSize(data.size);
                 console.log(
-                    'Available job IDs:',
-                    data.content.map((job) => job.id),
+                    'Available application IDs:',
+                    data.content.map((app) => app.id),
                 );
             } else {
-                setJobs([]);
+                setApplications([]);
                 setTotalPages(1);
                 showError('No applied jobs found');
             }
@@ -65,22 +75,22 @@ function AppliedJobs() {
         fetchJobs();
     }, [page, size, token]);
 
-    // Filtered jobs by search and date
-    const filteredJobs = React.useMemo(() => {
-        let result = jobs;
+    const filteredApplications = React.useMemo(() => {
+        let result = applications;
         if (searchTerm) {
             const s = searchTerm.toLowerCase();
             result = result.filter(
-                (job) =>
-                    job.title?.toLowerCase().includes(s) ||
-                    job.employer?.companyName?.toLowerCase().includes(s) ||
-                    job.employer?.email?.toLowerCase().includes(s),
+                (app) =>
+                    app.job?.title?.toLowerCase().includes(s) ||
+                    app.job?.employer?.companyName?.toLowerCase().includes(s) ||
+                    app.job?.employer?.email?.toLowerCase().includes(s) ||
+                    app.job?.location?.toLowerCase().includes(s),
             );
         }
         if (dateFilter !== 'all') {
             const now = new Date();
-            result = result.filter((job) => {
-                const appliedDate = new Date(job.createdAt);
+            result = result.filter((app) => {
+                const appliedDate = new Date(app.appliedAt);
                 if (dateFilter === 'today') {
                     return appliedDate.toDateString() === now.toDateString();
                 } else if (dateFilter === '7days') {
@@ -94,13 +104,13 @@ function AppliedJobs() {
             });
         }
         return result;
-    }, [jobs, searchTerm, dateFilter]);
+    }, [applications, searchTerm, dateFilter]);
 
-    // Handler filter
     const handleFilter = () => {
         setSearchTerm(pendingSearchTerm);
         setDateFilter(pendingDateFilter);
     };
+
     const handleClear = () => {
         setPendingSearchTerm('');
         setPendingDateFilter('all');
@@ -108,18 +118,15 @@ function AppliedJobs() {
         setDateFilter('all');
     };
 
-    // ✅ ESC key close handler
     useEffect(() => {
         const handleEsc = (event) => {
             if (event.key === 'Escape') {
                 closeModal();
             }
         };
-
         if (isModalOpen) {
             document.addEventListener('keydown', handleEsc);
         }
-
         return () => {
             document.removeEventListener('keydown', handleEsc);
         };
@@ -139,6 +146,7 @@ function AppliedJobs() {
                     title: jobData.title || 'N/A',
                     salaryMin: jobData.salaryMin || 0,
                     salaryMax: jobData.salaryMax || 0,
+                    location: jobData.location || 'N/A',
                     employer: {
                         companyName: jobData.employer?.companyName || 'N/A',
                         email: jobData.employer?.email || 'N/A',
@@ -156,15 +164,19 @@ function AppliedJobs() {
                     createdAt: jobData.createdAt || 'N/A',
                     expiredDate: jobData.expiredDate || 'N/A',
                     description: jobData.description || '<p>No description available</p>',
-                    location: jobData.location || 'N/A',
                     isApplied: jobData.isApplied || true,
                 };
                 setSelectedJob(normalizedJob);
                 setIsModalOpen(true);
             } else {
-                const existingJob = jobs.find((j) => j.id === jobId);
-                if (existingJob) {
-                    setSelectedJob(existingJob);
+                const existingApp = applications.find((a) => a.job?.id === jobId);
+                if (existingApp) {
+                    setSelectedJob({
+                        ...existingApp.job,
+                        salaryMin: existingApp.job?.salaryMin || 0,
+                        salaryMax: existingApp.job?.salaryMax || 0,
+                        location: existingApp.job?.location || 'N/A',
+                    });
                     setIsModalOpen(true);
                 } else {
                     showError('Job details not found');
@@ -183,10 +195,37 @@ function AppliedJobs() {
         setSelectedJob(null);
     };
 
+    function StatusBadge({ status }) {
+        let color = 'gray',
+            label = status || 'Unknown';
+        switch ((status || '').toUpperCase()) {
+            case 'PENDING':
+                color = 'yellow';
+                label = 'Pending';
+                break;
+            case 'APPROVED':
+            case 'ACCEPTED':
+                color = 'green';
+                label = 'Approved';
+                break;
+            case 'REJECTED':
+            case 'DENIED':
+                color = 'red';
+                label = 'Rejected';
+                break;
+            default:
+                break;
+        }
+        return (
+            <Badge color={color} size="lg">
+                {label}
+            </Badge>
+        );
+    }
+
     return (
         <div className={cx('applied-jobs-wrapper')}>
             <h3 className={cx('title')}>Applied Jobs</h3>
-            {/* Thanh filter ngang hiện đại */}
             <div className={cx('toolbar')}>
                 <div className={cx('search-box')}>
                     <Search className={cx('search-icon')} />
@@ -216,49 +255,44 @@ function AppliedJobs() {
                     Clear
                 </button>
             </div>
-            {/* Table header và danh sách jobs giữ nguyên, thay jobs -> filteredJobs */}
             <div className={cx('table-header')}>
                 <span>JOBS</span>
-                <span>DATE APPLIED</span>
-                <span>STATUS</span>
-                <span>ACTION</span>
             </div>
             <div className={cx('job-list')}>
                 {loading ? (
                     <div>Loading...</div>
-                ) : filteredJobs.length === 0 ? (
+                ) : filteredApplications.length === 0 ? (
                     <div style={{ padding: 32, textAlign: 'center', color: '#888' }}>No jobs found.</div>
                 ) : (
-                    filteredJobs.map((job, index) => (
-                        <div key={job.id || index} className={cx('job-item')}>
-                            <JobItemApplied
-                                image={job.employer?.avatarUrl || ''}
-                                jobDescription={{
-                                    companyName: job.employer?.companyName || '',
-                                    companyAddress: job.employer?.location || '',
-                                    jobTitle: job.title || '',
-                                    workTime: job.jobType?.name || '',
-                                    salary:
-                                        job.salaryMin && job.salaryMax
-                                            ? `$${job.salaryMin} - $${job.salaryMax}`
-                                            : 'Negotiable',
-                                    dateApplied: new Date(job.createdAt).toLocaleDateString('en-GB', {
-                                        day: 'numeric',
-                                        month: 'numeric',
-                                    }),
-                                    dueDate: job.expiredDate
-                                        ? new Date(job.expiredDate).toLocaleDateString('en-GB', {
-                                              day: 'numeric',
-                                              month: 'numeric',
-                                          })
-                                        : '',
-                                    isActive: job.active,
-                                }}
-                                isVIP={job.employer?.isPremium || false}
-                                onViewDetails={() => handleViewDetails(job.id)}
-                            />
-                        </div>
-                    ))
+                    filteredApplications.map((application, index) => {
+                        const appliedDate = application.appliedAt
+                            ? new Date(application.appliedAt).toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                              })
+                            : '';
+                        return (
+                            <div key={application.id || index} className={cx('job-item-row')}>
+                                <JobItemApplied
+                                    image={application.job?.employer?.avatarUrl || ''}
+                                    jobDescription={{
+                                        companyName: application.job?.employer?.companyName || '',
+                                        companyAddress: application.job?.location || '',
+                                        jobTitle: application.job?.title || '',
+                                        workTime: application.job?.jobType?.name || '',
+                                        salary:
+                                            application.job?.salaryMin && application.job?.salaryMax
+                                                ? `$${application.job.salaryMin} - $${application.job.salaryMax}`
+                                                : 'Negotiable',
+                                    }}
+                                    isVIP={application.job?.employer?.isPremium || false}
+                                    appliedDate={appliedDate}
+                                    status={application.status}
+                                    onViewDetails={() => handleViewDetails(application.job.id)}
+                                />
+                            </div>
+                        );
+                    })
                 )}
             </div>
             <div

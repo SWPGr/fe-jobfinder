@@ -761,3 +761,7 @@
     border: 1.5px solid #1976d2;
     outline: none;
 }
+.statusText.blocked {
+    color: #ff4444; // Màu đỏ để dễ nhận diện
+    font-weight: bold;
+}

@@ -7,7 +7,6 @@ import statisticsService from '~/services/statisticsService';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
 import { JobSearchFilters } from '~/components';
 
-
 const cx = classNames.bind(styles);
 
 const JobRowDropdown = ({ onAction, jobId }) => {
@@ -125,13 +124,25 @@ const Jobs = () => {
         fetchOptions();
     }, []);
 
-    const handleAction = (action, jobId) => {
+    const handleAction = async (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
         if (action === 'view') {
             setSelectedJob(job);
             setIsModalOpen(true);
         } else if (action === 'block') {
-            setJobs((prevJobs) => prevJobs.map((job) => (job.id === jobId ? { ...job, isBlocked: true } : job)));
+            if (window.confirm(`Bạn có chắc muốn chặn công việc ${job.title || 'ID ' + jobId}?`)) {
+                try {
+                    await statisticsService.blockJob(jobId); // Gọi API để block job
+                    setJobs((prevJobs) =>
+                        prevJobs.map((j) => (j.id === jobId ? { ...j, isBlocked: true, active: false } : j)),
+                    );
+                    fetchJobs(); // Reload danh sách jobs để đồng bộ với server
+                    console.log('Job blocked successfully');
+                } catch (err) {
+                    console.error('Lỗi khi chặn công việc:', err);
+                    alert(`Không thể chặn công việc. Lỗi: ${err.message || 'Không xác định'}`);
+                }
+            }
         }
     };
 
@@ -149,25 +160,28 @@ const Jobs = () => {
         closeModal();
     };
 
+    const fetchJobs = async () => {
+        setLoading(true);
+        try {
+            const data = await statisticsService.fetchAllJobs();
+            const jobArray = data?.content || [];
+            setJobs(jobArray);
+            console.log('Fetched jobs:', jobArray); // Log để debug
+        } catch (err) {
+            setJobs([]);
+            console.error('Failed to fetch jobs:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchJobs = async () => {
-            setLoading(true);
-            try {
-                const data = await statisticsService.fetchAllJobs();
-                const jobArray = data?.content || [];
-                setJobs(jobArray);
-            } catch (err) {
-                setJobs([]);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchJobs();
     }, []);
 
     // Filtered jobs
     const filteredJobs = React.useMemo(() => {
-        let result = jobs;
+        let result = jobs.filter((j) => !j.isBlocked); // Loại bỏ job bị block
         if (searchLocation) {
             result = result.filter((j) => j.location === searchLocation);
         }
@@ -234,94 +248,7 @@ const Jobs = () => {
             </div>
 
             <JobSearchFilters />
-            {/* Thanh tìm kiếm ngang với các filter mới */}
-            {/* <div className={cx('toolbar')} style={{ display: 'flex', gap: 16, alignItems: 'center', marginBottom: 24 }}>
-                <div className={cx('search-box')} style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Search className={cx('search-icon')} />
-                    <input
-                        type="text"
-                        placeholder="Enter job title or keyword"
-                        value={pendingFilter.searchTerm}
-                        onChange={(e) => handlePendingChange('searchTerm', e.target.value)}
-                        style={{ flex: 1, minWidth: 200 }}
-                    />
-                </div>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchLocation}
-                    onChange={(e) => handlePendingChange('searchLocation', e.target.value)}
-                    style={{ minWidth: 150 }}
-                >
-                    <option value="">Select location</option>
-                    {locationOptions.map((loc) => (
-                        <option key={loc} value={loc}>
-                            {loc}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchType}
-                    onChange={(e) => handlePendingChange('searchType', e.target.value)}
-                    style={{ minWidth: 130 }}
-                >
-                    <option value="">All Types</option>
-                    {jobTypeOptions.map((type) => (
-                        <option key={type} value={type}>
-                            {type}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchSalaryRange}
-                    onChange={(e) => handlePendingChange('searchSalaryRange', e.target.value)}
-                    style={{ minWidth: 130 }}
-                >
-                    {salaryRanges.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-                <select
-                    className={cx('filterSelect')}
-                    value={pendingFilter.searchApplicationRange}
-                    onChange={(e) => handlePendingChange('searchApplicationRange', e.target.value)}
-                    style={{ minWidth: 110 }}
-                >
-                    {applicationRanges.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-                <button className={cx('primary', 'filterBtn')} style={{ minWidth: 120 }} onClick={handleFindJob}>
-                    <IconAdjustments style={{ marginRight: 8, fontSize: 18 }} />
-                    Find Job
-                </button>
-                <button
-                    className={cx('clearBtn')}
-                    style={{ minWidth: 100 }}
-                    onClick={() => {
-                        setPendingFilter({
-                            searchTerm: '',
-                            searchLocation: '',
-                            searchType: '',
-                            searchSalaryRange: '',
-                            searchApplicationRange: '',
-                        });
-                        setSearchTerm('');
-                        setSearchLocation('');
-                        setSearchType('');
-                        setSearchSalaryRange('');
-                        setSearchApplicationRange('');
-                    }}
-                >
-                    <IconAdjustmentsOff style={{ marginRight: 8, fontSize: 18 }} />
-                    Clear
-                </button>
-            </div> */}
+
             {/* Bảng jobs và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
                 <table className={cx('jobs-table')}>
@@ -439,6 +366,7 @@ const Jobs = () => {
                                     email: selectedJob.employer?.email || 'N/A',
                                     website: selectedJob.employer?.website || 'N/A',
                                 },
+                                active: selectedJob.active, // Thêm trạng thái active
                             }}
                             editable={isModalOpen === 'edit'} // Chỉnh sửa khi nhấn Edit
                             onSave={handleSave}
