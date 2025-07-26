@@ -8,36 +8,38 @@ import {
     IconUserCircle,
     IconCirclePlus,
     IconNotebook,
-    IconBuildingCommunity,
     IconChecklist,
     IconFlag,
 } from '@tabler/icons-react';
+import { lazy } from 'react';
 
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
-
-import Dashboard1 from '../../../pages/DashBoard/Dashboard';
-import AppliedJobs from '../../../pages/DashBoard/AppliedJobs/AppliedJobs';
-import FavoriteJobs from '../../../pages/DashBoard/FavoriteJobs/FavoriteJobs';
-import JobAlerts from '~/pages/DashBoard/JobAlerts/JobAlerts';
-
-import SettingsPage from '~/pages/CreateCVSeeker/SettingsPage';
-import PostJob from '~/pages/CreateCVSeeker/PostJob';
-import SavedCandidates from '~/pages/CreateCVSeeker/SavedCandidates';
-import MyJob from '~/pages/CreateCVSeeker/MyJob';
-import PlansBilling from '~/pages/CreateCVSeeker/PlansBilling';
-import Overview1 from '~/pages/CreateCVSeeker/Overview1';
-import Single from '~/pages/Single/Single';
-import DashboardOverview from '~/pages/Admin/DashboardOverview';
-import EmployersManagement from '~/pages/Admin/EmployersManagement';
-import JobSeekersManagement from '../../../pages/Admin/JobSeekersManagement';
-import Jobs from '~/pages/Admin/components/Jobs';
-import SettingAdmin from '~/pages/Admin/SettingAdmin';
-import Setting from '~/pages/DashBoard/Setting/Setting';
 import { CreditCard } from 'lucide-react';
-import PaymentManagement from '~/pages/Admin/PaymentManagement';
 
-import Reports from '~/pages/Admin/Reports';
+const AppliedJobs = lazy(() => import('~/pages/DashBoard/AppliedJobs/AppliedJobs'));
+const FavoriteJobs = lazy(() => import('~/pages/DashBoard/FavoriteJobs/FavoriteJobs'));
+const JobAlerts = lazy(() => import('~/pages/DashBoard/JobAlerts/JobAlerts'));
+
+const SettingsPage = lazy(() => import('~/pages/CreateCVSeeker/SettingsPage'));
+const PostJob = lazy(() => import('~/pages/CreateCVSeeker/PostJob'));
+const SavedCandidates = lazy(() => import('~/pages/CreateCVSeeker/SavedCandidates'));
+const MyJob = lazy(() => import('~/pages/CreateCVSeeker/MyJob'));
+const PlansBilling = lazy(() => import('~/pages/CreateCVSeeker/PlansBilling'));
+const Overview1 = lazy(() => import('~/pages/CreateCVSeeker/Overview1'));
+const Single = lazy(() => import('~/pages/Single/Single'));
+const DashboardOverview = lazy(() => import('~/pages/Admin/DashboardOverview'));
+const EmployersManagement = lazy(() => import('~/pages/Admin/EmployersManagement'));
+const JobSeekersManagement = lazy(() => import('~/pages/Admin/JobSeekersManagement'));
+const Jobs = lazy(() => import('~/pages/Admin/components/Jobs'));
+const SettingAdmin = lazy(() => import('~/pages/Admin/SettingAdmin'));
+const Setting = lazy(() => import('~/pages/DashBoard/Setting/Setting'));
+const PaymentManagement = lazy(() => import('~/pages/Admin/PaymentManagement'));
+
+const Reports = lazy(() => import('~/pages/Admin/Reports'));
+
+const Dashboard1 = lazy(() => import('~/pages/DashBoard/Dashboard'));
+
 const cx = classNames.bind(styles);
 
 export const items = {

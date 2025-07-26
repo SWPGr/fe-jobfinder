@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
-import { Search } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 
-import { IconAdjustments, IconAdjustmentsOff } from '@tabler/icons-react';
 import { UserSearchFilters } from '~/components';
 
 const cx = classNames.bind(styles);

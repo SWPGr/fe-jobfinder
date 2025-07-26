@@ -5,7 +5,6 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    padding: 3.2rem;
     min-height: 100vh;
 }
 
@@ -125,8 +124,8 @@
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
     overflow-x: auto;
-    max-height: 50rem;
-    overflow-y: auto;
+    // max-height: 50rem;
+    // overflow-y: auto;
 }
 
 @media (max-width: 1024px) {
