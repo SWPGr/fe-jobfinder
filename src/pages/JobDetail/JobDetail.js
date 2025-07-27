@@ -28,6 +28,7 @@ import { useWindowScroll } from '@mantine/hooks';
 import ApplyButton from '~/components/Button/ApplyButton';
 import { useAuth } from '~/context/AuthContext';
 import { useNotification } from '~/hooks';
+import { InputPlaceholder } from '@mantine/core';
 
 const cx = classNames.bind(styles);
 
@@ -102,7 +103,6 @@ const JobDetail = ({
       ...data,
       salaryMin: data.salaryMin ?? '',
       salaryMax: data.salaryMax ?? '',
-      expiredDate: data.expiredDate || '',
       email: data.email || data.employer?.email || '',
       roleName: data.roleName || data.employer?.roleName || '',
       phone: data.phone || data.employer?.phone || '',
@@ -110,6 +110,8 @@ const JobDetail = ({
       experience: findObjectByIdOrName(experiences, data.experience),
       jobLevel: findObjectByIdOrName(jobLevels, data.jobLevel),
       jobType: findObjectByIdOrName(jobTypes, data.jobType),
+      responsibility: data.responsibility || data.responsibility || '',
+      description: data.description || data.jobDescription || '',
       company: {
         avatarUrl: data.company?.avatarUrl || data.employer?.avatarUrl || '',
         logoUrl: data.company?.logoUrl || data.employer?.avatarUrl || '',
@@ -126,11 +128,9 @@ const JobDetail = ({
       tags: data.tags || '',
       jobRole: data.jobRole || '',
       contactUrl: data.contactUrl || '',
-      vacancies: data.vacancies || '',
       createdAt: data.createdAt || data.postedAt || '',
     };
   };
-  console.log('formData:', formData);
 
   // Load job detail
   useEffect(() => {
@@ -153,6 +153,8 @@ const JobDetail = ({
           const response = await EmployerService.getJobDetail(id);
           jobData = response.data;
         }
+        console.log('Fetched job data:', jobData);
+
         setFormData(normalizeData(jobData));
       } catch (error) {
         console.error('Error fetching job detail:', error);
@@ -251,8 +253,7 @@ const JobDetail = ({
       showError('Job ID missing for update');
       return;
     }
-    console.log('Updating job with data:', formData);
-
+    console.log('handleUpdateJob called', new Date().toISOString()); // Log when function is called
     setLoading(true);
     try {
       const payload = {
@@ -268,8 +269,7 @@ const JobDetail = ({
       };
       delete payload.createdAt;
       delete payload.badges;
-
-      console.log('Payload update:', payload); // <-- Đặt sau khi khai báo payload
+      delete payload.expiredDate;
 
       const updated = await EmployerService.updateJob(formData.id, payload);
       setFormData(normalizeData(updated.data || formData));
@@ -309,30 +309,29 @@ const JobDetail = ({
     const zip = new JSZip();
 
     const jobContent = `
-Job Title: ${formData.title || formData.jobTitle || ''}
-Tags: ${formData.tags || ''}
-Job Role: ${formData.jobRole || ''}
-Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''} ${formData.salaryType || ''}
-Education: ${formData.education?.name || ''}
-Experience: ${formData.experience?.name || ''}
-Job Type: ${formData.jobType?.name || ''}
-Vacancies: ${formData.vacancies || ''}
-Expiration Date: ${formData.expiredDate || ''}
-Job Level: ${formData.jobLevel?.name || ''}
-Contact URL: ${formData.contactUrl || ''}
-Phone: ${formData.phone || ''}
-Email: ${formData.email || ''}
-Job Description: ${formData.description || ''}
-Responsibilities: ${formData.responsibility || ''}
-Overview:
+  Job Title: ${formData.title || formData.jobTitle || ''}
+  Tags: ${formData.tags || ''}
+  Job Role: ${formData.jobRole || ''}
+  Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''} ${formData.salaryType || ''}
+  Education: ${formData.education?.name || ''}
+  Experience: ${formData.experience?.name || ''}
+  Job Type: ${formData.jobType?.name || ''}
+  Vacancies: ${formData.vacancy || ''}
+  Expiration Date: ${formData.expiredDate || ''}
+  Job Level: ${formData.jobLevel?.name || ''}
+  Contact URL: ${formData.contactUrl || ''}
+  Phone: ${formData.phone || ''}
+  Email: ${formData.email || ''}
+  Job Description: ${formData.description || ''}
+  Responsibilities: ${formData.responsibility || ''}
+  Overview:
   Posted: ${formData.createdAt ? new Date(formData.createdAt).toLocaleDateString() : ''}
-  Expire: ${formData.expiredDate || ''}
   Education: ${formData.education?.name || ''}
   Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''}
   Location: ${formData.location || ''}
   Job Type: ${formData.jobType?.name || ''}
   Experience: ${formData.experience?.name || ''}
-  Vacancies: ${formData.vacancies || ''}
+  Vacancies: ${formData.vacancy || ''}
   Job Level: ${formData.jobLevel?.name || ''}
 Company:
   Name: ${formData.company?.companyName || formData.company?.name || ''}
@@ -408,7 +407,7 @@ Company:
                   )}
               </div>
             )}
-            <div className={cx('contact')}>
+            {/* <div className={cx('contact')}>
               {editable ? (
                 <>
                   <input
@@ -452,8 +451,8 @@ Company:
                   </span>
                 </>
               )}
-            </div>
-            {editable ? (
+            </div> */}
+            {/* {editable ? (
               <>
                 <div className={cx('inputgroup')}>
                   <label>Tags:</label>
@@ -484,7 +483,7 @@ Company:
                   <strong>Job Role:</strong> {formData.jobRole}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -496,6 +495,7 @@ Company:
               placeholder="Add your job description..."
               onChange={(value) => handleChange({ target: { value } }, 'description')}
               content={formData.description || ''}
+              value={formData.description || ''}
             />
           ) : (
             <div
@@ -513,6 +513,7 @@ Company:
               placeholder="Add your job responsibilities..."
               onChange={(value) => handleChange({ target: { value } }, 'responsibility')}
               content={formData.responsibility || ''}
+              value={formData.responsibility || ''}
             />
           ) : (
             <div
@@ -551,7 +552,6 @@ Company:
                 icon: <IconWallet />,
                 render: () => `${formData.salaryMax || ''}`,
               },
-
               {
                 key: 'location',
                 label: 'Location',
@@ -564,7 +564,7 @@ Company:
                 options: jobTypes,
               },
               {
-                key: 'vacancies',
+                key: 'vacancy',
                 label: 'Vacancies',
                 icon: <IconUsers />,
               },
@@ -594,18 +594,13 @@ Company:
                           </option>
                         ))}
                       </select>
-                    ) : key === 'vacancies' ? (
-                      <select
+                    ) : key === 'vacancy' ? (
+                      <input
                         name={key}
                         value={formData[key] || ''}
                         onChange={handleChange}
                         className={cx('editable-input', 'overview-item__value')}
-                      >
-                        <option value="">Select...</option>
-                        <option value="1">1</option>
-                        <option value="2-5">2-5</option>
-                        <option value="5+">5+</option>
-                      </select>
+                      />
                     ) : (
                       <input
                         type={key === 'expiredDate' ? 'date' : 'text'}
@@ -617,9 +612,10 @@ Company:
                     )
                   ) : (
                     <strong className={cx('overview-item__value')}>
-                      {render
-                        ? render(formData[key])
-                        : formData[key]?.name || formData[key] || ''}
+                      {
+                        render
+                          ? render(formData[key])
+                          : formData[key]?.name || formData[key] || ''}
                     </strong>
                   )}
                 </div>
@@ -627,8 +623,7 @@ Company:
             ))}
           </div>
         </div>
-
-        <div className={cx('company-info')}>
+        {!editable && <div className={cx('company-info')}>
           <div className={cx('company-info__title')}>
             {formData.company?.companyName || formData.company?.name}
           </div>
@@ -710,6 +705,8 @@ Company:
             </a>
           </div>
         </div>
+        }
+
 
         {editable && (
           <div style={{ marginTop: 20 }}>

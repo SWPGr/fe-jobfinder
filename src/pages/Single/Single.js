@@ -100,9 +100,9 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
               </p>
 
               <h4 className={cx('title2')}>Company Vision</h4>
-              <p className={cx('companyVision')}>
+              <div className={cx('companyVision')}>
                 <div dangerouslySetInnerHTML={{ __html: companyInfo.companyVision || 'No vision statement available.' }} />
-              </p>
+              </div>
 
               <div className={cx('shareProfile')}>
                 <button className={cx('linkButton', 'noUnderline')} aria-label="Facebook">

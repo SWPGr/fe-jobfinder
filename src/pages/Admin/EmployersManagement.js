@@ -256,15 +256,14 @@ const EmployersManagement = () => {
                                 education: 'N/A',
                                 experience: 'N/A',
                                 jobType: 'N/A',
-                                vacancies: 'N/A',
+                                vacancy: selectedEmployer.vacancy || 'N/A',
                                 expirationDate: 'N/A',
                                 jobLevel: selectedEmployer.isPremium ? 'Premium' : 'Normal',
                                 contactUrl: selectedEmployer.website || 'N/A',
                                 phone: selectedEmployer.phone || 'N/A',
                                 email: selectedEmployer.email || 'N/A',
-                                jobDescription: `<p>Details for employer ${
-                                    selectedEmployer.fullName || 'ID ' + selectedEmployer.id
-                                }</p>`,
+                                jobDescription: `<p>Details for employer ${selectedEmployer.fullName || 'ID ' + selectedEmployer.id
+                                    }</p>`,
                                 responsibilities: '<ul><li>Manage company operations</li></ul>',
                                 overview: {
                                     posted: selectedEmployer.createdAt?.slice(0, 10) || 'N/A',
@@ -274,7 +273,7 @@ const EmployersManagement = () => {
                                     location: selectedEmployer.location || 'N/A',
                                     jobType: 'N/A',
                                     experience: 'N/A',
-                                    vacancies: 'N/A',
+                                    vacancy: 'N/A',
                                     jobLevel: selectedEmployer.isPremium ? 'Premium' : 'Normal',
                                 },
                                 company: {

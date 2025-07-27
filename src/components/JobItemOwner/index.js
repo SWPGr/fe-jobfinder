@@ -65,6 +65,7 @@ const normalizeJobData = (data) => {
     isActive,
     numberApplications: data.numberApplications || 0,
     workTime,
+    vacancy: data.vacancy || 1,
     remainDay,
     company: data.employer
       ? {
@@ -101,10 +102,6 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
   try {
     if (deleteFlag) {
       const response = await EmployerService.deleteJob(id);
-      return response.data || {};
-    }
-    if (updatedData) {
-      const response = await EmployerService.updateJob(id, updatedData);
       return response.data || {};
     }
     const response = await EmployerService.getJobDetail(id);

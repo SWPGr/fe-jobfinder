@@ -7,6 +7,7 @@ const API_URL = 'http://localhost:8080/api/job';
 // Các hàm axios thuần cho các API job chi tiết (có thể dùng thay thế hoặc bổ sung)
 const getJobDetail = (id) => axios.get(`${API_URL}/${id}`);
 const updateJob = (id, data) => {
+    console.log('Updating jobbbbb:');
     return axios.put(`${API_URL}/${id}`, data);
 };
 const deleteJob = (id) => axios.delete(`${API_URL}/${id}`);
@@ -185,10 +186,6 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
             const response = await EmployerService.deleteJob(id);
             return response.data || {};
         }
-        if (updatedData) {
-            const response = await EmployerService.updateJob(id, updatedData);
-            return response.data || {};
-        }
         const response = await EmployerService.getJobDetail(id);
         return response.data || {};
     } catch (error) {
@@ -210,66 +207,66 @@ const fetchSettingFake = async (updatedData) => {
     }
 };
 const fetchApplicationFake = async (jobId) => {
-  const response = await get(`/apply/${jobId}`);
-  return response?.result || [];
+    const response = await get(`/apply/${jobId}`);
+    return response?.result || [];
 };
 const fetchCandidateDetail = async (applicationId) => {
-  const response = await get(`/apply/candidates/${applicationId}`);
-  return response?.result || null;
+    const response = await get(`/apply/candidates/${applicationId}`);
+    return response?.result || null;
 };
 
 const fetchResume = async ({ applicationId }) => {
-  if (!applicationId) throw new Error("applicationId is required");
-  const response = await get(`/apply/${applicationId}/summarize-resume`);
-  return response?.result || null;
+    if (!applicationId) throw new Error("applicationId is required");
+    const response = await get(`/apply/${applicationId}/summarize-resume`);
+    return response?.result || null;
 };
 const fetchStatus = async () => {
-  const response = await get(`/apply/statuses`);
-  return response?.result || null;
+    const response = await get(`/apply/statuses`);
+    return response?.result || null;
 };
 const fetchApplicationData = async (id, type = 'application') => {
-  try {
-    let response;
-    if (type === 'application') {
-      response = await get(`/apply/${id}`);
-    } else if (type === 'candidates') {
-      response = await get(`/apply/candidates/${id}`);
-    } else if (type === 'user') {
-      // Gọi API lấy resume summary theo userId
-      response = await get(`/apply/${id}/summarize-resume`);
-    } else {
-      throw new Error('Invalid fetch type');
+    try {
+        let response;
+        if (type === 'application') {
+            response = await get(`/apply/${id}`);
+        } else if (type === 'candidates') {
+            response = await get(`/apply/candidates/${id}`);
+        } else if (type === 'user') {
+            // Gọi API lấy resume summary theo userId
+            response = await get(`/apply/${id}/summarize-resume`);
+        } else {
+            throw new Error('Invalid fetch type');
+        }
+        return response?.result || null;
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
     }
-    return response?.result || null;
-  } catch (error) {
-    console.error('Fetch error:', error);
-    return null;
-  }
 };
 const EmployerService = {
-  getJobDetail,
-  updateJob,
-  deleteJob,
-  fetchTotalJobs,
-  fetchCreateJob,
-  fetchJobTypesFake,
-  fetchJobLevelFake,
-  fetchJobEmployerFake,
-  fetchApplicationData,
-  fetchMyJobFake,
-  fetchCandidateDetail,
-  fetchEmployerProfile,
-  fetchEducationFake,
-  fetchSocialLinkFake,
-  fetchExperienceFake,
-  fetchPostJobFake,
-  fetchSettingFake,
-  fetchStatus,
-  fetchEmployerProfileFake,
-  fetchJobDetailFake,
-  fetchCategoriesFake,
-  fetchApplicationFake,
-  fetchResume,
+    getJobDetail,
+    updateJob,
+    deleteJob,
+    fetchTotalJobs,
+    fetchCreateJob,
+    fetchJobTypesFake,
+    fetchJobLevelFake,
+    fetchJobEmployerFake,
+    fetchApplicationData,
+    fetchMyJobFake,
+    fetchCandidateDetail,
+    fetchEmployerProfile,
+    fetchEducationFake,
+    fetchSocialLinkFake,
+    fetchExperienceFake,
+    fetchPostJobFake,
+    fetchSettingFake,
+    fetchStatus,
+    fetchEmployerProfileFake,
+    fetchJobDetailFake,
+    fetchCategoriesFake,
+    fetchApplicationFake,
+    fetchResume,
 };
 
 export default EmployerService;
