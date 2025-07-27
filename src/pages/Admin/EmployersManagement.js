@@ -121,6 +121,17 @@ const EmployersManagement = () => {
 
     const handleAction = async (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
+        const fetchEmployers = async () => {
+            setLoading(true);
+            try {
+                const data = await statisticsService.fetchAllEmployers();
+                setEmployers(data || []);
+                setLoading(false);
+            } catch (err) {
+                setLoading(false);
+                setError(err.message || 'Failed to fetch employers');
+            }
+        }
         if (action === 'block') {
             if (window.confirm(`Bạn có chắc muốn chặn nhà tuyển dụng ${employer.fullName || 'ID ' + employerId}?`)) {
                 try {
