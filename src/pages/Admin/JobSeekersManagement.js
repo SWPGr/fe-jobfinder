@@ -17,6 +17,7 @@ const sortColumns = [
     { key: 'applications', label: 'Applications' },
     { key: 'isPremium', label: 'Premium' },
     { key: 'createdAt', label: 'Joined' },
+    { key: 'active', label: 'Active' }, // Thêm cột Active
 ];
 
 const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
@@ -77,6 +78,15 @@ const getInitials = (name) => {
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
 
+function normalizeVN(str) {
+    return (str || '')
+        .normalize('NFD')
+        .replace(/[ -\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D')
+        .toLowerCase();
+}
+
 const JobSeekersManagement = () => {
     const [jobSeekers, setJobSeekers] = useState([]);
     const [error, setError] = useState('');
@@ -99,19 +109,26 @@ const JobSeekersManagement = () => {
                 setLoading(false);
                 setError(err.message || 'Failed to fetch job seekers');
             }
+
         }
         fetchJobSeekers();
     }, [searchParams]);
 
-
-
-    const handleAction = (action, seekerId) => {
+    const handleAction = async (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
         if (action === 'block') {
-            if (window.confirm(`Are you sure you want to block job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
-                setJobSeekers((prevSeekers) =>
-                    prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: true } : s)),
-                );
+            if (window.confirm(`Bạn có chắc muốn chặn job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
+                try {
+                    await statisticsService.blockJobSeeker(seekerId); // Gọi API để block
+                    setJobSeekers((prevSeekers) =>
+                        prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: true, active: false } : s)),
+                    );
+                    fetchJobSeekers(); // Đồng bộ từ server
+                    console.log('Job seeker blocked successfully');
+                } catch (err) {
+                    console.error('Lỗi khi chặn job seeker:', err);
+                    alert(`Không thể chặn job seeker. Lỗi: ${err.message || 'Không xác định'}`);
+                }
             }
         } else if (action === 'view') {
             setSelectedSeeker(seeker);
@@ -145,10 +162,7 @@ const JobSeekersManagement = () => {
                 <div className={cx('title')}>Job Seekers Management</div>
             </div>
 
-            {/* Toolbar filter ngang hiện đại */}
-
             <UserSearchFilters />
-
 
             <div className={cx('jobs-table-wrapper')}>
                 <table className={cx('jobs-table')}>
@@ -180,6 +194,11 @@ const JobSeekersManagement = () => {
                                     </span>
                                 </td>
                                 <td>{seeker.createdAt?.slice(0, 10) || '--'}</td>
+                                <td>
+                                    <span className={cx('statusText', seeker.active === true ? 'active' : 'inactive')}>
+                                        {seeker.active === true ? 'Active' : 'Inactive'}
+                                    </span>
+                                </td>
                                 <td>
                                     <JobSeekerRowDropdown
                                         onAction={(action) => handleAction(action, seeker.id)}
