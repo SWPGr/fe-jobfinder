@@ -6,6 +6,7 @@ import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
 import { JobSearchFilters } from '~/components';
 import { useSearchParams } from 'react-router-dom';
 import { jobService } from '~/services';
+import { Pagination } from '@mantine/core';
 
 const cx = classNames.bind(styles);
 
@@ -67,13 +68,15 @@ const JobRowDropdown = ({ onAction, jobId }) => {
 };
 
 const Jobs = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [visibleJobs, setVisibleJobs] = useState(10);
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [totalHits, setTotalHits] = useState(1);
+    const totalPages = Math.ceil(totalHits / 10);
 
     const handleAction = (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
@@ -83,10 +86,6 @@ const Jobs = () => {
         } else if (action === 'block') {
             setJobs((prevJobs) => prevJobs.map((job) => (job.id === jobId ? { ...job, isBlocked: true } : job)));
         }
-    };
-
-    const loadMoreJobs = () => {
-        setVisibleJobs((prev) => prev + 10);
     };
 
     const closeModal = () => {
@@ -107,6 +106,7 @@ const Jobs = () => {
                 const data = await jobService.searchJob(entries);
                 const jobArray = data?.data || [];
                 setJobs(jobArray);
+                setTotalHits(data.totalHits);
             } catch (err) {
                 setJobs([]);
             } finally {
@@ -115,6 +115,21 @@ const Jobs = () => {
         };
         fetchJobs();
     }, [searchParams]);
+
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+    };
+    const handlePageChange = (page) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', page);
+        setSearchParams(params);
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -134,7 +149,7 @@ const Jobs = () => {
                 <table className={cx('jobs-table')}>
                     <thead>
                         <tr>
-                            <th>Job Title & Company</th>
+                            <th>Job Title</th>
                             <th>Location</th>
                             <th>Type</th>
                             <th>Salary Range</th>
@@ -172,7 +187,7 @@ const Jobs = () => {
                                             {job.active ? 'Active' : 'Inactive'}
                                         </span>
                                     </td>
-                                    <td>{job.createdAt ? job.createdAt.split(' ')[0].slice(5) : ''}</td>
+                                    <td>{job.createdAt ? formatDate(job.createdAt).split(',')[0] : ''}</td>
                                     <td>
                                         <JobRowDropdown
                                             onAction={(action) => handleAction(action, job.id)}
@@ -188,6 +203,16 @@ const Jobs = () => {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            <div className={cx('pagination')}>
+                <Pagination
+                    total={totalPages}
+                    value={Number(searchParams.get('page')) || 1}
+                    onChange={handlePageChange}
+                    radius="xl"
+                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
+                />
             </div>
 
             {/* Modal với JobDetail */}
