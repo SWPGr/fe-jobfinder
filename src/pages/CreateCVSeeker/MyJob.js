@@ -2,184 +2,84 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './MyJob.module.scss';
 import JobItemOwner from '~/components/JobItemOwner';
-import EmployerService from '~/services/EmployerService';
+import { get } from '~/utils/httpRequest';
 
 const cx = classNames.bind(styles);
 
-const JobApplications = ({ jobId, onClose }) => {
-    const [activeTab, setActiveTab] = useState('all');
-    const [applications, setApplications] = useState([]);
-    const [pagination, setPagination] = useState({
-        pageNumber: 0,
-        pageSize: 10,
-        totalElements: 0,
-        totalPages: 1,
-        isFirst: true,
-        isLast: true,
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [sortOrder, setSortOrder] = useState('newest');
+// API mới
+const fetchMyJobFake = async (page = 0, size = 10) => {
+    try {
+        const response = await get(`/job/my-employer-jobs?page=${page}&size=${size}`);
 
-    useEffect(() => {
-        const fetchApplications = async () => {
-            setLoading(true);
-            try {
-                const { applications, pagination } = await EmployerService.fetchJobApplications(
-                    jobId,
-                    pagination.pageNumber,
-                    pagination.pageSize
-                );
-                const sortedApplications = [...applications].sort((a, b) => {
-                    const dateA = new Date(a.applied);
-                    const dateB = new Date(b.applied);
-                    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-                });
-                setApplications(sortedApplications);
-                setPagination(pagination);
-            } catch (err) {
-                setError('Failed to fetch applications');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchApplications();
-    }, [jobId, pagination.pageNumber, pagination.pageSize, sortOrder]);
-
-    const handlePageChange = (newPage) => {
-        if (newPage >= 0 && newPage < pagination.totalPages) {
-            setPagination((prev) => ({ ...prev, pageNumber: newPage }));
+        if (!response || !response.result || !Array.isArray(response.result.content)) {
+            console.warn('Invalid API response structure:', response);
+            return {
+                jobs: [],
+                pagination: {
+                    pageNumber: 0,
+                    pageSize: size,
+                    totalElements: 0,
+                    totalPages: 1,
+                    isFirst: true,
+                    isLast: true,
+                },
+            };
         }
-    };
 
-    const filteredApplications = applications.filter((app) =>
-        activeTab === 'all' ? true : app.status === 'SHORTLISTED'
-    );
+        const data = response.result;
 
-    if (loading) {
-        return <div className={cx('modal')}>Loading applications...</div>;
+        const jobsFormatted = data.content.map((job) => {
+            const createdDate = new Date(job.createdAt);
+            const defaultExpireDate = new Date(createdDate);
+            defaultExpireDate.setDate(createdDate.getDate() + 30);
+
+            const expireDate = job.expiredDate ? new Date(job.expiredDate) : defaultExpireDate;
+            const today = new Date();
+            const remainingDays = Math.max(0, Math.ceil((expireDate - today) / (1000 * 60 * 60 * 24)));
+            const remainingText = remainingDays > 0 ? `${remainingDays} days remaining` : 'Expired';
+
+            return {
+                id: job.id, // quan trọng: truyền id chuẩn vào jobDescription
+                jobTitle: job.title || 'Unknown Title',
+                workTime: job.jobType?.name || 'Unknown Type',
+                remainDay: remainingText,
+                isActive: remainingDays > 0,
+                numberApplications: job.jobApplicationCounts || 0,
+                isVIP: job.employer?.isPremium || false,
+            };
+        });
+
+        return {
+            jobs: jobsFormatted,
+            pagination: {
+                pageNumber: data.pageNumber ?? 0,
+                pageSize: data.pageSize ?? size,
+                totalElements: data.totalElements ?? 0,
+                totalPages: data.totalPages ?? 1,
+                isFirst: data.first ?? true,
+                isLast: data.last ?? true,
+            },
+        };
+    } catch (error) {
+        console.error('Error fetching my jobs:', error.message);
+        return {
+            jobs: [],
+            pagination: {
+                pageNumber: 0,
+                pageSize: size,
+                totalElements: 0,
+                totalPages: 1,
+                isFirst: true,
+                isLast: true,
+            },
+        };
     }
-
-    if (error) {
-        return <div className={cx('modal')}>{error}</div>;
-    }
-
-    return (
-        <div className={cx('overlay')}>
-            <div className={cx('modal')}>
-                <button className={cx('closeBtn')} onClick={onClose}>
-                    ×
-                </button>
-                <div className={cx('breadcrumb')}>
-                    Home / Job / Job Applications / <span>Applications</span>
-                </div>
-                <div className={cx('headingMain')}>Job Applications</div>
-
-                <div className={cx('tabs')}>
-                    <button
-                        type="button"
-                        className={cx('tabBtn', { active: activeTab === 'all' })}
-                        onClick={() => setActiveTab('all')}
-                    >
-                        All Applications ({applications.length})
-                    </button>
-                    <button
-                        type="button"
-                        className={cx('tabBtn', { active: activeTab === 'shortlisted' })}
-                        onClick={() => setActiveTab('shortlisted')}
-                    >
-                        Shortlisted (
-                        {applications.filter((app) => app.status === 'SHORTLISTED').length})
-                    </button>
-                </div>
-
-                <div className={cx('applicationList')}>
-                    {filteredApplications.length > 0 ? (
-                        filteredApplications.map((app) => (
-                            <div key={app.id} className={cx('applicationCard')}>
-                                <div className={cx('avatar')}></div>
-                                <div className={cx('applicantInfo')}>
-                                    <div className={cx('name')}>{app.name}</div>
-                                    <div className={cx('role')}>{app.role}</div>
-                                    <ul className={cx('details')}>
-                                        <li>• {app.experience}</li>
-                                        <li>• Education: {app.education}</li>
-                                        <li>• Applied: {app.applied}</li>
-                                    </ul>
-                                    <a href={app.cvLink} className={cx('downloadCv')}>
-                                        Download CV
-                                    </a>
-                                </div>
-                                <button className={cx('menuBtn')}>...</button>
-                            </div>
-                        ))
-                    ) : (
-                        <div className={cx('noData')}>
-                            No applications available for this job.
-                        </div>
-                    )}
-                </div>
-
-                <div className={cx('sortSection')}>
-                    <label>Sort Applications</label>
-                    <div className={cx('sortOptions')}>
-                        <label>
-                            <input
-                                type="radio"
-                                name="sort"
-                                checked={sortOrder === 'newest'}
-                                onChange={() => setSortOrder('newest')}
-                            />
-                            Newest
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="sort"
-                                checked={sortOrder === 'oldest'}
-                                onChange={() => setSortOrder('oldest')}
-                            />
-                            Oldest
-                        </label>
-                    </div>
-                </div>
-
-                <div className={cx('pagination')}>
-                    <button
-                        disabled={pagination.isFirst}
-                        onClick={() => handlePageChange(pagination.pageNumber - 1)}
-                    >
-                        {'<'}
-                    </button>
-                    {Array.from({ length: pagination.totalPages }, (_, i) => (
-                        <button
-                            key={i}
-                            className={cx({ active: i === pagination.pageNumber })}
-                            onClick={() => handlePageChange(i)}
-                        >
-                            {i + 1}
-                        </button>
-                    ))}
-                    <button
-                        disabled={pagination.isLast}
-                        onClick={() => handlePageChange(pagination.pageNumber + 1)}
-                    >
-                        {'>'}
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
 };
 
 const MyJob = () => {
-    const [openJobApplications, setOpenJobApplications] = useState(false);
-    const [selectedJobId, setSelectedJobId] = useState(null);
     const [jobs, setJobs] = useState([]);
-    const [pageNumber, setPageNumber] = useState(0); // Separate state for pageNumber
-    const [pageSize, setPageSize] = useState(10); // Separate state for pageSize
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageSize] = useState(10);
     const [paginationMeta, setPaginationMeta] = useState({
         totalElements: 0,
         totalPages: 1,
@@ -189,14 +89,12 @@ const MyJob = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // Fetch jobs
     useEffect(() => {
         const fetchJobs = async () => {
             setLoading(true);
             try {
-                const { jobs, pagination } = await EmployerService.fetchMyJobFake(
-                    pageNumber,
-                    pageSize
-                );
+                const { jobs, pagination } = await fetchMyJobFake(pageNumber, pageSize);
                 setJobs(jobs);
                 setPaginationMeta({
                     totalElements: pagination.totalElements,
@@ -213,17 +111,12 @@ const MyJob = () => {
         };
 
         fetchJobs();
-    }, [pageNumber, pageSize]); // Depend on pageNumber and pageSize directly
+    }, [pageNumber, pageSize]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < paginationMeta.totalPages) {
             setPageNumber(newPage);
         }
-    };
-
-    const handleViewApplications = (jobId) => {
-        setSelectedJobId(jobId);
-        setOpenJobApplications(true);
     };
 
     if (loading) {
@@ -254,14 +147,22 @@ const MyJob = () => {
                     <JobItemOwner
                         key={job.id}
                         jobDescription={{
-                            jobTitle: job.jobTitle,
+                            id: job.id, // truyền ID đầy đủ
+                            title: job.jobTitle,
                             workTime: job.workTime,
                             remainDay: job.remainDay,
                             isActive: job.isActive,
                             numberApplications: job.numberApplications,
                         }}
                         isVIP={job.isVIP}
-                        onViewApplications={() => handleViewApplications(job.id)}
+                        onDeleteSuccess={() => {
+                            // xóa job khỏi danh sách sau khi delete
+                            setJobs((prev) => prev.filter((j) => j.id !== job.id));
+                            setPaginationMeta((prev) => ({
+                                ...prev,
+                                totalElements: prev.totalElements - 1,
+                            }));
+                        }}
                     />
                 ))}
             </div>
@@ -289,16 +190,6 @@ const MyJob = () => {
                     {'>'}
                 </button>
             </div>
-
-            {openJobApplications && (
-                <JobApplications
-                    jobId={selectedJobId}
-                    onClose={() => {
-                        setOpenJobApplications(false);
-                        setSelectedJobId(null);
-                    }}
-                />
-            )}
         </div>
     );
 };

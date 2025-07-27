@@ -25,7 +25,7 @@ const PostJob = () => {
         education: '',
         experience: '',
         jobType: '',
-        vacancies: '',
+        vacancy: '',
         expirationDate: '',
         jobLevel: '',
         description: '',
@@ -108,7 +108,7 @@ const PostJob = () => {
         if (!formData.education) errors.education = 'Education is required';
         if (!formData.experience) errors.experience = 'Experience is required';
         if (!formData.jobType) errors.jobType = 'Job type is required';
-        if (!formData.vacancies) errors.vacancies = 'Vacancies is required';
+        if (!formData.vacancy) errors.vacancy = 'Vacancies is required';
         if (!formData.jobLevel) errors.jobLevel = 'Job level is required';
         if (!formData.description) errors.description = 'Description is required';
         if (!formData.responsibilities) errors.responsibilities = 'Responsibilities is required';
@@ -138,7 +138,7 @@ const PostJob = () => {
             education,
             experience,
             jobType,
-            vacancies,
+            vacancy,
             expirationDate,
             jobLevel,
             description,
@@ -155,7 +155,7 @@ const PostJob = () => {
             educationId: education,
             experienceId: experience,
             jobTypeId: jobType,
-            vacancy: vacancies,
+            vacancy: vacancy,
             expiredDate: expirationDate,
             jobLevelId: jobLevel,
             description,
@@ -177,7 +177,7 @@ const PostJob = () => {
                 education: '',
                 experience: '',
                 jobType: '',
-                vacancies: '',
+                vacancy: '',
                 expirationDate: '',
                 jobLevel: '',
                 description: '',
@@ -263,7 +263,7 @@ const PostJob = () => {
             </div>
 
             <div className={cx('row')}>
-                {renderInput('Vacancies', 'vacancies', 'number')}
+                {renderInput('Vacancies', 'vacancy', 'number')}
                 {renderInput('Expiration Date', 'expirationDate', 'date')}
                 {renderSelect('Job Level', 'jobLevel', dropdowns.jobLevels)}
             </div>

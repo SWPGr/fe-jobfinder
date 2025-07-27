@@ -237,7 +237,7 @@ const Jobs = () => {
                                 education: 'N/A', // Chưa có trong API
                                 experience: 'N/A', // Chưa có trong API
                                 jobType: selectedJob.jobType?.name || 'N/A',
-                                vacancies: 'N/A', // Chưa có trong API
+                                vacancy: selectedJob.vacancy,
                                 expirationDate: '2025-07-31', // Giả định
                                 jobLevel: selectedJob.jobLevel?.name || 'N/A',
                                 contactUrl: selectedJob.employer?.website || 'N/A',
@@ -253,7 +253,7 @@ const Jobs = () => {
                                     location: selectedJob.location,
                                     jobType: selectedJob.jobType?.name || 'N/A',
                                     experience: 'N/A', // Chưa có trong API
-                                    vacancies: 'N/A', // Chưa có trong API
+                                    vacancy: selectedJob.vacancy, // Chưa có trong API
                                     jobLevel: selectedJob.jobLevel?.name || 'N/A',
                                 },
                                 company: {

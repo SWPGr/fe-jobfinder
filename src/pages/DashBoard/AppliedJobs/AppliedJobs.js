@@ -158,6 +158,7 @@ function AppliedJobs() {
                     description: jobData.description || '<p>No description available</p>',
                     location: jobData.location || 'N/A',
                     isApplied: jobData.isApplied || true,
+                    vacancy: jobData.vacancy || 1,
                 };
                 setSelectedJob(normalizedJob);
                 setIsModalOpen(true);
@@ -248,9 +249,9 @@ function AppliedJobs() {
                                     }),
                                     dueDate: job.expiredDate
                                         ? new Date(job.expiredDate).toLocaleDateString('en-GB', {
-                                              day: 'numeric',
-                                              month: 'numeric',
-                                          })
+                                            day: 'numeric',
+                                            month: 'numeric',
+                                        })
                                         : '',
                                     isActive: job.active,
                                 }}
