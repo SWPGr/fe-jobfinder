@@ -4,8 +4,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    padding: 1rem;
+    gap: 1rem;
 }
 
 // Header styles
@@ -17,7 +16,7 @@
     padding-top: 1rem;
 
     .title {
-        font-size: var(--font-size-header);
+        font-size: 2.4rem;
         font-weight: 700;
         color: var(--text-color, #1f2937);
     }
@@ -77,12 +76,14 @@
             background: var(--primary-color, #2563eb);
             color: var(--white, #fff);
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             padding: 9px 20px;
-            font-size: 1rem;
+            font-size: 1.4rem;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.15s;
+            display: flex;
+            align-items: center;
 
             &:hover {
                 background: var(--primary-color-dark, #1747a7);

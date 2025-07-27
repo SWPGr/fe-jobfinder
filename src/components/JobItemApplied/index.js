@@ -13,10 +13,29 @@ function JobItemApplied({
     isLogin = false,
     isVIP = false,
     onViewDetails,
+    status, // nhận thêm prop status
+    appliedDate, // nhận thêm prop ngày nộp
 }) {
     const classes = cx('wrapper', { isLogin, isVIP });
 
-    const { companyName, companyAddress, jobTitle, workTime, salary, createdAt, dueDate, isActive,isApplied } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, createdAt, isApplied } = jobDescription;
+
+    // Hàm chọn màu badge theo status
+    const getStatusBadgeProps = (status) => {
+        switch ((status || '').toUpperCase()) {
+            case 'PENDING':
+                return { color: 'yellow', label: 'Pending' };
+            case 'APPROVED':
+            case 'ACCEPTED':
+                return { color: 'green', label: 'Approved' };
+            case 'REJECTED':
+            case 'DENIED':
+                return { color: 'red', label: 'Rejected' };
+            default:
+                return { color: 'gray', label: status || 'Unknown' };
+        }
+    };
+    const statusBadge = getStatusBadgeProps(status);
 
     return (
         <div className={classes}>
@@ -70,23 +89,21 @@ function JobItemApplied({
                 </div>
             </div>
 
-            <div className={cx('end-date')}>{dueDate}</div>
-
-            <div className={cx('status')}>
-                {isActive ? (
-                    <p className={cx('active')}>
-                        <IconCheck size={16} />
-                        Active
-                    </p>
-                ) : (
-                    <p className={cx('inactive')}>
-                        <IconX size={16} />
-                        Expire
-                    </p>
-                )}
-            </div>
-            <div className={cx('action')}>
-                <div className={cx('apply-job')}>
+            {/* Thông tin ngày nộp, trạng thái, action */}
+            <div className={cx('info-row')} style={{ display: 'flex', alignItems: 'center', gap: 100, marginTop: 12 }}>
+                <div className={cx('applied-date')} style={{ minWidth: 70 }}>
+                    <b>Date Applied:</b> {appliedDate}
+                </div>
+                <div className={cx('status')}>
+                    <Badge
+                        color={statusBadge.color}
+                        size="lg"
+                        classNames={{ label: cx('label-badge', 'status'), root: cx('root-badge') }}
+                    >
+                        {statusBadge.label}
+                    </Badge>
+                </div>
+                <div className={cx('action')}>
                     <Button onClick={onViewDetails}>View Details</Button>
                 </div>
             </div>
