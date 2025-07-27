@@ -1,5 +1,5 @@
 // /src/services/statisticsService.js
-import { get } from '~/utils/httpRequest';
+import { get, put } from '~/utils/httpRequest';
 
 const fetchAllEmployers = async () => {
     const data = await get('/users/employers');
@@ -63,6 +63,81 @@ const fetchJobCategories = async () => {
     const data = await get('/statistics/total-job-posts-by-category');
     return data.result || [];
 };
+
+// Hàm mới để block employer (cập nhật trạng thái)
+export const blockEmployer = async (employerId) => {
+    try {
+        const response = await put(
+            '/users/status',
+            {
+                userId: employerId, // Sử dụng userId (dựa trên logic backend)
+                isActive: false, // Thay active bằng isActive để khớp với UserStatusUpdateRequest
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        console.log('Block response:', response);
+        return response;
+    } catch (error) {
+        console.error('Failed to block employer:', {
+            message: error.message,
+            response: error.response ? error.response.data : 'No response data',
+        });
+        throw error;
+    }
+};
+
+export const blockJobSeeker = async (jobSeekerId) => {
+    try {
+        const response = await put(
+            '/users/status',
+            {
+                userId: jobSeekerId, // Sử dụng userId (dựa trên logic backend)
+                isActive: false, // Thay active bằng isActive để khớp với UserStatusUpdateRequest
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        console.log('Block response:', response);
+        return response;
+    } catch (error) {
+        console.error('Failed to block jobseeker:', {
+            message: error.message,
+            response: error.response ? error.response.data : 'No response data',
+        });
+        throw error;
+    }
+};
+export const blockJob = async (jobId) => {
+    try {
+        const response = await put(
+            '/job/status', // Đường dẫn khớp với endpoint Postman
+            {
+                jobId: jobId, // Sử dụng jobId (dựa trên Postman)
+                isActive: false, // Khớp với backend
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            },
+        );
+        console.log('Block response:', response);
+        return response;
+    } catch (error) {
+        console.error('Failed to block Job:', {
+            message: error.message,
+            response: error.response ? error.response.data : 'No response data',
+        });
+        throw error;
+    }
+};
 const statisticsService = {
     fetchAllEmployers,
     fetchAllJobSeekers,
@@ -73,6 +148,9 @@ const statisticsService = {
     fetchAllJobs,
     fetchApplicationsTrend,
     fetchMonthOverMonthComparison,
+    blockEmployer,
+    blockJobSeeker,
+    blockJob,
 };
 
 export default statisticsService;
