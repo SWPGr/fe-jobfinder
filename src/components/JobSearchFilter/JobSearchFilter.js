@@ -51,7 +51,7 @@ const JobSearchFilters = () => {
         salaryMin: searchParams.get('salaryMin') || '',
         salaryMax: searchParams.get('salaryMax') || '',
         page: searchParams.get('page') || '1',
-        salary: searchParams.get('salary') || '',
+        salaryId: searchParams.get('salaryId') || '',
         educationId: searchParams.get('educationId') || '',
         experienceId: searchParams.get('experienceId') || '',
         jobTypeId: searchParams.get('jobTypeId') || '',
@@ -90,36 +90,35 @@ const JobSearchFilters = () => {
                     options: [...data.educations],
                 },
             };
-
             setJobFilters(filters);
         };
 
         fetchOptions();
     }, []);
 
-    useEffect(() => {
-        setForm({
-            keyword: searchParams.get('keyword') || '',
-            location: searchParams.get('location') || '',
-            categoryId: searchParams.get('categoryId') || '',
-            salaryMin: searchParams.get('salaryMin') || '',
-            salaryMax: searchParams.get('salaryMax') || '',
-            page: searchParams.get('page') || '1',
-            salary: searchParams.get('salary') || '',
-            educationId: searchParams.get('educationId') || '',
-            experienceId: searchParams.get('experienceId') || '',
-            jobTypeId: searchParams.get('jobTypeId') || '',
-            jobLevelId: searchParams.get('jobLevelId') || '',
-            organizationId: searchParams.get('organizationId') || '',
-            sort: searchParams.get('sort') || '',
-        });
-    }, [searchParams]);
-
     const handleChange = (key, value) => {
-        setForm((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
+        if (key === 'salaryId') {
+            setForm({
+                ...form,
+                [key]: value,
+                salaryMin: jobFilters['salaryId'].options[value - 1]?.salaryMin,
+                salaryMax: jobFilters['salaryId'].options[value - 1]?.salaryMax,
+            });
+
+            if (jobFilters['salaryId'].options[value - 1]?.name === 'Negotiable') {
+                setForm((prev) => {
+                    return {
+                        ...prev,
+                        isNegotiable: true,
+                    };
+                });
+            }
+        } else {
+            setForm({
+                ...form,
+                [key]: value,
+            });
+        }
     };
 
     const handleClear = () => {
@@ -136,10 +135,14 @@ const JobSearchFilters = () => {
     };
 
     const handleSubmit = () => {
-        const entries = Object.entries(form).filter(([_, v]) => v !== '' && v !== null && v !== undefined);
-        entries.push(['page', 1]);
-        setSearchParams(entries);
-        // call search API here with form
+        const params = new URLSearchParams();
+        for (const [key, value] of Object.entries(form)) {
+            if (value !== '' && value !== null && value !== undefined) {
+                params.set(key, value);
+            }
+        }
+        params.set('page', '1');
+        setSearchParams(params);
     };
 
     if (!jobFilters) return null;
