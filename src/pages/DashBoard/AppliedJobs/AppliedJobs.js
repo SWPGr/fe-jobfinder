@@ -243,10 +243,10 @@ function AppliedJobs() {
                         value={pendingDateFilter}
                         onChange={(e) => setPendingDateFilter(e.target.value)}
                     >
-                        <option value="all">🗓️ All Dates</option>
-                        <option value="today">📅 Today</option>
-                        <option value="7days">📊 Last 7 days</option>
-                        <option value="30days">📈 Last 30 days</option>
+                        <option value="all"> All Dates</option>
+                        <option value="today">Today</option>
+                        <option value="7days"> Last 7 days</option>
+                        <option value="30days"> Last 30 days</option>
                     </select>
                 </div>
                 <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
@@ -273,9 +273,10 @@ function AppliedJobs() {
                     filteredApplications.map((application, index) => {
                         const appliedDate = application.appliedAt
                             ? new Date(application.appliedAt).toLocaleDateString('en-GB', {
-                                  day: '2-digit',
-                                  month: '2-digit',
-                              })
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                            })
                             : '';
                         return (
                             <div key={application.id || index} className={cx('job-item-row')}>
