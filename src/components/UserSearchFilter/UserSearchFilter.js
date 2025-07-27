@@ -80,7 +80,6 @@ const UserSearchFilter = ({ type = "JOB_SEEKERS" }) => {
                     name: 'User Type',
                     options: [{ id: 1, name: "Normal" }, { id: 2, name: "Premium" }],
                 },
-
             };
 
             setJobFilters(filters);
