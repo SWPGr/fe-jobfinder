@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
 import statisticsService from '~/services/statisticsService';
 import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
+import { Pagination } from '@mantine/core';
+import { useSearchParams } from 'react-router-dom';
+
 
 import { UserSearchFilters } from '~/components';
 
@@ -86,60 +89,39 @@ const getInitials = (name) => {
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
 //đưa về dạng không cần dấu
-function normalizeVN(str) {
-    return (str || '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/đ/g, 'd')
-        .replace(/Đ/g, 'D')
-        .toLowerCase();
-}
+
 
 const EmployersManagement = () => {
     const [employers, setEmployers] = useState([]);
     const [error, setError] = useState('');
-    const [search, setSearch] = useState('');
-    const [visibleEmployers, setVisibleEmployers] = useState(10);
     const [selectedEmployer, setSelectedEmployer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [filter, setFilter] = useState({ location: '', isPremium: '' });
-    // State tạm cho filter/search
-    const [pendingFilter, setPendingFilter] = useState({ location: '', isPremium: '' });
-    const [pendingSearch, setPendingSearch] = useState('');
-    const [locationOptions, setLocationOptions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [totalHits, setTotalHits] = useState(1);
+    const totalPages = Math.ceil(totalHits / 10);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+
 
     // Fetch employers
-    const fetchEmployers = useCallback(async () => {
-        try {
-            const data = await statisticsService.fetchAllEmployers();
-            setEmployers(data || []);
-            // Lấy location unique
-            const locations = Array.from(new Set((data || []).map((e) => e.location).filter(Boolean)));
-            setLocationOptions(locations);
-        } catch (err) {
-            setError(err.message || 'Failed to fetch employers');
-        }
-    }, []);
+
 
     useEffect(() => {
+        const fetchEmployers = async () => {
+            setLoading(true);
+            try {
+                const data = await statisticsService.fetchAllEmployers();
+                setEmployers(data || []);
+                setLoading(false);
+            } catch (err) {
+                setLoading(false);
+                setError(err.message || 'Failed to fetch employers');
+            }
+        }
         fetchEmployers();
-    }, [fetchEmployers]);
+    }, [searchParams]);
 
-    // Lọc employers theo filter và search keyword
-    const filteredEmployers = useMemo(() => {
-        return employers.filter((e) => {
-            const keyword = normalizeVN(search.trim());
-            const matchKeyword =
-                !keyword ||
-                normalizeVN(e.fullName).includes(keyword) ||
-                normalizeVN(e.email).includes(keyword) ||
-                normalizeVN(e.location).includes(keyword) ||
-                normalizeVN(e.phone).includes(keyword);
-            const matchLocation = filter.location === '' || normalizeVN(e.location) === normalizeVN(filter.location);
-            const matchPremium = filter.isPremium === '' || String(e.isPremium) === filter.isPremium;
-            return matchKeyword && matchLocation && matchPremium;
-        });
-    }, [employers, filter, search]);
+
 
     const handleAction = (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
@@ -157,29 +139,22 @@ const EmployersManagement = () => {
         }
     };
 
+    const handlePageChange = (page) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', page);
+        setSearchParams(params);
+    };
+
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedEmployer(null);
     };
 
-    const loadMoreEmployers = () => {
-        setVisibleEmployers((prev) => prev + 10);
-    };
-
-    const employersToDisplay = filteredEmployers.slice(0, visibleEmployers);
-
     if (error) return <div className={cx('error')}>{error}</div>;
 
-    // Handler khi nhấn Filter
-    const handleFilter = () => {
-        setFilter(pendingFilter);
-        setSearch(pendingSearch);
-    };
-    // Handler khi thay đổi input/select
-    const handlePendingChange = (field, value) => {
-        if (field === 'search') setPendingSearch(value);
-        else setPendingFilter((prev) => ({ ...prev, [field]: value }));
-    };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div className={cx('managementWrapper')}>
@@ -187,7 +162,7 @@ const EmployersManagement = () => {
                 <div className={cx('title')}>Employers Management</div>
             </div>
             {/* Thanh filter ngang hiện đại, giống trang Jobs */}
-            <UserSearchFilters />
+            <UserSearchFilters type="EMPLOYER" />
 
             {/* Bảng employers và các phần còn lại giữ nguyên */}
             <div className={cx('tableWrapper')}>
@@ -201,7 +176,7 @@ const EmployersManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {employersToDisplay.map((employer, index) => (
+                        {employers.length > 0 && employers.map((employer, index) => (
                             <tr key={employer.id || index}>
                                 <td>{employer.id}</td>
                                 <td>
@@ -229,12 +204,18 @@ const EmployersManagement = () => {
                         ))}
                     </tbody>
                 </table>
-                {filteredEmployers.length > visibleEmployers && (
-                    <div className={cx('load-more')}>
-                        <button onClick={loadMoreEmployers}>Load More</button>
-                    </div>
-                )}
             </div>
+            {/*  */}
+            <div className={cx('pagination')}>
+                <Pagination
+                    total={totalPages}
+                    value={Number(searchParams.get('page')) || 1}
+                    onChange={handlePageChange}
+                    radius="xl"
+                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
+                />
+            </div>
+            {/*  */}
             {isModalOpen && selectedEmployer && (
                 <div className={cx('modalOverlay')}>
                     <div className={cx('modalBox')}>
