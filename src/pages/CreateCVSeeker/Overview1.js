@@ -24,10 +24,19 @@ const Overview1 = () => {
             try {
                 const { jobs, pagination } = await EmployerService.fetchMyJobFake(pageNumber, pageSize);
 
-                // Tính tổng số ứng tuyển trên trang hiện tại
-                const totalApps = jobs.reduce((sum, job) => sum + (job.numberApplications || 0), 0);
+                console.log('Jobs data:', jobs); // Debug xem dữ liệu trả về
 
-                setJobs(jobs);
+                // Nếu expiredDate không hợp lệ thì cho job đó là active
+                const now = new Date();
+                const activeJobs = jobs.filter((job) => {
+                    if (!job.expiredDate) return true; // Cho phép hiển thị nếu không có expiredDate
+                    const expired = new Date(job.expiredDate);
+                    return !isNaN(expired) && expired >= now;
+                });
+
+                const totalApps = activeJobs.reduce((sum, job) => sum + (job.numberApplications || 0), 0);
+
+                setJobs(activeJobs);
                 setTotalApplications(totalApps);
                 setPagination(pagination);
             } catch (err) {
@@ -84,15 +93,9 @@ const Overview1 = () => {
                 {jobs.map((job) => (
                     <JobItemOwner
                         key={job.id}
-                        jobDescription={{
-                            id: job.id,
-                            jobTitle: job.jobTitle,
-                            workTime: job.workTime,
-                            remainDay: job.remainDay,
-                            isActive: job.isActive,
-                            numberApplications: job.numberApplications,
-                        }}
+                        jobDescription={job}
                         isVIP={job.isVIP}
+                        isActive={true} // Thêm dòng này
                     />
                 ))}
             </div>

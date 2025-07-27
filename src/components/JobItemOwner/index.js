@@ -65,20 +65,21 @@ const normalizeJobData = (data) => {
     isActive,
     numberApplications: data.numberApplications || 0,
     workTime,
+    vacancy: data.vacancy || 1,
     remainDay,
     company: data.employer
       ? {
-          name: data.employer.companyName || '',
-          description: data.employer.description || '',
-          phone: data.employer.phone || '',
-          email: data.employer.email || '',
-          website: data.employer.website || '',
-          founded: data.employer.yearOfEstablishment || '',
-          organization: data.employer.organizationType || '',
-          size: data.employer.teamSize || '',
-          avatarUrl: data.employer.avatarUrl || '',
-          logoUrl: data.employer.avatarUrl || '',
-        }
+        name: data.employer.companyName || '',
+        description: data.employer.description || '',
+        phone: data.employer.phone || '',
+        email: data.employer.email || '',
+        website: data.employer.website || '',
+        founded: data.employer.yearOfEstablishment || '',
+        organization: data.employer.organizationType || '',
+        size: data.employer.teamSize || '',
+        avatarUrl: data.employer.avatarUrl || '',
+        logoUrl: data.employer.avatarUrl || '',
+      }
       : null,
     badges: data.badges || null,
   };
@@ -103,10 +104,6 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
       const response = await EmployerService.deleteJob(id);
       return response.data || {};
     }
-    if (updatedData) {
-      const response = await EmployerService.updateJob(id, updatedData);
-      return response.data || {};
-    }
     const response = await EmployerService.getJobDetail(id);
     return response.data || {};
   } catch (error) {
@@ -119,7 +116,7 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
   }
 };
 
-function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = true, onDeleteSuccess }) {
+function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
   const [jobData, setJobData] = useState(() => {
     if (jobDescription && !jobDescription.id && jobDescription.jobId) {
       return { ...jobDescription, id: jobDescription.jobId };
@@ -167,21 +164,21 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
   }, [jobDescription]);
 
   useEffect(() => {
-  async function fetchApplicationsCount() {
-    if (!jobData?.id) {
-      setNumberApplications(0);
-      return;
+    async function fetchApplicationsCount() {
+      if (!jobData?.id) {
+        setNumberApplications(0);
+        return;
+      }
+      try {
+        const candidates = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
+        setNumberApplications(Array.isArray(candidates) ? candidates.length : 0);
+      } catch (error) {
+        console.error('Error fetching candidate details:', error);
+        setNumberApplications(0);
+      }
     }
-    try {
-      const candidates = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
-      setNumberApplications(Array.isArray(candidates) ? candidates.length : 0);
-    } catch (error) {
-      console.error('Error fetching candidate details:', error);
-      setNumberApplications(0);
-    }
-  }
-  fetchApplicationsCount();
-}, [jobData?.id]);
+    fetchApplicationsCount();
+  }, [jobData?.id]);
 
   const openModal = async (type) => {
     if (!jobData?.id) {
