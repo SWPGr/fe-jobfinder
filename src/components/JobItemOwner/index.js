@@ -69,17 +69,17 @@ const normalizeJobData = (data) => {
     remainDay,
     company: data.employer
       ? {
-          name: data.employer.companyName || '',
-          description: data.employer.description || '',
-          phone: data.employer.phone || '',
-          email: data.employer.email || '',
-          website: data.employer.website || '',
-          founded: data.employer.yearOfEstablishment || '',
-          organization: data.employer.organizationType || '',
-          size: data.employer.teamSize || '',
-          avatarUrl: data.employer.avatarUrl || '',
-          logoUrl: data.employer.avatarUrl || '',
-        }
+        name: data.employer.companyName || '',
+        description: data.employer.description || '',
+        phone: data.employer.phone || '',
+        email: data.employer.email || '',
+        website: data.employer.website || '',
+        founded: data.employer.yearOfEstablishment || '',
+        organization: data.employer.organizationType || '',
+        size: data.employer.teamSize || '',
+        avatarUrl: data.employer.avatarUrl || '',
+        logoUrl: data.employer.avatarUrl || '',
+      }
       : null,
     badges: data.badges || null,
   };
@@ -164,21 +164,21 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
   }, [jobDescription]);
 
   useEffect(() => {
-  async function fetchApplicationsCount() {
-    if (!jobData?.id) {
-      setNumberApplications(0);
-      return;
+    async function fetchApplicationsCount() {
+      if (!jobData?.id) {
+        setNumberApplications(0);
+        return;
+      }
+      try {
+        const candidates = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
+        setNumberApplications(Array.isArray(candidates) ? candidates.length : 0);
+      } catch (error) {
+        console.error('Error fetching candidate details:', error);
+        setNumberApplications(0);
+      }
     }
-    try {
-      const candidates = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
-      setNumberApplications(Array.isArray(candidates) ? candidates.length : 0);
-    } catch (error) {
-      console.error('Error fetching candidate details:', error);
-      setNumberApplications(0);
-    }
-  }
-  fetchApplicationsCount();
-}, [jobData?.id]);
+    fetchApplicationsCount();
+  }, [jobData?.id]);
 
   const openModal = async (type) => {
     if (!jobData?.id) {

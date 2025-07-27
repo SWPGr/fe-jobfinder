@@ -126,7 +126,14 @@ const fetchMyJobFake = async (page = 0, size = 10) => {
         };
     }
 };
-
+const fetchstatusesFake = async () => {
+    const response = await get('/apply/statuses');
+    return response || null;
+};
+const fetchstatusjobFake = async () => {
+    const response = await get('/apply/${id}/statuses');
+    return response || null;
+};
 const fetchSocialLinkFake = async () => {
     const response = await get('/social-types');
     return response || null;
@@ -262,11 +269,13 @@ const EmployerService = {
     fetchPostJobFake,
     fetchSettingFake,
     fetchStatus,
+    fetchstatusesFake,
     fetchEmployerProfileFake,
     fetchJobDetailFake,
     fetchCategoriesFake,
     fetchApplicationFake,
     fetchResume,
+    fetchstatusjobFake,
 };
 
 export default EmployerService;

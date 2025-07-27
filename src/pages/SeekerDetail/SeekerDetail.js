@@ -77,21 +77,21 @@ function formatResumeSummary(text) {
 
     const lines = trimmedBlock.split("\n");
     const jsxLines = lines.map((line, idx) => {
-      const parts = line.split(/(\*\*.+?\*\*)/g).filter(Boolean);
+  const parts = line.split(/(\*\*.+?\*\*)/g).filter(Boolean);
 
-      return (
-        <React.Fragment key={idx}>
-          {parts.map((part, pi) => {
-            if (/^\*\*(.+)\*\*$/.test(part)) {
-              const strongText = part.replace(/^\*\*(.+)\*\*$/, "$1");
-              return <strong key={pi}>{strongText}</strong>;
-            }
-            return part;
-          })}
-          <br />
-        </React.Fragment>
-      );
-    });
+  return (
+    <React.Fragment key={`line-${i}-${idx}`}>
+      {parts.map((part, pi) => {
+        if (/^\*\*(.+)\*\*$/.test(part)) {
+          const strongText = part.replace(/^\*\*(.+)\*\*$/, "$1");
+          return <strong key={`strong-${i}-${idx}-${pi}`}>{strongText}</strong>;
+        }
+        return part;
+      })}
+      <br key={`br-${i}-${idx}`} /> {/* key duy nhất cho br */}
+    </React.Fragment>
+  );
+});
 
     return <p key={i}>{jsxLines}</p>;
   });
@@ -119,11 +119,11 @@ const SeekerDetail = ({ applicant }) => {
   //const userId = seekerDetail.userId || applicant.userId || null;
   const applicationId = applicant.applicationId || applicant.id || null;
   if (!applicationId) {
-  alert("Application ID không hợp lệ");
-  return null;
-}
+    alert("Application ID không hợp lệ");
+    return null;
+  }
 
-  
+
 
   const handleShowResumeSummary = () => {
     setShowSummary(true);
@@ -182,10 +182,10 @@ const SeekerDetail = ({ applicant }) => {
 
             <div className={cx("infoRow")}>
               <div className={cx("infoItem")}>
-                
+
               </div>
               <div className={cx("infoItem")}>
-                
+
               </div>
             </div>
 
@@ -225,12 +225,12 @@ const SeekerDetail = ({ applicant }) => {
 
           <div style={{ marginTop: "15px", textAlign: "center" }}>
             <button
-  className={cx("downloadBtn")}
-  aria-label="View Resume Summary"
-  onClick={handleShowResumeSummary}
->
-  📄Resume Summary
-</button>
+              className={cx("downloadBtn")}
+              aria-label="View Resume Summary"
+              onClick={handleShowResumeSummary}
+            >
+              📄Resume Summary
+            </button>
           </div>
 
           {showSummary && (
