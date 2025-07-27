@@ -6,8 +6,6 @@ import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import { Pagination } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
-
-
 import { UserSearchFilters } from '~/components';
 
 const cx = classNames.bind(styles);
@@ -20,6 +18,7 @@ const sortColumns = [
     { key: 'phone', label: 'Phone' },
     { key: 'createdAt', label: 'Joined' },
     { key: 'isPremium', label: 'Premium' },
+    { key: 'active', label: 'Active' },
 ];
 
 const EmployerRowDropdown = ({ onAction, employerId }) => {
@@ -88,7 +87,6 @@ const getInitials = (name) => {
 };
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
-//đưa về dạng không cần dấu
 
 
 const EmployersManagement = () => {
@@ -104,7 +102,6 @@ const EmployersManagement = () => {
 
 
     // Fetch employers
-
 
     useEffect(() => {
         const fetchEmployers = async () => {
@@ -122,16 +119,23 @@ const EmployersManagement = () => {
     }, [searchParams]);
 
 
-
-    const handleAction = (action, employerId) => {
+    const handleAction = async (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
         if (action === 'block') {
-            if (window.confirm(`Are you sure you want to block employer ${employer.fullName || 'ID ' + employerId}?`)) {
-                setEmployers((prevEmployers) =>
-                    prevEmployers.map((employer) =>
-                        employer.id === employerId ? { ...employer, isBlocked: true } : employer,
-                    ),
-                );
+            if (window.confirm(`Bạn có chắc muốn chặn nhà tuyển dụng ${employer.fullName || 'ID ' + employerId}?`)) {
+                try {
+                    await statisticsService.blockEmployer(employerId);
+                    setEmployers((prevEmployers) =>
+                        prevEmployers.map((emp) =>
+                            emp.id === employerId ? { ...emp, isBlocked: true, active: false } : emp,
+                        ),
+                    );
+                    fetchEmployers();
+                    console.log('Employer blocked successfully');
+                } catch (err) {
+                    console.error('Lỗi khi chặn nhà tuyển dụng:', err);
+                    alert(`Không thể chặn nhà tuyển dụng. Lỗi: ${err.message || 'Không xác định'}`);
+                }
             }
         } else if (action === 'view') {
             setSelectedEmployer(employer);
@@ -190,8 +194,20 @@ const EmployersManagement = () => {
                                 <td>{employer.phone || '--'}</td>
                                 <td>{employer.createdAt ? employer.createdAt.slice(5, 10) : '--'}</td>
                                 <td>
-                                    <span className={premiumClass(employer.isPremium)}>
+                                    <span
+                                        className={cx(
+                                            'statusText',
+                                            employer.isPremium === true ? 'active' : 'inactive',
+                                        )}
+                                    >
                                         {employer.isPremium === true ? 'Premium' : 'Normal'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        className={cx('statusText', employer.active === true ? 'active' : 'inactive')}
+                                    >
+                                        {employer.active === true ? 'Active' : 'Inactive'}
                                     </span>
                                 </td>
                                 <td>
@@ -265,6 +281,7 @@ const EmployersManagement = () => {
                                     email: selectedEmployer.email || 'N/A',
                                     website: selectedEmployer.website || 'N/A',
                                 },
+                                active: selectedEmployer.active,
                             }}
                             editable={false}
                             onCancel={closeModal}

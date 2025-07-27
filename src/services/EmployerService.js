@@ -130,9 +130,17 @@ const fetchstatusesFake = async () => {
     const response = await get('/apply/statuses');
     return response || null;
 };
-const fetchstatusjobFake = async () => {
-    const response = await get('/apply/${id}/statuses');
+const fetchStatusJobFake = async (applicationId, status, message) => {
+    try {
+    const response = await put(`/apply/${applicationId}/status`, {
+      status,        // "ACCEPTED" hoặc "REFUSED"
+      message,       // tin nhắn gửi kèm
+    });
     return response || null;
+  } catch (error) {
+    console.error("Error updating application status:", error);
+    throw error;
+  }
 };
 const fetchSocialLinkFake = async () => {
     const response = await get('/social-types');
@@ -268,6 +276,7 @@ const EmployerService = {
     fetchExperienceFake,
     fetchPostJobFake,
     fetchSettingFake,
+    fetchStatusJobFake,
     fetchStatus,
     fetchstatusesFake,
     fetchEmployerProfileFake,
@@ -275,7 +284,6 @@ const EmployerService = {
     fetchCategoriesFake,
     fetchApplicationFake,
     fetchResume,
-    fetchstatusjobFake,
 };
 
 export default EmployerService;
