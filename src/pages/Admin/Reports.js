@@ -3,116 +3,9 @@ import { Search, Filter, Eye, MessageSquare, Bug, Lightbulb, Flag } from 'lucide
 import ReportDetailModal from './components/ReportDetailModal';
 import StatsOverview from './components/StatsOverview';
 import { useSearchParams } from 'react-router-dom';
+import { Pagination } from '@mantine/core';
 
 import { reportService } from '~/services';
-
-const mockReports = [
-    {
-        id: 'RPT-001',
-        date: '2024-01-15T10:30:00Z',
-        type: 'inappropriate-content',
-        sender: {
-            name: 'Nguyễn Văn A',
-            email: 'nguyenvana@email.com',
-        },
-        title: 'Bài viết chứa nội dung không phù hợp',
-        description:
-            'Bài viết này chứa hình ảnh và ngôn từ không phù hợp với cộng đồng. Tôi nghĩ nó vi phạm quy định của trang web.',
-        url: 'https://example.com/post/123',
-        priority: 'high',
-        status: 'pending',
-        attachments: ['screenshot1.png', 'evidence.pdf'],
-        internalNotes: '',
-        assignedTo: 'Admin 1',
-    },
-    {
-        id: 'RPT-002',
-        date: '2024-01-14T14:20:00Z',
-        type: 'technical-issue',
-        sender: {
-            name: 'Trần Thị B',
-            email: 'tranthib@email.com',
-        },
-        title: 'Lỗi không thể tải trang',
-        description:
-            'Trang web bị lỗi 500 khi tôi cố gắng truy cập vào phần bình luận. Lỗi này xảy ra liên tục từ sáng nay.',
-        url: 'https://example.com/comments',
-        priority: 'urgent',
-        status: 'in-progress',
-        attachments: ['error-log.txt'],
-        internalNotes: 'Đã chuyển cho team kỹ thuật xử lý',
-        assignedTo: 'Tech Team',
-    },
-    {
-        id: 'RPT-003',
-        date: '2024-01-13T09:15:00Z',
-        type: 'spam',
-        sender: {
-            name: 'Lê Văn C',
-            email: 'levanc@email.com',
-        },
-        title: 'Tài khoản spam quảng cáo',
-        description: 'Có một tài khoản liên tục đăng các bài quảng cáo không liên quan trong các nhóm thảo luận.',
-        url: 'https://example.com/user/spammer123',
-        priority: 'medium',
-        status: 'resolved',
-        attachments: [],
-        internalNotes: 'Đã khóa tài khoản và xóa các bài đăng spam',
-        assignedTo: 'Moderator',
-        resolvedAt: '2024-01-13T16:30:00Z',
-    },
-    {
-        id: 'RPT-004',
-        date: '2024-01-12T16:45:00Z',
-        type: 'suggestion',
-        sender: {
-            name: 'Phạm Thị D',
-            email: 'phamthid@email.com',
-        },
-        title: 'Đề xuất thêm tính năng dark mode',
-        description:
-            'Tôi nghĩ trang web nên có tính năng dark mode để dễ nhìn hơn vào ban đêm. Nhiều người dùng cũng mong muốn điều này.',
-        priority: 'low',
-        status: 'pending',
-        attachments: ['mockup-darkmode.png'],
-        internalNotes: '',
-        assignedTo: 'Product Team',
-    },
-    {
-        id: 'RPT-005',
-        date: '2024-01-11T11:20:00Z',
-        type: 'other',
-        sender: {
-            name: 'Hoàng Văn E',
-            email: 'hoangvane@email.com',
-        },
-        title: 'Vấn đề về quyền riêng tư',
-        description: 'Tôi muốn biết làm thế nào để xóa hoàn toàn tài khoản và dữ liệu cá nhân khỏi hệ thống.',
-        priority: 'medium',
-        status: 'rejected',
-        attachments: [],
-        internalNotes: 'Đã hướng dẫn qua email, không phải là báo cáo',
-        assignedTo: 'Support Team',
-    },
-    {
-        id: 'RPT-006',
-        date: '2024-01-10T08:30:00Z',
-        type: 'technical-issue',
-        sender: {
-            name: 'Vũ Thị F',
-            email: 'vuthif@email.com',
-        },
-        title: 'Lỗi upload hình ảnh',
-        description: 'Không thể upload hình ảnh lên bài viết. Hệ thống báo lỗi "File too large" nhưng file chỉ có 2MB.',
-        url: 'https://example.com/create-post',
-        priority: 'medium',
-        status: 'resolved',
-        attachments: ['error-screenshot.png'],
-        internalNotes: 'Đã fix lỗi validation file size',
-        assignedTo: 'Dev Team',
-        resolvedAt: '2024-01-10T14:20:00Z',
-    },
-];
 
 const Reports = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -120,8 +13,8 @@ const Reports = () => {
     const [reportTypes, setReportTypes] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
+
     const reportTypesIcon = [
         { icon: Flag, color: 'text-red-500' },
         { icon: Bug, color: 'text-blue-500' },
@@ -131,8 +24,8 @@ const Reports = () => {
 
     const [filters, setFilters] = useState({
         type: searchParams.get('typeId') || '',
-        dateFrom: searchParams.get('dateFrom') || '',
-        dateTo: searchParams.get('dateTo') || '',
+        fromDate: searchParams.get('fromDate') || '',
+        toDate: searchParams.get('toDate') || '',
         keyword: searchParams.get('keyword') || '',
         page: searchParams.get('page') || 1,
     });
@@ -156,6 +49,7 @@ const Reports = () => {
                 const entries = Object.fromEntries(searchParams);
                 const response = await reportService.getReports(entries);
                 setReports(response.content || []);
+                setTotalPages(response.totalPages);
             } catch (error) {
                 console.error('Error fetching reports:', error);
             }
@@ -198,6 +92,22 @@ const Reports = () => {
         });
     };
 
+    const handleExportData = async () => {
+        try {
+            const response = await reportService.getReports();
+            const data = response.content || [];
+            await reportService.exportToExcel(data, 'report.xlsx');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const handlePageChange = (page) => {
+        setFilters((prev) => ({ ...prev, page }));
+        const params = new URLSearchParams(searchParams);
+        params.set('page', page);
+        setSearchParams(params);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 p-6">
             <div className=" mx-auto">
@@ -214,63 +124,73 @@ const Reports = () => {
                         <h2 className="text-2xl font-semibold text-gray-800">Filters</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        <div className="relative flex items-center">
-                            <Search className="w-6 h-6 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                name="keyword"
-                                value={filters.keyword}
+                    <div className="flex">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                            <div className="relative flex items-center">
+                                <Search className="w-6 h-6 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    name="keyword"
+                                    value={filters.keyword}
+                                    onChange={(e) => handleChangeValue(e)}
+                                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-xl"
+                                />
+                            </div>
+
+                            <select
+                                value={filters.type.id}
+                                name="typeId"
                                 onChange={(e) => handleChangeValue(e)}
-                                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder:text-xl"
+                                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xl"
+                            >
+                                <option value="">All Types</option>
+                                {reportTypes &&
+                                    reportTypes.map((type) => (
+                                        <option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </option>
+                                    ))}
+                            </select>
+
+                            <input
+                                type="date"
+                                value={filters.fromDate}
+                                name="fromDate"
+                                onChange={(e) => handleChangeValue(e)}
+                                className="text-xl px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+
+                            <input
+                                type="date"
+                                name="toDate"
+                                value={filters.toDate}
+                                min={filters.fromDate}
+                                onChange={(e) => handleChangeValue(e)}
+                                className="text-xl px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                         </div>
-
-                        <select
-                            value={filters.type.id}
-                            name="typeId"
-                            onChange={(e) => handleChangeValue(e)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-xl"
+                        <button
+                            onClick={handleSearch}
+                            className="text-xl px-4 py-2 mt-2 bg-blue-500 text-white   rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
-                            <option value="">All Types</option>
-                            {reportTypes &&
-                                reportTypes.map((type) => (
-                                    <option key={type.id} value={type.id}>
-                                        {type.name}
-                                    </option>
-                                ))}
-                        </select>
-
-                        <input
-                            type="date"
-                            value={filters.dateFrom}
-                            name="dateFrom"
-                            onChange={(e) => handleChangeValue(e)}
-                            className="text-xl px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
-
-                        <input
-                            type="date"
-                            name="dateTo"
-                            value={filters.dateTo}
-                            min={filters.dateFrom}
-                            onChange={(e) => handleChangeValue(e)}
-                            className="text-xl px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        />
+                            Search
+                        </button>
                     </div>
-                    <button
-                        onClick={handleSearch}
-                        className="text-xl px-4 py-2 mt-2 bg-blue-500 text-white   rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    >
-                        Search
-                    </button>
                 </div>
 
                 {/* Reports Table */}
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div className="flex justify-end bg-gray-50 py-4">
+                        <button
+                            onClick={handleExportData}
+                            className="text-xl px-4 py-2 bg-white border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300"
+                        >
+                            Export data to excel
+                        </button>
+                    </div>
                     <div className="overflow-x-auto">
-                        <table className="w-full">
+                        <table className="w-full border border-gray-200">
                             <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider">
@@ -351,72 +271,16 @@ const Reports = () => {
                             </tbody>
                         </table>
                     </div>
-
-                    {/* Pagination */}
-                    {/* {totalPages > 1 && (
-                        <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                            <div className="flex-1 flex justify-between sm:hidden">
-                                <button
-                                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
-                                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-                                >
-                                    Trước
-                                </button>
-                                <button
-                                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                    disabled={currentPage === totalPages}
-                                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-                                >
-                                    Sau
-                                </button>
-                            </div>
-                            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-700">
-                                        Hiển thị{' '}
-                                        <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> đến{' '}
-                                        <span className="font-medium">
-                                            {Math.min(currentPage * itemsPerPage, filteredReports.length)}
-                                        </span>{' '}
-                                        trong tổng số <span className="font-medium">{filteredReports.length}</span> kết
-                                        quả
-                                    </p>
-                                </div>
-                                <div>
-                                    <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                                        <button
-                                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                                            disabled={currentPage === 1}
-                                            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                                        >
-                                            Trước
-                                        </button>
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                            <button
-                                                key={page}
-                                                onClick={() => setCurrentPage(page)}
-                                                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                                    page === currentPage
-                                                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                                                }`}
-                                            >
-                                                {page}
-                                            </button>
-                                        ))}
-                                        <button
-                                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                                            disabled={currentPage === totalPages}
-                                            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                                        >
-                                            Sau
-                                        </button>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    )} */}
+                </div>
+                {/* Pagination */}
+                <div className="flex justify-end bg-gray-50 py-4 px-4">
+                    <Pagination
+                        total={totalPages}
+                        value={Number(filters.page)}
+                        onChange={handlePageChange}
+                        radius="xl"
+                        size={'xl'}
+                    />
                 </div>
 
                 {/* Report Detail Modal */}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
 import { useWindowScroll } from '@mantine/hooks';
