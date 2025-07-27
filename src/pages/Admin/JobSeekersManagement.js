@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './JobTableManagement.module.scss';
 import statisticsService from '~/services/statisticsService';
-import { useDebounce } from '~/hooks';
 import { Combobox, useCombobox } from '@mantine/core';
 import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
 import { UserSearchFilters } from '~/components';
+import { Pagination } from '@mantine/core';
+import { useSearchParams } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -90,64 +90,29 @@ function normalizeVN(str) {
 const JobSeekersManagement = () => {
     const [jobSeekers, setJobSeekers] = useState([]);
     const [error, setError] = useState('');
-    const [search, setSearch] = useState('');
-    const [visibleSeekers, setVisibleSeekers] = useState(10);
     const [selectedSeeker, setSelectedSeeker] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const [filter, setFilter] = useState({
-        location: '',
-        isPremium: '',
-        minApplications: '',
-        maxApplications: '',
-    });
-    const [pendingFilter, setPendingFilter] = useState({
-        location: '',
-        isPremium: '',
-        minApplications: '',
-        maxApplications: '',
-    });
-
-    const dataSearch = useDebounce(search, 500);
-
-    const fetchJobSeekers = useCallback(async () => {
-        setError('');
-        try {
-            const data = await statisticsService.fetchAllJobSeekers();
-            setJobSeekers(data);
-        } catch (err) {
-            setError(err.message || 'Failed to fetch job seekers');
-        }
-    }, []);
+    const [loading, setLoading] = useState(true);
+    const [totalHits, setTotalHits] = useState(1);
+    const totalPages = Math.ceil(totalHits / 10);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
+
+        const fetchJobSeekers = async () => {
+            setLoading(true);
+            try {
+                const data = await statisticsService.fetchAllJobSeekers();
+                setJobSeekers(data);
+                setLoading(false);
+            } catch (err) {
+                setLoading(false);
+                setError(err.message || 'Failed to fetch job seekers');
+            }
+
+        }
         fetchJobSeekers();
-    }, [fetchJobSeekers]);
-
-    const filteredJobSeekers = useMemo(() => {
-        return jobSeekers.filter((seeker) => {
-            if (seeker.isBlocked) return false; // Loại bỏ job seeker bị block
-            const keyword = normalizeVN(dataSearch.trim());
-            const matchKeyword =
-                !keyword ||
-                normalizeVN(seeker.fullName).includes(keyword) ||
-                normalizeVN(seeker.email).includes(keyword) ||
-                normalizeVN(seeker.location).includes(keyword) ||
-                normalizeVN(seeker.phone).includes(keyword);
-
-            const matchLocation =
-                filter.location === '' || normalizeVN(seeker.location) === normalizeVN(filter.location);
-
-            const matchPremium = filter.isPremium === '' || String(seeker.isPremium) === filter.isPremium;
-
-            const minApp = Number(filter.minApplications || 0);
-            const maxApp = Number(filter.maxApplications || Infinity);
-            const seekerApps = seeker.applications ?? 0;
-            const matchApplications = seekerApps >= minApp && seekerApps <= maxApp;
-
-            return matchKeyword && matchLocation && matchPremium && matchApplications;
-        });
-    }, [jobSeekers, filter, dataSearch]);
+    }, [searchParams]);
 
     const handleAction = async (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
@@ -175,12 +140,19 @@ const JobSeekersManagement = () => {
         setIsModalOpen(false);
         setSelectedSeeker(null);
     };
-
-    const loadMoreSeekers = () => {
-        setVisibleSeekers((prev) => prev + 10);
+    const handlePageChange = (page) => {
+        const params = new URLSearchParams(searchParams);
+        params.set('page', page);
+        setSearchParams(params);
     };
 
-    const seekersToDisplay = filteredJobSeekers.slice(0, visibleSeekers);
+    if (error) return <div className={cx('error')}>{error}</div>;
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+
 
     if (error) return <div className={cx('error')}>{error}</div>;
 
@@ -203,7 +175,7 @@ const JobSeekersManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {seekersToDisplay.map((seeker, idx) => (
+                        {jobSeekers.length > 0 && jobSeekers.map((seeker, idx) => (
                             <tr key={seeker.id || idx}>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -238,7 +210,18 @@ const JobSeekersManagement = () => {
                     </tbody>
                 </table>
             </div>
+            {/*  */}
 
+            <div className={cx('pagination')}>
+                <Pagination
+                    total={totalPages}
+                    value={Number(searchParams.get('page')) || 1}
+                    onChange={handlePageChange}
+                    radius="xl"
+                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
+                />
+            </div>
+            {/*  */}
             {isModalOpen && selectedSeeker && (
                 <div className={cx('modalOverlay')}>
                     <div className={cx('modalBox')}>
