@@ -116,6 +116,18 @@ const JobSeekersManagement = () => {
 
     const handleAction = async (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
+        const fetchJobSeekers = async () => {
+            setLoading(true);
+            try {
+                const data = await statisticsService.fetchAllJobSeekers();
+                setJobSeekers(data);
+                setLoading(false);
+            } catch (err) {
+                setLoading(false);
+                setError(err.message || 'Failed to fetch job seekers');
+            }
+
+        }
         if (action === 'block') {
             if (window.confirm(`Bạn có chắc muốn chặn job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
                 try {
