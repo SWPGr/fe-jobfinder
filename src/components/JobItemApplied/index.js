@@ -92,7 +92,7 @@ function JobItemApplied({
             {/* Thông tin ngày nộp, trạng thái, action */}
             <div className={cx('info-row')} style={{ display: 'flex', alignItems: 'center', gap: 100, marginTop: 12 }}>
                 <div className={cx('applied-date')} style={{ minWidth: 70 }}>
-                    <b>Date Applied:</b> {appliedDate}
+                    {appliedDate}
                 </div>
                 <div className={cx('status')}>
                     <Badge

@@ -257,6 +257,10 @@ function AppliedJobs() {
             </div>
             <div className={cx('table-header')}>
                 <span>JOBS</span>
+                <span>APPLIED DATE</span>
+                <span>STATUS</span>
+
+                <span>ACTION</span>
             </div>
             <div className={cx('job-list')}>
                 {loading ? (
