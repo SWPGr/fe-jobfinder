@@ -109,16 +109,16 @@ const Reports = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen">
             <div className=" mx-auto">
                 <div className="mb-8">
-                    <h1 className="text-[24px] font-bold text-gray-900 mb-2">Report Management</h1>
+                    <h1 className="text-[24px] font-bold text-gray-900 mb-2 mt-4">Report Management</h1>
                     <p className="text-lg text-gray-600">Track and handle user-submitted reports</p>
                 </div>
 
                 {/* <StatsOverview reports={reports} /> */}
 
-                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6 bg-white shadow-sm border border-gray-100 rounded-lg p-4 mb-8">
                     <div className="flex items-center gap-2 mb-4">
                         <Filter className="w-6 h-6 text-gray-500" />
                         <h2 className="text-2xl font-semibold text-gray-800">Filters</h2>
@@ -180,8 +180,8 @@ const Reports = () => {
                 </div>
 
                 {/* Reports Table */}
-                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div className="flex justify-end bg-gray-50 py-4">
+                <div className="bg-white rounded-lg shadow-sm overflow-hidden ">
+                    <div className="flex justify-end  py-4">
                         <button
                             onClick={handleExportData}
                             className="text-xl px-4 py-2 bg-white border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300"
@@ -189,8 +189,8 @@ const Reports = () => {
                             Export data to excel
                         </button>
                     </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full border border-gray-200">
+                    <div className="overflow-hidden rounded-lg shadow-xl border border-gray-200">
+                        <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-md font-medium text-gray-500 uppercase tracking-wider">
