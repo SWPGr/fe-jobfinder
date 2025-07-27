@@ -18,6 +18,7 @@ const Application = ({
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [actionType, setActionType] = useState(null);
+  const [status, setStatus] = useState(null);
 
   const openMessageBox = (type) => {
     setActionType(type);
@@ -34,8 +35,10 @@ const Application = ({
   const handleSendMessage = () => {
     if (actionType === "accept") {
       handleAccept && handleAccept(messageText);
+      setStatus("ACCEPTED");
     } else if (actionType === "refuse") {
       handleRefuse && handleRefuse(messageText);
+      setStatus("REJECTED");
     }
     closeMessageBox();
   };
@@ -81,7 +84,9 @@ const Application = ({
             border: "none",
             borderRadius: "4px",
             fontSize: "12px",
+            display: status === "REJECTED" ? "none" : "inline-block",
           }}
+          disabled={status === "ACCEPTED"}
         >
           Accept
         </button>
@@ -98,7 +103,9 @@ const Application = ({
             border: "none",
             borderRadius: "4px",
             fontSize: "12px",
+            display: status === "ACCEPTED" ? "none" : "inline-block",
           }}
+          disabled={status === "REJECTED"}
         >
           Refuse
         </button>
@@ -107,7 +114,10 @@ const Application = ({
       {showMessageBox && (
         <>
           <div className={styles.messageOverlay} onClick={closeMessageBox} />
-          <div className={styles.messageModal} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.messageModal}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.header}>
               Message
               <button onClick={closeMessageBox} aria-label="Close message box">
@@ -149,6 +159,7 @@ const JobApplications = ({ jobId }) => {
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [showResumeProfile, setShowResumeProfile] = useState(false);
 
+  // Fetch danh sách ứng viên
   useEffect(() => {
     if (!jobId) {
       setApplications([]);
@@ -159,37 +170,35 @@ const JobApplications = ({ jobId }) => {
 
     const fetchCandidates = async () => {
       try {
-        const res = await EmployerService.fetchApplicationData(jobId, "candidates");
-        const apps = Array.isArray(res) ? res : [];
+        const response = await EmployerService.fetchApplicationData(
+          jobId,
+          "candidates"
+        );
+
+        // Lấy content từ API mới
+        const content = response?.content || [];
 
         if (mounted) {
-          const mappedApps = apps.map((app) => {
-            const userId = app.userId || app.seekerDetail?.userId || null;
+          const mappedApps = content.map((app) => {
             const appId =
-              app.id ||
               app.applicationId ||
-              app._id ||
-              app.seekerDetail?.applicationId ||
-              app.seekerDetail?.id ||
-              app.seekerDetail?._id ||
-              app.seekerDetail?.userId ||
+              app.id ||
               app.userId ||
+              app.seekerDetail?.userId ||
               null;
 
             return {
               id: appId,
-              seekerDetail: {
-                ...app.seekerDetail,
-                userId: userId,
-              },
-              fullName: app.seekerDetail?.fullName || app.fullname || "",
+              seekerDetail: app.seekerDetail,
+              fullName: app.seekerDetail?.fullName || app.fullname || "No name",
               email: app.seekerDetail?.userEmail || app.email || "",
               experience: app.seekerDetail?.experienceName || "N/A",
               education: app.seekerDetail?.educationName || "N/A",
               resumeUrl: app.seekerDetail?.resumeUrl || "",
-              coverLetter: app.seekerDetail?.coverLetter || app.coverLetter || "",
-              phone: app.seekerDetail?.phone || app.phone || "",
+              coverLetter: app.seekerDetail?.coverLetter || "",
+              phone: app.seekerDetail?.phone || "",
               applicationId: appId,
+              status: app.status || "PENDING",
             };
           });
 
@@ -207,6 +216,7 @@ const JobApplications = ({ jobId }) => {
     };
   }, [jobId]);
 
+  // Fetch chi tiết ứng viên khi chọn
   useEffect(() => {
     if (!selectedApplicationId) {
       setSelectedApplicantDetail(null);
@@ -236,8 +246,23 @@ const JobApplications = ({ jobId }) => {
           console.warn("API trả về thiếu seekerDetail, giữ nguyên dữ liệu cũ");
           return;
         }
+        if (!applicant.seekerDetail) {
+  applicant.seekerDetail = {
+    fullName: applicant.fullname || "Unknown",
+    userEmail: applicant.email || "",
+    phone: applicant.phone || "",
+    location: applicant.location || "",
+    experienceName: applicant.experienceName || "N/A",
+    educationName: applicant.educationName || "N/A",
+    resumeUrl: applicant.resumeUrl || "",
+    coverLetter: applicant.coverLetter || "",
+  };
+}
 
-        setSelectedApplicantDetail({ ...applicant, applicationId: selectedApplicationId });
+        setSelectedApplicantDetail({
+          ...applicant,
+          applicationId: selectedApplicationId,
+        });
       } catch (error) {
         console.error("Error fetching applicant details:", error);
         setSelectedApplicantDetail(null);
@@ -251,9 +276,9 @@ const JobApplications = ({ jobId }) => {
 
   const handleSelect = (app) => {
     if (!app.applicationId || isNaN(Number(app.applicationId))) {
-    alert("No valid application ID found.");
-    return;
-  }
+      alert("No valid application ID found.");
+      return;
+    }
     setSelectedApplicationId(app.applicationId);
     setSelectedApplicantDetail(app);
     setShowResumeProfile(false);
@@ -264,6 +289,25 @@ const JobApplications = ({ jobId }) => {
       window.open(app.resumeUrl, "_blank");
     } else {
       alert(`CV of ${app.fullName} is not available.`);
+    }
+  };
+
+  const handleUpdateStatus = async (applicationId, status, message) => {
+    try {
+      await EmployerService.fetchStatusJobFake(applicationId, status, message);
+
+      alert(
+        `Ứng viên đã được ${status === "ACCEPTED" ? "chấp nhận" : "từ chối"
+        } thành công.`
+      );
+
+      setApplications((prev) =>
+        prev.map((app) =>
+          app.id === applicationId ? { ...app, status: status } : app
+        )
+      );
+    } catch (error) {
+      alert("Không thể cập nhật trạng thái ứng viên. Vui lòng thử lại.");
     }
   };
 
@@ -364,8 +408,15 @@ const JobApplications = ({ jobId }) => {
             <Application
               key={index}
               {...app}
+              status={app.status}
               handleSelect={() => handleSelect(app)}
               handleDownloadCV={() => handleDownloadCV(app)}
+              handleAccept={(message) =>
+                handleUpdateStatus(app.applicationId, "ACCEPTED", message)
+              }
+              handleRefuse={(message) =>
+                handleUpdateStatus(app.applicationId, "REJECTED", message)
+              }
             />
           ))
         ) : (

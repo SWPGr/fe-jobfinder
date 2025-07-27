@@ -163,6 +163,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
     fetchDetail();
   }, [jobDescription]);
 
+  // Fetch tổng số ứng viên
   useEffect(() => {
     async function fetchApplicationsCount() {
       if (!jobData?.id) {
@@ -170,8 +171,13 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
         return;
       }
       try {
-        const candidates = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
-        setNumberApplications(Array.isArray(candidates) ? candidates.length : 0);
+        const response = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
+        // response đã là result, không cần .result nữa
+        const total =
+          typeof response?.totalElements === 'number'
+            ? response.totalElements
+            : (Array.isArray(response?.content) ? response.content.length : 0);
+        setNumberApplications(total);
       } catch (error) {
         console.error('Error fetching candidate details:', error);
         setNumberApplications(0);

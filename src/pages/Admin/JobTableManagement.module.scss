@@ -405,6 +405,37 @@
     }
 }
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.pagination-root {
+    .control {
+        width: 4rem;
+        height: 4rem;
+        font-size: var(--font-size-18px);
+        margin: 0 0.5rem;
+        border: 1px solid var(--gray-200);
+        cursor: pointer;
+
+        &:hover {
+            border-color: var(--blue-500);
+        }
+
+        svg {
+            width: 4rem !important;
+            height: 2rem !important;
+        }
+
+        &[data-active='true'] {
+            border-color: inherit;
+        }
+    }
+}
+
 /* Responsive: Hide columns for JobSeekers table */
 @media (max-width: 1024px) {
     .jobs-table th:nth-child(3),

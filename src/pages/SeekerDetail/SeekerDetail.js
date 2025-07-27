@@ -140,17 +140,20 @@ const SeekerDetail = ({ applicant }) => {
 
   const {
     seekerDetail = {},
-    coverLetter,
+    coverLetter = seekerDetail.coverLetter,
     experienceName,
     educationName,
     email,
     phone = seekerDetail.phone,
     title,
   } = applicant;
-
-  // Lấy userId dùng để truyền vào ResumeProfile
-  //const userId = seekerDetail.userId || applicant.userId || null;
+  const coverLetterDisplay =
+    (coverLetter && coverLetter.trim()) ||
+    (seekerDetail.coverLetter && seekerDetail.coverLetter.trim()) ||
+    "Không có cover letter";
   const applicationId = applicant.applicationId || applicant.id || null;
+  console.log("applicant", applicant);
+  console.log("seekerDetail", seekerDetail);
   if (!applicationId) {
     alert("Application ID không hợp lệ");
     return null;
@@ -189,7 +192,7 @@ const SeekerDetail = ({ applicant }) => {
 
           <section className={cx("section")}>
             <h3 className={cx("sectionTitle")}>COVER LETTER</h3>
-            <p className={cx("sectionText")}>{coverLetter || "N/A"}</p>
+            <p className={cx("sectionText")}>{coverLetterDisplay}</p>
           </section>
 
           <section className={cx("socialMedia")}>

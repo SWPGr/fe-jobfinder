@@ -165,7 +165,6 @@ function AppliedJobs() {
                     expiredDate: jobData.expiredDate || 'N/A',
                     description: jobData.description || '<p>No description available</p>',
                     isApplied: jobData.isApplied || true,
-                    vacancy: jobData.vacancy || 1,
                 };
                 setSelectedJob(normalizedJob);
                 setIsModalOpen(true);
@@ -262,6 +261,10 @@ function AppliedJobs() {
                 <span>STATUS</span>
 
                 <span>ACTION</span>
+                <span>APPLIED DATE</span>
+                <span>STATUS</span>
+
+                <span>ACTION</span>
             </div>
             <div className={cx('job-list')}>
                 {loading ? (
@@ -269,7 +272,6 @@ function AppliedJobs() {
                 ) : filteredApplications.length === 0 ? (
                     <div style={{ padding: 32, textAlign: 'center', color: '#888' }}>No jobs found.</div>
                 ) : (
-
                     filteredApplications.map((application, index) => {
                         const appliedDate = application.appliedAt
                             ? new Date(application.appliedAt).toLocaleDateString('en-GB', {
@@ -300,7 +302,6 @@ function AppliedJobs() {
                             </div>
                         );
                     })
-
                 )}
             </div>
             <div
