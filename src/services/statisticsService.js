@@ -16,15 +16,11 @@ export const fetchAllJobs = async () => {
     }
 };
 
-const fetchMonthOverMonthComparison = async (token) => {
+const fetchMonthOverMonthComparison = async () => {
     const data = await get(
         '/statistics/month-over-month-comparison',
         {},
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        },
+
     );
     return data.result || null;
 };
@@ -73,11 +69,7 @@ export const blockEmployer = async (employerId) => {
                 userId: employerId, // Sử dụng userId (dựa trên logic backend)
                 isActive: false, // Thay active bằng isActive để khớp với UserStatusUpdateRequest
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+
         );
         console.log('Block response:', response);
         return response;
@@ -98,11 +90,7 @@ export const blockJobSeeker = async (jobSeekerId) => {
                 userId: jobSeekerId, // Sử dụng userId (dựa trên logic backend)
                 isActive: false, // Thay active bằng isActive để khớp với UserStatusUpdateRequest
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+
         );
         console.log('Block response:', response);
         return response;
@@ -122,11 +110,7 @@ export const blockJob = async (jobId) => {
                 jobId: jobId, // Sử dụng jobId (dựa trên Postman)
                 isActive: false, // Khớp với backend
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+
         );
         console.log('Block response:', response);
         return response;

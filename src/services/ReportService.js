@@ -20,7 +20,7 @@ export const createReport = async (data) => {
     }
 };
 
-const getAllReportType = async () => {
+const getAllReportTypes = async () => {
     try {
         const response = await get(`report/report-type`);
         return response;
@@ -42,7 +42,7 @@ export const exportToExcel = (data, fileName = 'report.xlsx') => {
 const reportService = {
     getReports,
     createReport,
-    getAllReportType,
+    getAllReportTypes,
     exportToExcel,
 };
 export default reportService;
