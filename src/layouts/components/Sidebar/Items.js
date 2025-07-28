@@ -122,7 +122,7 @@ export const items = {
             {
                 title: 'Saved Candidates',
                 icon: <IconBookmark />,
-                page: <SavedCandidates />,
+                //page: <SavedCandidates />,
                 link: '/dashboard/saved-candidates',
             },
             {

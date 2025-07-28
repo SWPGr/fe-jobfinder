@@ -63,6 +63,7 @@ const JobDetail = ({
   const [jobLevels, setJobLevels] = useState([]);
   const [experiences, setExperiences] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [salaryError, setSalaryError] = useState('');
 
   // Load dữ liệu phụ trợ
   useEffect(() => {
@@ -125,7 +126,16 @@ const JobDetail = ({
     };
   };
 
-  // Load job detail
+  const validateSalaryRange = () => {
+    const min = Number(formData.salaryMin) || 0;
+    const max = Number(formData.salaryMax) || 0;
+
+    if (min >= max) {
+      showError('Minimum Salary must be less than Maximum Salary');
+      return false;
+    }
+    return true;
+  };
   useEffect(() => {
     if (loadingAuxiliary) return;
 
@@ -194,6 +204,30 @@ const JobDetail = ({
       }));
       return;
     }
+    if (name === 'salaryMin' || name === 'salaryMax') {
+      const min = name === 'salaryMin' ? Number(value) : Number(formData.salaryMin || 0);
+      const max = name === 'salaryMax' ? Number(value) : Number(formData.salaryMax || 0);
+
+      if (min >= max && max !== 0) {
+        setSalaryError('Maximum Salary must be greater than Minimum Salary');
+      } else {
+        setSalaryError('');
+      }
+    }
+
+    if (section === 'description' || section === 'responsibility') {
+      setFormData((prev) => ({ ...prev, [section]: value }));
+      return;
+    }
+
+    if (name?.startsWith('company.')) {
+      const key = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        company: { ...prev.company, [key]: value },
+      }));
+      return;
+    }
 
     // Các select trường object map theo id
     if (name === 'education') {
@@ -227,6 +261,12 @@ const JobDetail = ({
 
   // Tạo job mới
   const handleCreateJob = async () => {
+    if (salaryError) {
+      showError('Please fix salary errors before saving');
+      return;
+    }
+    if (!validateSalaryRange()) return;
+
     setLoading(true);
     try {
       const created = await EmployerService.fetchPostJobFake(formData);
@@ -246,7 +286,13 @@ const JobDetail = ({
       showError('Job ID missing for update');
       return;
     }
-    console.log('handleUpdateJob called', new Date().toISOString()); // Log when function is called
+
+    if (salaryError) {
+      showError('Please fix salary errors before saving');
+      return;
+    }
+    if (!validateSalaryRange()) return;
+
     setLoading(true);
     try {
       const payload = {
@@ -600,7 +646,13 @@ Company:
                       />
                     ) : (
                       <input
-                        type={key === 'expiredDate' ? 'date' : 'text'}
+                        type={
+                          key === 'salaryMin' || key === 'salaryMax' || key === 'vacancy'
+                            ? 'number'
+                            : key === 'expiredDate'
+                              ? 'date'
+                              : 'text'
+                        }
                         name={key}
                         value={formData[key] || ''}
                         onChange={handleChange}
@@ -624,23 +676,13 @@ Company:
           <div className={cx('company-info__title')}>
             {formData.company?.companyName || formData.company?.name}
           </div>
-          <p className={cx('company-info__desc')}>
-            {editable ? (
-              <input
-                type="text"
-                name="company.description"
-                value={formData.company?.description || ''}
-                onChange={handleChange}
-                className={cx('editable-input')}
-              />
-            ) : (
-              formData.company?.description
-            )}
-          </p>
+          <p
+  className={cx('company-info__desc')}
+  dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
+></p>
           <div className={cx('company-details')}>
             {[
               { label: 'Founded in:', key: 'founded' },
-              { label: 'Organization type:', key: 'organization' },
               { label: 'Company size:', key: 'size' },
               { label: 'Phone:', key: 'phone' },
               { label: 'Email:', key: 'email' },
