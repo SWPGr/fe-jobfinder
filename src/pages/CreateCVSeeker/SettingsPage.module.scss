@@ -1,37 +1,42 @@
 .main {
   max-width: 110rem;
-  margin: 3rem auto;
+  // margin: 3rem auto;
   font-family: var(--font-family);
   color: var(--gray-900);
   box-sizing: border-box;
   margin-left: -5rem;
-  padding: 20px;
+  // padding: 20px;
+  margin-top: 5px;
   padding-left: 7rem;
 }
 
 .title {
   margin-bottom: 3rem;
   color: var(--gray-900);
-  font-size: 3.4rem;
-  margin-top: -2rem;
+  font-size: 3rem;
+  font-weight: 600;
 }
 
 .tabs {
-  display: flex;
-  gap: 4rem;
-  margin-bottom: 3rem;
-  font-weight: 500;
-  font-size: 1.4rem;
-  color: var(--gray-600);
-
+display: flex;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: var(--font-size-10px);
+    margin-top: -3rem;
+margin-bottom: 30px;
   button {
-    background: none;
+   background: none;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-16px);
+    font-weight: 600;
+    color: var(--text-color);
+    padding: var(--font-size-12px) var(--font-size-20px);
+
     cursor: pointer;
-    padding-bottom: 0.8rem;
-    border-bottom: 0.2rem solid transparent;
-    transition: border-color 0.2s, color 0.2s;
-    font-family: var(--font-family);
+    transition: color var(--transition);
+    position: relative;
 
     &:hover {
       color: var(--primary-color);
@@ -40,7 +45,16 @@
     &.active {
       color: var(--primary-color);
       border-color: var(--primary-color);
-      font-weight: 700;
+      font-weight: 800;
+    }
+    &.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1rem;
+      left: 0;
+      right: 0;
+      height: 0.2rem;
+      background-color: var(--primary-color);
     }
   }
 }
@@ -148,7 +162,7 @@
       display: block;
       margin-bottom: 0.6rem;
       font-weight: 600;
-      font-size: 1.4rem;
+      font-size: 2rem;
       color: var(--gray-700);
     }
 
@@ -163,6 +177,8 @@
       font-family: var(--font-family);
       box-sizing: border-box;
       color: var(--gray-900);
+    }.company-name{
+      font-size: 1.6rem;
     }
 
     textarea {
@@ -229,6 +245,7 @@
       margin-bottom: 0.6rem;
       font-weight: 500;
       color: var(--gray-700);
+      font-size: 2rem;
     }
 
     select,
@@ -258,6 +275,7 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 1.5rem;
+    font-size: 2rem;
 
     label {
       font-weight: 600;
@@ -348,6 +366,7 @@
       margin-bottom: 0.6rem;
       font-weight: 500;
       color: var(--gray-700);
+      font-size: 2rem;
     }
 
     input[type='text'],
@@ -372,11 +391,18 @@
       margin-bottom: 0.6rem;
       font-weight: 500;
       color: var(--gray-700);
+      font-size: 2rem;
     }
 
     .phoneInput {
-      display: flex;
-      gap: 0.8rem;
+      width: 100%;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.4rem;
+  border: 0.1rem solid var(--border-color);
+  font-size: 1.4rem;
+  box-sizing: border-box;
+  color: var(--gray-900);
+  font-family: var(--font-family);
 
       .countryCodeSelect {
         width: 10rem;
@@ -397,6 +423,7 @@
         font-size: 1.4rem;
         font-family: var(--font-family);
         color: var(--gray-900);
+        box-sizing: border-box;
       }
     }
   }
@@ -439,6 +466,7 @@
         margin-bottom: 0.6rem;
         font-weight: 500;
         color: var(--gray-700);
+        font-size: 2rem;
       }
 
       .passwordInput {
@@ -580,4 +608,11 @@
   &:hover {
     background-color: var(--primary-color-dark);
   }
+}
+.sectionTitle{
+  font-size: 2rem;
+  
+}
+.company-name{
+  font-size: 1.6rem;
 }

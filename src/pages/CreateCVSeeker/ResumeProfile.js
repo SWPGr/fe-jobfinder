@@ -2,44 +2,42 @@ import React, { useEffect, useState } from "react";
 import styles from "./ResumeProfile.module.scss";
 import EmployerService from "~/services/EmployerService";
 
-function parseResumeText(text) {
-  if (!text) return null;
-  const parts = [];
-  let remaining = text;
+// Hàm tách text thành từng ký tự, xử lý bold với **...**
+function parseResumeTextToChars(text) {
+  if (!text) return [];
 
-  while (remaining.length > 0) {
-    const boldStart = remaining.indexOf("**");
-    if (boldStart === -1) {
-      parts.push(
-        remaining.split("\n").reduce((arr, line, i) => {
-          if (i > 0) arr.push(<br key={"br_" + i} />);
-          arr.push(line);
-          return arr;
-        }, [])
-      );
-      break;
+  // Tìm đoạn bold
+  const boldRegex = /\*\*(.*?)\*\*/g;
+  let parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = boldRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ text: text.slice(lastIndex, match.index), bold: false });
     }
-    if (boldStart > 0) {
-      const beforeBold = remaining.substring(0, boldStart);
-      parts.push(
-        beforeBold.split("\n").reduce((arr, line, i) => {
-          if (i > 0) arr.push(<br key={"br_before_" + i} />);
-          arr.push(line);
-          return arr;
-        }, [])
-      );
-    }
-    remaining = remaining.substring(boldStart + 2);
-    const boldEnd = remaining.indexOf("**");
-    if (boldEnd === -1) {
-      parts.push(<b key={"bold_end_missing"}>{remaining}</b>);
-      break;
-    }
-    const boldText = remaining.substring(0, boldEnd);
-    parts.push(<b key={"bold_" + parts.length}>{boldText}</b>);
-    remaining = remaining.substring(boldEnd + 2);
+    parts.push({ text: match[1], bold: true });
+    lastIndex = match.index + match[0].length;
   }
-  return parts.flat();
+
+  if (lastIndex < text.length) {
+    parts.push({ text: text.slice(lastIndex), bold: false });
+  }
+
+  // Chia thành dòng và từng ký tự
+  const lines = parts
+    .flatMap((part) =>
+      part.text.split("\n").map((line) => ({ line, bold: part.bold }))
+    )
+    .map(({ line, bold }, lineIndex) =>
+      line.split("").map((char, charIndex) => ({
+        char,
+        bold,
+        delay: lineIndex * 0.009 + charIndex * 0.009, // delay nhanh
+      }))
+    );
+
+  return lines;
 }
 
 export default function ResumeProfile({ applicationId }) {
@@ -60,7 +58,6 @@ export default function ResumeProfile({ applicationId }) {
     async function loadResume() {
       setLoading(true);
       try {
-        //console.log("ResumeProfile: fetching resume for applicationId:", applicationId);
         const resumeSummary = await EmployerService.fetchResume({ applicationId });
         if (!resumeSummary) throw new Error("Không có dữ liệu resume");
 
@@ -72,16 +69,33 @@ export default function ResumeProfile({ applicationId }) {
         setLoading(false);
       }
     }
+
     loadResume();
   }, [applicationId]);
 
   if (loading) return <p>Đang tải resume...</p>;
   if (error) return <p style={{ color: "red" }}>Lỗi: {error}</p>;
 
+  const lines = parseResumeTextToChars(resumeText);
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Resume Profile</h2>
-      <div className={styles.resumeContent}>{parseResumeText(resumeText)}</div>
+      <div className={styles.resumeContent}>
+        {lines.map((line, lineIdx) => (
+          <div key={lineIdx} className={styles.line}>
+            {line.map((item, charIdx) => (
+              <span
+                key={charIdx}
+                className={`${styles.char} ${item.bold ? styles.boldChar : ""}`}
+                style={{ animationDelay: `${item.delay}s` }}
+              >
+                {item.char}
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

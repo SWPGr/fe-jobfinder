@@ -7,11 +7,13 @@ import EmployerService from '~/services/EmployerService';
 const cx = classNames.bind(styles);
 
 const Overview1 = () => {
+    const [allActiveJobs, setAllActiveJobs] = useState([]);
     const [jobs, setJobs] = useState([]);
     const [totalApplications, setTotalApplications] = useState(0);
 
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
+    const pageSize = 5;
+
     const [pagination, setPagination] = useState({
         totalElements: 0,
         totalPages: 1,
@@ -19,38 +21,120 @@ const Overview1 = () => {
         isLast: true,
     });
 
+    // --- Filter ---
+    const [filters, setFilters] = useState({
+        name: '',
+        status: 'all',
+        startDate: '',
+        endDate: '',
+    });
+
+    // Hàm lọc job active
+    const filterActiveJobs = (jobsData) => {
+        const now = new Date();
+        return jobsData.filter((job) => {
+            if (!job.expiredDate) return true;
+            const expiredTime = Date.parse(job.expiredDate);
+            if (isNaN(expiredTime)) return true;
+            return expiredTime >= now.getTime();
+        });
+    };
+
+    // Fetch danh sách job
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const { jobs, pagination } = await EmployerService.fetchMyJobFake(pageNumber, pageSize);
+                const { jobs: apiJobs } = await EmployerService.fetchMyJobFake();
 
-                console.log('Jobs data:', jobs); // Debug xem dữ liệu trả về
+                const activeJobs = filterActiveJobs(apiJobs);
 
-                // Nếu expiredDate không hợp lệ thì cho job đó là active
-                const now = new Date();
-                const activeJobs = jobs.filter((job) => {
-                    if (!job.expiredDate) return true; // Cho phép hiển thị nếu không có expiredDate
-                    const expired = new Date(job.expiredDate);
-                    return !isNaN(expired) && expired >= now;
-                });
+                const totalApps = activeJobs.reduce(
+                    (sum, job) => sum + (job.numberApplications || 0),
+                    0
+                );
 
-                const totalApps = activeJobs.reduce((sum, job) => sum + (job.numberApplications || 0), 0);
-
-                setJobs(activeJobs);
+                setAllActiveJobs(activeJobs);
                 setTotalApplications(totalApps);
-                setPagination(pagination);
+
+                // Áp dụng filter lần đầu
+                applyFilterAndPagination(activeJobs, filters, pageNumber);
             } catch (err) {
                 console.error('Error fetching jobs:', err);
             }
         };
 
         fetchJobs();
-    }, [pageNumber, pageSize]);
+    }, []);
+
+    // Khi filters hoặc pageNumber thay đổi → lọc lại
+    useEffect(() => {
+        applyFilterAndPagination(allActiveJobs, filters, pageNumber);
+    }, [filters, pageNumber, allActiveJobs]);
+
+    // Hàm áp dụng filter + pagination
+    const applyFilterAndPagination = (jobsData, filters, pageNum) => {
+        let filtered = [...jobsData];
+
+        // Lọc theo Name
+        if (filters.name) {
+            filtered = filtered.filter((job) =>
+                job.title?.toLowerCase().includes(filters.name.toLowerCase())
+            );
+        }
+
+        // Lọc theo Status
+        if (filters.status === 'active') {
+            filtered = filterActiveJobs(filtered);
+        } else if (filters.status === 'expired') {
+            const now = new Date();
+            filtered = filtered.filter((job) => {
+                const expiredTime = Date.parse(job.expiredDate);
+                return !isNaN(expiredTime) && expiredTime < now.getTime();
+            });
+        }
+
+        // Lọc theo khoảng ngày
+        if (filters.startDate || filters.endDate) {
+            const start = filters.startDate ? new Date(filters.startDate).getTime() : null;
+            const end = filters.endDate ? new Date(filters.endDate).getTime() : null;
+
+            filtered = filtered.filter((job) => {
+                const jobDate = Date.parse(job.expiredDate) || 0;
+
+                if (start && jobDate < start) return false;
+                if (end && jobDate > end) return false;
+                return true;
+            });
+        }
+
+        // Pagination
+        const totalElements = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(totalElements / pageSize));
+
+        const safePage = pageNum >= totalPages ? 0 : pageNum;
+        const startIndex = safePage * pageSize;
+        const displayedJobs = filtered.slice(startIndex, startIndex + pageSize);
+
+        setJobs(displayedJobs);
+        setPagination({
+            totalElements,
+            totalPages,
+            isFirst: safePage === 0,
+            isLast: safePage === totalPages - 1,
+        });
+
+        if (safePage !== pageNum) setPageNumber(safePage);
+    };
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < pagination.totalPages) {
             setPageNumber(newPage);
         }
+    };
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters((prev) => ({ ...prev, [name]: value }));
     };
 
     return (
@@ -66,18 +150,53 @@ const Overview1 = () => {
                 <div className={cx('info-card', 'blue')}>
                     <div className={cx('info-number')}>{pagination.totalElements}</div>
                     <div className={cx('info-label')}>Open Jobs</div>
-                    <div className={cx('info-icon')}>{/* SVG icon nếu có */}</div>
                 </div>
                 <div className={cx('info-card', 'yellow')}>
                     <div className={cx('info-number')}>{totalApplications}</div>
                     <div className={cx('info-label')}>Total Applications</div>
-                    <div className={cx('info-icon')}>{/* SVG icon nếu có */}</div>
                 </div>
             </div>
 
-            {/* Job list title */}
-            <div className={cx('job-list-header')}>
-                <div className={cx('sectionTitle')}>Recently Posted Jobs</div>
+            {/* Filter panel */}
+            <div className={cx('filter-panel')}>
+                {/* Name */}
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Search by name"
+                    value={filters.name}
+                    onChange={handleFilterChange}
+                />
+
+                {/* Status */}
+                <select
+                    name="status"
+                    value={filters.status}
+                    onChange={handleFilterChange}
+                >
+                    <option value="all">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="expired">Expired</option>
+                </select>
+
+                {/* Start date */}
+                <input
+                    type="date"
+                    name="startDate"
+                    value={filters.startDate}
+                    onChange={handleFilterChange}
+                />
+
+                {/* Text "to" */}
+                <span className={cx('to-text')}>to</span>
+
+                {/* End date */}
+                <input
+                    type="date"
+                    name="endDate"
+                    value={filters.endDate}
+                    onChange={handleFilterChange}
+                />
             </div>
 
             {/* Table Head */}
@@ -95,7 +214,7 @@ const Overview1 = () => {
                         key={job.id}
                         jobDescription={job}
                         isVIP={job.isVIP}
-                        isActive={true} // Thêm dòng này
+                        isActive={true}
                     />
                 ))}
             </div>
