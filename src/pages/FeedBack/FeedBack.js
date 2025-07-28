@@ -101,65 +101,58 @@ export default function FeedBack() {
                 </div>
                 <div className={cx('right-form')}>
                     <div className={cx('formTitle')}>Get in Touch</div>
-                    {submitted ? (
-                        <div className={cx('thankYouMessage')}>
-                            <h2>🎉 Thank you for your feedback!</h2>
-                            <p>We really appreciate you taking the time to reach out to us.</p>
-                        </div>
-                    ) : (
-                        <form className={cx('form')} onSubmit={handleSubmit} autoComplete="off">
-                            <div className={cx('grid-row')}>
-                                <div>
-                                    <input
-                                        className={cx('input')}
-                                        name="name"
-                                        placeholder="Name"
-                                        value={form.name}
-                                        onChange={handleChange}
-                                    />
-                                    {errors.name && <div className={cx('error')}>{errors.name}</div>}
-                                </div>
-                                <div>
-                                    <input
-                                        className={cx('input')}
-                                        name="email"
-                                        type="email"
-                                        placeholder="Email"
-                                        value={form.email}
-                                        onChange={handleChange}
-                                    />
-                                    {errors.email && <div className={cx('error')}>{errors.email}</div>}
-                                </div>
-                            </div>
-                            <input
-                                className={cx('input')}
-                                name="subject"
-                                placeholder="Subject"
-                                value={form.subject}
-                                onChange={handleChange}
-                            />
+                    <form className={cx('form')} onSubmit={handleSubmit} autoComplete="off">
+                        <div className={cx('grid-row')}>
                             <div>
-                                <textarea
-                                    className={cx('textarea')}
-                                    name="message"
-                                    placeholder="Message"
-                                    value={form.message}
+                                <input
+                                    className={cx('input')}
+                                    name="name"
+                                    placeholder="Name"
+                                    value={form.name}
                                     onChange={handleChange}
                                 />
-                                {errors.message && <div className={cx('error')}>{errors.message}</div>}
+                                {errors.name && <div className={cx('error')}>{errors.name}</div>}
                             </div>
+                            <div>
+                                <input
+                                    className={cx('input')}
+                                    name="email"
+                                    type="email"
+                                    placeholder="Email"
+                                    value={form.email}
+                                    onChange={handleChange}
+                                />
+                                {errors.email && <div className={cx('error')}>{errors.email}</div>}
+                            </div>
+                        </div>
+                        <input
+                            className={cx('input')}
+                            name="subject"
+                            placeholder="Subject"
+                            value={form.subject}
+                            onChange={handleChange}
+                        />
+                        <div>
+                            <textarea
+                                className={cx('textarea')}
+                                name="message"
+                                placeholder="Message"
+                                value={form.message}
+                                onChange={handleChange}
+                            />
+                            {errors.message && <div className={cx('error')}>{errors.message}</div>}
+                        </div>
 
-                            <button type="submit" className={cx('send-btn')} disabled={loading}>
-                                {loading ? 'Sending...' : 'Send Message'}
-                                {!loading && <span className={cx('icon-paper-plane')} />}
-                            </button>
+                        <button type="submit" className={cx('send-btn')} disabled={loading}>
+                            {loading ? 'Sending...' : 'Send Message'}
+                            {!loading && <span className={cx('icon-paper-plane')} />}
+                        </button>
 
-                            {result && <div className={cx('result', { success: submitted, error: !submitted })}>{result}</div>}
-                        </form>
-                    )}
-
+                        {result && <div className={cx('result', { success: submitted, error: !submitted })}>{result}</div>}
+                    </form>
                 </div>
             </div>
         </div>
     );
 }
+
