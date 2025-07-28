@@ -10,6 +10,7 @@ const Application = ({
   experience,
   education,
   resumeUrl,
+  status, // đồng bộ từ JobApplications
   handleSelect,
   handleDownloadCV,
   handleAccept,
@@ -18,7 +19,6 @@ const Application = ({
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [actionType, setActionType] = useState(null);
-  const [status, setStatus] = useState(null);
 
   const openMessageBox = (type) => {
     setActionType(type);
@@ -35,20 +35,14 @@ const Application = ({
   const handleSendMessage = () => {
     if (actionType === "accept") {
       handleAccept && handleAccept(messageText);
-      setStatus("ACCEPTED");
     } else if (actionType === "refuse") {
       handleRefuse && handleRefuse(messageText);
-      setStatus("REJECTED");
     }
     closeMessageBox();
   };
 
   return (
-    <div
-      className={styles.application}
-      onClick={handleSelect}
-      style={{ cursor: "pointer", position: "relative" }}
-    >
+    <div className={`${styles.application} ${styles[status]}`} onClick={handleSelect}>
       <div className={styles.profile}>
         <div className={styles.avatar}></div>
         <div>
@@ -70,42 +64,28 @@ const Application = ({
         Download CV
       </button>
 
-      <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
+      <div className={styles.actions}>
         <button
-          className={styles.accept}
+          className={`${styles.accept} ${status === "ACCEPTED" ? styles.disabled : ""
+            }`}
           onClick={(e) => {
             e.stopPropagation();
             openMessageBox("accept");
           }}
-          style={{
-            padding: "4px 12px",
-            background: "#4caf50",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "12px",
-            display: status === "REJECTED" ? "none" : "inline-block",
-          }}
           disabled={status === "ACCEPTED"}
+          style={{ display: status === "REJECTED" ? "none" : "inline-block" }}
         >
           Accept
         </button>
         <button
-          className={styles.refuse}
+          className={`${styles.refuse} ${status === "REJECTED" ? styles.disabled : ""
+            }`}
           onClick={(e) => {
             e.stopPropagation();
             openMessageBox("refuse");
           }}
-          style={{
-            padding: "4px 12px",
-            background: "#f44336",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "12px",
-            display: status === "ACCEPTED" ? "none" : "inline-block",
-          }}
           disabled={status === "REJECTED"}
+          style={{ display: status === "ACCEPTED" ? "none" : "inline-block" }}
         >
           Refuse
         </button>
@@ -170,45 +150,37 @@ const JobApplications = ({ jobId }) => {
 
     const fetchCandidates = async () => {
       try {
-        const response = await EmployerService.fetchApplicationData(
-          jobId,
-          "candidates"
-        );
-
-        // Lấy content từ API mới
+        const response = await EmployerService.fetchApplicationData(jobId, "candidates");
         const content = response?.content || [];
 
-        if (mounted) {
-          const mappedApps = content.map((app) => {
-            const appId =
-              app.applicationId ||
-              app.id ||
-              app.userId ||
-              app.seekerDetail?.userId ||
-              null;
+        const mappedApps = content.map((app) => {
+          const appId =
+            app.applicationId ||
+            app.id ||
+            app.userId ||
+            app.seekerDetail?.userId ||
+            null;
 
-            return {
-              id: appId,
-              seekerDetail: app.seekerDetail,
-              fullName: app.seekerDetail?.fullName || app.fullname || "No name",
-              email: app.seekerDetail?.userEmail || app.email || "",
-              experience: app.seekerDetail?.experienceName || "N/A",
-              education: app.seekerDetail?.educationName || "N/A",
-              resumeUrl: app.seekerDetail?.resumeUrl || "",
-              coverLetter: app.seekerDetail?.coverLetter || "",
-              phone: app.seekerDetail?.phone || "",
-              applicationId: appId,
-              status: app.status || "PENDING",
-            };
-          });
+          return {
+            id: appId,
+            seekerDetail: app.seekerDetail,
+            fullName: app.seekerDetail?.fullName || app.fullname || "No name",
+            email: app.seekerDetail?.userEmail || app.email || "",
+            experience: app.seekerDetail?.experienceName || "N/A",
+            education: app.seekerDetail?.educationName || "N/A",
+            resumeUrl: app.seekerDetail?.resumeUrl || "",
+            coverLetter: app.seekerDetail?.coverLetter || "",
+            phone: app.seekerDetail?.phone || "",
+            applicationId: appId,
+            status: app.status || "PENDING",
+          };
+        });
 
-          setApplications(mappedApps);
-        }
+        setApplications(mappedApps);
       } catch (error) {
         console.error("Error fetching candidates:", error);
       }
     };
-
     fetchCandidates();
 
     return () => {
@@ -247,17 +219,17 @@ const JobApplications = ({ jobId }) => {
           return;
         }
         if (!applicant.seekerDetail) {
-  applicant.seekerDetail = {
-    fullName: applicant.fullname || "Unknown",
-    userEmail: applicant.email || "",
-    phone: applicant.phone || "",
-    location: applicant.location || "",
-    experienceName: applicant.experienceName || "N/A",
-    educationName: applicant.educationName || "N/A",
-    resumeUrl: applicant.resumeUrl || "",
-    coverLetter: applicant.coverLetter || "",
-  };
-}
+          applicant.seekerDetail = {
+            fullName: applicant.fullname || "Unknown",
+            userEmail: applicant.email || "",
+            phone: applicant.phone || "",
+            location: applicant.location || "",
+            experienceName: applicant.experienceName || "N/A",
+            educationName: applicant.educationName || "N/A",
+            resumeUrl: applicant.resumeUrl || "",
+            coverLetter: applicant.coverLetter || "",
+          };
+        }
 
         setSelectedApplicantDetail({
           ...applicant,
@@ -303,7 +275,7 @@ const JobApplications = ({ jobId }) => {
 
       setApplications((prev) =>
         prev.map((app) =>
-          app.id === applicationId ? { ...app, status: status } : app
+          app.applicationId === applicationId ? { ...app, status: status } : app
         )
       );
     } catch (error) {
@@ -435,7 +407,6 @@ const JobApplications = ({ jobId }) => {
             <div
               className={styles.seekerBox}
               onClick={(e) => e.stopPropagation()}
-              style={{ position: "relative" }}
             >
               <button
                 className={styles.closeBtn}
