@@ -29,8 +29,7 @@ httpRequest.interceptors.response.use(
                 case 403:
                     return Promise.reject(
                         new Error({ code: 403, message: 'You do not have permission to perform this action.' }),
-                    );
-                case 429:
+                    ); case 429:
                     return Promise.reject(new Error('Too many requests. Please try again later.'));
                 default:
                     return Promise.reject(errorMessage);
@@ -65,15 +64,12 @@ httpRequest.interceptors.request.use(
 // Xử lý GET
 export const get = async (path, params = {}, options = {}) => {
     try {
-        const response = await httpRequest.get(
-            path,
-            {
-                params: {
-                    ...params,
-                },
+        const response = await httpRequest.get(path, {
+            params: {
+                ...params,
             },
-            options,
-        );
+            ...options, // merge thêm nếu cần headers hoặc config khác
+        });
         return response.data;
     } catch (error) {
         throw error;

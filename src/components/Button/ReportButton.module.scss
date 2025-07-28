@@ -1,0 +1,18 @@
+.wrapper {
+    margin-top: auto;
+}
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.title {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+}
+.btn-submit {
+    text-align: center;
+}
+.hidden-error {
+    display: none;
+}
