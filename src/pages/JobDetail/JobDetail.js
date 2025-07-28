@@ -4,15 +4,9 @@ import classNames from 'classnames/bind';
 import styles from './JobDetail.module.scss';
 import EmployerService from '~/services/EmployerService';
 import {
-  IconCirclesRelation,
-  IconPhone,
-  IconMailOpened,
-  IconStopwatch,
   IconBriefcase,
   IconWallet,
   IconMapPin,
-  IconBooks,
-  IconBrain,
   IconUsers,
   IconBrightnessAuto,
   IconBookmarkFilled,
@@ -22,13 +16,12 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import SimpleRichTextEditor from 'src/components/RichTextEditor/RichTextEditor.js';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
-import { CalendarIcon } from 'lucide-react';
 import { useWindowScroll } from '@mantine/hooks';
 
 import ApplyButton from '~/components/Button/ApplyButton';
 import { useAuth } from '~/context/AuthContext';
 import { useNotification } from '~/hooks';
-import { InputPlaceholder } from '@mantine/core';
+import ReportButton from '~/components/Button/ReportButton';
 
 const cx = classNames.bind(styles);
 
@@ -532,6 +525,10 @@ Company:
             <button className={cx('share-buttons__btn', 'pinterest')}>Pinterest</button>
           </div>
         </div>
+
+
+        {/*Report Button  */}
+        {isJOB_SEEKER && <ReportButton />}
       </div>
 
       {/* Bên phải */}

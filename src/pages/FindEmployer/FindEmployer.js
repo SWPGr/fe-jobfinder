@@ -3,6 +3,7 @@ import { Filter } from '~/components';
 import classNames from 'classnames/bind';
 import styles from './FindEmployer.module.scss';
 import { useSearchParams } from 'react-router-dom';
+import { useNotification } from '~/hooks';
 
 import { jobService, searchService } from '~/services';
 
@@ -14,22 +15,27 @@ function FindEmployer() {
     const [categoryOptions, setCategoryOptions] = React.useState([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [totalHits, setTotalHits] = useState(0);
+    const { showError } = useNotification();
 
     // ===== useEffect 1: Lấy filter options khi load trang =====
     useEffect(() => {
         const fetchOptions = async () => {
-            const data = await jobService.getAllOptions();
+            try {
+                const data = await jobService.getAllOptions();
 
-            const filters = {
-                organizationId: {
-                    name: 'Organization Type',
-                    type: 'Radio',
-                    options: [{ name: 'All', id: '' }, ...data?.organizations],
-                },
-            };
+                const filters = {
+                    organizationId: {
+                        name: 'Organization Type',
+                        type: 'Radio',
+                        options: [{ name: 'All', id: '' }, ...data?.organizations],
+                    },
+                };
 
-            setJobFilter(filters);
-            setCategoryOptions(data.categories);
+                setJobFilter(filters);
+                setCategoryOptions(data?.categories);
+            } catch (error) {
+                showError('Get options failed');
+            }
         };
 
         fetchOptions();

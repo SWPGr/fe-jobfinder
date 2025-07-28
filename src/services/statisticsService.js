@@ -16,15 +16,11 @@ export const fetchAllJobs = async () => {
     }
 };
 
-const fetchMonthOverMonthComparison = async (token) => {
+const fetchMonthOverMonthComparison = async () => {
     const data = await get(
         '/statistics/month-over-month-comparison',
         {},
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        },
+
     );
     return data.result || null;
 };

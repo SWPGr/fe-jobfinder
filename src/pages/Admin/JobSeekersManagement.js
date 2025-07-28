@@ -211,7 +211,7 @@ const JobSeekersManagement = () => {
                             <tr key={seeker.id || idx}>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={cx('company-avatar')}>{getInitials(seeker.fullName)}</div>
+                                        <div className={cx('company-avatar')}> s{getInitials(seeker.fullName)}</div>
                                         <div style={{ marginLeft: 12 }}>
                                             <div className={cx('job-title')}>{seeker.fullName || '--'}</div>
                                         </div>
