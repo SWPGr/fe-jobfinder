@@ -9,7 +9,7 @@
 /* Tiêu đề */
 .title {
     font-weight: 600;
-    font-size: var(--font-size-28px, 2.8rem);
+    font-size: var(--font-size-header);
     margin-bottom: 24px;
     color: var(--gray-900);
 }
@@ -18,7 +18,7 @@
 
 .table-header {
     display: grid;
-    grid-template-columns: 3.3fr 1.6fr 1.6fr 1.3fr;
+    grid-template-columns: 3.3fr 1.8fr 1.6fr 1fr;
     font-size: var(--font-size-18px);
     font-weight: 700;
     color: var(--gray-500);

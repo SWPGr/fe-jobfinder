@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames/bind";
 import styles from "./SeekerDetail.module.scss";
 import ResumeProfile from "../CreateCVSeeker/ResumeProfile";
@@ -9,7 +9,10 @@ import {
   FaRedditAlien,
   FaInstagram,
   FaYoutube,
+  FaGithub,
 } from "react-icons/fa";
+import useNotification from "~/hooks/userNotification";
+import JobSeekerProfileService from "~/services/JobSeekerProfileService";
 
 const cx = classNames.bind(styles);
 
@@ -97,8 +100,38 @@ function formatResumeSummary(text) {
   });
 }
 
+const socialIconMap = {
+  Facebook: FaFacebookF,
+  Twitter: FaTwitter,
+  LinkedIn: FaLinkedinIn,
+  GitHub: FaRedditAlien, // sẽ sửa lại bên dưới
+  "Personal Website": FaInstagram, // sẽ sửa lại bên dưới
+};
+
 const SeekerDetail = ({ applicant }) => {
   const [showSummary, setShowSummary] = useState(false);
+  const [socialLinks, setSocialLinks] = useState([]);
+  const [socialTypes, setSocialTypes] = useState([]);
+  const { showInfo, showWarning } = useNotification();
+
+  useEffect(() => {
+    const fetchSocialData = async () => {
+      try {
+        const [links, types] = await Promise.all([
+          JobSeekerProfileService.getMySocialLinks(),
+          JobSeekerProfileService.getSocialTypes(),
+        ]);
+        setSocialLinks(links);
+        setSocialTypes(types);
+        if (!links || links.length === 0) {
+          showInfo("No social media links found for this user.");
+        }
+      } catch (err) {
+        showWarning("Failed to fetch social media data.");
+      }
+    };
+    fetchSocialData();
+  }, []);
 
   if (!applicant) {
     alert("Không có dữ liệu ứng viên.");
@@ -132,6 +165,15 @@ const SeekerDetail = ({ applicant }) => {
     setShowSummary(true);
   };
 
+  // Sửa lại icon map cho đúng
+  const iconMap = {
+    Facebook: FaFacebookF,
+    Twitter: FaTwitter,
+    LinkedIn: FaLinkedinIn,
+    GitHub: FaGithub, // Bạn có thể import FaGithub nếu muốn
+    "Personal Website": FaInstagram, // Bạn có thể import FaGlobe nếu muốn
+  };
+
   return (
     <div className={cx("outerContainer")}>
       <div className={cx("container")}>
@@ -156,24 +198,35 @@ const SeekerDetail = ({ applicant }) => {
           <section className={cx("socialMedia")}>
             <span>Follow me on Social Media</span>
             <div className={cx("socialIcons")}>
-              <a href="#" aria-label="Facebook" className={cx("socialIcon")}>
-                <FaFacebookF />
-              </a>
-              <a href="#" aria-label="Twitter" className={cx("socialIcon")}>
-                <FaTwitter />
-              </a>
-              <a href="#" aria-label="LinkedIn" className={cx("socialIcon")}>
-                <FaLinkedinIn />
-              </a>
-              <a href="#" aria-label="Reddit" className={cx("socialIcon")}>
-                <FaRedditAlien />
-              </a>
-              <a href="#" aria-label="Instagram" className={cx("socialIcon")}>
-                <FaInstagram />
-              </a>
-              <a href="#" aria-label="YouTube" className={cx("socialIcon")}>
-                <FaYoutube />
-              </a>
+              {socialTypes.length > 0 ? (
+                socialTypes.map((type) => {
+                  // Tìm link theo id thay vì name
+                  const link = socialLinks.find(
+                    (l) => l.socialType && l.socialType.id === type.id
+                  );
+                  const Icon = iconMap[type.name] || FaRedditAlien;
+                  return (
+                    <a
+                      key={type.id}
+                      href={link ? link.url : undefined}
+                      aria-label={type.name}
+                      className={cx("socialIcon")}
+                      target={link ? "_blank" : undefined}
+                      rel={link ? "noopener noreferrer" : undefined}
+                      onClick={e => {
+                        if (!link) {
+                          e.preventDefault();
+                          showInfo(`No link for ${type.name}`);
+                        }
+                      }}
+                    >
+                      <Icon />
+                    </a>
+                  );
+                })
+              ) : (
+                <span>No social media types found.</span>
+              )}
             </div>
           </section>
         </div>
