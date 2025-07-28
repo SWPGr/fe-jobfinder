@@ -64,7 +64,7 @@ function Filter({
     categoryOptions = [],
     buttonLabel = 'Find Job',
     searchLabel = 'Enter job title or keyword',
-    onSearch = async () => {},
+    onSearch = async () => { },
     isFindJob = false,
     type = 'job',
 }) {
