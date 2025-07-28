@@ -299,7 +299,7 @@
 }
 
 .socialLinkRow {
-    margin-bottom: var(--font-size-20px); /* Updated from 20px */
+    margin-bottom: var(--font-size-10px); /* Updated from 20px */
 }
 
 .socialLinkInputs {
@@ -564,4 +564,12 @@
 .upload-cv-icon {
     font-size: 32px;
     margin-bottom: 8px;
+}
+
+.socialLinksTitle {
+    font-size: var(--font-size-18px);
+}
+
+.addSocialLinksTitle {
+    font-size: var(--font-size-18px);
 }

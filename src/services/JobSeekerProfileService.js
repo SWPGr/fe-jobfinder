@@ -1,4 +1,4 @@
-import { get, put } from '~/utils/httpRequest';
+import { get, put, post, del } from '~/utils/httpRequest';
 
 const updateProfileWithFile = async (formData) => {
     return await put('/profiles', formData, { headers: {} });
@@ -33,6 +33,7 @@ const getMySocialLinks = async () => {
         return [];
     }
 };
+
 // Lấy danh sách social types
 const getSocialTypes = async () => {
     try {
@@ -44,12 +45,54 @@ const getSocialTypes = async () => {
     }
 };
 
+// Tạo mới social link
+const createSocialLink = async (socialTypeId, url) => {
+    try {
+        const response = await post('/user-social-links', {
+            socialTypeId: socialTypeId,
+            url: url
+        });
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
+// Cập nhật social link theo ID của social link
+const updateSocialLink = async (socialLinkId, socialTypeId, url) => {
+    try {
+        const response = await put(`/user-social-links/${socialLinkId}`, {
+            socialTypeId: socialTypeId,
+            url: url
+        });
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
+// Xóa social link theo ID của social link
+const deleteSocialLink = async (socialLinkId) => {
+    try {
+        const response = await del(`/user-social-links/${socialLinkId}`);
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
 const JobSeekerProfileService = {
     updateProfileWithFile,
     getProfile,
     getSocialMediaLinksByUserId,
     getSocialTypes,
     getMySocialLinks,
+    createSocialLink,
+    updateSocialLink,
+    deleteSocialLink,
 };
 
 export default JobSeekerProfileService;

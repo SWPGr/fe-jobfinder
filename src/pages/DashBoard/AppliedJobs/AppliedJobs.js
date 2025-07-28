@@ -261,10 +261,6 @@ function AppliedJobs() {
                 <span>STATUS</span>
 
                 <span>ACTION</span>
-                <span>APPLIED DATE</span>
-                <span>STATUS</span>
-
-                <span>ACTION</span>
             </div>
             <div className={cx('job-list')}>
                 {loading ? (
