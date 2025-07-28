@@ -33,7 +33,7 @@ const Reports = () => {
     useEffect(() => {
         const fetchAllReportTypes = async () => {
             try {
-                const response = await reportService.getAllReportType();
+                const response = await reportService.getAllReportTypes();
                 setReportTypes(response || []);
             } catch (error) {
                 console.error('Error fetching report types:', error);
@@ -232,9 +232,8 @@ const Reports = () => {
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center gap-2">
                                                         <TypeIcon
-                                                            className={`w-6 h-6 ${
-                                                                reportTypesIcon[report.id - 1].color
-                                                            }`}
+                                                            className={`w-6 h-6 ${reportTypesIcon[report.id - 1].color
+                                                                }`}
                                                         />
                                                         <span className="text-xl text-gray-900">
                                                             {report.type.name}
