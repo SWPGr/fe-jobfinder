@@ -32,7 +32,11 @@ httpRequest.interceptors.response.use(
                     ); case 429:
                     return Promise.reject(new Error('Too many requests. Please try again later.'));
                 default:
-                    return Promise.reject(errorMessage);
+                    // Thêm phần xử lý message từ backend
+                    const errorData = error.response.data;
+                    const customError = new Error(errorData.message || 'Unknown error');
+                    customError.code = errorData.code;
+                    return Promise.reject(customError);
             }
         } else if (error.code === 'ECONNABORTED') {
             return Promise.reject(new Error('Request timed out. Please try again.'));

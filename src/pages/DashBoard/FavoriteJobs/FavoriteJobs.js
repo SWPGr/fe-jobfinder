@@ -117,10 +117,10 @@ function FavoriteJobs() {
                     value={pendingExpiredFilter}
                     onChange={(e) => setPendingExpiredFilter(e.target.value)}
                 >
-                    <option value="all">🗓️ All Dates</option>
-                    <option value="today">📅 Today</option>
-                    <option value="7days">📊 Last 7 days</option>
-                    <option value="30days">📈 Last 30 days</option>
+                    <option value="all">All Dates</option>
+                    <option value="today">Today</option>
+                    <option value="7days">Last 7 days</option>
+                    <option value="30days">Last 30 days</option>
                 </select>
                 <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
                     Filter
@@ -152,15 +152,15 @@ function FavoriteJobs() {
                                         job.salaryMin && job.salaryMax
                                             ? `$${job.salaryMin} - $${job.salaryMax}`
                                             : job.salaryMin
-                                            ? `$${job.salaryMin}`
-                                            : 'Negotiable',
+                                                ? `$${job.salaryMin}`
+                                                : 'Negotiable',
                                     remainDay: job.expiredDate
                                         ? Math.max(
-                                              0,
-                                              Math.ceil(
-                                                  (new Date(job.expiredDate) - new Date()) / (1000 * 60 * 60 * 24),
-                                              ),
-                                          )
+                                            0,
+                                            Math.ceil(
+                                                (new Date(job.expiredDate) - new Date()) / (1000 * 60 * 60 * 24),
+                                            ),
+                                        )
                                         : '',
                                     isSave: job.isSave,
                                     dateApplied: new Date(job.createdAt).toLocaleDateString(),

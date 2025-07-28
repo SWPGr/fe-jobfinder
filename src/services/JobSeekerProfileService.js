@@ -1,4 +1,4 @@
-import { get, put } from '~/utils/httpRequest';
+import { get, put, post, del } from '~/utils/httpRequest';
 
 const updateProfileWithFile = async (formData) => {
     return await put('/profiles', formData);
@@ -13,9 +13,86 @@ const getProfile = async () => {
     }
 };
 
+const getSocialMediaLinksByUserId = async (userId) => {
+    try {
+        const res = await fetch(`http://localhost:8080/api/social-media-links/user/${userId}`);
+        const data = await res.json();
+        return data || [];
+    } catch (err) {
+        console.error('Error fetching social media links:', err);
+        return [];
+    }
+};
+
+// Lấy social links của user hiện tại
+const getMySocialLinks = async () => {
+    try {
+        return await get('/user-social-links/my');
+    } catch (err) {
+        console.error('Error fetching my social links:', err);
+        return [];
+    }
+};
+
+// Lấy danh sách social types
+const getSocialTypes = async () => {
+    try {
+        const res = await get('/social-types');
+        return res.result || [];
+    } catch (err) {
+        console.error('Error fetching social types:', err);
+        return [];
+    }
+};
+
+// Tạo mới social link
+const createSocialLink = async (socialTypeId, url) => {
+    try {
+        const response = await post('/user-social-links', {
+            socialTypeId: socialTypeId,
+            url: url
+        });
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
+// Cập nhật social link theo ID của social link
+const updateSocialLink = async (socialLinkId, socialTypeId, url) => {
+    try {
+        const response = await put(`/user-social-links/${socialLinkId}`, {
+            socialTypeId: socialTypeId,
+            url: url
+        });
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
+// Xóa social link theo ID của social link
+const deleteSocialLink = async (socialLinkId) => {
+    try {
+        const response = await del(`/user-social-links/${socialLinkId}`);
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
 const JobSeekerProfileService = {
     updateProfileWithFile,
     getProfile,
+    getSocialMediaLinksByUserId,
+    getSocialTypes,
+    getMySocialLinks,
+    createSocialLink,
+    updateSocialLink,
+    deleteSocialLink,
 };
 
 export default JobSeekerProfileService;

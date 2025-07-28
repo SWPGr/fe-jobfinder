@@ -212,9 +212,9 @@ function Dashboard1() {
                 <SeekerDetail
                     applicant={{
                         ...profileData,
-                        jobSeeker: profileData, // để SeekerDetail lấy avatar, fullName, biography đúng
-                        id: profileData.id || profileData._id || 1, // đảm bảo có id
-                        title: '', // hoặc truyền title nếu muốn
+                        seekerDetail: profileData, // sửa lại key này để SeekerDetail lấy đúng avatar và tên
+                        id: profileData.id || profileData._id || 1,
+                        title: '',
                     }}
                 />
             )}

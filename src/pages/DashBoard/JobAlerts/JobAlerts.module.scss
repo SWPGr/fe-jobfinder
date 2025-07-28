@@ -10,9 +10,9 @@
     margin-bottom: 20px;
 }
 
-.header h3 {
+.header-title {
     font-weight: 600;
-    font-size: var(--font-size-28px, 2.8rem);
+    font-size: var(--font-size-header);
     /* fallback nếu thiếu biến */
 }
 
@@ -62,7 +62,7 @@
 
 .job-info .title {
     font-weight: 600;
-    font-size: var(--font-size-16px);
+    font-size: var(--font-size-header);
     display: flex;
     align-items: center;
     gap: 12px;

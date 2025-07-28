@@ -8,7 +8,7 @@
 }
 
 .heading2 {
-    font-size: var(--font-size-logo);
+    font-size: var(--font-size-header);
     font-weight: 600;
     margin-bottom: var(--font-size-16px);
     color: var(--text-color);
@@ -128,16 +128,16 @@
 .save-btn {
     background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%) !important;
     color: #fff !important;
-    padding: 14px 40px !important;
-    font-size: 22px !important;
+    padding: 8px 20px !important; /* giảm padding */
+    font-size: 14px !important; /* giảm font-size */
     font-weight: 800 !important;
-    border-radius: 24px !important;
+    border-radius: 4px !important;
     border: none !important;
     outline: none !important;
     text-transform: uppercase !important;
     display: inline-block !important;
-    min-width: 180px !important;
-    min-height: 48px !important;
+    min-width: 80px !important; /* giảm min-width */
+    min-height: 32px !important; /* giảm min-height */
     margin-top: 32px !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
@@ -299,7 +299,7 @@
 }
 
 .socialLinkRow {
-    margin-bottom: var(--font-size-20px); /* Updated from 20px */
+    margin-bottom: var(--font-size-10px); /* Updated from 20px */
 }
 
 .socialLinkInputs {
@@ -564,4 +564,12 @@
 .upload-cv-icon {
     font-size: 32px;
     margin-bottom: 8px;
+}
+
+.socialLinksTitle {
+    font-size: var(--font-size-18px);
+}
+
+.addSocialLinksTitle {
+    font-size: var(--font-size-18px);
 }
