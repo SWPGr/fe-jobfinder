@@ -121,9 +121,9 @@ function JobAlerts() {
     return (
         <div className={cx('job-alerts-wrapper')}>
             <div className={cx('header')}>
-                <h3>
+                <div className={cx('header-title')}>
                     Job Alerts <span>({jobsData.length} new jobs)</span>
-                </h3>
+                </div>
                 <button className={cx('edit-btn')}>Edit Job Alerts</button>
             </div>
 
