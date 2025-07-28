@@ -10,7 +10,7 @@ const Application = ({
   experience,
   education,
   resumeUrl,
-  status, // đồng bộ từ JobApplications
+  status,
   handleSelect,
   handleDownloadCV,
   handleAccept,
@@ -66,8 +66,7 @@ const Application = ({
 
       <div className={styles.actions}>
         <button
-          className={`${styles.accept} ${status === "ACCEPTED" ? styles.disabled : ""
-            }`}
+          className={`${styles.accept} ${status === "ACCEPTED" ? styles.disabled : ""}`}
           onClick={(e) => {
             e.stopPropagation();
             openMessageBox("accept");
@@ -78,8 +77,7 @@ const Application = ({
           Accept
         </button>
         <button
-          className={`${styles.refuse} ${status === "REJECTED" ? styles.disabled : ""
-            }`}
+          className={`${styles.refuse} ${status === "REJECTED" ? styles.disabled : ""}`}
           onClick={(e) => {
             e.stopPropagation();
             openMessageBox("refuse");
@@ -134,26 +132,67 @@ const JobApplications = ({ jobId }) => {
     education: "",
   });
 
+  // state lưu options động
+  const [educationOptions, setEducationOptions] = useState([]);
+  const [experienceOptions, setExperienceOptions] = useState([]);
+
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [selectedApplicantDetail, setSelectedApplicantDetail] = useState(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [showResumeProfile, setShowResumeProfile] = useState(false);
 
-  // Fetch danh sách ứng viên
+  // Fetch danh sách education từ API
+  useEffect(() => {
+    const fetchEducations = async () => {
+      try {
+        const data = await EmployerService.fetchEducationFake();
+        setEducationOptions(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching educations:", error);
+        setEducationOptions([]);
+      }
+    };
+
+    fetchEducations();
+  }, []);
+
+  // Fetch danh sách experience từ API
+  useEffect(() => {
+    const fetchExperiences = async () => {
+      try {
+        const data = await EmployerService.fetchExperienceFake();
+        setExperienceOptions(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching experiences:", error);
+        setExperienceOptions([]);
+      }
+    };
+
+    fetchExperiences();
+  }, []);
+
+  // Fetch danh sách ứng viên từ API với filter và sort
   useEffect(() => {
     if (!jobId) {
       setApplications([]);
       return;
     }
 
-    let mounted = true;
-
     const fetchCandidates = async () => {
       try {
-        const response = await EmployerService.fetchApplicationData(jobId, "candidates");
-        const content = response?.content || [];
+        const content = await EmployerService.fetchFilteredCandidates(
+          jobId,
+          filters,
+          sortOrder
+        );
 
-        const mappedApps = content.map((app) => {
+        const safeContent = Array.isArray(content)
+          ? content
+          : Array.isArray(content?.content)
+          ? content.content
+          : [];
+
+        const mappedApps = safeContent.map((app) => {
           const appId =
             app.applicationId ||
             app.id ||
@@ -181,12 +220,9 @@ const JobApplications = ({ jobId }) => {
         console.error("Error fetching candidates:", error);
       }
     };
-    fetchCandidates();
 
-    return () => {
-      mounted = false;
-    };
-  }, [jobId]);
+    fetchCandidates();
+  }, [jobId, filters, sortOrder]);
 
   // Fetch chi tiết ứng viên khi chọn
   useEffect(() => {
@@ -200,7 +236,6 @@ const JobApplications = ({ jobId }) => {
     const fetchApplicantDetail = async () => {
       try {
         const detail = await EmployerService.fetchCandidateDetail(
-          jobId,
           selectedApplicationId
         );
 
@@ -218,18 +253,6 @@ const JobApplications = ({ jobId }) => {
           console.warn("API trả về thiếu seekerDetail, giữ nguyên dữ liệu cũ");
           return;
         }
-        if (!applicant.seekerDetail) {
-          applicant.seekerDetail = {
-            fullName: applicant.fullname || "Unknown",
-            userEmail: applicant.email || "",
-            phone: applicant.phone || "",
-            location: applicant.location || "",
-            experienceName: applicant.experienceName || "N/A",
-            educationName: applicant.educationName || "N/A",
-            resumeUrl: applicant.resumeUrl || "",
-            coverLetter: applicant.coverLetter || "",
-          };
-        }
 
         setSelectedApplicantDetail({
           ...applicant,
@@ -244,7 +267,7 @@ const JobApplications = ({ jobId }) => {
     };
 
     fetchApplicantDetail();
-  }, [selectedApplicationId, jobId]);
+  }, [selectedApplicationId]);
 
   const handleSelect = (app) => {
     if (!app.applicationId || isNaN(Number(app.applicationId))) {
@@ -269,8 +292,7 @@ const JobApplications = ({ jobId }) => {
       await EmployerService.fetchStatusJobFake(applicationId, status, message);
 
       alert(
-        `Ứng viên đã được ${status === "ACCEPTED" ? "chấp nhận" : "từ chối"
-        } thành công.`
+        `Ứng viên đã được ${status === "ACCEPTED" ? "chấp nhận" : "từ chối"} thành công.`
       );
 
       setApplications((prev) =>
@@ -296,22 +318,6 @@ const JobApplications = ({ jobId }) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
-
-  const filteredApps = applications
-    .filter(
-      (app) =>
-        (!filters.fullName ||
-          app.fullName?.toLowerCase().includes(filters.fullName.toLowerCase())) &&
-        (!filters.experience ||
-          app.experience?.toLowerCase().includes(filters.experience.toLowerCase())) &&
-        (!filters.education ||
-          app.education?.toLowerCase().includes(filters.education.toLowerCase()))
-    )
-    .sort((a, b) =>
-      sortOrder === "newest"
-        ? a.fullName.localeCompare(b.fullName)
-        : b.fullName.localeCompare(a.fullName)
-    );
 
   return (
     <div className={styles.container}>
@@ -341,10 +347,11 @@ const JobApplications = ({ jobId }) => {
                   onChange={handleFilterChange}
                 >
                   <option value="">Experience</option>
-                  <option value="0-1 year">0-1 year</option>
-                  <option value="1-3 year">1-3 year</option>
-                  <option value="3-5 year">3-5 year</option>
-                  <option value="5+ year">5+ year</option>
+                  {experienceOptions.map((exp) => (
+                    <option key={exp.id} value={exp.name}>
+                      {exp.name}
+                    </option>
+                  ))}
                 </select>
                 <select
                   name="education"
@@ -352,10 +359,11 @@ const JobApplications = ({ jobId }) => {
                   onChange={handleFilterChange}
                 >
                   <option value="">Education</option>
-                  <option value="High School">High School</option>
-                  <option value="Bachelor">Bachelor</option>
-                  <option value="Master">Master</option>
-                  <option value="PhD">PhD</option>
+                  {educationOptions.map((edu) => (
+                    <option key={edu.id} value={edu.name}>
+                      {edu.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -375,8 +383,8 @@ const JobApplications = ({ jobId }) => {
       </div>
 
       <div className={styles.applications}>
-        {filteredApps.length > 0 ? (
-          filteredApps.map((app, index) => (
+        {applications.length > 0 ? (
+          applications.map((app, index) => (
             <Application
               key={index}
               {...app}

@@ -114,24 +114,24 @@ const SeekerDetail = ({ applicant }) => {
   const [socialTypes, setSocialTypes] = useState([]);
   const { showInfo, showWarning } = useNotification();
 
-  useEffect(() => {
-    const fetchSocialData = async () => {
-      try {
-        const [links, types] = await Promise.all([
-          JobSeekerProfileService.getMySocialLinks(),
-          JobSeekerProfileService.getSocialTypes(),
-        ]);
-        setSocialLinks(links);
-        setSocialTypes(types);
-        if (!links || links.length === 0) {
-          showInfo("No social media links found for this user.");
-        }
-      } catch (err) {
-        showWarning("Failed to fetch social media data.");
-      }
-    };
-    fetchSocialData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchSocialData = async () => {
+  //     try {
+  //       const [links, types] = await Promise.all([
+  //         JobSeekerProfileService.getMySocialLinks(),
+  //         JobSeekerProfileService.getSocialTypes(),
+  //       ]);
+  //       setSocialLinks(links);
+  //       setSocialTypes(types);
+  //       if (!links || links.length === 0) {
+  //         showInfo("No social media links found for this user.");
+  //       }
+  //     } catch (err) {
+  //       showWarning("Failed to fetch social media data.");
+  //     }
+  //   };
+  //   fetchSocialData();
+  // }, []);
 
   if (!applicant) {
     alert("Không có dữ liệu ứng viên.");

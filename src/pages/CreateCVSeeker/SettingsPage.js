@@ -534,7 +534,6 @@ function SettingsPage() {
 
       {activeTab === 'Contact' && (
         <div className={cx('contactTab')}>
-          <div className={cx('sectionTitle')}>Contact Information</div>
 
           <div className={cx('formGroup')}>
             <label>Map Location</label>
@@ -555,6 +554,7 @@ function SettingsPage() {
               name="phone"
               value={form.phone || ''}
               onChange={handleChange}
+              className={cx('phoneInput')}  // thêm class này
             />
           </div>
 
