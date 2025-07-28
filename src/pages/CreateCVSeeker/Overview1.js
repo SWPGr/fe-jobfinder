@@ -7,11 +7,13 @@ import EmployerService from '~/services/EmployerService';
 const cx = classNames.bind(styles);
 
 const Overview1 = () => {
-    const [jobs, setJobs] = useState([]);
+    const [allActiveJobs, setAllActiveJobs] = useState([]); // Lưu tất cả job active
+    const [jobs, setJobs] = useState([]); // Job hiển thị trang hiện tại
     const [totalApplications, setTotalApplications] = useState(0);
 
     const [pageNumber, setPageNumber] = useState(0);
-    const [pageSize, setPageSize] = useState(5);
+    const pageSize = 5; // Cố định 5 job/trang
+
     const [pagination, setPagination] = useState({
         totalElements: 0,
         totalPages: 1,
@@ -19,33 +21,59 @@ const Overview1 = () => {
         isLast: true,
     });
 
+    // Hàm lọc job active
+    const filterActiveJobs = (jobsData) => {
+        const now = new Date();
+        return jobsData.filter((job) => {
+            if (!job.expiredDate) return true; // Không có expiredDate coi là active
+            const expiredTime = Date.parse(job.expiredDate);
+            if (isNaN(expiredTime)) return true; // Nếu parse lỗi, coi là active
+            return expiredTime >= now.getTime();
+        });
+    };
+
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const { jobs, pagination } = await EmployerService.fetchMyJobFake(pageNumber, pageSize);
+                const { jobs: apiJobs } = await EmployerService.fetchMyJobFake();
 
-                console.log('Jobs data:', jobs); // Debug xem dữ liệu trả về
+                // Lọc active jobs
+                const activeJobs = filterActiveJobs(apiJobs);
 
-                // Nếu expiredDate không hợp lệ thì cho job đó là active
-                const now = new Date();
-                const activeJobs = jobs.filter((job) => {
-                    if (!job.expiredDate) return true; // Cho phép hiển thị nếu không có expiredDate
-                    const expired = new Date(job.expiredDate);
-                    return !isNaN(expired) && expired >= now;
+                // Tính tổng số ứng tuyển
+                const totalApps = activeJobs.reduce(
+                    (sum, job) => sum + (job.numberApplications || 0),
+                    0
+                );
+
+                // Cập nhật danh sách và pagination
+                const totalElements = activeJobs.length;
+                const totalPages = Math.max(1, Math.ceil(totalElements / pageSize));
+
+                // Nếu pageNumber vượt quá totalPages thì reset về 0
+                const safePage = pageNumber >= totalPages ? 0 : pageNumber;
+                const startIndex = safePage * pageSize;
+                const displayedJobs = activeJobs.slice(startIndex, startIndex + pageSize);
+
+                setAllActiveJobs(activeJobs);
+                setJobs(displayedJobs);
+                setTotalApplications(totalApps);
+
+                setPagination({
+                    totalElements,
+                    totalPages,
+                    isFirst: safePage === 0,
+                    isLast: safePage === totalPages - 1,
                 });
 
-                const totalApps = activeJobs.reduce((sum, job) => sum + (job.numberApplications || 0), 0);
-
-                setJobs(activeJobs);
-                setTotalApplications(totalApps);
-                setPagination(pagination);
+                if (safePage !== pageNumber) setPageNumber(safePage);
             } catch (err) {
                 console.error('Error fetching jobs:', err);
             }
         };
 
         fetchJobs();
-    }, [pageNumber, pageSize]);
+    }, [pageNumber]);
 
     const handlePageChange = (newPage) => {
         if (newPage >= 0 && newPage < pagination.totalPages) {
@@ -66,12 +94,10 @@ const Overview1 = () => {
                 <div className={cx('info-card', 'blue')}>
                     <div className={cx('info-number')}>{pagination.totalElements}</div>
                     <div className={cx('info-label')}>Open Jobs</div>
-                    <div className={cx('info-icon')}>{/* SVG icon nếu có */}</div>
                 </div>
                 <div className={cx('info-card', 'yellow')}>
                     <div className={cx('info-number')}>{totalApplications}</div>
                     <div className={cx('info-label')}>Total Applications</div>
-                    <div className={cx('info-icon')}>{/* SVG icon nếu có */}</div>
                 </div>
             </div>
 
@@ -95,7 +121,7 @@ const Overview1 = () => {
                         key={job.id}
                         jobDescription={job}
                         isVIP={job.isVIP}
-                        isActive={true} // Thêm dòng này
+                        isActive={true}
                     />
                 ))}
             </div>

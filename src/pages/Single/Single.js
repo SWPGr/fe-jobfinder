@@ -95,9 +95,10 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
           <div className={cx('leftColumn')}>
             <div className={cx('infoBox')}>
               <h3 className={cx('title1')}>About Us</h3>
-              <p className={cx('description')}>
-                {companyInfo.description || 'No description available.'}
-              </p>
+              <div
+                className={cx('description')}
+                dangerouslySetInnerHTML={{ __html: companyInfo.description || 'No description available.' }}
+              />
 
               <h4 className={cx('title2')}>Company Vision</h4>
               <div className={cx('companyVision')}>
@@ -131,14 +132,7 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                   {companyInfo.yearOfEstablishment || 'N/A'}
                 </div>
               </div>
-              <div className={cx('cardRow')}>
-                <div className={cx('cardLabel')}>
-                  <IconBuildingCommunity className={cx('icon')} /> Organization Type
-                </div>
-                <div className={cx('cardValue')}>
-                  {companyInfo.organizationType || 'N/A'}
-                </div>
-              </div>
+
               <div className={cx('cardRow')}>
                 <div className={cx('cardLabel')}>
                   <IconUsersGroup className={cx('icon')} /> Team Size
