@@ -365,40 +365,12 @@
     border-color: #b91c1c;
 }
 
+// Pagination styles for Mantine Pagination (same as FavoriteJobs)
 .pagination-root {
     display: flex;
-    gap: 10px;
     justify-content: center;
     align-items: center;
     margin-top: 24px;
-}
-.control {
-    font-size: 22px;
-    min-width: 48px;
-    min-height: 48px;
-    padding: 0 18px;
-    border-radius: 12px;
-    background: #f3f6fa;
-    color: #2563eb;
-    border: 1.5px solid #e0e0e0;
-    font-weight: 600;
-    transition: background 0.18s, color 0.18s, border 0.18s;
-    cursor: pointer;
-    margin: 0 2px;
-}
-.control[data-active='true'],
-.control.active {
-    background: #2563eb;
-    color: #fff;
-    border: 1.5px solid #2563eb;
-}
-.control:hover {
-    background: #e3eaff;
-    color: #1746b3;
-    border: 1.5px solid #1976d2;
-}
-
-.pagination-root {
     .control {
         width: 4rem;
         height: 4rem;
@@ -406,16 +378,13 @@
         margin: 0 0.5rem;
         border: 1px solid var(--gray-200);
         cursor: pointer;
-
         &:hover {
             border-color: var(--blue-500);
         }
-
         svg {
             width: 4rem !important;
             height: 2rem !important;
         }
-
         &[data-active='true'] {
             border-color: inherit;
         }

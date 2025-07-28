@@ -73,11 +73,7 @@ export const blockEmployer = async (employerId) => {
                 userId: employerId, // Sử dụng userId (dựa trên logic backend)
                 isActive: false, // Thay active bằng isActive để khớp với UserStatusUpdateRequest
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+
         );
         console.log('Block response:', response);
         return response;
@@ -98,11 +94,7 @@ export const blockJobSeeker = async (jobSeekerId) => {
                 userId: jobSeekerId, // Sử dụng userId (dựa trên logic backend)
                 isActive: false, // Thay active bằng isActive để khớp với UserStatusUpdateRequest
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+
         );
         console.log('Block response:', response);
         return response;
@@ -122,16 +114,32 @@ export const blockJob = async (jobId) => {
                 jobId: jobId, // Sử dụng jobId (dựa trên Postman)
                 isActive: false, // Khớp với backend
             },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            },
+
         );
         console.log('Block response:', response);
         return response;
     } catch (error) {
         console.error('Failed to block Job:', {
+            message: error.message,
+            response: error.response ? error.response.data : 'No response data',
+        });
+        throw error;
+    }
+};
+
+export const unblockJobSeeker = async (jobSeekerId) => {
+    try {
+        const response = await put(
+            '/users/status',
+            {
+                userId: jobSeekerId,
+                isActive: true,
+            },
+        );
+        console.log('Unblock response:', response);
+        return response;
+    } catch (error) {
+        console.error('Failed to unblock jobseeker:', {
             message: error.message,
             response: error.response ? error.response.data : 'No response data',
         });
@@ -151,6 +159,7 @@ const statisticsService = {
     blockEmployer,
     blockJobSeeker,
     blockJob,
+    unblockJobSeeker, // thêm vào export default
 };
 
 export default statisticsService;

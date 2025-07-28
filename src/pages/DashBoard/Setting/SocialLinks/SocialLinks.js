@@ -297,7 +297,7 @@ function SocialLinks({ onSave }) {
                     </div>
                     {existingLinks.map((link, idx) => (
                         <div key={link.id} className={cx('socialLinkRow')}>
-                            <label>{`Social Link ${idx + 1}`}</label>
+                            <label className={cx('socialLinkLabel')}>{`Social Link ${idx + 1}`}</label>
                             <div className={cx('socialLinkInputs')}>
                                 <select
                                     value={link.type}
@@ -390,7 +390,7 @@ function SocialLinks({ onSave }) {
                     )}
                     {newLinks.map((link, idx) => (
                         <div key={link.id} className={cx('socialLinkRow')}>
-                            <label>{`Social Link ${existingLinks.length + idx + 1}`}</label>
+                            <label className={cx('socialLinkLabel')}>{`Social Link ${existingLinks.length + idx + 1}`}</label>
                             <div className={cx('socialLinkInputs')}>
                                 <select
                                     value={link.type}
