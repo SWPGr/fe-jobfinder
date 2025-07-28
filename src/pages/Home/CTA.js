@@ -10,21 +10,20 @@ const cx = classNames.bind(styles);
 function CTA() {
     const { user } = useAuth();
     const role = user?.role || 'JOB_SEEKER';
-    const isEmployer = role === 'EMPLOYER';
 
     const quotes = {
         ADMIN: {
             title: 'Welcome to Your Admin Dashboard',
             description:
                 'Manage your platform efficiently with powerful tools and insights. Monitor activities, manage users, and ensure a smooth operation.',
-            link: '/dashboard',
+            link: '/dashboard/overview',
             linkText: 'Go to Admin Dashboard',
         },
         EMPLOYER: {
             title: 'Build Your Dream Team Today',
             description:
                 'Find and attract top talent quickly and efficiently. Post your job openings, connect with qualified candidates, and grow your business.',
-            link: '/post-job',
+            link: '/dashboard/postjob',
             linkText: 'Post a Job Now',
         },
         JOB_SEEKER: {
