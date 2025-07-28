@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { SearchIcon, FilterIcon, ChevronDownIcon } from 'lucide-react';
 import { jobService } from '~/services';
+import { debounce } from 'lodash';
+
 
 import { useSearchParams } from 'react-router-dom';
 
@@ -44,7 +46,8 @@ const locations = [
 const JobSearchFilters = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [jobFilters, setJobFilters] = useState(null);
-    const [form, setForm] = useState({
+    const [loading, setLoading] = useState(true);
+    const initialForm = useMemo(() => ({
         keyword: searchParams.get('keyword') || '',
         location: searchParams.get('location') || '',
         categoryId: searchParams.get('categoryId') || '',
@@ -58,16 +61,21 @@ const JobSearchFilters = () => {
         jobLevelId: searchParams.get('jobLevelId') || '',
         organizationId: searchParams.get('organizationId') || '',
         sort: searchParams.get('sort') || '',
-    });
+        isNegotiable: searchParams.get('isNegotiable') || '',
+    }), [searchParams]);
+    const [form, setForm] = useState(initialForm);
 
     useEffect(() => {
         const fetchOptions = async () => {
+            setLoading(true);
+
             const data = await jobService.getAllOptions();
+            setLoading(false);
 
             const filters = {
                 experienceId: {
                     name: 'Experience',
-                    options: [...data.experiences],
+                    options: [{ name: 'All', id: '' }, ...data.experiences],
                 },
                 salaryId: {
                     name: 'Salary',
@@ -83,11 +91,11 @@ const JobSearchFilters = () => {
                 },
                 jobTypeId: {
                     name: 'Job Type',
-                    options: [...data.jobTypes],
+                    options: [{ name: 'All', id: '' }, ...data.jobTypes],
                 },
                 educationId: {
                     name: 'Education',
-                    options: [...data.educations],
+                    options: [{ name: 'All', id: '' }, ...data.educations],
                 },
             };
             setJobFilters(filters);
@@ -95,6 +103,10 @@ const JobSearchFilters = () => {
 
         fetchOptions();
     }, []);
+
+    const debouncedChange = useMemo(() => debounce((val) => {
+        setForm((prev) => ({ ...prev, keyword: val }));
+    }, 400), []);
 
     const handleChange = (key, value) => {
         if (key === 'salaryId') {
@@ -121,6 +133,7 @@ const JobSearchFilters = () => {
         }
     };
 
+
     const handleClear = () => {
         setForm({
             keyword: '',
@@ -136,6 +149,8 @@ const JobSearchFilters = () => {
 
     const handleSubmit = () => {
         const params = new URLSearchParams();
+        console.log(form);
+
         for (const [key, value] of Object.entries(form)) {
             if (value !== '' && value !== null && value !== undefined) {
                 params.set(key, value);
@@ -144,7 +159,9 @@ const JobSearchFilters = () => {
         params.set('page', '1');
         setSearchParams(params);
     };
-
+    if (loading) {
+        return <div className="p-4 text-gray-400">Loading filters...</div>;
+    }
     if (!jobFilters) return null;
 
     return (
@@ -157,8 +174,9 @@ const JobSearchFilters = () => {
                     </div>
                     <input
                         type="text"
-                        value={form.keyword}
-                        onChange={(e) => handleChange('keyword', e.target.value)}
+                        // value={form.keyword}
+                        defaultValue={form.keyword}
+                        onChange={(e) => debouncedChange(e.target.value)}
                         className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md text-xl placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Job title, skills, or company"
                     />
@@ -171,7 +189,7 @@ const JobSearchFilters = () => {
                         onChange={(e) => handleChange('location', e.target.value)}
                         className="block w-full pl-3 pr-10 py-2 text-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md text-sm appearance-none"
                     >
-                        <option value="">All Locations</option>
+                        <option disabled hidden value="">All Locations</option>
                         {locations.map((loc) => (
                             <option key={loc.id} value={loc.id}>
                                 {loc.name}
@@ -190,7 +208,7 @@ const JobSearchFilters = () => {
                         onChange={(e) => handleChange('jobTypeId', e.target.value)}
                         className="block w-full pl-3 pr-10 py-2 text-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md text-sm appearance-none"
                     >
-                        <option value="">All Job Types</option>
+                        <option disabled hidden value="">All Job Types</option>
                         {jobFilters.jobTypeId.options.map((opt) => (
                             <option key={opt.id} value={opt.id}>
                                 {opt.name}
@@ -212,7 +230,7 @@ const JobSearchFilters = () => {
                         onChange={(e) => handleChange('experienceId', e.target.value)}
                         className="block w-full pl-3 pr-10 py-2 text-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md text-sm appearance-none"
                     >
-                        <option value="">Experiences</option>
+                        <option disabled hidden value="">Experiences</option>
                         {jobFilters.experienceId.options.map((opt) => (
                             <option key={opt.id} value={opt.id}>
                                 {opt.name}
@@ -231,7 +249,7 @@ const JobSearchFilters = () => {
                         onChange={(e) => handleChange('salaryId', e.target.value)}
                         className="block w-full pl-3 pr-10 py-2 text-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md text-sm appearance-none"
                     >
-                        <option value="">Salaries</option>
+                        <option disabled hidden value="">Salaries</option>
                         {jobFilters.salaryId.options.map((opt) => (
                             <option key={opt.id} value={opt.id}>
                                 {opt.name}
@@ -250,7 +268,7 @@ const JobSearchFilters = () => {
                         onChange={(e) => handleChange('educationId', e.target.value)}
                         className="block w-full pl-3 pr-10 py-2 text-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-md text-sm appearance-none"
                     >
-                        <option value="">Educations</option>
+                        <option disabled hidden value="">Educations</option>
                         {jobFilters.educationId.options.map((opt) => (
                             <option key={opt.id} value={opt.id}>
                                 {opt.name}

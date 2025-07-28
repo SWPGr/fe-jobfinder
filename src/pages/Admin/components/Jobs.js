@@ -88,6 +88,7 @@ const Jobs = () => {
         }
     };
 
+
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedJob(null);
@@ -226,9 +227,8 @@ const Jobs = () => {
                             job={{
                                 id: selectedJob.id,
                                 jobTitle: selectedJob.title,
-                                tags: `${selectedJob.title}, ${selectedJob.category?.name || ''}, ${
-                                    selectedJob.jobLevel?.name || ''
-                                }`,
+                                tags: `${selectedJob.title}, ${selectedJob.category?.name || ''}, ${selectedJob.jobLevel?.name || ''
+                                    }`,
                                 jobRole: selectedJob.jobLevel?.name || 'N/A',
                                 badges: { featured: false, fulltime: selectedJob.jobType?.name || 'N/A' },
                                 minSalary: selectedJob.salaryMin,

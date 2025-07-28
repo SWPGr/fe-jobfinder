@@ -180,3 +180,29 @@
         gap: 10px;
     }
 }
+
+.result {
+    margin-top: 16px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.5rem;
+    &.success {
+        color: var(--success-color);
+    }
+    &.error {
+        color: var(--error-color);
+    }
+}
+
+.error {
+    font-size: 1.4rem;
+    color: var(--error-color);
+    margin-top: 4px;
+    padding-left: 4px;
+}
+.thankYouMessage {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #2e7d32; // xanh lá cảm ơn
+}
