@@ -4,7 +4,6 @@ import styles from './JobItemList.module.scss';
 import {
     IconMapPin,
     IconBookmark,
-    IconCurrencyDollar,
     IconCalendarWeek,
     IconArrowRight,
     IconBookmarkFilled,

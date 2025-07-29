@@ -15,7 +15,7 @@ function Sidebar({ setSelectedMenu, className }) {
     const [active, setActive] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const { page, item } = useParams(); // Extracting page and item from the URL parameters
+    const { page } = useParams(); // Extracting page and item from the URL parameters
 
     const { user, logout } = useAuth();
     const role = user?.role;

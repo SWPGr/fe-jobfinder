@@ -1,11 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
-import { useEffect, lazy, Suspense } from 'react';
+import { useEffect } from 'react';
 import { useWindowScroll } from '@mantine/hooks';
 import { useAuth } from '~/context/AuthContext';
 
 import { LandingPage } from '../components';
-import PopularVacancy from './PopularVacancy';
 import Instruction from './Instruction';
 import PopularCategory from './PopularCategory';
 import FeaturedJob from './FeaturedJob';
@@ -14,7 +13,6 @@ import CTA from './CTA';
 import JobMarketTrends from './JobMarketTrends';
 import SectionWrapper from './animation/SectionWrapper';
 import EventBanner from './EventBanner';
-import JobFairBanner from './components/JobFairBanner';
 
 const cx = classNames.bind(styles);
 

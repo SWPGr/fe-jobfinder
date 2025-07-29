@@ -171,7 +171,7 @@ function Login() {
                                 loading={loading}
                                 loaderProps={{ type: 'dots' }}
                             >
-                                Create account
+                                Sign in
                             </Button>
                         </div>
                     </form>
