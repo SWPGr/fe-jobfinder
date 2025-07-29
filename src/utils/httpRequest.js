@@ -5,7 +5,7 @@ import axios from 'axios';
 const httpRequest = axios.create({
     //loại bỏ cố định content-type: application/json để làm mô hình request nâng cao
     baseURL: process.env.REACT_APP_API_BASE_URL, // đặt baseURL nếu có
-    timeout: 20000, // timeout 10s (tuỳ chọn)
+    // timeout: 50000, // timeout 10s (tuỳ chọn)
 });
 // Middleware có thể thêm: interceptors request/response nếu muốn
 httpRequest.interceptors.response.use(
