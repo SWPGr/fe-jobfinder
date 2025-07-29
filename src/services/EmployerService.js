@@ -7,6 +7,8 @@ const API_URL = 'http://localhost:8080/api/job';
 const getJobDetail = async (id) => {
     try {
         const response = await axios.get(`${API_URL}/${id}`);
+        console.log(`Fetching job detail for ID ${id}:`, response.data);
+
         return response.data;
     } catch (error) {
         console.error(`Error fetching job detail for ID ${id}:`, error);
@@ -27,7 +29,7 @@ const updateJob = async (id, data) => {
 
 const deleteJob = async (id) => {
     try {
-        const response = await axios.delete(`${API_URL}/${id}`);
+        const response = await axios.put(`${API_URL}/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error deleting job with ID ${id}:`, error);
@@ -118,7 +120,7 @@ const fetchMyJobFake = async (page = 0, size = 10, isActive = true, jobTitle = '
         const formattedToDate = toDate ? new Date(toDate).toISOString() : '';
 
         let url = `/job/my-employer-jobs?page=${page}&size=${size}&isActive=${isActive}&jobTitle=${jobTitle}&fromDate=${formattedFromDate}`;
-        
+
         if (formattedToDate) {
             url += `&toDate=${formattedToDate}`;
         }
@@ -269,10 +271,6 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
     }
 };
 
-const fetchEmployerProfileFake = async () => {
-    const response = await get('/profiles/me');
-    return response?.result || {};
-};
 
 const fetchSettingFake = async (updatedData) => {
     try {

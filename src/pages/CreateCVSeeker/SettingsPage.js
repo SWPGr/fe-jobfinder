@@ -10,14 +10,8 @@ import Single from '../Single/Single';
 
 const cx = classNames.bind(styles);
 
-const tabsOrder = ['Company Info', 'Founding Info', 'Social Media Profile', 'Contact'];
+const tabsOrder = ['Company Info', 'Founding Info',  'Contact'];
 
-const socialOptions = [
-  { label: 'Facebook', value: 'facebook', icon: '📘' },
-  { label: 'Twitter', value: 'twitter', icon: '🐦' },
-  { label: 'Instagram', value: 'instagram', icon: '📸' },
-  { label: 'Youtube', value: 'youtube', icon: '▶️' },
-];
 
 
 const SaveNextButton = ({ onClick, style }) => (
@@ -389,7 +383,7 @@ function SettingsPage() {
           </div>
 
           <div className={cx('btnGroup')}>
-            <SaveNextButton onClick={() => { handleSave(); goToNextTab(); }} />
+            <SaveNextButton onClick={() => { handleSave();  }} />
               
           </div>
         </div>
@@ -479,55 +473,6 @@ function SettingsPage() {
             </button>
           </div>
         </form>
-      )}
-
-      {activeTab === 'Social Media Profile' && (
-        <div className={cx('socialLinksContainer')}>
-          {socialLinks.map((link, idx) => (
-            <div key={link.id} className={cx('socialLinkRow')}>
-              <label>{`Social Link ${idx + 1}`}</label>
-              <div className={cx('socialLinkInputs')}>
-                <select
-                  value={link.type}
-                  onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
-                  className={cx('socialSelect')}
-                >
-                  {socialOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Profile link/url..."
-                  value={link.url}
-                  onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
-                  className={cx('socialInput')}
-                />
-                <button
-                  type="button"
-                  className={cx('removeBtn')}
-                  onClick={() => handleRemoveSocialLink(link.id)}
-                  aria-label={`Remove Social Link ${idx + 1}`}
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          ))}
-
-          <button type="button" className={cx('addSocialBtn')} onClick={handleAddSocialLink}>
-            + Add New Social Link
-          </button>
-
-          <div className={cx('btnGroup')}>
-            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Founding Info')}>
-              Previous
-            </button>
-            <SaveNextButton onClick={() => { handleSave(); goToNextTab(); }} />
-          </div>
-        </div>
       )}
 
       {activeTab === 'Contact' && (

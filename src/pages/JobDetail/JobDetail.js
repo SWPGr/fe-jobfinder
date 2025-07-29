@@ -154,7 +154,8 @@ const JobDetail = ({
           jobData = job;
         } else {
           const response = await EmployerService.getJobDetail(id);
-          jobData = response.data;
+          console.log('Response from getJobDetail:', response);
+          jobData = response;
         }
         console.log('Fetched job data:', jobData);
 
@@ -677,9 +678,9 @@ Company:
             {formData.company?.companyName || formData.company?.name}
           </div>
           <p
-  className={cx('company-info__desc')}
-  dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
-></p>
+            className={cx('company-info__desc')}
+            dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
+          ></p>
           <div className={cx('company-details')}>
             {[
               { label: 'Founded in:', key: 'founded' },

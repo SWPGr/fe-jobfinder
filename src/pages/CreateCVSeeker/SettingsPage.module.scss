@@ -33,7 +33,9 @@ margin-bottom: 30px;
     font-weight: 600;
     color: var(--text-color);
     padding: var(--font-size-12px) var(--font-size-20px);
-
+    padding-bottom: 0;
+    padding-left: 0;
+    margin-left: 3rem;
     cursor: pointer;
     transition: color var(--transition);
     position: relative;
@@ -56,6 +58,10 @@ margin-bottom: 30px;
       height: 0.2rem;
       background-color: var(--primary-color);
     }
+  }
+
+  button:nth-child(1) {
+    margin-left: 0;
   }
 }
 

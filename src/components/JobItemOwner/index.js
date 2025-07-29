@@ -31,6 +31,7 @@ const normalizeJobData = (data) => {
   const expiredDateStr = data.expiredDate;
   const createdAtStr = data.createdAt;
 
+
   let isActive = false;
   if (expiredDateStr) {
     const today = new Date();
@@ -49,7 +50,11 @@ const normalizeJobData = (data) => {
     return typeof field === 'object' ? field : { id: field, name: '' };
   };
 
+
+
+
   return {
+
     id: data.id,
     title: data.title || '',
     description: data.description || '',
@@ -99,27 +104,33 @@ const prepareUpdatePayload = (job) => ({
 });
 
 const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) => {
+  console.log('Fetching job detail for ID:', id);
+
   try {
     if (deleteFlag) {
       const response = await EmployerService.deleteJob(id);
       return response.data || {};
     }
     const response = await EmployerService.getJobDetail(id);
-    return response.data || {};
+    return response || {};
   } catch (error) {
     if (error.response?.status === 404) {
       alert(`Job with ID ${id} not found.`);
       return null;
     }
-    console.error('Error fetching/updating/deleting job:', error);
     throw error;
   }
 };
 
 function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
+
   const [jobData, setJobData] = useState(() => {
-    if (jobDescription && !jobDescription.id && jobDescription.jobId) {
-      return { ...jobDescription, id: jobDescription.jobId };
+    if (jobDescription && jobDescription.id) {
+      // Nếu jobDescription đã có id, trả về một đối tượng mới với id
+      // Giữ nguyên các trường khác
+      console.log('Job description has ID 1:', jobDescription);
+
+      return { ...jobDescription, id: jobDescription.id };
     }
     return jobDescription;
   });
@@ -132,6 +143,8 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
   const isMounted = useRef(true);
 
   useEffect(() => {
+    console.log('JobItemOwner mounted with jobDescription:', jobDescription);
+
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -140,25 +153,25 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
 
   useEffect(() => {
     async function fetchDetail() {
-      if (!jobDescription?.id && jobDescription?.jobId) {
-        setJobData({ ...jobDescription, id: jobDescription.jobId });
-        return;
-      }
-      if (jobDescription?.id) {
+      try {
+        console.log('Fetching job detail for ID:', jobDescription.id);
+
         setLoading(true);
-        try {
-          const data = await fetchJobDetailFake(jobDescription.id);
-          if (data) {
-            setJobData(normalizeJobData(data));
-          } else {
-            setJobData(jobDescription);
-          }
-        } catch {
+        const data = await fetchJobDetailFake(jobDescription?.id);
+
+        console.log('Fetched job data:', data);
+
+        if (data) {
+          setJobData(normalizeJobData(data));
+        } else {
           setJobData(jobDescription);
-        } finally {
-          setLoading(false);
         }
+      } catch {
+        setJobData(jobDescription);
+      } finally {
+        setLoading(false);
       }
+
     }
     fetchDetail();
   }, [jobDescription]);
@@ -179,7 +192,6 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
             : (Array.isArray(response?.content) ? response.content.length : 0);
         setNumberApplications(total);
       } catch (error) {
-        console.error('Error fetching candidate details:', error);
         setNumberApplications(0);
       }
     }
@@ -259,6 +271,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
   const closeModal = () => setModalType(null);
   const closeApplications = () => setShowApplications(false);
 
+
   return (
     <>
       <div className={cx('wrapper', { isVIP })}>
@@ -268,7 +281,11 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
           </div>
           <div className={cx('job-description')}>
             <div className={cx('top')}>
-              <div className={cx('title')}>{jobData?.title}</div>
+              {jobData && jobData.title ? (
+                <div className={cx('title')}>{jobData.title}</div>
+              ) : (
+                <div className={cx('error')}>Job title not available</div>
+              )}
             </div>
             <div className={cx('bottom')}>
               <div className={cx('work-time')}>
@@ -332,9 +349,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
       {modalType && jobData && (
         <div className={cx('modalOverlay')}>
           <div className={cx('modalBox')}>
-            <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">
-              &times;
-            </button>
+            <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">&times;</button>
             {modalType === 'view' && <JobDetail key="view" job={jobData} />}
             {modalType === 'edit' && <JobDetail key="edit" job={jobData} editable onSave={handleSave} />}
           </div>
