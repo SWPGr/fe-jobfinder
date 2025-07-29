@@ -7,7 +7,7 @@ import { get } from '~/utils/httpRequest';
 const cx = classNames.bind(styles);
 
 // API mới
-const fetchMyJobFake = async (page = 0, size = 10) => {
+const fetchMyJobFake = async (page = 2, size = 10) => {
     try {
         const response = await get(`/job/my-employer-jobs?page=${page}&size=${size}`);
 

@@ -1,11 +1,9 @@
 .main {
   max-width: 110rem;
-  // margin: 3rem auto;
   font-family: var(--font-family);
   color: var(--gray-900);
   box-sizing: border-box;
   margin-left: -5rem;
-  // padding: 20px;
   margin-top: 5px;
   padding-left: 7rem;
 }
@@ -18,13 +16,14 @@
 }
 
 .tabs {
-display: flex;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: var(--font-size-10px);
-    margin-top: -3rem;
-margin-bottom: 30px;
+  display: flex;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: var(--font-size-10px);
+  margin-top: -3rem;
+  margin-bottom: 30px;
+
   button {
-   background: none;
+    background: none;
     border: none;
     display: flex;
     align-items: center;
@@ -49,6 +48,7 @@ margin-bottom: 30px;
       border-color: var(--primary-color);
       font-weight: 800;
     }
+
     &.active::after {
       content: '';
       position: absolute;
@@ -183,7 +183,9 @@ margin-bottom: 30px;
       font-family: var(--font-family);
       box-sizing: border-box;
       color: var(--gray-900);
-    }.company-name{
+    }
+
+    .company-name {
       font-size: 1.6rem;
     }
 
@@ -402,35 +404,13 @@ margin-bottom: 30px;
 
     .phoneInput {
       width: 100%;
-  padding: 0.8rem 1.2rem;
-  border-radius: 0.4rem;
-  border: 0.1rem solid var(--border-color);
-  font-size: 1.4rem;
-  box-sizing: border-box;
-  color: var(--gray-900);
-  font-family: var(--font-family);
-
-      .countryCodeSelect {
-        width: 10rem;
-        padding: 0.8rem;
-        border-radius: 0.4rem;
-        border: 0.1rem solid var(--border-color);
-        font-size: 1.4rem;
-        cursor: pointer;
-        font-family: var(--font-family);
-        color: var(--gray-900);
-      }
-
-      input[type='tel'] {
-        flex: 1;
-        padding: 0.8rem 1.2rem;
-        border-radius: 0.4rem;
-        border: 0.1rem solid var(--border-color);
-        font-size: 1.4rem;
-        font-family: var(--font-family);
-        color: var(--gray-900);
-        box-sizing: border-box;
-      }
+      padding: 0.8rem 1.2rem;
+      border-radius: 0.4rem;
+      border: 0.1rem solid var(--border-color);
+      font-size: 1.4rem;
+      box-sizing: border-box;
+      color: var(--gray-900);
+      font-family: var(--font-family);
     }
   }
 
@@ -530,98 +510,6 @@ margin-bottom: 30px;
   }
 }
 
-.previewImage {
-  max-width: 100%;
-  max-height: 140px;
-  object-fit: contain;
-  display: block;
-  margin: 0 auto;
-  border-radius: 0.6rem;
-}
-
-.saveNextBtn {
-  background-color: var(--primary-color);
-  color: var(--white);
-  padding: 1rem 1.8rem;
-  border: none;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: var(--primary-color-dark);
-  }
-}
-
-.previousBtn {
-  background-color: var(--gray-100);
-  color: var(--gray-800);
-  padding: 1rem 1.8rem;
-  border: none;
-  border-radius: 0.6rem;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: var(--gray-200);
-  }
-}
-
-.socialSelect,
-.socialInput {
-  padding: 0.8rem 1rem;
-  border: 0.15rem solid var(--border-color);
-  border-radius: 0.6rem;
-  font-size: 1rem;
-}
-
-.socialSelect {
-  min-width: 15rem;
-}
-
-.socialInput {
-  flex: 1;
-}
-
-.removeBtn {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  color: #ef4444;
-  cursor: pointer;
-  padding: 0 0.6rem;
-  line-height: 1;
-
-  &:hover {
-    color: #b91c1c;
-  }
-}
-
-.addSocialBtn {
-  margin-top: 1rem;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 0.6rem;
-  padding: 1rem 1.8rem;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 1rem;
-
-  &:hover {
-    background-color: var(--primary-color-dark);
-  }
-}
-.sectionTitle{
-  font-size: 2rem;
-  
-}
-.company-name{
-  font-size: 1.6rem;
-}
 .overlay {
   position: fixed;
   top: 0;
@@ -651,6 +539,7 @@ margin-bottom: 30px;
     font-weight: 600;
   }
 }
+
 .loadingText {
   color: white;
   font-size: 1.6rem;
@@ -721,4 +610,29 @@ margin-bottom: 30px;
   10% { opacity: 1; transform: translate(-50%, 0); }
   90% { opacity: 1; transform: translate(-50%, 0); }
   100% { opacity: 0; transform: translate(-50%, 20px); }
+}
+
+.inputGroup {
+  margin-bottom: 15px;
+}
+
+.inputGroup label {
+  font-size: 14px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.inputGroup input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.inputGroup input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
 }

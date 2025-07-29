@@ -103,7 +103,7 @@ const Overview1 = () => {
         const totalElements = filtered.length;
         const totalPages = Math.max(1, Math.ceil(totalElements / pageSize));
 
-        const safePage = pageNum >= totalPages ? 0 : pageNum;
+        const safePage = pageNum >= totalPages ? totalPages - 1 : pageNum; // If the page number exceeds the total pages, go to the last page
         const startIndex = safePage * pageSize;
         const displayedJobs = filtered.slice(startIndex, startIndex + pageSize);
         setJobs(displayedJobs);
@@ -114,7 +114,7 @@ const Overview1 = () => {
             isLast: safePage === totalPages - 1,
         });
 
-        if (safePage !== pageNum) setPageNumber(safePage);
+        if (safePage !== pageNum) setPageNumber(safePage); // Update pageNumber if needed
     };
 
     const handlePageChange = (newPage) => {
