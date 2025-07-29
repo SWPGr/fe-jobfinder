@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Footer.module.scss';
-import Term from '~/pages/Term/Term';
 import {
     IconBrandFacebookFilled,
     IconBrandYoutubeFilled,

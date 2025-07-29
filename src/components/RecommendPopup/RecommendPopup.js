@@ -28,7 +28,7 @@ function RecommendPopup({
     handleHidePopup = defaultFn,
     forwardLink = false,
 }) {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const classes = cx('recommend__container', {
         [className]: className,

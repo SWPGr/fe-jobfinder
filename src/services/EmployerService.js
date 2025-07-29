@@ -1,6 +1,6 @@
 // EmployerService.js
 import axios from 'axios';
-import { del, get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
+import { get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
 
 const API_URL = 'job';
 

@@ -94,7 +94,7 @@ const featuredCompanies = [
     },
 ];
 const JobListingsPage = () => {
-    const [scroll, scrollTo] = useWindowScroll();
+    const [scrollTo] = useWindowScroll();
     useEffect(() => {
         scrollTo({ y: 0 });
     }, []);
