@@ -7,10 +7,12 @@ import { JobSearchFilters } from '~/components';
 import { useSearchParams } from 'react-router-dom';
 import { jobService } from '~/services';
 import { Pagination } from '@mantine/core';
+import statisticsService from '~/services/statisticsService';
+import useNotification from '~/hooks/userNotification';
 
 const cx = classNames.bind(styles);
 
-const JobRowDropdown = ({ onAction, jobId }) => {
+const JobRowDropdown = ({ onAction, jobId, isActive }) => {
     const combobox = useCombobox();
     return (
         <Combobox
@@ -55,9 +57,15 @@ const JobRowDropdown = ({ onAction, jobId }) => {
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
                 <Combobox.Options>
-                    <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
-                        Block
-                    </Combobox.Option>
+                    {isActive ? (
+                        <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                            Block
+                        </Combobox.Option>
+                    ) : (
+                        <Combobox.Option value="unblock" className={cx('dropdownItem', 'dropdownItem--unblock')}>
+                            Unblock
+                        </Combobox.Option>
+                    )}
                     <Combobox.Option value="view" className={cx('dropdownItem')}>
                         View
                     </Combobox.Option>
@@ -76,15 +84,41 @@ const Jobs = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [totalHits, setTotalHits] = useState(1);
-    const totalPages = Math.ceil(totalHits / 10);
+    const [totalPages, setTotalPages] = useState(1);
 
-    const handleAction = (action, jobId) => {
+    const { showSuccess, showError } = useNotification();
+
+    const handleAction = async (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
         if (action === 'view') {
             setSelectedJob(job);
             setIsModalOpen(true);
         } else if (action === 'block') {
-            setJobs((prevJobs) => prevJobs.map((job) => (job.id === jobId ? { ...job, isBlocked: true } : job)));
+            try {
+                await statisticsService.blockJob(jobId);
+                showSuccess('Blocked successfully');
+                // Refetch jobs to get updated data
+                const response = await statisticsService.fetchAllJobsForManagement();
+                const jobArray = response?.content || [];
+                setJobs(jobArray);
+                setTotalHits(response?.totalElements || 0);
+                setTotalPages(response?.totalPages || 1);
+            } catch (err) {
+                showError(`Failed to block: ${err.message || 'Unknown error'}`);
+            }
+        } else if (action === 'unblock') {
+            try {
+                await statisticsService.unblockJob(jobId);
+                showSuccess('Unblocked successfully');
+                // Refetch jobs to get updated data
+                const response = await statisticsService.fetchAllJobsForManagement();
+                const jobArray = response?.content || [];
+                setJobs(jobArray);
+                setTotalHits(response?.totalElements || 0);
+                setTotalPages(response?.totalPages || 1);
+            } catch (err) {
+                showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
+            }
         }
     };
 
@@ -103,12 +137,15 @@ const Jobs = () => {
         const fetchJobs = async () => {
             setLoading(true);
             try {
-                const entries = Object.fromEntries(searchParams);
-                const data = await jobService.searchJob(entries);
-                const jobArray = data?.data || [];
+                const response = await statisticsService.fetchAllJobsForManagement();
+
+                // Handle the correct response structure from API
+                const jobArray = response?.content || [];
                 setJobs(jobArray);
-                setTotalHits(data.totalHits);
+                setTotalHits(response?.totalElements || 0);
+                setTotalPages(response?.totalPages || 1);
             } catch (err) {
+                console.error('Failed to fetch jobs:', err);
                 setJobs([]);
             } finally {
                 setLoading(false);
@@ -193,6 +230,7 @@ const Jobs = () => {
                                         <JobRowDropdown
                                             onAction={(action) => handleAction(action, job.id)}
                                             jobId={job.id}
+                                            isActive={job.active === true}
                                         />
                                     </td>
                                 </tr>

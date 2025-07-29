@@ -112,6 +112,7 @@ const SeekerDetail = ({ applicant }) => {
   const [showSummary, setShowSummary] = useState(false);
   const [socialLinks, setSocialLinks] = useState([]);
   const [socialTypes, setSocialTypes] = useState([]);
+
   const { showError, showInfo, showWarning } = useNotification();
 
   // useEffect(() => {
@@ -132,6 +133,7 @@ const SeekerDetail = ({ applicant }) => {
   //   };
   //   fetchSocialData();
   // }, []);
+
 
   if (!applicant) {
     showError("User not found");

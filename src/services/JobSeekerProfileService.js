@@ -84,6 +84,20 @@ const deleteSocialLink = async (socialLinkId) => {
     }
 };
 
+// Thay đổi mật khẩu
+const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const response = await post('/auth/change-password', {
+            oldPassword: oldPassword,
+            newPassword: newPassword
+        });
+        return response;
+    } catch (err) {
+        // Error từ httpRequest đã có code và message từ backend
+        throw err;
+    }
+};
+
 const JobSeekerProfileService = {
     updateProfileWithFile,
     getProfile,
@@ -93,6 +107,7 @@ const JobSeekerProfileService = {
     createSocialLink,
     updateSocialLink,
     deleteSocialLink,
+    changePassword,
 };
 
 export default JobSeekerProfileService;

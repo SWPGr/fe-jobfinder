@@ -20,8 +20,8 @@ function FavoriteJobs() {
     // Filter state
     const [searchTerm, setSearchTerm] = useState('');
     const [pendingSearchTerm, setPendingSearchTerm] = useState('');
-    const [expiredFilter, setExpiredFilter] = useState('all');
-    const [pendingExpiredFilter, setPendingExpiredFilter] = useState('all');
+    const [expiredRange, setExpiredRange] = useState('all');
+    const [pendingExpiredRange, setPendingExpiredRange] = useState('all');
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -53,7 +53,7 @@ function FavoriteJobs() {
         fetchJobs();
     }, [page, size]);
 
-    // Filtered jobs by search and expired date
+    // Filtered jobs by search and expired date range
     const filteredJobs = React.useMemo(() => {
         let result = jobs;
         if (searchTerm) {
@@ -65,36 +65,42 @@ function FavoriteJobs() {
                     job.employer?.email?.toLowerCase().includes(s),
             );
         }
-        if (expiredFilter !== 'all') {
-            const now = new Date();
+        // Filter by expired date range (number of days left)
+        if (expiredRange !== 'all') {
             result = result.filter((job) => {
                 if (!job.expiredDate) return false;
+                const now = new Date();
                 const expiredDate = new Date(job.expiredDate);
-                if (expiredFilter === 'today') {
-                    return expiredDate.toDateString() === now.toDateString();
-                } else if (expiredFilter === '7days') {
-                    const diff = (expiredDate - now) / (1000 * 60 * 60 * 24);
-                    return diff >= 0 && diff <= 7;
-                } else if (expiredFilter === '30days') {
-                    const diff = (expiredDate - now) / (1000 * 60 * 60 * 24);
-                    return diff >= 0 && diff <= 30;
+                const daysLeft = Math.ceil((expiredDate - now) / (1000 * 60 * 60 * 24));
+                switch (expiredRange) {
+                    case '0-50':
+                        return daysLeft >= 0 && daysLeft <= 50;
+                    case '51-100':
+                        return daysLeft >= 51 && daysLeft <= 100;
+                    case '101-150':
+                        return daysLeft >= 101 && daysLeft <= 150;
+                    case '151-200':
+                        return daysLeft >= 151 && daysLeft <= 200;
+                    case '200+':
+                        return daysLeft >= 201;
+                    default:
+                        return true;
                 }
-                return true;
             });
         }
         return result;
-    }, [jobs, searchTerm, expiredFilter]);
+    }, [jobs, searchTerm, expiredRange]);
 
     // Handler filter
     const handleFilter = () => {
         setSearchTerm(pendingSearchTerm);
-        setExpiredFilter(pendingExpiredFilter);
+        setExpiredRange(pendingExpiredRange);
     };
     const handleClear = () => {
         setPendingSearchTerm('');
-        setPendingExpiredFilter('all');
         setSearchTerm('');
-        setExpiredFilter('all');
+        setPendingExpiredRange('all');
+        setExpiredRange('all');
     };
 
     return (
@@ -112,15 +118,18 @@ function FavoriteJobs() {
                         onChange={(e) => setPendingSearchTerm(e.target.value)}
                     />
                 </div>
+                {/* Expired date range select */}
                 <select
                     className={cx('filterSelect')}
-                    value={pendingExpiredFilter}
-                    onChange={(e) => setPendingExpiredFilter(e.target.value)}
+                    value={pendingExpiredRange}
+                    onChange={(e) => setPendingExpiredRange(e.target.value)}
                 >
-                    <option value="all">All Dates</option>
-                    <option value="today">Today</option>
-                    <option value="7days">Last 7 days</option>
-                    <option value="30days">Last 30 days</option>
+                    <option value="all">All Expired Dates</option>
+                    <option value="0-50">0 - 50 days left</option>
+                    <option value="51-100">51 - 100 days left</option>
+                    <option value="101-150">101 - 150 days left</option>
+                    <option value="151-200">151 - 200 days left</option>
+                    <option value="200+">200+ days left</option>
                 </select>
                 <button className={cx('primary', 'filterBtn')} onClick={handleFilter}>
                     Filter

@@ -470,12 +470,10 @@
 .job-status.active {
     background: var(--green-50, #e6f9ed);
     color: var(--green-700, #059669);
-    border: 1.5px solid var(--green-200, #a7f3d0);
 }
 .job-status.inactive {
-    background: var(--gray-100, #f3f4f6);
+    background: var(--red-100);
     color: var(--red-500, #ef4444);
-    border: 1.5px solid var(--gray-200, #e5e7eb);
 }
 
 .pagination {

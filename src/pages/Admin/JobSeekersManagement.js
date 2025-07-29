@@ -7,6 +7,7 @@ import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
 import { UserSearchFilters } from '~/components';
 import { Pagination } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
+import useNotification from '~/hooks/userNotification';
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +21,7 @@ const sortColumns = [
     { key: 'active', label: 'Active' }, // Thêm cột Active
 ];
 
-const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
+const JobSeekerRowDropdown = ({ onAction, seekerId, isActive }) => {
     const combobox = useCombobox();
 
     return (
@@ -57,9 +58,15 @@ const JobSeekerRowDropdown = ({ onAction, seekerId }) => {
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
                 <Combobox.Options>
-                    <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
-                        Block
-                    </Combobox.Option>
+                    {isActive ? (
+                        <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                            Block
+                        </Combobox.Option>
+                    ) : (
+                        <Combobox.Option value="unblock" className={cx('dropdownItem', 'dropdownItem--unblock')}>
+                            Unblock
+                        </Combobox.Option>
+                    )}
                     <Combobox.Option value="view" className={cx('dropdownItem')}>
                         View
                     </Combobox.Option>
@@ -96,6 +103,7 @@ const JobSeekersManagement = () => {
     const [totalHits, setTotalHits] = useState(1);
     const totalPages = Math.ceil(totalHits / 10);
     const [searchParams, setSearchParams] = useSearchParams();
+    const { showSuccess, showError } = useNotification();
 
     useEffect(() => {
 
@@ -116,31 +124,37 @@ const JobSeekersManagement = () => {
 
     const handleAction = async (action, seekerId) => {
         const seeker = jobSeekers.find((s) => s.id === seekerId);
-        const fetchJobSeekers = async () => {
-            setLoading(true);
-            try {
-                const data = await statisticsService.fetchAllJobSeekers();
-                setJobSeekers(data);
-                setLoading(false);
-            } catch (err) {
-                setLoading(false);
-                setError(err.message || 'Failed to fetch job seekers');
-            }
-
-        }
         if (action === 'block') {
-            if (window.confirm(`Bạn có chắc muốn chặn job seeker ${seeker.fullName || 'ID ' + seekerId}?`)) {
-                try {
-                    await statisticsService.blockJobSeeker(seekerId); // Gọi API để block
-                    setJobSeekers((prevSeekers) =>
-                        prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: true, active: false } : s)),
-                    );
-                    fetchJobSeekers(); // Đồng bộ từ server
-                    console.log('Job seeker blocked successfully');
-                } catch (err) {
-                    console.error('Lỗi khi chặn job seeker:', err);
-                    alert(`Không thể chặn job seeker. Lỗi: ${err.message || 'Không xác định'}`);
-                }
+            // Optimistic update: cập nhật local state ngay
+            setJobSeekers((prevSeekers) =>
+                prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: true, active: false } : s)),
+            );
+            try {
+                await statisticsService.blockJobSeeker(seekerId);
+                showSuccess('Blocked successfully');
+                console.log('Job seeker blocked successfully');
+            } catch (err) {
+                // Revert lại nếu lỗi
+                setJobSeekers((prevSeekers) =>
+                    prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: false, active: true } : s)),
+                );
+                showError(`Failed to block: ${err.message || 'Unknown error'}`);
+            }
+        } else if (action === 'unblock') {
+            // Optimistic update: cập nhật local state ngay
+            setJobSeekers((prevSeekers) =>
+                prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: false, active: true } : s)),
+            );
+            try {
+                await statisticsService.unblockJobSeeker(seekerId);
+                showSuccess('Unblocked successfully');
+                console.log('Job seeker unblocked successfully');
+            } catch (err) {
+                // Revert lại nếu lỗi
+                setJobSeekers((prevSeekers) =>
+                    prevSeekers.map((s) => (s.id === seekerId ? { ...s, isBlocked: true, active: false } : s)),
+                );
+                showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
         } else if (action === 'view') {
             setSelectedSeeker(seeker);
@@ -215,6 +229,7 @@ const JobSeekersManagement = () => {
                                     <JobSeekerRowDropdown
                                         onAction={(action) => handleAction(action, seeker.id)}
                                         seekerId={seeker.id}
+                                        isActive={seeker.active === true}
                                     />
                                 </td>
                             </tr>
