@@ -292,7 +292,7 @@ function AppliedJobs() {
                                     }}
                                     isVIP={application.job?.employer?.isPremium || false}
                                     appliedDate={appliedDate}
-                                    status={application.status}
+
                                     onViewDetails={() => handleViewDetails(application.job.id)}
                                 />
                             </div>
@@ -300,15 +300,7 @@ function AppliedJobs() {
                     })
                 )}
             </div>
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: 32,
-                    fontSize: '18px',
-                }}
-            >
+            <div className={cx('pagination-root')}>
                 <Pagination
                     total={totalPages}
                     value={page}

@@ -6,6 +6,7 @@ import JobSeekerProfileService from '~/services/JobSeekerProfileService';
 import { Modal, TextInput, Select, Button, Group, Text, Alert } from '@mantine/core';
 import { Dropzone } from '@mantine/dropzone';
 import { IconUpload, IconPhoto, IconX, IconCheck } from '@tabler/icons-react';
+import useNotification from '~/hooks/userNotification';
 
 const cx = classNames.bind(styles);
 
@@ -36,6 +37,7 @@ function Personal() {
     const [profileData, setProfileData] = useState(null);
     const [message, setMessage] = useState('');
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const { showSuccess, showError } = useNotification();
 
     const form = useForm({
         initialValues: {
@@ -103,7 +105,7 @@ function Personal() {
             if (avatarFile) formData.append('avatar', avatarFile);
 
             const response = await JobSeekerProfileService.updateProfileWithFile(formData);
-            setMessage('Update successful');
+            showSuccess('Profile updated successfully!');
             setShowSuccessAlert(true);
             setTimeout(() => setShowSuccessAlert(false), 2000);
             setProfileData(response);
@@ -112,7 +114,7 @@ function Personal() {
             setPreviewUrl('');
             setResumeFile(null);
         } catch (err) {
-            setMessage('❌ Error: ' + (err.response?.data?.message || err.message));
+            showError('❌ Error: ' + (err.response?.data?.message || err.message));
         }
     };
 
@@ -141,13 +143,9 @@ function Personal() {
 
     return (
         <div className={cx('setting-content')}>
-            <h2 className={cx('heading2')}>Personal</h2>
+            <div className={cx('heading2')}>Personal</div>
 
-            {showSuccessAlert && (
-                <Alert color="green" radius="md" withCloseButton onClose={() => setShowSuccessAlert(false)}>
-                    ✅ Update successful!
-                </Alert>
-            )}
+
 
             <section className={cx('basic-info')}>
                 <h3 className={cx('heading3')}>Basic Information</h3>
@@ -198,6 +196,7 @@ function Personal() {
                                     data={experienceOptions}
                                     {...form.getInputProps('experience')}
                                     placeholder="Select..."
+                                    classNames={{ dropdown: cx('select-dropdown'), option: cx('select-option'), }}
                                 />
                             </div>
                             <div className={cx('field-item')}>
@@ -206,6 +205,7 @@ function Personal() {
                                     data={educationOptions}
                                     {...form.getInputProps('education')}
                                     placeholder="Select..."
+                                    classNames={{ dropdown: cx('select-dropdown'), option: cx('select-option'), }}
                                 />
                             </div>
 
@@ -232,6 +232,16 @@ function Personal() {
                                         <p>Drag and drop or click to select a file (Max 10MB)</p>
                                     </div>
                                 </Dropzone>
+                                {/* Hiển thị file resume gốc nếu có */}
+                                {profileData && profileData.resumeUrl && !resumeFile && (
+                                    <div className={cx('file-info')} style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                                        <span style={{ fontSize: 18, color: '#2563eb' }}>📄</span>
+                                        <a href={profileData.resumeUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 600, fontSize: 16, color: '#2563eb', textDecoration: 'underline' }}>
+                                            View your uploaded resume
+                                        </a>
+                                    </div>
+                                )}
+                                {/* Nếu vừa upload file mới thì show tên file mới */}
                                 {resumeFile && (
                                     <div className={cx('file-info')}>
                                         <Text size="sm">{resumeFile.name}</Text>
@@ -247,9 +257,6 @@ function Personal() {
                 </div>
             </section>
 
-            {message && <Text color={message.startsWith('❌') ? 'red' : 'green'}>{message}</Text>}
-
-            {/* Xóa Modal upload ảnh riêng vì đã tích hợp vào form chính */}
         </div>
     );
 }

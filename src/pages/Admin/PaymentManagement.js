@@ -1,27 +1,124 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './PaymentManagement.module.scss';
 import {
     Search,
     Download,
-    CreditCard,
     DollarSign,
     CheckCircle2,
     XCircle,
     Clock,
-    ChevronDown,
     ArrowUpDown,
-    Plus,
-    BarChart3,
-    LineChart,
-    Wallet,
+    Coins,
 } from 'lucide-react';
+import statisticsService from '~/services/statisticsService';
+import { Pagination } from '@mantine/core';
 
 const cx = classNames.bind(styles);
 
+// Currency conversion service
+const convertVNDtoUSD = (vndAmount) => {
+    if (!vndAmount || isNaN(vndAmount)) return 0;
+    return vndAmount / 25000; // 1 USD = 25,000 VND
+};
+
+const formatUSD = (usdAmount) => {
+    return `$${usdAmount.toFixed(2)}`;
+};
+
 const PaymentManagement = () => {
-    const [activeTab, setActiveTab] = useState('transactions');
-    const [dateFilter, setDateFilter] = useState('30days');
+    // Thay thế dateFilter bằng fromDate, toDate
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+    const [payments, setPayments] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
+    // Thêm filter FE
+    const [searchText, setSearchText] = useState('');
+    const [paymentType, setPaymentType] = useState('all');
+    const [status, setStatus] = useState('all');
+
+    // Thêm state cho payment statistics
+    const [paymentStats, setPaymentStats] = useState({
+        currentMonthTotalRevenue: 0,
+        revenueChangePercentage: 0,
+        revenueStatus: 'no_change',
+        currentMonthTotalPaidPayments: 0,
+        paidPaymentsChangePercentage: 0,
+        paidPaymentsStatus: 'no_change',
+        currentMonthTotalPendingPayments: 0,
+        pendingPaymentsChangePercentage: 0,
+        pendingPaymentsStatus: 'no_change',
+        currentMonthTotalPayments: 0,
+        totalPaymentsChangePercentage: 0,
+        totalPaymentsStatus: 'no_change'
+    });
+    const [statsLoading, setStatsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchPayments = async () => {
+            setLoading(true);
+            try {
+                // Chuẩn bị params filter
+                const params = { page: page - 1, size: 10 };
+                if (searchText) params.keyword = searchText;
+                if (paymentType !== 'all') params.paymentType = paymentType;
+                if (status !== 'all') params.status = status;
+                // Thêm fromDate, toDate nếu có
+                if (fromDate) params.fromDate = fromDate;
+                if (toDate) params.toDate = toDate;
+                const res = await statisticsService.fetchAllPayments(params);
+                setPayments(res.content || []);
+                setTotalPages(res.totalPages || 1);
+            } catch (err) {
+                setPayments([]);
+                setTotalPages(1);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPayments();
+    }, [page, searchText, paymentType, status, fromDate, toDate]);
+
+    // Fetch payment statistics
+    useEffect(() => {
+        const fetchPaymentStats = async () => {
+            setStatsLoading(true);
+            try {
+                const stats = await statisticsService.fetchAllPaymentsComparison();
+                setPaymentStats(stats || {});
+            } catch (err) {
+                console.error('Failed to fetch payment stats:', err);
+                setPaymentStats({});
+            } finally {
+                setStatsLoading(false);
+            }
+        };
+        fetchPaymentStats();
+    }, []);
+
+    // Khi filter thay đổi, reset page về 1
+    const handleSearchChange = (e) => {
+        setSearchText(e.target.value);
+        setPage(1);
+    };
+    const handlePaymentTypeChange = (e) => {
+        setPaymentType(e.target.value);
+        setPage(1);
+    };
+    const handleStatusChange = (e) => {
+        setStatus(e.target.value);
+        setPage(1);
+    };
+    const handleFromDateChange = (e) => {
+        setFromDate(e.target.value);
+        setPage(1);
+    };
+    const handleToDateChange = (e) => {
+        setToDate(e.target.value);
+        setPage(1);
+    };
 
     return (
         <div className={cx('managementWrapper')}>
@@ -37,15 +134,34 @@ const PaymentManagement = () => {
                 <div className={cx('summary-card')}>
                     <div className={cx('card-header')}>
                         <div className={cx('card-icon', 'blue')}>
-                            <DollarSign size={24} className={cx('icon-blue')} />
+                            <Coins size={24} className={cx('icon-blue')} />
                         </div>
                         <span className={cx('card-period')}>This Month</span>
                     </div>
-                    <h3 className={cx('card-value')}>$24,500</h3>
+                    <h3 className={cx('card-value')}>
+                        {statsLoading ? 'Loading...' :
+                            paymentStats.currentMonthTotalRevenue ?
+                                formatUSD(convertVNDtoUSD(paymentStats.currentMonthTotalRevenue)) :
+                                'No data'}
+                    </h3>
                     <p className={cx('card-label')}>Total Revenue</p>
-                    <div className={cx('card-trend', 'up')}>
-                        <span className={cx('trend-icon')}>↑</span>12% from last month
-                    </div>
+                    {paymentStats.revenueChangePercentage !== undefined ? (
+                        <div className={cx('card-trend', paymentStats.revenueStatus === 'increase' ? 'up' : paymentStats.revenueStatus === 'decrease' ? 'down' : 'neutral')}>
+                            {paymentStats.revenueChangePercentage !== 0 ? (
+                                <span className={cx('trend-icon')}>
+                                    {paymentStats.revenueStatus === 'increase' ? '↑' : paymentStats.revenueStatus === 'decrease' ? '↓' : ''}
+                                </span>
+                            ) : null}
+                            {paymentStats.revenueChangePercentage > 0 && paymentStats.revenueChangePercentage < 100
+                                ? paymentStats.revenueChangePercentage.toFixed(2)
+                                : Math.round(paymentStats.revenueChangePercentage)}% from last month
+                        </div>
+                    ) : (
+                        <div className={cx('card-trend', 'neutral')}>
+                            <span className={cx('trend-icon')}>→</span>
+                            No comparison data
+                        </div>
+                    )}
                 </div>
 
                 {/* Successful Payments Card */}
@@ -56,26 +172,30 @@ const PaymentManagement = () => {
                         </div>
                         <span className={cx('card-period')}>This Month</span>
                     </div>
-                    <h3 className={cx('card-value')}>432</h3>
+                    <h3 className={cx('card-value')}>
+                        {statsLoading ? 'Loading...' :
+                            paymentStats.currentMonthTotalPaidPayments !== undefined ?
+                                paymentStats.currentMonthTotalPaidPayments :
+                                'No data'}
+                    </h3>
                     <p className={cx('card-label')}>Successful Payments</p>
-                    <div className={cx('card-trend', 'up')}>
-                        <span className={cx('trend-icon')}>↑</span>8% from last month
-                    </div>
-                </div>
-
-                {/* Failed Payments Card */}
-                <div className={cx('summary-card')}>
-                    <div className={cx('card-header')}>
-                        <div className={cx('card-icon', 'red')}>
-                            <XCircle size={24} className={cx('icon-red')} />
+                    {paymentStats.paidPaymentsChangePercentage !== undefined ? (
+                        <div className={cx('card-trend', paymentStats.paidPaymentsStatus === 'increase' ? 'up' : paymentStats.paidPaymentsStatus === 'decrease' ? 'down' : 'neutral')}>
+                            {paymentStats.paidPaymentsChangePercentage !== 0 ? (
+                                <span className={cx('trend-icon')}>
+                                    {paymentStats.paidPaymentsStatus === 'increase' ? '↑' : paymentStats.paidPaymentsStatus === 'decrease' ? '↓' : ''}
+                                </span>
+                            ) : null}
+                            {paymentStats.paidPaymentsChangePercentage > 0 && paymentStats.paidPaymentsChangePercentage < 100
+                                ? paymentStats.paidPaymentsChangePercentage.toFixed(2)
+                                : Math.round(paymentStats.paidPaymentsChangePercentage)}% from last month
                         </div>
-                        <span className={cx('card-period')}>This Month</span>
-                    </div>
-                    <h3 className={cx('card-value')}>12</h3>
-                    <p className={cx('card-label')}>Failed Payments</p>
-                    <div className={cx('card-trend', 'up')}>
-                        <span className={cx('trend-icon')}>↑</span>3% from last month
-                    </div>
+                    ) : (
+                        <div className={cx('card-trend', 'neutral')}>
+                            <span className={cx('trend-icon')}>→</span>
+                            No comparison data
+                        </div>
+                    )}
                 </div>
 
                 {/* Pending Payments Card */}
@@ -86,106 +206,102 @@ const PaymentManagement = () => {
                         </div>
                         <span className={cx('card-period')}>This Month</span>
                     </div>
-                    <h3 className={cx('card-value')}>5</h3>
+                    <h3 className={cx('card-value')}>
+                        {statsLoading ? 'Loading...' :
+                            paymentStats.currentMonthTotalPendingPayments !== undefined ?
+                                paymentStats.currentMonthTotalPendingPayments :
+                                'No data'}
+                    </h3>
                     <p className={cx('card-label')}>Pending Payments</p>
-                    <div className={cx('card-trend', 'down')}>
-                        <span className={cx('trend-icon')}>↓</span>2% from last month
-                    </div>
-                </div>
-            </div>
-
-            {/* Tabs */}
-            <div className={cx('tabs')}>
-                <nav className={cx('tab-nav')}>
-                    <button
-                        className={cx('tab-button', { active: activeTab === 'transactions' })}
-                        onClick={() => setActiveTab('transactions')}
-                    >
-                        Transactions
-                    </button>
-                    <button
-                        className={cx('tab-button', { active: activeTab === 'subscriptions' })}
-                        onClick={() => setActiveTab('subscriptions')}
-                    >
-                        Subscription Plans
-                    </button>
-                    <button
-                        className={cx('tab-button', { active: activeTab === 'invoices' })}
-                        onClick={() => setActiveTab('invoices')}
-                    >
-                        Invoices
-                    </button>
-                    <button
-                        className={cx('tab-button', { active: activeTab === 'reports' })}
-                        onClick={() => setActiveTab('reports')}
-                    >
-                        Reports
-                    </button>
-                </nav>
-            </div>
-
-            {/* Filters and Actions */}
-            <div className={cx('toolbar')}>
-                <div className={cx('toolbar-filters')}>
-                    <div className={cx('search-box')}>
-                        <Search className={cx('search-icon')} size={18} />
-                        <input type="text" placeholder="Search transactions..." className={cx('search-input')} />
-                    </div>
-                    <select
-                        className={cx('filter-select')}
-                        value={dateFilter}
-                        onChange={(e) => setDateFilter(e.target.value)}
-                    >
-                        <option value="7days">Last 7 days</option>
-                        <option value="30days">Last 30 days</option>
-                        <option value="90days">Last 90 days</option>
-                        <option value="custom">Custom range</option>
-                    </select>
-                    <select className={cx('filter-select')}>
-                        <option value="all">All Payment Types</option>
-                        <option value="subscription">Subscription</option>
-                        <option value="jobPosting">Job Posting</option>
-                        <option value="featuredListing">Featured Listing</option>
-                        <option value="resumeAccess">Resume Access</option>
-                    </select>
-                    <select className={cx('filter-select')}>
-                        <option value="all">All Statuses</option>
-                        <option value="successful">Successful</option>
-                        <option value="pending">Pending</option>
-                        <option value="failed">Failed</option>
-                        <option value="refunded">Refunded</option>
-                    </select>
-                </div>
-                <div className={cx('toolbar-actions')}>
-                    <button className={cx('action-button')}>
-                        <Download size={18} className={cx('button-icon')} />
-                        Export
-                    </button>
-                    {activeTab === 'subscriptions' && (
-                        <button className={cx('action-button', 'primary')}>
-                            <Plus size={18} className={cx('button-icon')} />
-                            New Plan
-                        </button>
+                    {paymentStats.pendingPaymentsChangePercentage !== undefined ? (
+                        <div className={cx('card-trend', paymentStats.pendingPaymentsStatus === 'increase' ? 'up' : paymentStats.pendingPaymentsStatus === 'decrease' ? 'down' : 'neutral')}>
+                            {paymentStats.pendingPaymentsChangePercentage !== 0 ? (
+                                <span className={cx('trend-icon')}>
+                                    {paymentStats.pendingPaymentsStatus === 'increase' ? '↑' : paymentStats.pendingPaymentsStatus === 'decrease' ? '↓' : ''}
+                                </span>
+                            ) : null}
+                            {paymentStats.pendingPaymentsChangePercentage > 0 && paymentStats.pendingPaymentsChangePercentage < 100
+                                ? paymentStats.pendingPaymentsChangePercentage.toFixed(2)
+                                : Math.round(paymentStats.pendingPaymentsChangePercentage)}% from last month
+                        </div>
+                    ) : (
+                        <div className={cx('card-trend', 'neutral')}>
+                            <span className={cx('trend-icon')}>→</span>
+                            No comparison data
+                        </div>
                     )}
                 </div>
             </div>
 
+            {/* Chỉ giữ lại filter và transaction table */}
+            <div className={cx('toolbar')}>
+                <div className={cx('toolbar-filters')}>
+                    <div className={cx('search-box')}>
+                        <Search className={cx('search-icon')} size={18} />
+                        <input
+                            type="text"
+                            placeholder="Search transactions..."
+                            className={cx('search-input')}
+                            value={searchText}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+                    {/* Thay thế dropdown bằng 2 input date */}
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <input
+                            type="date"
+                            className={cx('filter-select')}
+                            value={fromDate}
+                            max={toDate}
+                            onChange={handleFromDateChange}
+                            placeholder="From date"
+                            style={{ minWidth: '140px' }}
+                        />
+                        <span style={{ color: '#666', fontSize: '14px' }}>-</span>
+                        <input
+                            type="date"
+                            className={cx('filter-select')}
+                            value={toDate}
+                            max={new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' })}
+                            min={fromDate}
+                            onChange={handleToDateChange}
+                            placeholder="To date"
+                            style={{ minWidth: '140px' }}
+                        />
+                    </div>
+
+                    <select
+                        className={cx('filter-select')}
+                        value={status}
+                        onChange={handleStatusChange}
+                    >
+                        <option value="all">All Statuses</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="SUCCESS">Successful</option>
+                        <option value="FAILED">Failed</option>
+                        <option value="REFUNDED">Refunded</option>
+                    </select>
+                </div>
+            </div>
+
             {/* Transactions Table */}
-            {activeTab === 'transactions' && (
-                <div className={cx('tableWrapper')}>
+            <div className={cx('tableWrapper')}>
+                {loading ? (
+                    <div style={{ padding: 32, textAlign: 'center' }}>Loading...</div>
+                ) : (
                     <table className={cx('dataTable')}>
                         <thead className={cx('table-head')}>
                             <tr>
                                 <th className={cx('table-header')}>
                                     <div className={cx('header-content')}>
                                         ID
-                                        <ArrowUpDown size={14} className={cx('sort-icon')} />
+
                                     </div>
                                 </th>
                                 <th className={cx('table-header')}>
                                     <div className={cx('header-content')}>
                                         Date
-                                        <ArrowUpDown size={14} className={cx('sort-icon')} />
+
                                     </div>
                                 </th>
                                 <th className={cx('table-header')}>Customer</th>
@@ -193,324 +309,74 @@ const PaymentManagement = () => {
                                 <th className={cx('table-header')}>
                                     <div className={cx('header-content')}>
                                         Amount
-                                        <ArrowUpDown size={14} className={cx('sort-icon')} />
+
                                     </div>
                                 </th>
                                 <th className={cx('table-header')}>Status</th>
-
                                 <th className={cx('table-header')}>Actions</th>
                             </tr>
                         </thead>
                         <tbody className={cx('table-body')}>
-                            <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-8765</td>
-                                <td className={cx('table-cell')}>May 15</td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('customer-info')}>
-                                        <div className={cx('avatarCircle', 'blue')}>T</div>
-                                        <div className={cx('customer-details')}>
-                                            <div className={cx('customer-name')}>TechCorp Inc.</div>
-                                            <div className={cx('customer-email')}>tech@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell')}>Premium Job Posting</td>
-                                <td className={cx('table-cell')}>$299.00</td>
-                                <td className={cx('table-cell')}>
-                                    <span className={cx('statusText', 'success')}>Successful</span>
-                                </td>
-
-                                <td className={cx('table-cell', 'actions')}>
-                                    <button className={cx('action-button', 'view')}>View</button>
-                                </td>
-                            </tr>
-                            <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'transaction-id')}>#TRX-8764</td>
-                                <td className={cx('table-cell')}>May 14</td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('customer-info')}>
-                                        <div className={cx('avatarCircle', 'purple')}>D</div>
-                                        <div className={cx('customer-details')}>
-                                            <div className={cx('customer-name')}>DesignHub</div>
-                                            <div className={cx('customer-email')}>design@example.com</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell')}>Monthly Subscription</td>
-                                <td className={cx('table-cell')}>$149.00</td>
-                                <td className={cx('table-cell')}>
-                                    <span className={cx('statusText', 'success')}>Successful</span>
-                                </td>
-
-                                <td className={cx('table-cell', 'actions')}>
-                                    <button className={cx('action-button', 'view')}>View</button>
-                                </td>
-                            </tr>
+                            {payments.length === 0 ? (
+                                <tr><td colSpan={7} style={{ textAlign: 'center', padding: 32 }}>No data</td></tr>
+                            ) : (
+                                payments.map((payment) => (
+                                    <tr className={cx('table-row')} key={payment.id}>
+                                        <td className={cx('table-cell', 'transaction-id')}>#{payment.id}</td>
+                                        <td className={cx('table-cell')}>
+                                            {payment.paidAt ? new Date(payment.paidAt).toLocaleString() : '--'}
+                                        </td>
+                                        <td className={cx('table-cell')}>
+                                            <div className={cx('customer-info')}>
+                                                <div className={cx('avatarCircle', 'blue')}>
+                                                    {payment.userEmail ? payment.userEmail.charAt(0).toUpperCase() : '?'}
+                                                </div>
+                                                <div className={cx('customer-details')}>
+                                                    <div className={cx('customer-name')}>{payment.userEmail || '--'}</div>
+                                                    {/* Có thể thêm tên user nếu có */}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className={cx('table-cell')}>
+                                            {payment.intendedPlanName || payment.paymentMethod || '--'}
+                                        </td>
+                                        <td className={cx('table-cell')}>
+                                            {/* chuyển từ việt nam đồng sang USD */}
+                                            {payment.amount ? formatUSD(convertVNDtoUSD(payment.amount)) : '--'}
+                                        </td>
+                                        <td className={cx('table-cell')}>
+                                            <span className={cx('statusText', payment.payosStatus === 'PENDING' ? 'pending' : payment.payosStatus === 'SUCCESS' ? 'success' : payment.payosStatus === 'FAILED' ? 'failed' : '')}>
+                                                {payment.payosStatus || '--'}
+                                            </span>
+                                        </td>
+                                        <td className={cx('table-cell', 'actions')}>
+                                            <button className={cx('action-button', 'view')}>View</button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
-                </div>
-            )}
-
-            {/* Subscription Plans */}
-            {activeTab === 'subscriptions' && (
-                <div className={cx('subscriptionsWrapper')}>
-                    <div className={cx('subscriptions-grid')}>
-                        {/* Basic Plan */}
-                        <div className={cx('plan-card')}>
-                            <div className={cx('plan-header')}>
-                                <h3 className={cx('plan-title')}>Basic</h3>
-                                <span className={cx('plan-period')}>Monthly</span>
-                            </div>
-                            <div className={cx('plan-price')}>
-                                <span className={cx('price-value')}>$49</span>
-                                <span className={cx('price-unit')}>/month</span>
-                            </div>
-                            <ul className={cx('plan-features')}>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />5 Job Postings
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Basic Resume Search
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    30 Days Visibility
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Email Support
-                                </li>
-                            </ul>
-                            <div className={cx('plan-actions')}>
-                                <button className={cx('action-button', 'edit')}>Edit</button>
-                                <button className={cx('action-button', 'deactivate')}>Deactivate</button>
-                            </div>
-                        </div>
-
-                        {/* Professional Plan */}
-                        <div className={cx('plan-card', 'popular')}>
-                            <div className={cx('popular-badge')}>POPULAR</div>
-                            <div className={cx('plan-header')}>
-                                <h3 className={cx('plan-title')}>Professional</h3>
-                                <span className={cx('plan-period')}>Monthly</span>
-                            </div>
-                            <div className={cx('plan-price')}>
-                                <span className={cx('price-value')}>$149</span>
-                                <span className={cx('price-unit')}>/month</span>
-                            </div>
-                            <ul className={cx('plan-features')}>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    20 Job Postings
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Advanced Resume Search
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Featured Jobs
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    60 Days Visibility
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Priority Support
-                                </li>
-                            </ul>
-                            <div className={cx('plan-actions')}>
-                                <button className={cx('action-button', 'edit')}>Edit</button>
-                                <button className={cx('action-button', 'deactivate')}>Deactivate</button>
-                            </div>
-                        </div>
-
-                        {/* Enterprise Plan */}
-                        <div className={cx('plan-card')}>
-                            <div className={cx('plan-header')}>
-                                <h3 className={cx('plan-title')}>Enterprise</h3>
-                                <span className={cx('plan-period')}>Annual</span>
-                            </div>
-                            <div className={cx('plan-price')}>
-                                <span className={cx('price-value')}>$399</span>
-                                <span className={cx('price-unit')}>/month</span>
-                            </div>
-                            <ul className={cx('plan-features')}>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Unlimited Job Postings
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Premium Resume Database
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Featured Company Profile
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    90 Days Visibility
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    Dedicated Account Manager
-                                </li>
-                                <li className={cx('feature-item')}>
-                                    <CheckCircle2 className={cx('feature-icon')} />
-                                    API Access
-                                </li>
-                            </ul>
-                            <div className={cx('plan-actions')}>
-                                <button className={cx('action-button', 'edit')}>Edit</button>
-                                <button className={cx('action-button', 'deactivate')}>Deactivate</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Invoices Tab */}
-            {activeTab === 'invoices' && (
-                <div className={cx('tableWrapper')}>
-                    <table className={cx('dataTable')}>
-                        <thead className={cx('table-head')}>
-                            <tr>
-                                <th className={cx('table-header')}>Invoice #</th>
-                                <th className={cx('table-header')}>Customer</th>
-                                <th className={cx('table-header')}>Issue Date</th>
-                                <th className={cx('table-header')}>Due Date</th>
-                                <th className={cx('table-header')}>Amount</th>
-                                <th className={cx('table-header')}>Status</th>
-                                <th className={cx('table-header')}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className={cx('table-body')}>
-                            <tr className={cx('table-row')}>
-                                <td className={cx('table-cell', 'invoice-id')}>#INV-2023-1234</td>
-                                <td className={cx('table-cell')}>
-                                    <div className={cx('customer-info')}>
-                                        <div className={cx('avatarCircle', 'blue')}>T</div>
-                                        <div className={cx('customer-details')}>
-                                            <div className={cx('customer-name')}>TechCorp Inc.</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={cx('table-cell')}>May 01, 2023</td>
-                                <td className={cx('table-cell')}>May 15, 2023</td>
-                                <td className={cx('table-cell')}>$299.00</td>
-                                <td className={cx('table-cell')}>
-                                    <span className={cx('statusText', 'paid')}>Paid</span>
-                                </td>
-                                <td className={cx('table-cell', 'actions')}>
-                                    <button className={cx('action-button', 'view')}>View</button>
-                                    <button className={cx('action-button', 'download')}>Download</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            )}
-
-            {/* Reports Tab */}
-            {activeTab === 'reports' && (
-                <div className={cx('reportsWrapper')}>
-                    <div className={cx('report-card')}>
-                        <h3 className={cx('report-title')}>Revenue Overview</h3>
-                        <div className={cx('chart-placeholder')}>
-                            <div className={cx('chart-content')}>
-                                <BarChart3 size={48} className={cx('chart-icon')} />
-                                <p className={cx('chart-text')}>Revenue chart would be displayed here</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('report-grid')}>
-                        <div className={cx('report-card')}>
-                            <h3 className={cx('report-title')}>Payment Methods</h3>
-                            <div className={cx('chart-placeholder')}>
-                                <div className={cx('chart-content')}>
-                                    <CreditCard size={48} className={cx('chart-icon')} />
-                                    <p className={cx('chart-text')}>Payment methods chart would be displayed here</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={cx('report-card')}>
-                            <h3 className={cx('report-title')}>Subscription Growth</h3>
-                            <div className={cx('chart-placeholder')}>
-                                <div className={cx('chart-content')}>
-                                    <LineChart size={48} className={cx('chart-icon')} />
-                                    <p className={cx('chart-text')}>
-                                        Subscription growth chart would be displayed here
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('report-card')}>
-                        <div className={cx('report-header')}>
-                            <h3 className={cx('report-title')}>Revenue by Plan</h3>
-                            <button className={cx('action-button', 'export')}>
-                                <Download size={16} className={cx('button-icon')} />
-                                Export CSV
-                            </button>
-                        </div>
-                        <table className={cx('dataTable')}>
-                            <thead className={cx('table-head')}>
-                                <tr>
-                                    <th className={cx('table-header')}>Plan</th>
-                                    <th className={cx('table-header')}>Subscribers</th>
-                                    <th className={cx('table-header')}>Monthly Revenue</th>
-                                    <th className={cx('table-header')}>Growth</th>
-                                </tr>
-                            </thead>
-                            <tbody className={cx('table-body')}>
-                                <tr className={cx('table-row')}>
-                                    <td className={cx('table-cell')}>Basic</td>
-                                    <td className={cx('table-cell')}>245</td>
-                                    <td className={cx('table-cell')}>$12,005</td>
-                                    <td className={cx('table-cell')}>
-                                        <div className={cx('growth-info')}>
-                                            <span className={cx('growth-value')}>+12%</span>
-                                            <div className={cx('progress-bar')}>
-                                                <div className={cx('progress-fill')} style={{ width: '75%' }} />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr className={cx('table-row')}>
-                                    <td className={cx('table-cell')}>Professional</td>
-                                    <td className={cx('table-cell')}>187</td>
-                                    <td className={cx('table-cell')}>$27,863</td>
-                                    <td className={cx('table-cell')}>
-                                        <div className={cx('growth-info')}>
-                                            <span className={cx('growth-value')}>+18%</span>
-                                            <div className={cx('progress-bar')}>
-                                                <div className={cx('progress-fill')} style={{ width: '85%' }} />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr className={cx('table-row')}>
-                                    <td className={cx('table-cell')}>Enterprise</td>
-                                    <td className={cx('table-cell')}>63</td>
-                                    <td className={cx('table-cell')}>$25,137</td>
-                                    <td className={cx('table-cell')}>
-                                        <div className={cx('growth-info')}>
-                                            <span className={cx('growth-value')}>+7%</span>
-                                            <div className={cx('progress-bar')}>
-                                                <div className={cx('progress-fill')} style={{ width: '60%' }} />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+            {/* Pagination */}
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '32px 0' }}>
+                {totalPages > 1 && (
+                    <Pagination
+                        total={totalPages}
+                        value={page}
+                        onChange={setPage}
+                        radius="xl"
+                        classNames={{
+                            root: cx('pagination-root'),
+                            control: cx('control'),
+                            item: cx('pagination-item'),
+                            active: cx('pagination-active')
+                        }}
+                    />
+                )}
+            </div>
+        </div >
     );
 };
 
