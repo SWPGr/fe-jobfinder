@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { del, get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
 
-const API_URL = 'http://localhost:8080/api/job';
+const API_URL = 'job';
 
 // Các hàm axios thuần cho các API job chi tiết (có thể dùng thay thế hoặc bổ sung)
 const getJobDetail = (id) => axios.get(`${API_URL}/${id}`);
@@ -228,20 +228,20 @@ const fetchCandidateDetail = async (applicationId) => {
     return response?.result || null;
 };
 const fetchFilteredCandidates = async (jobId, filters, sortOrder) => {
-  const query = new URLSearchParams();
+    const query = new URLSearchParams();
 
-  if (filters.fullName) query.append("fullName", filters.fullName);
-  if (filters.education) query.append("educationName", filters.education);
-  if (filters.experience) query.append("experienceName", filters.experience);
+    if (filters.fullName) query.append("fullName", filters.fullName);
+    if (filters.education) query.append("educationName", filters.education);
+    if (filters.experience) query.append("experienceName", filters.experience);
 
-  // sort: asc hoặc desc theo fullName
-  query.append(
-    "sort",
-    `jobSeeker.userDetail.fullName,${sortOrder === "newest" ? "asc" : "desc"}`
-  );
+    // sort: asc hoặc desc theo fullName
+    query.append(
+        "sort",
+        `jobSeeker.userDetail.fullName,${sortOrder === "newest" ? "asc" : "desc"}`
+    );
 
-  const response = await get(`/apply/candidates/${jobId}?${query.toString()}`);
-  return response?.result || null;
+    const response = await get(`/apply/candidates/${jobId}?${query.toString()}`);
+    return response?.result || null;
 };
 
 const fetchResume = async ({ applicationId }) => {
