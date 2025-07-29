@@ -12,7 +12,7 @@ import { useLoading } from '~/context/LoadingContext';
 const cx = classNames.bind(styles);
 
 const PostJob = () => {
-    const [scrollTo] = useWindowScroll();
+    const [scroll, scrollTo] = useWindowScroll();
     const { showSuccess, showError } = useNotification();
     const { showLoading, hideLoading } = useLoading();
 

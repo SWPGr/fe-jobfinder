@@ -54,7 +54,7 @@ const JobDetail = ({
   const jobDetailRef = useRef(null);
 
   const IconComponent = save ? IconBookmarkFilled : IconBookmark;
-  const [, scrollTo] = useWindowScroll();
+  const [scroll, scrollTo] = useWindowScroll();
   const { showSuccess, showError } = useNotification();
 
   // Dữ liệu phụ trợ cho dropdown
@@ -173,7 +173,7 @@ const JobDetail = ({
   // Scroll to top when opening
   useEffect(() => {
     scrollTo({ y: 0 });
-  }, [scrollTo]);
+  }, []);
 
   // Close modal on outside click (if editable)
   useEffect(() => {
@@ -677,9 +677,9 @@ Company:
             {formData.company?.companyName || formData.company?.name}
           </div>
           <p
-  className={cx('company-info__desc')}
-  dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
-></p>
+            className={cx('company-info__desc')}
+            dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
+          ></p>
           <div className={cx('company-details')}>
             {[
               { label: 'Founded in:', key: 'founded' },
