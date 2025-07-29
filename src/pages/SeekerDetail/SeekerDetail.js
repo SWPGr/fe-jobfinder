@@ -123,9 +123,9 @@ const SeekerDetail = ({ applicant }) => {
         ]);
         setSocialLinks(links);
         setSocialTypes(types);
-        if (!links || links.length === 0) {
-          showInfo("No social media links found for this user.");
-        }
+        // if (!links || links.length === 0) {
+        //   showInfo("No social media links found for this user.");
+        // }
       } catch (err) {
         showWarning("Failed to fetch social media data.");
       }

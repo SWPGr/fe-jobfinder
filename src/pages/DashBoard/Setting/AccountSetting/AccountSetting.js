@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import styles from '../Setting.module.scss';
 import JobSeekerProfileService from '~/services/JobSeekerProfileService';
 import useNotification from '~/hooks/userNotification';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,11 @@ function AccountSetting() {
     });
     const [loading, setLoading] = useState(false);
     const { showSuccess, showError, showInfo } = useNotification();
+
+    // State để ẩn/hiện password
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -72,33 +78,63 @@ function AccountSetting() {
                 <div className={cx('heading3')}>Change Password</div>
                 <div className={cx('form-row')}>
                     <label>Current Password</label>
-                    <input
-                        type="password"
-                        name="currentPassword"
-                        value={formData.currentPassword}
-                        onChange={handleInputChange}
-                        placeholder="Enter current password"
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <input
+                            type={showCurrent ? 'text' : 'password'}
+                            name="currentPassword"
+                            value={formData.currentPassword}
+                            onChange={handleInputChange}
+                            placeholder="Enter current password"
+                        />
+                        <button
+                            type="button"
+                            style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                            tabIndex={-1}
+                            onClick={() => setShowCurrent((v) => !v)}
+                        >
+                            {showCurrent ? <FaEye /> : <FaEyeSlash />}
+                        </button>
+                    </div>
                 </div>
                 <div className={cx('form-row')}>
                     <label>New Password</label>
-                    <input
-                        type="password"
-                        name="newPassword"
-                        value={formData.newPassword}
-                        onChange={handleInputChange}
-                        placeholder="Enter new password"
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <input
+                            type={showNew ? 'text' : 'password'}
+                            name="newPassword"
+                            value={formData.newPassword}
+                            onChange={handleInputChange}
+                            placeholder="Enter new password"
+                        />
+                        <button
+                            type="button"
+                            style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                            tabIndex={-1}
+                            onClick={() => setShowNew((v) => !v)}
+                        >
+                            {showNew ? <FaEye /> : <FaEyeSlash />}
+                        </button>
+                    </div>
                 </div>
                 <div className={cx('form-row')}>
                     <label>Confirm Password</label>
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        placeholder="Confirm new password"
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <input
+                            type={showConfirm ? 'text' : 'password'}
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            placeholder="Confirm new password"
+                        />
+                        <button
+                            type="button"
+                            style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                            tabIndex={-1}
+                            onClick={() => setShowConfirm((v) => !v)}
+                        >
+                            {showConfirm ? <FaEye /> : <FaEyeSlash />}
+                        </button>
+                    </div>
                 </div>
 
                 <button

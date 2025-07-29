@@ -17,6 +17,7 @@ const getJobById = async (id) => {
         throw error;
     }
 };
+
 const createJob = async (data) => {
     try {
         const response = await post('job/create', data);
@@ -25,6 +26,7 @@ const createJob = async (data) => {
         throw error;
     }
 };
+
 const delJobById = async (id) => {
     try {
         const response = await del(`job/${id}`);
@@ -151,6 +153,49 @@ const getSuggestions = async (params) => {
     }
 };
 
+// Fetch all jobs for management
+export const fetchAllJobs = async (params = {}) => {
+    try {
+        const query = Object.keys(params)
+            .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+            .join('&');
+        const url = '/job/list' + (query ? `?${query}` : '');
+        const response = await get(url);
+        return response;
+    } catch (error) {
+        console.error('Failed to fetch jobs:', error);
+        throw error;
+    }
+};
+
+// Block a job
+export const blockJob = async (jobId) => {
+    try {
+        const response = await put('/job/status', {
+            jobId: jobId,
+            isActive: false,
+        });
+        return response;
+    } catch (error) {
+        console.error('Failed to block job:', error);
+        throw error;
+    }
+};
+
+// Unblock a job
+export const unblockJob = async (jobId) => {
+    try {
+        const response = await put('/job/status', {
+            jobId: jobId,
+            isActive: true,
+        });
+        return response;
+    } catch (error) {
+        console.error('Failed to unblock job:', error);
+        throw error;
+    }
+};
+
 const jobService = {
     listAllJobs,
     getJobById,
@@ -166,8 +211,12 @@ const jobService = {
     getAllCandidateAppliedJobId,
     getAllOptions,
     getTopLatestJobs,
+    trackViewdJob,
     searchJob,
     getSuggestions,
+    fetchAllJobs,
+    blockJob,
+    unblockJob,
 };
 
 export default jobService;

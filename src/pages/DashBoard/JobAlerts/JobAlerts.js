@@ -124,7 +124,7 @@ function JobAlerts() {
                 <div className={cx('header-title')}>
                     Job Alerts <span>({jobsData.length} new jobs)</span>
                 </div>
-                <button className={cx('edit-btn')}>Edit Job Alerts</button>
+
             </div>
 
             <div className={cx('job-list')}>
