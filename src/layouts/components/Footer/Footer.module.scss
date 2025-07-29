@@ -66,6 +66,10 @@
     p {
         color: var(--blue-500);
     }
+    a {
+        cursor: pointer;
+        pointer-events: auto;
+    }
 }
 
 .footer__top-right {

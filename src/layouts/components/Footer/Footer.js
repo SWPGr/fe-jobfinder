@@ -28,8 +28,8 @@ function Footer({ dark }) {
         {
             title: 'Candidate',
             items: [
-                ['Browse Jobs', '/jobs'],
-                ['Browse Employers', '/employers'],
+                ['Browse Jobs', '/find-job'],
+                ['Browse Employers', '/find-employer'],
                 ['Candidate Dashboard', '/candidate-dashboard'],
                 ['Saved Jobs', '/saved-jobs'],
             ],
@@ -37,8 +37,8 @@ function Footer({ dark }) {
         {
             title: 'Employer',
             items: [
-                ['Post a Job', '/post-job'],
-                ['Browse Candidates', '/candidates'],
+                ['Post a Job', '/dashboard/postjob'],
+                ['Browse Candidates', '/find-candidate'],
                 ['Employer Dashboard', '/employer-dashboard'],
                 ['Applications', '/applications'],
             ],
@@ -46,7 +46,7 @@ function Footer({ dark }) {
         {
             title: 'Support',
             items: [
-                ['Help Center', '/help'],
+                ['Help Center', '/feedback'],
                 ['Privacy Policy', '/privacy'],
                 ['Terms of Use', '/term'],
                 ['Contact Us', '/contact'],
@@ -68,7 +68,7 @@ function Footer({ dark }) {
                         </div>
                         <div className={cx('contact_info')}>
                             <span className={cx('contact_phone')}>
-                                Call now: <p>+1 234 567 890</p>
+                                Call now: <a href="tel:+84849431868">+84 849 431 868</a>
                             </span>
                             <p className={cx('address')}>
                                 6391 Elgin St. Celina, Delaware 10299, New York, United States of America
