@@ -269,6 +269,11 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
     }
 };
 
+const fetchEmployerProfileFake = async () => {
+    const response = await get('/profiles/me');
+    return response?.result || {};
+};
+
 const fetchSettingFake = async (updatedData) => {
     try {
         if (updatedData) {

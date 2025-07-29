@@ -112,7 +112,7 @@ const SeekerDetail = ({ applicant }) => {
   const [showSummary, setShowSummary] = useState(false);
   const [socialLinks, setSocialLinks] = useState([]);
   const [socialTypes, setSocialTypes] = useState([]);
-  const { showInfo, showWarning } = useNotification();
+  const { showError, showInfo, showWarning } = useNotification();
 
   // useEffect(() => {
   //   const fetchSocialData = async () => {
@@ -134,7 +134,7 @@ const SeekerDetail = ({ applicant }) => {
   // }, []);
 
   if (!applicant) {
-    alert("Không có dữ liệu ứng viên.");
+    showError("User not found");
     return null;
   }
 
