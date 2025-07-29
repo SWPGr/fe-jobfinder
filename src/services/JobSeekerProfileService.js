@@ -15,7 +15,7 @@ const getProfile = async () => {
 
 const getSocialMediaLinksByUserId = async (userId) => {
     try {
-        const res = await fetch(`http://localhost:8080/api/social-media-links/user/${userId}`);
+        const res = await fetch(`social-media-links/user/${userId}`);
         const data = await res.json();
         return data || [];
     } catch (err) {

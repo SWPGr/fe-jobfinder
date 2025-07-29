@@ -3,14 +3,14 @@ import styles from './Login.module.scss';
 import { useState, useEffect } from 'react';
 
 import { IconMail, IconBrandSamsungpass, IconEye, IconEyeOff } from '@tabler/icons-react';
-import { Checkbox, ActionIcon, TextInput } from '@mantine/core';
+import { Checkbox, ActionIcon, TextInput, Button } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import ResetPassword from './ResetPassword';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { LeftSideLogin } from '../components';
 import { validator } from '~/utils';
-import { Button, GoogleLoginButton } from '~/components';
+import { GoogleLoginButton } from '~/components';
 import { useContext } from 'react';
 import { AuthContext } from '~/context/AuthContext';
 import { useNotification } from '~/hooks';
@@ -19,7 +19,7 @@ import { useNotification } from '~/hooks';
 const cx = classNames.bind(styles);
 
 function Login() {
-    const { user, login } = useContext(AuthContext);
+    const { login } = useContext(AuthContext);
 
     // State variables for form fields and UI logic
     const formLogin = useForm({
@@ -42,26 +42,26 @@ function Login() {
 
     // Handler for form submission (currently empty)
     const handleSubmitForm = async (values) => {
-        // console.log('Form submitted:', values);
-        const data = await login(values.email, values.password);
+        console.log('Form submitted:', values);
 
-        // console.log(data);
+        setLoading(true);
+        const data = await login(values.email, values.password, values.userRole);
+        setLoading(false);
+        console.log('Response data:', data);
 
         if (data.success) {
-            setLoading(false);
             navigate('/');
-            showSuccess(data.message);
+            showSuccess('Login successful!');
         } else {
-            setLoading(false);
-            // console.log(data);
-            showError(data.message);
-            setError(data.message);
+            const message =
+                typeof data.message === 'string' ? data.message : data.message?.toString() || 'An error occurred';
+
+            showError(message);
+            // setError(data.message);
         }
     };
 
     useEffect(() => {
-        console.log('render');
-
         if (searchParams.get('error') === 'session-expired') {
             showError('Session expired. Please log in again.');
         }
@@ -107,7 +107,7 @@ function Login() {
                                 label: cx('label'),
                                 error: cx('error'),
                             }}
-                            // Example error message
+                        // Example error message
                         />
 
                         {/* Password input field with show/hide toggle */}
@@ -161,7 +161,16 @@ function Login() {
 
                         {/* Submit button */}
                         <div className={cx('btn-submit')}>
-                            <Button type="submit" className={cx('submit')}>
+                            <Button
+                                type="submit"
+                                classNames={{
+                                    root: cx('submit'),
+                                    label: cx('submit-label'),
+                                    loader: cx('submit-loader'),
+                                }}
+                                loading={loading}
+                                loaderProps={{ type: 'dots' }}
+                            >
                                 Sign in
                             </Button>
                         </div>

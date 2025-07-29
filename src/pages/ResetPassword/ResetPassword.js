@@ -3,8 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './ResetPassword.module.scss';
 import { IconBrandSamsungpass, IconEyeOff, IconEye } from '@tabler/icons-react';
-import { TextInput, ActionIcon, LoadingOverlay } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { TextInput, ActionIcon } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 import validator from '~/utils/validator';
@@ -16,7 +15,6 @@ import { useLoading } from '~/context/LoadingContext';
 const cx = classNames.bind(styles);
 
 function ResetPassword() {
-    const [visible, { toggle }] = useDisclosure(false);
     const { showLoading, hideLoading } = useLoading();
     const navigate = useNavigate();
 
@@ -74,7 +72,7 @@ function ResetPassword() {
             showError('Invalid or missing reset token.');
             setIsTokenValid(false);
         }
-    }, [token]);
+    }, [token, showError]);
 
     if (!isTokenValid) {
         return (

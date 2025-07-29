@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Clock, CheckCircle, AlertTriangle, TrendingUp } from 'lucide-react';
+import { BarChart3, Clock, CheckCircle, TrendingUp } from 'lucide-react';
 
 const StatsOverview = ({ reports }) => {
     const totalReports = reports.length;

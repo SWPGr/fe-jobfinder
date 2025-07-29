@@ -8,11 +8,9 @@ import {
   FaLinkedinIn,
   FaRedditAlien,
   FaInstagram,
-  FaYoutube,
   FaGithub,
 } from "react-icons/fa";
 import useNotification from "~/hooks/userNotification";
-import JobSeekerProfileService from "~/services/JobSeekerProfileService";
 
 const cx = classNames.bind(styles);
 

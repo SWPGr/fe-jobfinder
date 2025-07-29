@@ -3,7 +3,6 @@ import HeroSection from './event/HeroSection';
 import NewsSection from './event/NewsSection';
 import StatsSection from './event/StatsSection';
 import SustainableLivingSection from './event/SustainableLivingSection';
-import RelatedCompaniesSection from './event/RelatedCompaniesSection';
 import GreenCompanySection from './event/GreenCompanySection';
 import SectionWrapper from '../Home/animation/SectionWrapper';
 

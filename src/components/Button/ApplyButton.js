@@ -64,14 +64,13 @@ function ApplyButton({ classname, onClick = () => { }, title, jobId }) {
 
                     form.setValues({ resume: file });
                 }
-
             } catch (error) {
 
             }
         }
 
         fetchProfile();
-    }, [opened])
+    }, [opened, form])
 
     const handleSubmit = async (values) => {
         console.log(values);

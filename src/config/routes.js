@@ -3,7 +3,6 @@ const routes = {
     home: '/',
     profile: '/profile',
     jobs: '/jobs', // List of all jobs
-    jobDetails: '/jobs/:id', // Job details page
     postJob: '/post-job', // Page to post a new job
     login: '/login', // Login page
     register: '/register', // Registration page

@@ -16,7 +16,7 @@ export const StatCard = ({ title, value, icon, change, isPositive, desc, status 
     useEffect(() => {
         const controls = animate(count, value, { duration: 1 }); // animate từ 0 đến value trong 2 giây
         return () => controls.stop(); // clean up khi unmount
-    }, [value]);
+    }, [value, count]);
 
     return (
         <div className={cx('statCard')}>

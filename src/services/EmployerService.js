@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { del, get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
+import { get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
 
-const API_URL = 'http://localhost:8080/api/job';
+const API_URL = 'job';
 
 // Các hàm axios thuần cho các API job chi tiết (có thể dùng thay thế hoặc bổ sung)
 const getJobDetail = async (id) => {
@@ -306,6 +306,7 @@ const fetchCandidateDetail = async (applicationId) => {
 };
 
 const fetchFilteredCandidates = async (jobId, filters, sortOrder) => {
+
     try {
         const query = new URLSearchParams();
 
@@ -313,6 +314,7 @@ const fetchFilteredCandidates = async (jobId, filters, sortOrder) => {
         if (filters.education) query.append("educationName", filters.education);
         if (filters.experience) query.append("experienceName", filters.experience);
 
+        // sort: asc hoặc desc theo fullName
         query.append(
             "sort",
             `jobSeeker.userDetail.fullName,${sortOrder === "newest" ? "asc" : "desc"}`

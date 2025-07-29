@@ -3,12 +3,8 @@ import classNames from 'classnames/bind';
 import styles from './PaymentManagement.module.scss';
 import {
     Search,
-    Download,
-    DollarSign,
     CheckCircle2,
-    XCircle,
     Clock,
-    ArrowUpDown,
     Coins,
 } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';

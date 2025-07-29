@@ -60,7 +60,7 @@ const ChatButton = () => {
         if (isOpen && messages.length === 0) {
             fetchMessages();
         }
-    }, [isOpen]); // 👈 chỉ chạy khi isOpen thay đổi
+    }, [isOpen, messages]); // 👈 chỉ chạy khi isOpen thay đổi
 
     useEffect(() => {
         scrollToBottom();
@@ -77,9 +77,8 @@ const ChatButton = () => {
         <>
             {/* Chat Button */}
             <div
-                className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
-                    isOpen ? 'scale-95' : 'scale-100 hover:scale-110'
-                }`}
+                className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${isOpen ? 'scale-95' : 'scale-100 hover:scale-110'
+                    }`}
             >
                 <button
                     onClick={() => setIsOpen(!isOpen)}
