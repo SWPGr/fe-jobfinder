@@ -23,7 +23,7 @@ const JobAlerts = lazy(() => import('~/pages/DashBoard/JobAlerts/JobAlerts'));
 
 const SettingsPage = lazy(() => import('~/pages/CreateCVSeeker/SettingsPage'));
 const PostJob = lazy(() => import('~/pages/CreateCVSeeker/PostJob'));
-const SavedCandidates = lazy(() => import('~/pages/CreateCVSeeker/SavedCandidates'));
+// const SavedCandidates = lazy(() => import('~/pages/CreateCVSeeker/SavedCandidates'));
 const MyJob = lazy(() => import('~/pages/CreateCVSeeker/MyJob'));
 const PlansBilling = lazy(() => import('~/pages/CreateCVSeeker/PlansBilling'));
 const Overview1 = lazy(() => import('~/pages/CreateCVSeeker/Overview1'));
@@ -119,12 +119,13 @@ export const items = {
                 page: <MyJob />,
                 link: '/dashboard/my-jobs',
             },
-            {
-                title: 'Saved Candidates',
-                icon: <IconBookmark />,
-                page: <SavedCandidates />,
-                link: '/dashboard/saved-candidates',
-            },
+            // {
+            //     title: 'Saved Candidates',
+            //     icon: <IconBookmark />,
+            //     page: <SavedCandidates />,
+            //     link: '/dashboard/saved-candidates',
+            // },
+
             {
                 title: 'Plans & Billing',
                 icon: <IconNotebook />,

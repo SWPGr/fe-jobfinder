@@ -157,6 +157,9 @@
   margin-bottom: 2rem;
   color: var(--gray-700);
   font-size: 1.3rem;
+  .p{
+    font-size: 1.9rem;
+  }
 }
 
 .shareProfile {
@@ -207,7 +210,7 @@
 
 .title2 {
   font-weight: 600;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   margin-bottom: 1.4rem;
   color: var(--gray-900);
   margin-top: -1.5rem;
@@ -225,9 +228,10 @@
 
 .cardTitle {
   font-weight: 600;
-  margin-bottom: 1.4rem;
+  margin-bottom: 2.6rem;
   color: var(--gray-900);
   font-size: var(--font-size-16px);
+  font-size: 2.2rem;
 }
 
 .cardRow {
@@ -242,7 +246,7 @@
   align-items: center;
   gap: 0.8rem;          /* Khoảng cách icon và chữ trong label */
   font-weight: 600;
-  font-size: 1.4rem;    /* Cỡ chữ đồng đều */
+  font-size: 1.3rem;    /* Cỡ chữ đồng đều */
   color: var(--gray-500);
   flex: 1;              /* Chiếm không gian bên trái */
   min-width: 160px;     /* Chiều rộng cố định để thẳng hàng */
@@ -257,7 +261,7 @@
 
 .cardValue {
   flex: 1;
-  font-size: 1.4rem;    /* Cỡ chữ đồng đều với label */
+  font-size: 1.3rem;    /* Cỡ chữ đồng đều với label */
   color: var(--gray-400);
   text-align: left;     /* Căn trái */
   min-width: 120px;
@@ -275,7 +279,6 @@
 .contactIcon {
   width: 2.4rem;
   height: 2.4rem;
-  fill: var(--blue-500);
   flex-shrink: 0;
 }
 

@@ -17,7 +17,7 @@ const sortColumns = [
     { key: 'location', label: 'Location' },
     { key: 'applications', label: 'Applications' },
     { key: 'isPremium', label: 'Premium' },
-    { key: 'createdAt', label: 'Joined' },
+    // { key: 'createdAt', label: 'Joined' },
     { key: 'active', label: 'Active' }, // Thêm cột Active
 ];
 
@@ -205,13 +205,13 @@ const JobSeekersManagement = () => {
                             <tr key={seeker.id || idx}>
                                 <td>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={cx('company-avatar')}> s{getInitials(seeker.fullName)}</div>
+                                        <div className={cx('company-avatar')}>{getInitials(seeker.fullName)}</div>
                                         <div style={{ marginLeft: 12 }}>
                                             <div className={cx('job-title')}>{seeker.fullName || '--'}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td>{seeker.email || '--'}</td>
+                                <td className={{ cx: 'email' }}>{seeker.email || '--'}</td>
                                 <td>{seeker.location || '--'}</td>
                                 <td>{seeker.applications ?? 0}</td>
                                 <td>
@@ -219,7 +219,7 @@ const JobSeekersManagement = () => {
                                         {seeker.isPremium ? 'Premium' : 'Normal'}
                                     </span>
                                 </td>
-                                <td>{seeker.createdAt?.slice(0, 10) || '--'}</td>
+                                {/* <td>{seeker.createdAt?.slice(0, 10) || '--'}</td> */}
                                 <td>
                                     <span className={cx('statusText', seeker.active === true ? 'active' : 'inactive')}>
                                         {seeker.active === true ? 'Active' : 'Inactive'}

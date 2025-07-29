@@ -228,10 +228,17 @@
 }
 
 /* Job title/company */
-.job-title {
+.job-title,
+.email {
     font-weight: 500;
     color: var(--text-color);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 .job-company {
     color: var(--gray-500);
     font-size: var(--font-size-10px);

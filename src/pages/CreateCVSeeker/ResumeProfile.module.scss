@@ -1,3 +1,14 @@
+@keyframes typingChar {
+  0% {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .container {
   max-width: 700px;
   margin: 20px auto;
@@ -19,19 +30,38 @@
 }
 
 .resumeContent {
-  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   font-size: 1rem;
   color: #222;
   min-height: 220px;
+  white-space: pre-wrap;
 }
 
-/* Tăng cường style cho phần in đậm */
+.line {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.char {
+  opacity: 0;
+  animation: typingChar 0.03s forwards;
+  font-size: 1.2rem; /* chữ to hơn */
+  color: #222;
+}
+
+.boldChar {
+  font-weight: 700;
+  color: #000; /* đậm hơn */
+}
+
 .resumeContent b {
   font-weight: 700;
   color: #222;
 }
 
-/* Nếu có các đoạn hoặc danh sách, bạn có thể style thêm */
+/* Nếu có các đoạn hoặc danh sách */
 .resumeContent p {
   margin-bottom: 12px;
 }
@@ -47,8 +77,6 @@
   margin-bottom: 6px;
 }
 
-/* Style cho br (xuống dòng) nếu cần, nhưng white-space: pre-wrap đã hỗ trợ */
-
 /* Responsive cho màn hình nhỏ */
 @media (max-width: 480px) {
   .container {
@@ -59,5 +87,8 @@
   }
   .resumeContent {
     font-size: 0.9rem;
+  }
+  .char {
+    font-size: 1rem;
   }
 }

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { Modal, Group, Text, TextInput, Textarea } from '@mantine/core';
 import {
@@ -21,10 +22,11 @@ import Button from '.';
 import { jobService } from '~/services';
 import { useNotification } from '~/hooks';
 import { useLoading } from '~/context/LoadingContext';
+import EmployerService from '~/services/EmployerService';
 
 const cx = classNames.bind(styles);
 
-function ApplyButton({ classname, onClick = () => {}, title, jobId }) {
+function ApplyButton({ classname, onClick = () => { }, title, jobId }) {
     const [searchParams] = useSearchParams();
     const isApply = searchParams.get('isApply') === 'true';
     const [opened, { open, close }] = useDisclosure(isApply);
@@ -48,6 +50,28 @@ function ApplyButton({ classname, onClick = () => {}, title, jobId }) {
             phone: (value) => validator.validatePhoneNumber(value),
         },
     });
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const profile = await EmployerService.fetchEmployerProfileFake();
+                const data = profile[0];
+                if (data?.resumeUrl) {
+                    const res = await fetch(data.resumeUrl);
+                    const blob = await res.blob();
+                    const filename = 'default_resume.pdf'; // bạn có thể lấy từ URL nếu muốn
+                    const file = new File([blob], filename, { type: blob.type });
+
+                    form.setValues({ resume: file });
+                }
+
+            } catch (error) {
+
+            }
+        }
+
+        fetchProfile();
+    }, [opened])
 
     const handleSubmit = async (values) => {
         console.log(values);

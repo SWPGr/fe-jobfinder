@@ -207,7 +207,9 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
 
 const fetchEmployerProfileFake = async () => {
     const response = await get('/profiles/me');
-    return response?.result || {};
+    console.log(response);
+
+    return response || response?.result || {};
 };
 
 const fetchSettingFake = async (updatedData) => {
@@ -224,6 +226,22 @@ const fetchApplicationFake = async (jobId) => {
 const fetchCandidateDetail = async (applicationId) => {
     const response = await get(`/apply/candidates/${applicationId}`);
     return response?.result || null;
+};
+const fetchFilteredCandidates = async (jobId, filters, sortOrder) => {
+  const query = new URLSearchParams();
+
+  if (filters.fullName) query.append("fullName", filters.fullName);
+  if (filters.education) query.append("educationName", filters.education);
+  if (filters.experience) query.append("experienceName", filters.experience);
+
+  // sort: asc hoặc desc theo fullName
+  query.append(
+    "sort",
+    `jobSeeker.userDetail.fullName,${sortOrder === "newest" ? "asc" : "desc"}`
+  );
+
+  const response = await get(`/apply/candidates/${jobId}?${query.toString()}`);
+  return response?.result || null;
 };
 
 const fetchResume = async ({ applicationId }) => {
@@ -254,6 +272,23 @@ const fetchApplicationData = async (id, type = 'application') => {
         return null;
     }
 };
+const uploadFile = async (file) => {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Gọi API upload (bạn thay URL này bằng endpoint thật)
+        const response = await post('/upload', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+
+        // Trả về link file hoặc dữ liệu cần thiết từ API
+        return response?.result?.url || null;
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        throw error;
+    }
+};
 const EmployerService = {
     getJobDetail,
     updateJob,
@@ -280,6 +315,8 @@ const EmployerService = {
     fetchCategoriesFake,
     fetchApplicationFake,
     fetchResume,
+    fetchFilteredCandidates,
+    uploadFile,
 };
 
 export default EmployerService;
