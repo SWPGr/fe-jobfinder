@@ -7,6 +7,7 @@ import JobDetail from '~/pages/JobDetail/JobDetail';
 import { Pagination } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 import { UserSearchFilters } from '~/components';
+import useNotification from '~/hooks/userNotification';
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +22,7 @@ const sortColumns = [
     { key: 'active', label: 'Active' },
 ];
 
-const EmployerRowDropdown = ({ onAction, employerId }) => {
+const EmployerRowDropdown = ({ onAction, employerId, isActive }) => {
     const combobox = useCombobox();
     return (
         <Combobox
@@ -66,9 +67,15 @@ const EmployerRowDropdown = ({ onAction, employerId }) => {
             </Combobox.Target>
             <Combobox.Dropdown className={cx('dropdownMenu')}>
                 <Combobox.Options>
-                    <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
-                        Block
-                    </Combobox.Option>
+                    {isActive ? (
+                        <Combobox.Option value="block" className={cx('dropdownItem', 'dropdownItem--block')}>
+                            Block
+                        </Combobox.Option>
+                    ) : (
+                        <Combobox.Option value="unblock" className={cx('dropdownItem', 'dropdownItem--unblock')}>
+                            Unblock
+                        </Combobox.Option>
+                    )}
                     <Combobox.Option value="view" className={cx('dropdownItem')}>
                         View
                     </Combobox.Option>
@@ -98,6 +105,7 @@ const EmployersManagement = () => {
     const [totalHits, setTotalHits] = useState(1);
     const totalPages = Math.ceil(totalHits / 10);
     const [searchParams, setSearchParams] = useSearchParams();
+    const { showSuccess, showError } = useNotification();
 
 
 
@@ -121,32 +129,41 @@ const EmployersManagement = () => {
 
     const handleAction = async (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
-        const fetchEmployers = async () => {
-            setLoading(true);
-            try {
-                const data = await statisticsService.fetchAllEmployers();
-                setEmployers(data || []);
-                setLoading(false);
-            } catch (err) {
-                setLoading(false);
-                setError(err.message || 'Failed to fetch employers');
-            }
-        }
         if (action === 'block') {
-            if (window.confirm(`Bạn có chắc muốn chặn nhà tuyển dụng ${employer.fullName || 'ID ' + employerId}?`)) {
-                try {
-                    await statisticsService.blockEmployer(employerId);
-                    setEmployers((prevEmployers) =>
-                        prevEmployers.map((emp) =>
-                            emp.id === employerId ? { ...emp, isBlocked: true, active: false } : emp,
-                        ),
-                    );
-                    fetchEmployers();
-                    console.log('Employer blocked successfully');
-                } catch (err) {
-                    console.error('Lỗi khi chặn nhà tuyển dụng:', err);
-                    alert(`Không thể chặn nhà tuyển dụng. Lỗi: ${err.message || 'Không xác định'}`);
-                }
+            setEmployers((prevEmployers) =>
+                prevEmployers.map((emp) =>
+                    emp.id === employerId ? { ...emp, isBlocked: true, active: false } : emp,
+                ),
+            );
+            try {
+                await statisticsService.blockEmployer(employerId);
+                showSuccess('Blocked successfully');
+                console.log('Employer blocked successfully');
+            } catch (err) {
+                setEmployers((prevEmployers) =>
+                    prevEmployers.map((emp) =>
+                        emp.id === employerId ? { ...emp, isBlocked: false, active: true } : emp,
+                    ),
+                );
+                showError(`Failed to block: ${err.message || 'Unknown error'}`);
+            }
+        } else if (action === 'unblock') {
+            setEmployers((prevEmployers) =>
+                prevEmployers.map((emp) =>
+                    emp.id === employerId ? { ...emp, isBlocked: false, active: true } : emp,
+                ),
+            );
+            try {
+                await statisticsService.unblockEmployer(employerId);
+                showSuccess('Unblocked successfully');
+                console.log('Employer unblocked successfully');
+            } catch (err) {
+                setEmployers((prevEmployers) =>
+                    prevEmployers.map((emp) =>
+                        emp.id === employerId ? { ...emp, isBlocked: true, active: false } : emp,
+                    ),
+                );
+                showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
         } else if (action === 'view') {
             setSelectedEmployer(employer);
@@ -203,7 +220,7 @@ const EmployersManagement = () => {
                                 <td>{employer.email}</td>
                                 <td>{employer.location || '--'}</td>
                                 <td>{employer.phone || '--'}</td>
-                                <td>{employer.createdAt ? employer.createdAt.slice(5, 10) : '--'}</td>
+                                <td>{employer.createdAt ? employer.createdAt.slice(0, 10) : '--'}</td>
                                 <td>
                                     <span
                                         className={cx(
@@ -225,6 +242,7 @@ const EmployersManagement = () => {
                                     <EmployerRowDropdown
                                         onAction={(action) => handleAction(action, employer.id)}
                                         employerId={employer.id}
+                                        isActive={employer.active === true}
                                     />
                                 </td>
                             </tr>
