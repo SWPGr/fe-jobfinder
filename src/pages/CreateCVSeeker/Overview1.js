@@ -24,7 +24,7 @@ const Overview1 = () => {
     // --- Filter ---
     const [filters, setFilters] = useState({
         name: '',
-        status: 'all',
+        status: 'Active',
         startDate: '',
         endDate: '',
     });
@@ -44,8 +44,7 @@ const Overview1 = () => {
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const { jobs: apiJobs } = await EmployerService.fetchMyJobFake();
-
+                const { jobs: apiJobs } = await EmployerService.fetchMyJobFake(pageNumber, pageSize, true, filters.name, filters.startDate, filters.endDate);
                 const activeJobs = filterActiveJobs(apiJobs);
 
                 const totalApps = activeJobs.reduce(
@@ -64,7 +63,7 @@ const Overview1 = () => {
         };
 
         fetchJobs();
-    }, []);
+    }, [filters, pageNumber]);
 
     // Khi filters hoặc pageNumber thay đổi → lọc lại
     useEffect(() => {
@@ -184,17 +183,18 @@ const Overview1 = () => {
                     type="date"
                     name="startDate"
                     value={filters.startDate}
+                    max={filters.endDate || ""}
                     onChange={handleFilterChange}
                 />
 
-                {/* Text "to" */}
-                <span className={cx('to-text')}>to</span>
+
 
                 {/* End date */}
                 <input
                     type="date"
                     name="endDate"
                     value={filters.endDate}
+                    min={filters.startDate || ""}
                     onChange={handleFilterChange}
                 />
             </div>

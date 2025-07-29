@@ -616,3 +616,103 @@ margin-bottom: 30px;
 .company-name{
   font-size: 1.6rem;
 }
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+
+  .spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid var(--primary-color);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  .loadingText {
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+}
+.loadingText {
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .dot {
+    animation: dots 1.5s infinite;
+    font-size: 2rem;
+    margin-left: 0.2rem;
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+  }
+}
+
+@keyframes dots {
+  0% {
+    opacity: 0.2;
+    transform: translateX(0);
+  }
+  25% {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateX(-4px);
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(-6px);
+  }
+  100% {
+    opacity: 0.2;
+    transform: translateX(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.successToast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.6rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  animation: fadeInOut 2s ease forwards;
+  z-index: 2001;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, 20px); }
+  10% { opacity: 1; transform: translate(-50%, 0); }
+  90% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, 20px); }
+}

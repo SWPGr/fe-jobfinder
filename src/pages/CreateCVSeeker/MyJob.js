@@ -226,8 +226,6 @@ const MyJob = () => {
                     onChange={handleFilterChange}
                 />
 
-                <span className={cx('to-text')}>to</span>
-
                 <input
                     type="date"
                     name="endDate"

@@ -83,9 +83,6 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
               <div className={cx('companyName')}>
                 {companyInfo.companyName || 'No company name'}
               </div>
-              <div className={cx('industry')}>
-                {companyInfo.organizationType || 'No organization type'}
-              </div>
             </div>
           </div>
         </div>
@@ -168,6 +165,21 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                   </span>
                 </button>
               </div>
+              {/* Hiển thị Phone */}
+              {companyInfo.phone && (
+                <div className={cx('contactRow')}>
+                  <AiOutlinePhone className={cx('contactIcon')} />
+                  <button
+                    className={cx('linkButton', 'noUnderline', 'phoneButton')}
+                    onClick={() => (window.location.href = `tel:${companyInfo.phone}`)}
+                  >
+                    <span className={cx('contactLabel')}>PHONE:</span>
+                    <span className={cx('contactLink')}>
+                      {companyInfo.phone || 'N/A'}
+                    </span>
+                  </button>
+                </div>
+              )}
 
               <div className={cx('socialLinks')}>
                 {social.facebook && (

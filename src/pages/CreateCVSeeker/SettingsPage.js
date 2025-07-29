@@ -56,6 +56,8 @@ function SettingsPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   // Load data profile từ API
   const loadData = async () => {
@@ -162,6 +164,8 @@ function SettingsPage() {
       return;
     }
     try {
+      setLoading(true); // Bật overlay loading
+      setSuccess(false);
       let avatarUrlUploaded = avatarUrl;
       if (logoFile) {
         const formData = new FormData();
@@ -187,7 +191,6 @@ function SettingsPage() {
 
       profileFormData.append("companyName", companyName.trim());
       profileFormData.append("description", aboutUs);
-      profileFormData.append("organization", 1);
       profileFormData.append("teamSize", form.teamSize);
       profileFormData.append("yearOfEstablishment", year);
       profileFormData.append("location", form.location);
@@ -215,9 +218,13 @@ function SettingsPage() {
 
       await loadData();
       setError('');
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
     } catch (error) {
       console.error('Error updating company info:', error);
       setError('Update failed. Please check your input.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -382,12 +389,8 @@ function SettingsPage() {
           </div>
 
           <div className={cx('btnGroup')}>
-            <SaveNextButton
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            />
+            <SaveNextButton onClick={() => { handleSave(); goToNextTab(); }} />
+              
           </div>
         </div>
       )}
@@ -522,12 +525,7 @@ function SettingsPage() {
             <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Founding Info')}>
               Previous
             </button>
-            <SaveNextButton
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            />
+            <SaveNextButton onClick={() => { handleSave(); goToNextTab(); }} />
           </div>
         </div>
       )}
@@ -687,7 +685,23 @@ function SettingsPage() {
             Add Image
           </Button>
         </Group>
-      </Modal>
+      </Modal>{loading && (
+        <div className={cx('overlay')}>
+          <div className={cx('spinner')}></div>
+          <div className={cx('loadingText')}>
+  Loading
+  <span className={cx('dot')}>.</span>
+  <span className={cx('dot')}>.</span>
+  <span className={cx('dot')}>.</span>
+</div>
+        </div>
+      )}
+
+      {success && (
+        <div className={cx('successToast')}>
+          Update Successful!
+        </div>
+      )}
     </div>
   );
 }
