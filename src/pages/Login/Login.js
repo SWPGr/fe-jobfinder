@@ -50,7 +50,7 @@ function Login() {
         console.log('Response data:', data);
 
         if (data.success) {
-            window.location.href = '/';
+            navigate('/');
             showSuccess('Login successful!');
         } else {
             const message =
