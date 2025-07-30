@@ -1,33 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
-:root {
-    --primary-color: #dc3545;
-    --primary-color-light: #e74c3c;
-    --secondary-color: #4b5563;
-    --background-color: #ffffff;
-    --light-red-bg: #fef2f2;
-    --dark-red-pulse: #fecaca;
-    --contact-blue: #007bff;
-    --contact-blue-hover: #0056b3;
-    --logout-gray: #6c757d;
-    --logout-gray-hover: #5a6268;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Chỉ áp dụng cho trang BlockedUser */
 .blocked-container {
     min-height: 100vh;
-    background: linear-gradient(to bottom, var(--light-red-bg), var(--background-color));
+    background: linear-gradient(to bottom, #fef2f2, #ffffff);
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
     overflow: hidden;
+    font-family: 'Inter', sans-serif;
 }
 
 .blocked-content {
@@ -38,7 +20,7 @@ body {
     transform: translateY(20px);
     animation: fadeInSlideUp 0.8s ease-out forwards;
     animation-delay: 0.2s;
-    background: var(--background-color);
+    background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     padding: 40px;
@@ -58,16 +40,15 @@ body {
 .blocked-circle-pulse {
     position: absolute;
     inset: 0;
-    background-color: var(--dark-red-pulse);
+    background-color: #fecaca;
     border-radius: 50%;
     opacity: 0.5;
-    animation: pulse 2s infinite, rotate3D 10s linear infinite;
 }
 
 .blocked-circle-inner {
     position: absolute;
     inset: 1rem;
-    background-color: var(--light-red-bg);
+    background-color: #fef2f2;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -78,7 +59,7 @@ body {
 .blocked-title {
     font-size: 2rem;
     font-weight: bold;
-    color: var(--secondary-color);
+    color: #4b5563;
     margin-bottom: 1rem;
     transform: translateY(0);
     animation: bounceIn 1s ease-out;
@@ -89,7 +70,7 @@ body {
 
 .blocked-message {
     font-size: 1.125rem;
-    color: var(--secondary-color);
+    color: #4b5563;
     margin-bottom: 2rem;
     max-width: 32rem;
     margin-left: auto;
@@ -153,7 +134,7 @@ body {
 .contact-link {
     display: inline-flex;
     align-items: center;
-    background-color: var(--contact-blue);
+    background-color: #007bff;
     color: #ffffff;
     padding: 12px 25px;
     border-radius: 8px;
@@ -166,7 +147,7 @@ body {
 }
 
 .contact-link:hover {
-    background-color: var(--contact-blue-hover);
+    background-color: #0056b3;
     transform: translateY(-2px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
@@ -203,19 +184,19 @@ body {
 }
 
 .button-primary {
-    background-color: var(--primary-color);
+    background-color: #dc3545;
     color: white;
 }
 
 .button-primary:hover {
-    background-color: var(--primary-color-light);
+    background-color: #e74c3c;
     transform: translateY(-3px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 .button-secondary {
-    background-color: var(--background-color);
-    color: var(--secondary-color);
+    background-color: #ffffff;
+    color: #4b5563;
     border: 1px solid #d1d5db;
 }
 
@@ -227,7 +208,7 @@ body {
 
 /* Nút đăng xuất */
 .logout-button {
-    background-color: var(--logout-gray);
+    background-color: #6c757d;
     color: #ffffff;
     padding: 12px 25px;
     border-radius: 8px;
@@ -248,7 +229,7 @@ body {
 }
 
 .logout-button:hover {
-    background-color: var(--logout-gray-hover);
+    background-color: #5a6268;
     transform: translateY(-2px);
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
