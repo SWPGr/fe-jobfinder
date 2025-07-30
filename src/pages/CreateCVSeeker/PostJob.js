@@ -303,8 +303,8 @@ const PostJob = () => {
                     <div className={cx('popup')}>
                         <p>Do you want to post this job?</p>
                         <div className={cx('popupActions')}>
-                            <Button onClick={handleConfirm}>Yes</Button>
-                            <Button red onClick={() => setShowConfirmPopup(false)}>
+                            <Button green_white onClick={handleConfirm}>Yes</Button>
+                            <Button red_white onClick={() => setShowConfirmPopup(false)}>
                                 Cancel
                             </Button>
                         </div>
