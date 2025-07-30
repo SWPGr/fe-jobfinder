@@ -26,7 +26,7 @@ const Overview1 = () => {
         endDate: new Date().toLocaleDateString('en-CA', {
             timeZone: 'Asia/Ho_Chi_Minh',
         }),
-        page: 1,
+        pageNumber: 1,
         isActive: ''
     });
 
@@ -46,8 +46,8 @@ const Overview1 = () => {
                 // console.log('data', data);
 
                 setJobs(data);
-                const { pageNumber, pageSize, totalElements, totalPages } = response.result;
-                setPagination({ pageNumber, pageSize, totalElements, totalPages });
+                const { pageNumber, pageSize, totalElements, totalPages, totalApplication, totalOpenJob } = response.result;
+                setPagination({ pageNumber, pageSize, totalElements, totalPages, totalApplication, totalOpenJob });
             } catch (err) {
                 console.error('Error fetching jobs:', err);
             }
@@ -75,13 +75,7 @@ const Overview1 = () => {
         }
     };
 
-    const countApplications = (jobs) => {
-        let count = 0;
-        jobs.forEach((job) => {
-            count += job.jobApplicationCounts;
-        });
-        return count;
-    };
+
 
     return (
         <div className={cx('container')}>
@@ -92,17 +86,18 @@ const Overview1 = () => {
 
             <div className={cx('info-cards')}>
                 <div className={cx('info-card', 'blue')}>
-                    <div className={cx('info-number')}>{ }</div>
+                    <div className={cx('info-number')}>{pagination.totalOpenJob}</div>
                     <div className={cx('info-label')}>Open Jobs</div>
                 </div>
                 <div className={cx('info-card', 'yellow')}>
-                    <div className={cx('info-number')}>{countApplications(jobs) || 0}</div>
+                    <div className={cx('info-number')}>{pagination.totalApplication}</div>
                     <div className={cx('info-label')}>Total Applications</div>
                 </div>
             </div>
 
             <div className={cx('filter-panel')}>
                 <input
+                    className='w-[400px]'
                     type="text"
                     name="jobTitle"
                     placeholder="Search by name"
@@ -168,16 +163,10 @@ const Overview1 = () => {
                 {pagination.totalPages > 1 && (
                     <Pagination
                         total={pagination.totalPages}
-                        value={filters.page + 1}
-                        defaultValue={0}
+                        value={pagination.pageNumber}
                         onChange={handlePageChange}
-                        radius="xl"
-                        classNames={{
-                            root: cx('pagination-root'),
-                            control: cx('control'),
-                            item: cx('pagination-item'),
-                            active: cx('pagination-active')
-                        }}
+                        // radius="xl"
+                        classNames={{ root: cx('pagination-root'), control: cx('pagination-control') }}
                     />
                 )}
             </div>

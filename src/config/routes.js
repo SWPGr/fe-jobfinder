@@ -33,6 +33,7 @@ const routes = {
     JobSearchEvent: '/job-search-event',
     CandidateSearchEvent: '/candidate-search-event',
     blockedUser: '/blocked-user',
+    paymentSuccess: '/payment-success',
 };
 
 export default routes;

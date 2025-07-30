@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './JobItem.module.scss';
 import { IconMapPin, IconBookmark, IconBookmarkFilled } from '@tabler/icons-react';
+import { BadgeCheck } from 'lucide-react';
 import { Badge } from '@mantine/core';
 
 import { Images } from '~/assets';
@@ -70,6 +71,7 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
                                 alt={`${companyName} logo`}
                                 onError={(e) => (e.target.src = Images.default_image)}
                             />
+
                         </div>
                         <div className={cx('company-inf')}>
                             <span className={cx('company-name')}>
@@ -78,7 +80,9 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
                                     onClick={(e) => handelDireactToCompanyDetails(e, 1)}
                                     className={cx('name')}
                                 >
-                                    {companyName}
+                                    {companyName} {isVIP && (
+                                        <span className={cx('icon-vip')}><BadgeCheck /></span>
+                                    )}
                                 </Button>
                                 {isVIP && (
                                     <Badge
@@ -113,7 +117,9 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
                     <Link to={`/find-job?search=${encodeURIComponent(jobTitle)}`} className={cx('job-title')}>
                         {jobTitle}
                     </Link>
-                    <div className={cx('job-description')}>
+                    <div className={cx('job-description', {
+                        'job-description-vip': isVIP
+                    })}>
                         <span className={cx('work-time')}>{workTime}</span>
                         <span className={cx('job-salary')}>{salary}</span>
                     </div>

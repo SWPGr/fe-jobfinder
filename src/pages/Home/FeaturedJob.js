@@ -54,6 +54,7 @@ function FeaturedJob() {
                             jobDescription={job}
                             className={cx('item')}
                             saved={job.save}
+                            isVIP={job?.company?.isPremium}
                         />
                     ))}
                 </div>

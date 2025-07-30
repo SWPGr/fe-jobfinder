@@ -98,6 +98,15 @@ const changePassword = async (oldPassword, newPassword) => {
     }
 };
 
+const getUserById = async (userId) => {
+    try {
+        const response = await get(`/users/${userId}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const JobSeekerProfileService = {
     updateProfileWithFile,
     getProfile,
@@ -108,6 +117,7 @@ const JobSeekerProfileService = {
     updateSocialLink,
     deleteSocialLink,
     changePassword,
+    getUserById
 };
 
 export default JobSeekerProfileService;

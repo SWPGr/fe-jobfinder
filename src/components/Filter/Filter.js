@@ -74,8 +74,6 @@ function Filter({
     const resultRef = useRef(null); // This will hold the location of the search result
     const size = 10; // Số lượng công việc mỗi trang
     const totalPages = Math.ceil(totalHits / size);
-
-
     const [searchParams, setSearchParams] = useSearchParams();
 
     const form = useForm({

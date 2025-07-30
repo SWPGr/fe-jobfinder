@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Avatar } from '@mantine/core';
-import { IconChevronDown, IconSettingsFilled, IconArrowAutofitRightFilled } from '@tabler/icons-react';
+import { IconChevronDown, IconSettingsFilled, IconArrowAutofitRightFilled, IconUserFilled } from '@tabler/icons-react';
 import classNames from 'classnames/bind';
 import styles from './Avatar.module.scss';
 
@@ -17,10 +17,17 @@ function AvatarButton({ avatar }) {
 
     const MENU_ITEMS = [
         {
+            title: 'My profile',
+            iconLeft: <IconUserFilled />,
+            iconRight: null,
+            to: '/dashboard/profile',
+            separate: false,
+        },
+        {
             title: 'Settings',
             iconLeft: <IconSettingsFilled />,
             iconRight: null,
-            to: 'profile',
+            to: '/dashboard/settings',
             separate: false,
         },
         {
@@ -29,7 +36,6 @@ function AvatarButton({ avatar }) {
             iconRight: null,
             separate: true,
             onClick: () => {
-                console.log('Logout clicked');
                 logout();
                 navigate('/');
             },

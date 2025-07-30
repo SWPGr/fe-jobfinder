@@ -36,6 +36,7 @@
     }
 
     .logo-company {
+        position: relative;
         width: 5.6rem;
         height: 5.6rem;
         background: white;
@@ -200,6 +201,19 @@
     height: 2.6rem;
 }
 
+.job-description-vip {
+    .work-time,
+    .job-salary {
+        background: linear-gradient(90deg, var(--orange-200), var(--white));
+    }
+}
+
+.icon-vip {
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-left: 0.5rem;
+    color: inherit;
+}
 //
 
 //RESPONSIVE
