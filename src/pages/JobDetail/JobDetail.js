@@ -65,7 +65,7 @@ const JobDetail = ({
       try {
         showLoading();
         let jobData = await EmployerService.getJobDetail(id || job?.id);
-        console.log('jobData', jobData);
+        console.log('jobData', format.transformJobData(jobData));
 
         hideLoading();
         setFormData(format.transformJobData(jobData));
@@ -194,7 +194,7 @@ const JobDetail = ({
               <input
                 className={cx('job-info__title', 'job-title')}
                 name="title"
-                value={formData?.title || ''}
+                value={formData?.title || formData?.jobTitle}
                 onChange={(e) => handleChange(e)}
               />
             ) : (
@@ -244,7 +244,7 @@ const JobDetail = ({
               placeholder="Add your job description..."
               onChange={(value) => handleChangeRichText('description', value)}
               content={formData.job_description || ''}
-              value={formData.description || ''}
+              value={formData.job_description || ''}
             />
           ) : (
             <div
@@ -297,25 +297,25 @@ const JobDetail = ({
                 key: 'salaryMin',
                 label: 'Minimum Salary',
                 icon: <IconWallet />,
-                render: () => `${formData.salaryMin || ''}`,
+                render: () => `${formData?.salaryMin || ''}`,
               },
               {
                 key: 'salaryMax',
                 label: 'Maximum Salary',
                 icon: <IconWallet />,
-                render: () => `${formData.salaryMax || ''}`,
+                render: () => `${formData?.salaryMax || ''}`,
               },
               {
-                key: 'location',
+                key: 'companyAddress',
                 label: 'Location',
                 icon: <IconMapPin />,
-                render: () => `${formData.location || ''}`,
+                render: () => `${formData?.companyAddress}`,
               },
               {
                 key: 'vacancy',
                 label: 'Vacancies',
                 icon: <IconUsers />,
-                render: () => `${formData.vacancy || ''}`,
+                render: () => `${formData?.vacancy || ''}`,
               },
               {
                 key: 'expiredDate',
