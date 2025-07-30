@@ -193,7 +193,9 @@ const fetchSettingFake = async (updatedData) => {
     if (updatedData) {
         return await put('/profiles', updatedData);
     } else {
-        return await get('/profiles/me');
+        const response = await get('/profiles/me');
+        // API trả về array, lấy phần tử đầu tiên
+        return Array.isArray(response) ? response[0] : response;
     }
 };
 const fetchApplicationFake = async (jobId) => {

@@ -67,9 +67,7 @@ const JobSeekerRowDropdown = ({ onAction, seekerId, isActive }) => {
                             Unblock
                         </Combobox.Option>
                     )}
-                    <Combobox.Option value="view" className={cx('dropdownItem')}>
-                        View
-                    </Combobox.Option>
+
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
@@ -147,10 +145,8 @@ const JobSeekersManagement = () => {
                 );
                 showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
-        } else if (action === 'view') {
-            setSelectedSeeker(seeker);
-            setIsModalOpen(true);
         }
+
     };
 
     const closeModal = () => {
