@@ -279,7 +279,7 @@ function SocialLinks({ onSave }) {
         <div className={cx('socialLinksContainer')}>
             {/* Nếu không có social links nào, hiển thị trạng thái */}
             {existingLinks.length === 0 && newLinks.length === 0 && (
-                <div style={{ color: '#888', fontSize: 18, textAlign: 'center', margin: '32px 0' }}>
+                <div style={{ color: 'red', fontSize: 14, textAlign: 'center', margin: '32px 0' }}>
                     You have not added any social links yet.
                 </div>
             )}
@@ -360,13 +360,14 @@ function SocialLinks({ onSave }) {
                                     className={cx('deleteBtn')}
                                     onClick={() => handleDeleteExistingLink(link.id)}
                                     style={{
-                                        marginTop: '0px',
-                                        padding: '12px 20px',
+                                        marginTop: '4px',
+                                        padding: '8px 10px',
                                         background: 'none',
                                         border: 'none',
                                         borderRadius: '6px',
                                         cursor: 'pointer',
-                                        fontSize: '16px',
+                                        fontSize: '12px',
+                                        fontWeight: 'bold',
                                         color: 'var(--gray-600)',
                                         display: 'flex',
                                         alignItems: 'center',

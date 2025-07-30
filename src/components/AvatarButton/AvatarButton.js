@@ -20,7 +20,7 @@ function AvatarButton({ avatar }) {
             title: 'Settings',
             iconLeft: <IconSettingsFilled />,
             iconRight: null,
-            to: '/profile',
+            to: 'profile',
             separate: false,
         },
         {

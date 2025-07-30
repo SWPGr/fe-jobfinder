@@ -40,16 +40,15 @@ const fetchAllJobSeekers = async (name) => {
     return data.result || [];
 };
 
-const fetchTotalJobs = async () => {
+export const fetchTotalJobs = async () => {
     const data = await get('/job/total');
-    return data.result || [];
+    return data.result;
 };
 
 const fetchTotalAppliedJobs = async () => {
     const data = await get('/apply/total');
     return data.result || [];
 };
-
 const fetchDailyTrends = async () => {
     const data = await get('/statistics/calculated-daily-trends');
     return data.result || [];
@@ -61,9 +60,13 @@ const fetchJobCategories = async () => {
 };
 
 // Fetch all jobs for management with pagination
-export const fetchAllJobsForManagement = async () => {
+export const fetchAllJobsForManagement = async (params = {}) => {
     try {
-        const response = await get('/admin/list-job');
+        const query = Object.keys(params)
+            .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+            .join('&');
+        const url = '/admin/list-job' + (query ? `?${query}` : '');
+        const response = await get(url);
         return response;
     } catch (error) {
         console.error('Failed to fetch jobs for management:', error);
@@ -116,10 +119,10 @@ export const blockJobSeeker = async (jobSeekerId) => {
 export const blockJob = async (jobId) => {
     try {
         const response = await put(
-            '/job/status', // Đường dẫn khớp với endpoint Postman
+            '/job/status',
             {
-                jobId: jobId, // Sử dụng jobId (dựa trên Postman)
-                isActive: false, // Khớp với backend
+                jobId: jobId,
+                isActive: false,
             },
 
         );
@@ -194,10 +197,10 @@ export const unblockJob = async (jobId) => {
     }
 };
 
-// Lấy danh sách payment (có phân trang)
+// Lấy danh sách payment (có phân trang và filter)
 export const fetchAllPayments = async (params = {}) => {
     try {
-        // params là object, ví dụ { page: 0, size: 10 }
+        // Map params to query string
         const query = Object.keys(params)
             .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
             .join('&');

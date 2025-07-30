@@ -68,7 +68,7 @@ function Filter({
     isFindJob = false,
     type = 'job',
 }) {
-    const [scrollTo] = useWindowScroll();
+    const [scroll, scrollTo] = useWindowScroll();
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
     const resultRef = useRef(null); // This will hold the location of the search result
     const size = 10; // Số lượng công việc mỗi trang
@@ -112,7 +112,7 @@ function Filter({
         });
 
         scrollTo({ y: 0 });
-    }, [searchParams, scrollTo, form]);
+    }, [searchParams]);
 
     // Thêm/xóa option checkbox cho các trường dạng mảng
     const toggleCheckbox = (field, value) => {
