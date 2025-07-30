@@ -4,7 +4,7 @@ import styles from './Dashboard.module.scss';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 import JobSeekerProfileService from '~/services/JobSeekerProfileService';
 import { useNotification } from '~/hooks';
-import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
+import ProfileSeeker from '~/pages/ProfileSeeker/ProfileSeeker';
 import { TiTick } from "react-icons/ti";
 
 const cx = classNames.bind(styles);
@@ -206,21 +206,10 @@ function Dashboard1() {
             <div className={cx('dashboard-container')}>
 
                 <div className={cx('dashboard-content-1')}>
-
-
-                    {/* Card thông tin cá nhân - dùng SeekerDetail */}
-
+                    {/* Card thông tin cá nhân - sử dụng ProfileSeeker */}
                     {profileData && (
-                        <SeekerDetail
-                            applicant={{
-                                ...profileData,
-                                seekerDetail: profileData, // sửa lại key này để SeekerDetail lấy đúng avatar và tên
-                                id: profileData.id || profileData._id || 1,
-                                title: '',
-                            }}
-                        />
+                        <ProfileSeeker profileData={profileData} />
                     )}
-
                 </div>
                 <div className={cx('dashboard-content-2')}>
                     <div className={cx('ad-banner-landing')}>
