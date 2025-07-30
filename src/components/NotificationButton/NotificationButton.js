@@ -58,7 +58,7 @@ function NotificationButton() {
         } else {
             // For job seekers, navigate to job detail page if jobId exists and is valid
             if (notification.jobId && notification.jobId > 0) {
-                navigate(`/job/${notification.jobId}`);
+                navigate(`/jobDetails/${notification.jobId}`);
             } else {
                 console.warn('No valid jobId found in notification:', notification);
                 // Optionally show a message to user that job is not available
