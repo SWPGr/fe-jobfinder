@@ -123,7 +123,7 @@ const PostJob = () => {
         if (Object.keys(errors).length === 0) {
             setShowConfirmPopup(true);
         } else {
-            scrollTo({ y: 0 });
+            // scrollTo({ y: 0 });
         }
     };
 

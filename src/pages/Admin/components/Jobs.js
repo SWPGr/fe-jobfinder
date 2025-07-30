@@ -65,9 +65,7 @@ const JobRowDropdown = ({ onAction, jobId, isActive }) => {
                             Unblock
                         </Combobox.Option>
                     )}
-                    <Combobox.Option value="view" className={cx('dropdownItem')}>
-                        View
-                    </Combobox.Option>
+
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
@@ -89,10 +87,7 @@ const Jobs = () => {
 
     const handleAction = async (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
-        if (action === 'view') {
-            setSelectedJob(job);
-            setIsModalOpen(true);
-        } else if (action === 'block') {
+        if (action === 'block') {
             try {
                 await statisticsService.blockJob(jobId);
                 showSuccess('Blocked successfully');
@@ -280,17 +275,7 @@ const Jobs = () => {
                                 email: selectedJob.employer?.email || 'N/A',
                                 jobDescription: selectedJob.description || '<p>No description available</p>',
                                 responsibilities: '<ul><li>Manage job responsibilities</li></ul>', // Giả định
-                                overview: {
-                                    posted: selectedJob.createdAt?.split(' ')[0] || 'N/A',
-                                    expire: '2025-07-31', // Giả định
-                                    education: 'N/A', // Chưa có trong API
-                                    salary: `$${selectedJob.salaryMin} - $${selectedJob.salaryMax}/monthly`,
-                                    location: selectedJob.location,
-                                    jobType: selectedJob.jobType?.name || 'N/A',
-                                    experience: 'N/A', // Chưa có trong API
-                                    vacancy: selectedJob.vacancy, // Chưa có trong API
-                                    jobLevel: selectedJob.jobLevel?.name || 'N/A',
-                                },
+
                                 company: {
                                     name: selectedJob.employer?.email || 'N/A',
                                     description: 'N/A', // Chưa có trong API
