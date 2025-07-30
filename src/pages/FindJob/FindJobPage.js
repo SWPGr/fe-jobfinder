@@ -39,7 +39,7 @@ function FindJob() {
                         grid: true,
                     },
                     salary: {
-                        name: 'Salary',
+                        name: 'Salary / year',
                         type: 'Radio',
                         options: [
                             { id: '', name: 'All', salaryMin: '', salaryMax: '' },

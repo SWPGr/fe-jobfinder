@@ -26,6 +26,7 @@ function JobItem({ image = Images.default_image, jobDescription = {}, saved, isV
     const IconComponent = save ? IconBookmarkFilled : IconBookmark;
     const navigate = useNavigate();
 
+
     const handelSaveJob = async (e, id) => {
         try {
             e.stopPropagation();
