@@ -18,7 +18,7 @@ const ImageComponent = () => {
 
       {/* Phần hồ sơ Ban Điều Hành cứng */}
       <div className={cx('member-section')}>
-        <h2>Ban Điều Hành Phần Mềm</h2>
+        <h2>Điều Hành Phần Mềm</h2>
 
         <div className={cx('member-grid')}>
           {/* 1 hàng duy nhất, 5 ô thành viên */}

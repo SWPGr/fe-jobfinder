@@ -226,7 +226,7 @@ function SettingsPage() {
       if (logoFile) {
         const formData = new FormData();
         formData.append('file', logoFile);
-        const res = await EmployerService.uploadFile(formData);
+        const res = await EmployerService.fetchSettingFake(formData);
         avatarUrlUploaded = res.data.url;
       }
 
@@ -234,7 +234,7 @@ function SettingsPage() {
       if (bannerFile) {
         const formData = new FormData();
         formData.append('file', bannerFile);
-        const res = await EmployerService.uploadFile(formData);
+        const res = await EmployerService.fetchSettingFake(formData);
         bannerUrlUploaded = res.data.url;
       }
 
