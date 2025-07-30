@@ -36,7 +36,7 @@ function NotificationItem({ data, onClick, onDelete, onRead }) {
     };
 
     const handleNotificationClick = () => {
-        // Mark as read if not already read
+        // Mark as read if not already read 
         if (data && !data.isRead && onRead) {
             onRead(data.id);
             navigate(`/jobDetails/${data.jobId}`);

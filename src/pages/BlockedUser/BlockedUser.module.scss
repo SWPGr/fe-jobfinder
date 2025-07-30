@@ -43,6 +43,7 @@
     background-color: #fecaca;
     border-radius: 50%;
     opacity: 0.5;
+    animation: pulse 2s infinite, rotate3D 10s linear infinite; /* Added rotate3D */
 }
 
 .blocked-circle-inner {

@@ -8,19 +8,9 @@ import { Pagination } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 import { UserSearchFilters } from '~/components';
 import useNotification from '~/hooks/userNotification';
+import { AdminHeader, AdminTable, StatusBadge } from './components';
 
 const cx = classNames.bind(styles);
-
-const sortColumns = [
-    { key: 'id', label: 'ID' },
-    { key: 'fullName', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'location', label: 'Location' },
-    { key: 'phone', label: 'Phone' },
-    { key: 'createdAt', label: 'Joined' },
-    { key: 'isPremium', label: 'Premium' },
-    { key: 'active', label: 'Active' },
-];
 
 const EmployerRowDropdown = ({ onAction, employerId, isActive }) => {
     const combobox = useCombobox();
@@ -94,7 +84,6 @@ const getInitials = (name) => {
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
 
-
 const EmployersManagement = () => {
     const [employers, setEmployers] = useState([]);
     const [error, setError] = useState('');
@@ -106,10 +95,11 @@ const EmployersManagement = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { showSuccess, showError } = useNotification();
 
-
+    // New state for AdminTable
+    const [searchValue, setSearchValue] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
 
     // Fetch employers
-
     useEffect(() => {
         const fetchEmployers = async () => {
             setLoading(true);
@@ -124,7 +114,6 @@ const EmployersManagement = () => {
         }
         fetchEmployers();
     }, [searchParams]);
-
 
     const handleAction = async (action, employerId) => {
         const employer = employers.find((e) => e.id === employerId);
@@ -164,7 +153,6 @@ const EmployersManagement = () => {
                 );
                 showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
-
         }
     };
 
@@ -179,6 +167,109 @@ const EmployersManagement = () => {
         setSelectedEmployer(null);
     };
 
+    // Table columns configuration for AdminTable
+    const columns = [
+        {
+            key: 'id',
+            label: 'ID',
+            render: (value) => value
+        },
+        {
+            key: 'fullName',
+            label: 'Name',
+            render: (value, row) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className={cx('avatarCircle')}>{getInitials(row.fullName)}</div>
+                    <span>{row.fullName || 'Unknown'}</span>
+                </div>
+            )
+        },
+        {
+            key: 'email',
+            label: 'Email',
+            render: (value) => value
+        },
+        {
+            key: 'location',
+            label: 'Location',
+            render: (value) => value || '--'
+        },
+        {
+            key: 'phone',
+            label: 'Phone',
+            render: (value) => value || '--'
+        },
+        {
+            key: 'createdAt',
+            label: 'Joined',
+            render: (value) => value ? value.slice(0, 10).split('-').reverse().join('/') : '--'
+        },
+        {
+            key: 'isPremium',
+            label: 'Premium',
+            render: (value) => <StatusBadge status={value ? 'premium' : 'normal'} size="small" />
+        },
+        {
+            key: 'active',
+            label: 'Status',
+            render: (value) => <StatusBadge status={value ? 'active' : 'inactive'} size="small" />
+        }
+    ];
+
+    // Actions configuration for AdminTable
+    const actions = [
+        {
+            key: 'view',
+            label: 'View Details',
+            onClick: (row) => {
+                setSelectedEmployer(row);
+                setIsModalOpen(true);
+            }
+        },
+        {
+            key: 'block',
+            label: 'Block Employer',
+            variant: 'danger',
+            onClick: (row) => handleAction('block', row.id),
+            show: (row) => row.active === true
+        },
+        {
+            key: 'unblock',
+            label: 'Unblock Employer',
+            variant: 'success',
+            onClick: (row) => handleAction('unblock', row.id),
+            show: (row) => row.active === false
+        }
+    ];
+
+    // Bulk actions configuration
+    const bulkActions = [
+        {
+            key: 'block',
+            label: 'Block Selected',
+            variant: 'danger',
+            onClick: (selectedIds) => {
+                selectedIds.forEach(id => handleAction('block', id));
+            }
+        },
+        {
+            key: 'unblock',
+            label: 'Unblock Selected',
+            variant: 'success',
+            onClick: (selectedIds) => {
+                selectedIds.forEach(id => handleAction('unblock', id));
+            }
+        }
+    ];
+
+    // Filter options
+    const filters = [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'premium', label: 'Premium' },
+        { value: 'normal', label: 'Normal' }
+    ];
+
     if (error) return <div className={cx('error')}>{error}</div>;
 
     if (loading) {
@@ -187,77 +278,51 @@ const EmployersManagement = () => {
 
     return (
         <div className={cx('managementWrapper')}>
-            <div className={cx('jobs-header')}>
-                <div className={cx('title')}>Employers Management</div>
-            </div>
-            {/* Thanh filter ngang hiện đại, giống trang Jobs */}
-            <UserSearchFilters type="EMPLOYER" />
+            {/* New AdminHeader component */}
+            <AdminHeader
+                title="Employers Management"
+                subtitle="Manage and monitor all employers on your platform"
+                breadcrumbs={['Management', 'Employers']}
+                stats={[
+                    { value: employers.length, label: 'Total Employers' },
+                    { value: employers.filter(e => e.active).length, label: 'Active Employers' },
+                    { value: employers.filter(e => e.isPremium).length, label: 'Premium Employers' }
+                ]}
+            />
 
-            {/* Bảng employers và các phần còn lại giữ nguyên */}
-            <div className={cx('tableWrapper')}>
-                <table className={cx('dataTable')}>
-                    <thead>
-                        <tr>
-                            {sortColumns.map((col) => (
-                                <th key={col.key}>{col.label}</th>
-                            ))}
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {employers.length > 0 && employers.map((employer, index) => (
-                            <tr key={employer.id || index}>
-                                <td>{employer.id}</td>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={cx('avatarCircle')}>{getInitials(employer.fullName)}</div>
-                                        <span>{employer.fullName || 'Unknown'}</span>
-                                    </div>
-                                </td>
-                                <td>{employer.email}</td>
-                                <td>{employer.location || '--'}</td>
-                                <td>{employer.phone || '--'}</td>
-                                <td>{employer.createdAt ? employer.createdAt.slice(0, 10).split('-').reverse().join('/') : '--'}</td>
-                                <td>
-                                    <span
-                                        className={cx(
-                                            'statusText',
-                                            employer.isPremium === true ? 'active' : 'inactive',
-                                        )}
-                                    >
-                                        {employer.isPremium === true ? 'Premium' : 'Normal'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span
-                                        className={cx('statusText', employer.active === true ? 'active' : 'inactive')}
-                                    >
-                                        {employer.active === true ? 'Active' : 'Inactive'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <EmployerRowDropdown
-                                        onAction={(action) => handleAction(action, employer.id)}
-                                        employerId={employer.id}
-                                        isActive={employer.active === true}
-                                    />
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            {/*  */}
-            <div className={cx('pagination')}>
-                <Pagination
-                    total={totalPages}
-                    value={Number(searchParams.get('page')) || 1}
-                    onChange={handlePageChange}
-                    radius="xl"
-                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
-                />
-            </div>
-            {/*  */}
+            {/* New AdminTable component */}
+            <AdminTable
+                title="Employers"
+                data={employers}
+                columns={columns}
+                loading={loading}
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                filters={filters}
+                onFilterChange={(value) => {
+                    // Implement filter logic here
+                    console.log('Filter changed:', value);
+                }}
+                onExport={() => {
+                    // Implement export logic here
+                    console.log('Export clicked');
+                }}
+                pagination={{
+                    currentPage: Number(searchParams.get('page')) || 1,
+                    totalPages: totalPages,
+                    from: 1,
+                    to: employers.length,
+                    total: totalHits
+                }}
+                onPageChange={handlePageChange}
+                actions={actions}
+                bulkActions={bulkActions}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                emptyMessage="No employers found"
+            />
+
+            {/* Modal */}
             {isModalOpen && selectedEmployer && (
                 <div className={cx('modalOverlay')}>
                     <div className={cx('modalBox')}>
