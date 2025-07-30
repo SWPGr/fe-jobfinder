@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useForm } from '@mantine/form';
@@ -67,12 +67,14 @@ function Filter({
     onSearch = async () => { },
     isFindJob = false,
     type = 'job',
+    isSearched = false,
 }) {
-    const [scrollTo] = useWindowScroll();
+    const [scroll, scrollTo] = useWindowScroll();
     //This will sort the list data follow these type of filters :Newest, Oldest, Most Viewed....
     const resultRef = useRef(null); // This will hold the location of the search result
     const size = 10; // Số lượng công việc mỗi trang
     const totalPages = Math.ceil(totalHits / size);
+
 
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -112,7 +114,7 @@ function Filter({
         });
 
         scrollTo({ y: 0 });
-    }, [searchParams, scrollTo, form]);
+    }, [searchParams]);
 
     // Thêm/xóa option checkbox cho các trường dạng mảng
     const toggleCheckbox = (field, value) => {
@@ -404,9 +406,9 @@ function Filter({
                                     }
                                     return <Item key={index} description={description} long />;
                                 })
-                            ) : (
+                            ) : isSearched ? (
                                 <NoResultsFound searchType={type} searchQuery={form.values.query} />
-                            )}
+                            ) : null}
                         </div>
                         <div className={cx('pagination')}>
                             <Pagination

@@ -67,9 +67,7 @@ const JobSeekerRowDropdown = ({ onAction, seekerId, isActive }) => {
                             Unblock
                         </Combobox.Option>
                     )}
-                    <Combobox.Option value="view" className={cx('dropdownItem')}>
-                        View
-                    </Combobox.Option>
+
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
@@ -84,15 +82,6 @@ const getInitials = (name) => {
 };
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
-
-function normalizeVN(str) {
-    return (str || '')
-        .normalize('NFD')
-        .replace(/[ -\u036f]/g, '')
-        .replace(/đ/g, 'd')
-        .replace(/Đ/g, 'D')
-        .toLowerCase();
-}
 
 const JobSeekersManagement = () => {
     const [jobSeekers, setJobSeekers] = useState([]);
@@ -156,10 +145,8 @@ const JobSeekersManagement = () => {
                 );
                 showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
-        } else if (action === 'view') {
-            setSelectedSeeker(seeker);
-            setIsModalOpen(true);
         }
+
     };
 
     const closeModal = () => {

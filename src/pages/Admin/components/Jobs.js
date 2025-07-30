@@ -65,9 +65,7 @@ const JobRowDropdown = ({ onAction, jobId, isActive }) => {
                             Unblock
                         </Combobox.Option>
                     )}
-                    <Combobox.Option value="view" className={cx('dropdownItem')}>
-                        View
-                    </Combobox.Option>
+
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
@@ -83,15 +81,13 @@ const Jobs = () => {
     const [loading, setLoading] = useState(true);
     const [totalHits, setTotalHits] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [page, setPage] = useState(1);
 
     const { showSuccess, showError } = useNotification();
 
     const handleAction = async (action, jobId) => {
         const job = jobs.find((j) => j.id === jobId);
-        if (action === 'view') {
-            setSelectedJob(job);
-            setIsModalOpen(true);
-        } else if (action === 'block') {
+        if (action === 'block') {
             try {
                 await statisticsService.blockJob(jobId);
                 showSuccess('Blocked successfully');
@@ -135,22 +131,19 @@ const Jobs = () => {
         const fetchJobs = async () => {
             setLoading(true);
             try {
-                const response = await statisticsService.fetchAllJobsForManagement();
-
-                // Handle the correct response structure from API
+                const response = await statisticsService.fetchAllJobsForManagement({ page, size: 10 });
                 const jobArray = response?.content || [];
                 setJobs(jobArray);
                 setTotalHits(response?.totalElements || 0);
                 setTotalPages(response?.totalPages || 1);
             } catch (err) {
-                console.error('Failed to fetch jobs:', err);
                 setJobs([]);
             } finally {
                 setLoading(false);
             }
         };
         fetchJobs();
-    }, [searchParams]);
+    }, [page]);
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString('en-US', {
@@ -242,11 +235,12 @@ const Jobs = () => {
                 </table>
             </div>
 
+            {/* Remove Pagination */}
             <div className={cx('pagination')}>
                 <Pagination
                     total={totalPages}
-                    value={Number(searchParams.get('page')) || 1}
-                    onChange={handlePageChange}
+                    value={page}
+                    onChange={setPage}
                     radius="xl"
                     classNames={{ root: cx('pagination-root'), control: cx('control') }}
                 />
@@ -281,17 +275,7 @@ const Jobs = () => {
                                 email: selectedJob.employer?.email || 'N/A',
                                 jobDescription: selectedJob.description || '<p>No description available</p>',
                                 responsibilities: '<ul><li>Manage job responsibilities</li></ul>', // Giả định
-                                overview: {
-                                    posted: selectedJob.createdAt?.split(' ')[0] || 'N/A',
-                                    expire: '2025-07-31', // Giả định
-                                    education: 'N/A', // Chưa có trong API
-                                    salary: `$${selectedJob.salaryMin} - $${selectedJob.salaryMax}/monthly`,
-                                    location: selectedJob.location,
-                                    jobType: selectedJob.jobType?.name || 'N/A',
-                                    experience: 'N/A', // Chưa có trong API
-                                    vacancy: selectedJob.vacancy, // Chưa có trong API
-                                    jobLevel: selectedJob.jobLevel?.name || 'N/A',
-                                },
+
                                 company: {
                                     name: selectedJob.employer?.email || 'N/A',
                                     description: 'N/A', // Chưa có trong API

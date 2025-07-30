@@ -21,38 +21,39 @@ const DashboardOverview = () => {
     const [selectedRange, setSelectedRange] = useState(7);
     const [chartKey, setChartKey] = useState(0);
     const [statCardData, setStatCardData] = useState(null);
+    const [totalJobs, setTotalJobs] = useState('...');
 
     const statCardsConfig = statCardData
         ? [
-              {
-                  title: 'Total Job Seekers',
-                  value: statCardData.currentMonthTotalJobSeekers,
-                  change: statCardData.jobSeekersChangePercentage,
-                  status: statCardData.jobSeekersStatus,
-                  icon: <Users size={24} />,
-              },
-              {
-                  title: 'Total Employers',
-                  value: statCardData.currentMonthTotalEmployers,
-                  change: statCardData.employersChangePercentage,
-                  status: statCardData.employersStatus,
-                  icon: <Briefcase size={24} />,
-              },
-              {
-                  title: 'Active Jobs',
-                  value: statCardData.currentMonthTotalJobs,
-                  change: statCardData.jobsChangePercentage,
-                  status: statCardData.jobsStatus,
-                  icon: <FileText size={24} />,
-              },
-              {
-                  title: 'Successful Matches',
-                  value: statCardData.currentMonthTotalAppliedJobs,
-                  change: statCardData.appliedJobsChangePercentage,
-                  status: statCardData.appliedJobsStatus,
-                  icon: <CheckCircle size={24} />,
-              },
-          ]
+            {
+                title: 'Total Job Seekers',
+                value: statCardData.currentMonthTotalJobSeekers,
+                change: statCardData.jobSeekersChangePercentage,
+                status: statCardData.jobSeekersStatus,
+                icon: <Users size={24} />,
+            },
+            {
+                title: 'Total Employers',
+                value: statCardData.currentMonthTotalEmployers,
+                change: statCardData.employersChangePercentage,
+                status: statCardData.employersStatus,
+                icon: <Briefcase size={24} />,
+            },
+            {
+                title: 'Active Jobs',
+                value: statCardData.currentMonthTotalJobs,
+                change: statCardData.jobsChangePercentage,
+                status: statCardData.jobsStatus,
+                icon: <FileText size={24} />,
+            },
+            {
+                title: 'Successful Matches',
+                value: statCardData.currentMonthTotalAppliedJobs,
+                change: statCardData.appliedJobsChangePercentage,
+                status: statCardData.appliedJobsStatus,
+                icon: <CheckCircle size={24} />,
+            },
+        ]
         : [];
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('user'))?.token;
@@ -98,6 +99,12 @@ const DashboardOverview = () => {
     }, []);
 
     useEffect(() => {
+        statisticsService.fetchTotalJobs().then((result) => {
+            setTotalJobs(result ?? '...');
+        });
+    }, []);
+
+    useEffect(() => {
         setChartKey((k) => k + 1);
     }, [activityData, selectedRange]);
 
@@ -121,18 +128,18 @@ const DashboardOverview = () => {
                         status={card.status}
                         change={
                             card.status === 'nochange'
-                                ? '0.00%' // hoặc '±0%' tùy bạn
+                                ? '0%' // hoặc '±0%' tùy bạn
                                 : parseFloat(card.change) === 100
-                                ? '100%' // không có phần thập phân
-                                : `${parseFloat(card.change).toFixed(2)}%`
+                                    ? '100%' // không có phần thập phân
+                                    : `${parseFloat(card.change).toFixed(2)}%`
                         }
                         isPositive={card.status === 'increase'}
                         desc={
                             card.status === 'nochange'
                                 ? 'unchanged from last month'
                                 : card.status === 'increase'
-                                ? 'from last month'
-                                : 'from last month'
+                                    ? 'from last month'
+                                    : 'from last month'
                         }
                     />
                 ))}
@@ -153,6 +160,17 @@ const DashboardOverview = () => {
                         </select>
                     </div>
                     <ActivityChart key={chartKey} data={filteredActivityData} />
+                    {/* Summary Table for Total Jobs */}
+                    <div className={cx('summaryTable')} style={{ marginTop: 18, fontSize: '1.1rem' }}>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td><b>Total Jobs (All Time):</b></td>
+                                    <td>{totalJobs}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

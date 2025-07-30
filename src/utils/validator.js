@@ -34,10 +34,32 @@ function validateUsername(username) {
     return null;
 }
 
-function validationTextArea(text) {
-    if (!text) return 'Text is required';
-    if (text.length < 100) return 'Text must be at least 100 characters';
+function validationTextArea(nameField, text) {
+    console.log(text);
+
+    if (!text) return `${nameField} is required`;
+    if (text.length < 100) return `${nameField} must be at least 100 characters`;
     return null;
+}
+function validationText(nameField, text) {
+    if (!text) return `${nameField} is required`;
+    return null;
+}
+function validateFutureDate(dateString) {
+    if (!dateString) return 'Date is required';
+
+    const inputDate = new Date(dateString);
+    const today = new Date();
+
+    // Đặt thời gian về 00:00:00 để so sánh chính xác ngày
+    inputDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    if (inputDate < today) {
+        return 'Date must be today or in the future';
+    }
+
+    return ''; // hợp lệ
 }
 
 const validator = {
@@ -47,7 +69,7 @@ const validator = {
     validateConfirmPassword,
     validatePhoneNumber,
     validateUsername,
-    validationTextArea,
+    validationTextArea, validationText, validateFutureDate
 };
 
 export default validator;

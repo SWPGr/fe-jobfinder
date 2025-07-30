@@ -25,3 +25,4 @@ export { default as ResetPassword } from './ResetPassword/ResetPassword.js';
 export { default as FeedBack } from './FeedBack/FeedBack';
 export { default as PaymentManagement } from './Admin/PaymentManagement';
 export { default as EventDetailPage } from './Home/EventDetailPage.js';
+export { default as BlockedUser } from './BlockedUser/BlockedUser.js';

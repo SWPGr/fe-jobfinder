@@ -3,133 +3,62 @@ import classNames from 'classnames/bind';
 import styles from './Overview1.module.scss';
 import { JobItemOwner } from '~/components';
 import EmployerService from '~/services/EmployerService';
+import { format } from '~/utils';
+import { Pagination } from '@mantine/core';
+import { useWindowScroll } from '@mantine/hooks';
+
+
 
 const cx = classNames.bind(styles);
 
 const Overview1 = () => {
-    const [allActiveJobs, setAllActiveJobs] = useState([]);
     const [jobs, setJobs] = useState([]);
-    const [totalApplications, setTotalApplications] = useState(0);
+    const [pagination, setPagination] = useState({});
+    const [scroll, scrollTo] = useWindowScroll();
+    const [flag, setFlag] = useState(false);
 
-    const [pageNumber, setPageNumber] = useState(0);
-    const pageSize = 5;
-
-    const [pagination, setPagination] = useState({
-        totalElements: 0,
-        totalPages: 1,
-        isFirst: true,
-        isLast: true,
-    });
 
     // --- Filter ---
     const [filters, setFilters] = useState({
-        name: '',
-        status: 'all',
-        startDate: '',
-        endDate: '',
+        jobTitle: '',
+        fromDate: '',
+        // endDate: '',
+        endDate: new Date().toLocaleDateString('en-CA', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+        }),
+        page: 1,
+        isActive: ''
     });
 
-    // Hàm lọc job active
-    const filterActiveJobs = (jobsData) => {
-        const now = new Date();
-        return jobsData.filter((job) => {
-            if (!job.expiredDate) return true;
-            const expiredTime = Date.parse(job.expiredDate);
-            if (isNaN(expiredTime)) return true;
-            return expiredTime >= now.getTime();
-        });
-    };
+
 
     // Fetch danh sách job
     useEffect(() => {
         const fetchJobs = async () => {
             try {
-                const { jobs: apiJobs } = await EmployerService.fetchMyJobFake();
+                const input = Object.fromEntries(Object.entries(filters).filter(([_, v]) => v !== '' && v !== null));
+                console.log('input', input);
 
-                const activeJobs = filterActiveJobs(apiJobs);
+                const response = await EmployerService.fetchMyJobFake(input);
+                const data = response.result.content.map((job) => {
+                    return format.transformJobData(job);
+                })
+                // console.log('data', data);
 
-                const totalApps = activeJobs.reduce(
-                    (sum, job) => sum + (job.numberApplications || 0),
-                    0
-                );
-
-                setAllActiveJobs(activeJobs);
-                setTotalApplications(totalApps);
-
-                // Áp dụng filter lần đầu
-                applyFilterAndPagination(activeJobs, filters, pageNumber);
+                setJobs(data);
+                const { pageNumber, pageSize, totalElements, totalPages } = response.result;
+                setPagination({ pageNumber, pageSize, totalElements, totalPages });
             } catch (err) {
                 console.error('Error fetching jobs:', err);
             }
         };
-
         fetchJobs();
-    }, []);
+        scrollTo({ y: 0 });
+    }, [filters, flag]);
 
-    // Khi filters hoặc pageNumber thay đổi → lọc lại
-    useEffect(() => {
-        applyFilterAndPagination(allActiveJobs, filters, pageNumber);
-    }, [filters, pageNumber, allActiveJobs]);
-
-    // Hàm áp dụng filter + pagination
-    const applyFilterAndPagination = (jobsData, filters, pageNum) => {
-        let filtered = [...jobsData];
-
-        // Lọc theo Name
-        if (filters.name) {
-            filtered = filtered.filter((job) =>
-                job.title?.toLowerCase().includes(filters.name.toLowerCase())
-            );
-        }
-
-        // Lọc theo Status
-        if (filters.status === 'active') {
-            filtered = filterActiveJobs(filtered);
-        } else if (filters.status === 'expired') {
-            const now = new Date();
-            filtered = filtered.filter((job) => {
-                const expiredTime = Date.parse(job.expiredDate);
-                return !isNaN(expiredTime) && expiredTime < now.getTime();
-            });
-        }
-
-        // Lọc theo khoảng ngày
-        if (filters.startDate || filters.endDate) {
-            const start = filters.startDate ? new Date(filters.startDate).getTime() : null;
-            const end = filters.endDate ? new Date(filters.endDate).getTime() : null;
-
-            filtered = filtered.filter((job) => {
-                const jobDate = Date.parse(job.expiredDate) || 0;
-
-                if (start && jobDate < start) return false;
-                if (end && jobDate > end) return false;
-                return true;
-            });
-        }
-
-        // Pagination
-        const totalElements = filtered.length;
-        const totalPages = Math.max(1, Math.ceil(totalElements / pageSize));
-
-        const safePage = pageNum >= totalPages ? 0 : pageNum;
-        const startIndex = safePage * pageSize;
-        const displayedJobs = filtered.slice(startIndex, startIndex + pageSize);
-
-        setJobs(displayedJobs);
-        setPagination({
-            totalElements,
-            totalPages,
-            isFirst: safePage === 0,
-            isLast: safePage === totalPages - 1,
-        });
-
-        if (safePage !== pageNum) setPageNumber(safePage);
-    };
 
     const handlePageChange = (newPage) => {
-        if (newPage >= 0 && newPage < pagination.totalPages) {
-            setPageNumber(newPage);
-        }
+        setFilters((prev) => ({ ...prev, page: newPage - 1 }));
     };
 
     const handleFilterChange = (e) => {
@@ -137,69 +66,84 @@ const Overview1 = () => {
         setFilters((prev) => ({ ...prev, [name]: value }));
     };
 
+    const handleSearchTitle = (e) => {
+        if (e.key === 'Enter') {
+            console.log('Enter');
+
+            const { name, value } = e.target;
+            setFilters((prev) => ({ ...prev, [name]: value }));
+        }
+    };
+
+    const countApplications = (jobs) => {
+        let count = 0;
+        jobs.forEach((job) => {
+            count += job.jobApplicationCounts;
+        });
+        return count;
+    };
+
     return (
         <div className={cx('container')}>
-            {/* Header */}
             <div className={cx('overview-header')}>
-                <div className={cx('titleMain')}>Hello, Instagram</div>
+                <div className={cx('titleMain')}>Manage your job applications</div>
                 <p className={cx('desc')}>Here is your daily activities and applications</p>
             </div>
 
-            {/* Info cards */}
             <div className={cx('info-cards')}>
                 <div className={cx('info-card', 'blue')}>
-                    <div className={cx('info-number')}>{pagination.totalElements}</div>
+                    <div className={cx('info-number')}>{ }</div>
                     <div className={cx('info-label')}>Open Jobs</div>
                 </div>
                 <div className={cx('info-card', 'yellow')}>
-                    <div className={cx('info-number')}>{totalApplications}</div>
+                    <div className={cx('info-number')}>{countApplications(jobs) || 0}</div>
                     <div className={cx('info-label')}>Total Applications</div>
                 </div>
             </div>
 
-            {/* Filter panel */}
             <div className={cx('filter-panel')}>
-                {/* Name */}
                 <input
                     type="text"
-                    name="name"
+                    name="jobTitle"
                     placeholder="Search by name"
                     value={filters.name}
-                    onChange={handleFilterChange}
+                    onKeyDown={(e) => handleSearchTitle(e)}
                 />
 
-                {/* Status */}
+                {/* Filter trạng thái */}
                 <select
-                    name="status"
-                    value={filters.status}
+                    name="isActive"
+                    value={filters.isActive}
                     onChange={handleFilterChange}
                 >
-                    <option value="all">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="expired">Expired</option>
+                    <option value="">All Status</option>
+                    <option value="true">Active</option>
+                    <option value="false">Expired</option>
                 </select>
 
-                {/* Start date */}
                 <input
                     type="date"
-                    name="startDate"
-                    value={filters.startDate}
+                    name="fromDate"
+                    value={filters.fromDate}
+                    max={filters.endDate || new Date().toLocaleDateString('en-CA', {
+                        timeZone: "Asia/Ho_Chi_Minh"
+                    })}
                     onChange={handleFilterChange}
                 />
 
-                {/* Text "to" */}
-                <span className={cx('to-text')}>to</span>
-
-                {/* End date */}
                 <input
                     type="date"
                     name="endDate"
                     value={filters.endDate}
+                    min={filters.fromDate}
+                    max={new Date().toLocaleDateString('en-CA', {
+                        timeZone: "Asia/Ho_Chi_Minh"
+                    })}
                     onChange={handleFilterChange}
                 />
+
             </div>
 
-            {/* Table Head */}
             <div className={cx('job-table-head')}>
                 <span className={cx('jobs')}>JOBS</span>
                 <span className={cx('status')}>STATUS</span>
@@ -207,42 +151,38 @@ const Overview1 = () => {
                 <span className={cx('actions')}>ACTIONS</span>
             </div>
 
-            {/* Job items */}
             <div className={cx('job-list')}>
                 {jobs.map((job) => (
                     <JobItemOwner
                         key={job.id}
                         jobDescription={job}
                         isVIP={job.isVIP}
-                        isActive={true}
+                        isActive={job.isActive}
+                        setFlag={setFlag}
                     />
                 ))}
             </div>
 
             {/* Pagination */}
-            <div className={cx('pagination')}>
-                <button
-                    disabled={pagination.isFirst}
-                    onClick={() => handlePageChange(pageNumber - 1)}
-                >
-                    {'<'}
-                </button>
-                {Array.from({ length: pagination.totalPages }, (_, i) => (
-                    <button
-                        key={i}
-                        className={cx({ active: i === pageNumber })}
-                        onClick={() => handlePageChange(i)}
-                    >
-                        {i + 1}
-                    </button>
-                ))}
-                <button
-                    disabled={pagination.isLast}
-                    onClick={() => handlePageChange(pageNumber + 1)}
-                >
-                    {'>'}
-                </button>
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '32px 0' }}>
+                {pagination.totalPages > 1 && (
+                    <Pagination
+                        total={pagination.totalPages}
+                        value={filters.page + 1}
+                        defaultValue={0}
+                        onChange={handlePageChange}
+                        radius="xl"
+                        classNames={{
+                            root: cx('pagination-root'),
+                            control: cx('control'),
+                            item: cx('pagination-item'),
+                            active: cx('pagination-active')
+                        }}
+                    />
+                )}
             </div>
+
+            {/*  */}
         </div>
     );
 };

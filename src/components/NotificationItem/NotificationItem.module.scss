@@ -8,9 +8,29 @@
     display: flex;
     align-items: center;
     gap: 2rem;
+    transition: all 0.2s ease;
 
     &:hover {
         background-color: var(--gray-50);
+    }
+
+    &.unread {
+        background-color: var(--blue-50);
+        border-left: 4px solid var(--blue-500);
+
+        &:hover {
+            background-color: var(--blue-100);
+        }
+    }
+
+    &.read {
+        background-color: var(--white);
+        opacity: 0.8;
+
+        &:hover {
+            background-color: var(--gray-50);
+            opacity: 1;
+        }
     }
 }
 .notification-icon {
@@ -32,9 +52,15 @@
 }
 .notification-item {
     flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
 }
 .notification-content {
     font-size: var(--font-size-14px);
+    flex: 1;
 }
 .notification-message {
     display: -webkit-box; /* Sử dụng flexbox với WebKit */
@@ -46,4 +72,28 @@
 .notification-time {
     font-size: var(--font-size-12px);
     color: var(--gray-500);
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    color: var(--gray-400);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+
+    &:hover {
+        background: var(--red-50);
+        color: var(--red-500);
+    }
+
+    &:active {
+        transform: scale(0.95);
+    }
 }

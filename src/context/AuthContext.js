@@ -19,7 +19,9 @@ export const AuthProvider = ({ children }) => {
         try {
             let response;
             if (type === 'login') {
+                console.log(email, password);
                 response = await authService.login(email, password);
+
             } else if (type === 'register') {
                 response = await authService.register(email, password, roleName);
             }

@@ -5,28 +5,34 @@ import { IconUpload, IconX, IconPhoto } from '@tabler/icons-react';
 import { Modal, TextInput, Image, Group, Button, Text } from '@mantine/core';
 import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
-import EmployerService from '~/services/EmployerService';
-import Single from '../Single/Single';
+import ProfileService from '~/services/ProfileService';
+import { useNotification } from '~/hooks';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
-const tabsOrder = ['Company Info', 'Founding Info', 'Social Media Profile', 'Contact'];
-
-const socialOptions = [
-  { label: 'Facebook', value: 'facebook', icon: '📘' },
-  { label: 'Twitter', value: 'twitter', icon: '🐦' },
-  { label: 'Instagram', value: 'instagram', icon: '📸' },
-  { label: 'Youtube', value: 'youtube', icon: '▶️' },
-];
-
+const tabsOrder = ['Company Info', 'Founding Info', 'Contact'];
 
 const SaveNextButton = ({ onClick, style }) => (
   <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
-    Save & Next →
+    Save Changes
   </button>
 );
 
 function SettingsPage() {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const { showSuccess, showError, showInfo } = useNotification();
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [activeTab, setActiveTab] = useState('Company Info');
 
   const [form, setForm] = useState({
@@ -41,28 +47,76 @@ function SettingsPage() {
     companyVision: '',
   });
 
-  const [socialLinks, setSocialLinks] = useState([{ id: 1, type: 'facebook', url: '' }]);
   const [logoFile, setLogoFile] = useState(null);
   const [bannerFile, setBannerFile] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState(null);
   const [bannerUrl, setBannerUrl] = useState(null);
-  const [showSingle, setShowSingle] = useState(false);
-  const [singleData, setSingleData] = useState(null);
   const [companyName, setCompanyName] = useState('');
   const [aboutUs, setAboutUs] = useState('');
   const [modalOpened, setModalOpened] = useState(false);
-  const [imageName, setImageName] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
+      showError('Please fill in all fields');
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      showError('New password and confirm password do not match');
+      return;
+    }
+
+    if (formData.newPassword.length < 6) {
+      showError('New password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await ProfileService.changePassword(formData.currentPassword, formData.newPassword);
+      showSuccess('Password changed successfully');
+
+      // Reset form
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    } catch (err) {
+      console.error('Error changing password:', err);
+      if (err.code === 7105) {
+        showError('Wrong password');
+      } else {
+        showError(`Failed to change password: ${err.message || 'Unknown error'}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Load data profile từ API
   const loadData = async () => {
     try {
-      let data = await EmployerService.fetchSettingFake();
-      if (Array.isArray(data)) data = data[0];
-      if (data && data.companyName) {
+      const response = await ProfileService.getProfile();
+      const data = response[0] || response; // Handle both array and single object
+      console.log('Loaded profile data:', data);
+
+      if (data) {
         setCompanyName(data.companyName || '');
         setAboutUs(data.description || '');
 
@@ -76,11 +130,8 @@ function SettingsPage() {
           email: data.email || '',
           companyWebsite: data.website || '',
           companyVision: data.companyVision || '',
-          avatarUrl: data.avatarUrl || '',
-          banner: data.banner || '',
         });
 
-        if (data.socialLinks && data.socialLinks.length) setSocialLinks(data.socialLinks);
         if (data.avatarUrl) setAvatarUrl(data.avatarUrl);
         if (data.banner) setBannerUrl(data.banner);
       } else {
@@ -88,6 +139,7 @@ function SettingsPage() {
       }
     } catch (err) {
       console.error('Failed to load profile:', err);
+      showError('Failed to load profile data');
     }
   };
 
@@ -104,11 +156,11 @@ function SettingsPage() {
   const openUploadModal = (target) => {
     setUploadTarget(target);
     setModalOpened(true);
-    setImageName('');
     setImageFile(null);
     setImagePreview(null);
     setError('');
   };
+
   const goToNextTab = () => {
     const currentIndex = tabsOrder.indexOf(activeTab);
     if (currentIndex < tabsOrder.length - 1) {
@@ -129,8 +181,8 @@ function SettingsPage() {
   };
 
   const handleAddImage = () => {
-    if (!imageFile || !imageName.trim()) {
-      setError('Please provide image and image name');
+    if (!imageFile) {
+      setError('Please select an image');
       return;
     }
     if (uploadTarget === 'logo') {
@@ -141,107 +193,75 @@ function SettingsPage() {
       setBannerUrl(null);
     }
     setModalOpened(false);
-    setImageName('');
     setImageFile(null);
     setImagePreview(null);
     setError('');
   };
-  async function urlToFile(url, filename, mimeType) {
-    const res = await fetch(url);
-    const buffer = await res.arrayBuffer();
-    return new File([buffer], filename, { type: mimeType });
-  }
 
   const handleSave = async () => {
     if (!companyName || companyName.trim() === '') {
-      setError('Company name is required');
+      showError('Company name is required');
       return;
     }
     if (!aboutUs || aboutUs.trim() === '') {
-      setError('About Us is required');
+      showError('About Us is required');
       return;
     }
+
+    setSaving(true);
     try {
-      let avatarUrlUploaded = avatarUrl;
-      if (logoFile) {
-        const formData = new FormData();
-        formData.append('file', logoFile);
-        const res = await EmployerService.uploadFile(formData);
-        avatarUrlUploaded = res.data.url;
-      }
+      const formDataToSend = new FormData();
 
-      let bannerUrlUploaded = bannerUrl;
-      if (bannerFile) {
-        const formData = new FormData();
-        formData.append('file', bannerFile);
-        const res = await EmployerService.uploadFile(formData);
-        bannerUrlUploaded = res.data.url;
-      }
+      // Add form fields
+      formDataToSend.append('companyName', companyName.trim());
+      formDataToSend.append('description', aboutUs);
+      formDataToSend.append('organization', '1');
+      formDataToSend.append('category', '1');
+      formDataToSend.append('teamSize', form.teamSize);
 
-      // Chuyển đổi yearOfEstablishment sang số nguyên (năm)
+      // Convert year to integer
       const year = form.yearOfEstablishment
         ? parseInt(form.yearOfEstablishment.substring(0, 4), 10)
         : null;
+      formDataToSend.append('yearOfEstablishment', year);
 
-      const profileFormData = new FormData();
+      formDataToSend.append('location', form.location);
+      formDataToSend.append('mapLocation', form.location);
+      formDataToSend.append('phone', form.phone);
+      formDataToSend.append('email', form.email);
+      formDataToSend.append('website', form.companyWebsite);
+      formDataToSend.append('companyVision', form.companyVision);
+      formDataToSend.append('organizationType', form.organizationType);
+      formDataToSend.append('categoryName', form.industryTypes);
 
-      profileFormData.append("companyName", companyName.trim());
-      profileFormData.append("description", aboutUs);
-      profileFormData.append("organization", 1);
-      profileFormData.append("teamSize", form.teamSize);
-      profileFormData.append("yearOfEstablishment", year);
-      profileFormData.append("location", form.location);
-      profileFormData.append("mapLocation", form.location);
-      profileFormData.append("phone", form.phone);
-      profileFormData.append("email", form.email);
-      profileFormData.append("website", form.companyWebsite);
-      profileFormData.append("companyVision", form.companyVision);
-      if (form.avatarUrl) {
-        const avatarFile = await urlToFile(form.avatarUrl, "logo.jpg", "image/jpeg");
-        profileFormData.append("avatarUrl", avatarFile);
-        profileFormData.append("avatar", avatarFile);
-      } else {
-        profileFormData.append("avatarUrl", avatarUrlUploaded);
-        profileFormData.append("avatar", avatarUrlUploaded);
+      // Add images if selected
+      if (logoFile) {
+        formDataToSend.append('avatar', logoFile);
       }
-      if (form.banner) {
-        const bannerFile = await urlToFile(form.banner, "banner.jpg", "image/jpeg");
-        profileFormData.append("banner", bannerFile);
-      } else {
-        profileFormData.append("banner", bannerUrlUploaded); // lưu ý đổi tên thành banner
+      if (bannerFile) {
+        formDataToSend.append('banner', bannerFile);
       }
-      const response = await EmployerService.fetchSettingFake(profileFormData);
-      console.log('Company info updated successfully!', response);
 
+      const response = await ProfileService.updateProfileWithFile(formDataToSend);
+      showSuccess('Company info updated successfully!');
+
+      // Update local state
+      if (response.avatarUrl) setAvatarUrl(response.avatarUrl);
+      if (response.banner) setBannerUrl(response.banner);
+
+      // Clear file states
+      setLogoFile(null);
+      setBannerFile(null);
+
+      // Reload data to show updated information
       await loadData();
       setError('');
     } catch (error) {
       console.error('Error updating company info:', error);
-      setError('Update failed. Please check your input.');
+      showError('Update failed. Please check your input.');
+    } finally {
+      setSaving(false);
     }
-  };
-
-
-  // Xử lý social links
-  const handleSocialTypeChange = (id, newType) => {
-    setSocialLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, type: newType } : link))
-    );
-  };
-
-  const handleSocialUrlChange = (id, newUrl) => {
-    setSocialLinks((prev) =>
-      prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link))
-    );
-  };
-
-  const handleRemoveSocialLink = (id) => {
-    setSocialLinks((prev) => prev.filter((link) => link.id !== id));
-  };
-
-  const handleAddSocialLink = () => {
-    const newId = socialLinks.length ? Math.max(...socialLinks.map((l) => l.id)) + 1 : 1;
-    setSocialLinks([...socialLinks, { id: newId, type: 'facebook', url: '' }]);
   };
 
   return (
@@ -270,14 +290,12 @@ function SettingsPage() {
                   src={URL.createObjectURL(logoFile)}
                   alt="logo preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
                 />
               ) : avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt="logo preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
                 />
               ) : (
                 <>
@@ -309,7 +327,6 @@ function SettingsPage() {
                   </small>
                 </>
               )}
-              <div className={cx('uploadTitle')}>Upload Logo</div>
             </div>
 
             <div className={cx('uploadBox')} onClick={() => openUploadModal('banner')}>
@@ -318,14 +335,12 @@ function SettingsPage() {
                   src={URL.createObjectURL(bannerFile)}
                   alt="banner preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
                 />
               ) : bannerUrl ? (
                 <img
                   src={bannerUrl}
                   alt="banner preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
                 />
               ) : (
                 <>
@@ -357,7 +372,6 @@ function SettingsPage() {
                   </small>
                 </>
               )}
-              <div className={cx('uploadTitle')}>Banner Image</div>
             </div>
           </div>
 
@@ -385,7 +399,6 @@ function SettingsPage() {
             <SaveNextButton
               onClick={() => {
                 handleSave();
-                goToNextTab();
               }}
             />
           </div>
@@ -395,26 +408,6 @@ function SettingsPage() {
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
-            {/* <div className={cx('inputGroup')}>
-              <label>Organization Type</label>
-              <select name="organizationType" value={form.organizationType} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Private">Private</option>
-                <option value="Public">Public</option>
-                <option value="Government">Government</option>
-                <option value="Non-profit">Non-profit</option>
-              </select>
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>Industry Types</label>
-              <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Education">Education</option>
-              </select>
-            </div> */}
             <div className={cx('inputGroup')}>
               <label>Team Size</label>
               <select name="teamSize" value={form.teamSize} onChange={handleChange}>
@@ -469,72 +462,16 @@ function SettingsPage() {
               className={cx('saveNextBtn')}
               onClick={() => {
                 handleSave();
-                goToNextTab();
               }}
             >
-              Save & Next →
+              Save Changes
             </button>
           </div>
         </form>
       )}
 
-      {activeTab === 'Social Media Profile' && (
-        <div className={cx('socialLinksContainer')}>
-          {socialLinks.map((link, idx) => (
-            <div key={link.id} className={cx('socialLinkRow')}>
-              <label>{`Social Link ${idx + 1}`}</label>
-              <div className={cx('socialLinkInputs')}>
-                <select
-                  value={link.type}
-                  onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
-                  className={cx('socialSelect')}
-                >
-                  {socialOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Profile link/url..."
-                  value={link.url}
-                  onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
-                  className={cx('socialInput')}
-                />
-                <button
-                  type="button"
-                  className={cx('removeBtn')}
-                  onClick={() => handleRemoveSocialLink(link.id)}
-                  aria-label={`Remove Social Link ${idx + 1}`}
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-          ))}
-
-          <button type="button" className={cx('addSocialBtn')} onClick={handleAddSocialLink}>
-            + Add New Social Link
-          </button>
-
-          <div className={cx('btnGroup')}>
-            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Founding Info')}>
-              Previous
-            </button>
-            <SaveNextButton
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            />
-          </div>
-        </div>
-      )}
-
       {activeTab === 'Contact' && (
         <div className={cx('contactTab')}>
-
           <div className={cx('formGroup')}>
             <label>Map Location</label>
             <input
@@ -554,7 +491,7 @@ function SettingsPage() {
               name="phone"
               value={form.phone || ''}
               onChange={handleChange}
-              className={cx('phoneInput')}  // thêm class này
+              className={cx('phoneInput')}
             />
           </div>
 
@@ -575,18 +512,78 @@ function SettingsPage() {
 
           <hr className={cx('divider')} />
 
-          <div className={cx('sectionTitle')}>Change Password</div>
-          {/* Change password UI here */}
+          <form className={cx('account-setting-form')} onSubmit={handleSubmit}>
+            <div className={cx('heading3')}>Change Password</div>
+            <div className={cx('form-row')}>
+              <label>Current Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showCurrent ? 'text' : 'password'}
+                  name="currentPassword"
+                  value={formData.currentPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter current password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowCurrent((v) => !v)}
+                >
+                  {showCurrent ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
+            <div className={cx('form-row')}>
+              <label>New Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showNew ? 'text' : 'password'}
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter new password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowNew((v) => !v)}
+                >
+                  {showNew ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
+            <div className={cx('form-row')}>
+              <label>Confirm Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Confirm new password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowConfirmPassword((v) => !v)}
+                >
+                  {showConfirmPassword ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
 
-          <hr className={cx('divider')} />
+            <button
+              type="submit"
+              className={cx('save-btn')}
+              disabled={loading}
+            >
+              {loading ? 'Changing Password...' : 'Save Changes'}
+            </button>
+          </form>
 
-          <div className={cx('sectionTitle')}>Delete Your Company</div>
-          <p className={cx('deleteDesc')}>
-            If you delete your Jobpilot account, you will no longer be able to get information about the matched jobs,
-            following employers, and job alert, shortlisted jobs and more. You will be abandoned from all the services of
-            Jobpilot.com.
-          </p>
-          <button className={cx('deleteBtn')}>❌ Close Account</button>
         </div>
       )}
 
@@ -603,36 +600,36 @@ function SettingsPage() {
         withCloseButton
         closeButtonProps={{ 'aria-label': 'Close modal' }}
       >
-        <TextInput
-          label="Image Name"
-          placeholder="Enter image name"
-          value={imageName}
-          onChange={(e) => setImageName(e.currentTarget.value)}
-          mb="md"
-          required
-          error={error && !imageName.trim() ? error : null}
-        />
         {imagePreview ? (
-          <Image
-            src={imagePreview}
-            alt="Preview"
-            radius="md"
-            mb="md"
-            style={{ maxHeight: 200, objectFit: 'contain', width: '100%' }}
-            withPlaceholder
-            onClick={() => {
-              setImageFile(null);
-              setImagePreview(null);
-              setError('');
-            }}
-            sx={{ cursor: 'pointer' }}
-          />
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <Image
+              src={imagePreview}
+              alt="Preview"
+              radius="md"
+              style={{ maxHeight: 200, objectFit: 'contain', width: '100%', cursor: 'pointer' }}
+              withPlaceholder
+              onClick={() => {
+                setImageFile(null);
+                setImagePreview(null);
+                setError('');
+              }}
+            />
+            <Text size="sm" color="dimmed" mt="xs">
+              Click image to remove
+            </Text>
+          </div>
         ) : (
           <Dropzone
             onDrop={handleImageChange}
             onReject={() => setError('File type not accepted')}
             maxSize={12 * 1024 ** 2}
-            accept={IMAGE_MIME_TYPE}
+            accept={{
+              'image/png': [],
+              'image/jpeg': [],
+              'image/jpg': [],
+              'image/webp': [],
+              'image/gif': [],
+            }}
             multiple={false}
             styles={(theme) => ({
               root: {
@@ -647,7 +644,7 @@ function SettingsPage() {
                 },
               },
               inner: {
-                minHeight: 140,
+                minHeight: 160,
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
@@ -669,9 +666,19 @@ function SettingsPage() {
                 ) : (
                   <IconPhoto size={48} color="#868e96" />
                 )}
-                <Text size="md" color="dimmed" style={{ textAlign: 'center' }}>
-                  Drag image here or click to select (PNG, JPG, JPEG). Max 12 MB.
-                </Text>
+                <div style={{ textAlign: 'center' }}>
+                  <Text size="lg" weight={600} color="dark" mb={8}>
+                    {uploadTarget === 'logo' ? 'Upload Company Logo' : 'Upload Banner Image'}
+                  </Text>
+                  <Text size="sm" color="dimmed" mb={8}>
+                    Drag and drop your image here, or click to browse
+                  </Text>
+                  <Text size="xs" color="gray" style={{ lineHeight: 1.4 }}>
+                    Supported formats: PNG, JPG, JPEG, WEBP, GIF
+                    <br />
+                    Maximum file size: 12 MB
+                  </Text>
+                </div>
               </>
             )}
           </Dropzone>
@@ -683,7 +690,7 @@ function SettingsPage() {
           <Button variant="outline" onClick={() => setModalOpened(false)}>
             Cancel
           </Button>
-          <Button onClick={handleAddImage} color="blue" radius="md" disabled={!imageFile || !imageName.trim()}>
+          <Button onClick={handleAddImage} color="blue" radius="md" disabled={!imageFile}>
             Add Image
           </Button>
         </Group>

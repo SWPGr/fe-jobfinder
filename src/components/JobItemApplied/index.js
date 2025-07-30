@@ -97,7 +97,7 @@ function JobItemApplied({
                 <div className={cx('status')}>
                     <Badge
                         color={statusBadge.color}
-                        size="lg"
+                        size="xl"
                         classNames={{ label: cx('label-badge', 'status'), root: cx('root-badge') }}
                     >
                         {statusBadge.label}
