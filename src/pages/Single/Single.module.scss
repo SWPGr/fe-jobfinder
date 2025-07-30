@@ -13,6 +13,9 @@
   padding: 3.2rem 4.4rem;
   background-color: var(--white);
   box-sizing: border-box;
+  width: 100%;
+  max-width: var( --default-layout-width);
+  margin: 0 auto;
 }
 
 .header {
@@ -365,4 +368,126 @@
   color: red;
   padding: 2rem;
   text-align: center;
+}
+.linkButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.8rem;
+  border: none;
+  background: none;
+  font-size: 1.4rem;
+  color: var(--gray-800);
+  cursor: pointer; /* Make the cursor a hand when hovering over the button */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 10px; /* Added border-radius for rounded corners */
+  
+  .socialIcon {
+    margin-right: 0.6rem; /* Space between the icon and the text */
+  }
+
+  /* Hover effect */
+  &:hover {
+    transform: scale(1.05); /* Slightly enlarge the button */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Create a shadow effect for the raised effect */
+    background-color: rgba(0, 0, 0, 0.1); /* Background color on hover */
+  }
+
+  /* Optional: Add focus styles for accessibility */
+  &:focus {
+    outline: none;
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Change the icon color when hovered */
+  &:hover .socialIcon {
+    color: var(--blue-500); /* Change color on hover */
+  }
+}
+
+.socialText {
+  cursor: pointer;
+  border-radius: 10px; /* Add rounded corners to the text */
+  padding: 0.4rem 0.8rem;
+  transition: color 0.3s ease; /* Smooth color transition */
+
+  &:hover {
+    color: var(--blue-500); /* Change color on hover */
+    background-color: rgba(0, 0, 0, 0.1); /* Optional: add background on hover */
+    border-radius: 10px;
+  }
+}
+
+.socialIcon {
+  width: 1.4em;
+  height: 1.4em;
+  flex-shrink: 0;
+
+  &.facebook {
+    color: #1877F2;
+  }
+  &.twitter {
+    color: #1DA1F2;
+  }
+  &.instagram {
+    color: #E4405F;
+  }
+  &.youtube {
+    color: #FF0000;
+  }
+}
+
+/* Additional styles for image modals */
+.imageModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of other content */
+  padding: 20px; /* Optional: Add padding to prevent the image from being too close to the edges */
+  background-color: rgba(0, 0, 0, 0.6); /* Add semi-transparent black background */
+}
+
+.overlay {
+  /* Removed the background color for the overlay */
+  display: none; /* Hides the overlay completely */
+}
+
+.modalContent {
+  position: relative;
+  z-index: 1;
+  background-color: var(--white); /* White background to keep the image clean */
+  padding: 0; /* Remove padding to make the image take the full width of the modal */
+  border-radius: 10px; 
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3); /* Optional: Shadow around the image */
+}
+
+.modalImage {
+  width: 100%; /* Make the image fill the container width */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensure the image fits without distortion */
+  border-radius: 10px; /* Optional: Rounded corners for the image */
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1.8rem;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: black;
+  }
 }

@@ -7,6 +7,8 @@ import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import EmployerService from '~/services/EmployerService';
 import Single from '../Single/Single';
+import { useNotification } from '~/hooks';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
@@ -19,7 +21,6 @@ const socialOptions = [
   { label: 'Youtube', value: 'youtube', icon: '▶️' },
 ];
 
-
 const SaveNextButton = ({ onClick, style }) => (
   <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
     Save & Next →
@@ -27,6 +28,18 @@ const SaveNextButton = ({ onClick, style }) => (
 );
 
 function SettingsPage() {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const { showSuccess, showError, showInfo } = useNotification();
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+
+
   const [activeTab, setActiveTab] = useState('Company Info');
 
   const [form, setForm] = useState({
@@ -56,7 +69,54 @@ function SettingsPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    // Validation
+    if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
+      showError('Please fill in all fields');
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      showError('New password and confirm password do not match');
+      return;
+    }
+
+    if (formData.newPassword.length < 6) {
+      showError('New password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await EmployerService.changePassword(formData.currentPassword, formData.newPassword);
+      showSuccess('Password changed successfully');
+
+      // Reset form
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    } catch (err) {
+      console.error('Error changing password:', err);
+      if (err.code === 7105) {
+        showError('Wrong password');
+      } else {
+        showError(`Failed to change password: ${err.message || 'Unknown error'}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   // Load data profile từ API
   const loadData = async () => {
     try {
@@ -270,14 +330,14 @@ function SettingsPage() {
                   src={URL.createObjectURL(logoFile)}
                   alt="logo preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt="logo preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : (
                 <>
@@ -309,7 +369,7 @@ function SettingsPage() {
                   </small>
                 </>
               )}
-              <div className={cx('uploadTitle')}>Upload Logo</div>
+
             </div>
 
             <div className={cx('uploadBox')} onClick={() => openUploadModal('banner')}>
@@ -318,14 +378,14 @@ function SettingsPage() {
                   src={URL.createObjectURL(bannerFile)}
                   alt="banner preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : bannerUrl ? (
                 <img
                   src={bannerUrl}
                   alt="banner preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : (
                 <>
@@ -357,7 +417,7 @@ function SettingsPage() {
                   </small>
                 </>
               )}
-              <div className={cx('uploadTitle')}>Banner Image</div>
+
             </div>
           </div>
 
@@ -575,9 +635,77 @@ function SettingsPage() {
 
           <hr className={cx('divider')} />
 
-          <div className={cx('sectionTitle')}>Change Password</div>
-          {/* Change password UI here */}
+          <form className={cx('account-setting-form')} onSubmit={handleSubmit}>
+            <div className={cx('heading3')}>Change Password</div>
+            <div className={cx('form-row')}>
+              <label>Current Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showCurrent ? 'text' : 'password'}
+                  name="currentPassword"
+                  value={formData.currentPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter current password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowCurrent((v) => !v)}
+                >
+                  {showCurrent ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
+            <div className={cx('form-row')}>
+              <label>New Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showNew ? 'text' : 'password'}
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter new password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowNew((v) => !v)}
+                >
+                  {showNew ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
+            <div className={cx('form-row')}>
+              <label>Confirm Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Confirm new password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowConfirm((v) => !v)}
+                >
+                  {showConfirm ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
 
+            <button
+              type="submit"
+              className={cx('save-btn')}
+              disabled={loading}
+            >
+              {loading ? 'Changing Password...' : 'Save Changes'}
+            </button>
+          </form>
           <hr className={cx('divider')} />
 
           <div className={cx('sectionTitle')}>Delete Your Company</div>

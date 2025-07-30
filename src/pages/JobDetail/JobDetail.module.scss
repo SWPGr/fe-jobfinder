@@ -280,6 +280,8 @@
 .overview-item__icon {
     font-size: 2.2rem;
     color: var(--blue-500);
+    align-self: end;
+    padding-bottom: 1rem;
 
     svg {
         width: 2.2rem;
@@ -299,7 +301,7 @@
 .overview-item__content.editable_content {
     display: flex;
     flex-direction: column; /* Chuyển từ row sang column */
-    gap: 0.5rem;            /* Khoảng cách giữa label và input */
+    gap: 0.5rem; /* Khoảng cách giữa label và input */
     align-items: flex-start;
 }
 
@@ -389,10 +391,13 @@
     font-size: 1.6rem;
     line-height: 1.6;
     font-family: inherit;
-    width: 100%;
+    width: 200px;
     box-sizing: border-box;
-    color: #333;
-    font-weight: 700;
+    color: var(--gray-900);
+    font-weight: 500;
+}
+.job-title {
+    width: 100%;
 }
 
 .editable-input:focus,

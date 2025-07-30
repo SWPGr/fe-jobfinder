@@ -5,6 +5,7 @@ import JobSeekerProfileService from '~/services/JobSeekerProfileService';
 import useNotification from '~/hooks/userNotification';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
+
 const cx = classNames.bind(styles);
 
 function AccountSetting() {

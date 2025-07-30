@@ -5,11 +5,14 @@ import { AiOutlineCalendar, AiOutlineMail } from 'react-icons/ai';
 import { IconUsersGroup, IconWorld } from '@tabler/icons-react';
 import styles from './Single.module.scss';
 import EmployerService from '~/services/EmployerService';
+
 const cx = classNames.bind(styles);
 
 export default function Single({ companyInfo: propsCompanyInfo }) {
   const [companyInfo, setCompanyInfo] = useState(propsCompanyInfo);
   const [loading, setLoading] = useState(!propsCompanyInfo);
+  const [isImageOpen, setIsImageOpen] = useState(false); // State to handle image click
+  const [selectedImage, setSelectedImage] = useState(''); // State to store the selected image
 
   useEffect(() => {
     let isMounted = true;
@@ -52,6 +55,18 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
     window.open(link, '_blank', 'noopener,noreferrer');
   };
 
+  // Handle click on avatar to open large image
+  const handleAvatarClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setIsImageOpen(true);
+  };
+
+  // Handle closing the large image view
+  const handleCloseImage = () => {
+    setIsImageOpen(false);
+    setSelectedImage('');
+  };
+
   return (
     <div className={cx('container')}>
       <div className={cx('wrapperBox')}>
@@ -67,13 +82,17 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
           )}
 
           <div className={cx('companyInfo')}>
-            <div className={cx('companyLogo')}>
+            <div
+              className={cx('companyLogo')}
+              onClick={() => handleAvatarClick(companyInfo.logoUrl || companyInfo.avatarUrl)} // Open large image on avatar click
+            >
               {(companyInfo.logoUrl || companyInfo.avatarUrl) ? (
                 <img
                   src={companyInfo.logoUrl || companyInfo.avatarUrl}
                   alt="Company Logo"
                   width={28}
                   height={28}
+                  className={cx('logo')}
                 />
               ) : (
                 <div className={cx('logoPlaceholder')}>Logo</div>
@@ -83,12 +102,20 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
               <div className={cx('companyName')}>
                 {companyInfo.companyName || 'No company name'}
               </div>
-              <div className={cx('industry')}>
-                {companyInfo.organizationType || 'No organization type'}
-              </div>
             </div>
           </div>
         </div>
+
+        {/* Image view modal */}
+        {isImageOpen && (
+          <div className={cx('imageModal')}>
+            <div className={cx('overlay')} onClick={handleCloseImage}></div>
+            <div className={cx('modalContent')}>
+              <img src={selectedImage} alt="Company Logo" className={cx('modalImage')} />
+              <button className={cx('closeBtn')} onClick={handleCloseImage}>X</button>
+            </div>
+          </div>
+        )}
 
         <div className={cx('section')}>
           <div className={cx('leftColumn')}>
@@ -102,21 +129,6 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
               <h4 className={cx('title2')}>Company Vision</h4>
               <div className={cx('companyVision')}>
                 <div dangerouslySetInnerHTML={{ __html: companyInfo.companyVision || 'No vision statement available.' }} />
-              </div>
-
-              <div className={cx('shareProfile')}>
-                <button className={cx('linkButton', 'noUnderline')} aria-label="Facebook">
-                  <FaFacebookF className={cx('socialIcon', 'facebook')} />
-                  Facebook
-                </button>
-                <button className={cx('linkButton', 'noUnderline')} aria-label="Twitter">
-                  <FaTwitter className={cx('socialIcon', 'twitter')} />
-                  Twitter
-                </button>
-                <button className={cx('linkButton', 'noUnderline')} aria-label="Instagram">
-                  <FaInstagram className={cx('socialIcon', 'instagram')} />
-                  Instagram
-                </button>
               </div>
             </div>
           </div>
@@ -138,7 +150,6 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                 </div>
                 <div className={cx('cardValue')}>{companyInfo.teamSize || 'N/A'}</div>
               </div>
-
             </div>
 
             <div className={cx('card')}>
@@ -201,7 +212,7 @@ export default function Single({ companyInfo: propsCompanyInfo }) {
                   <button
                     className={cx('linkButton', 'noUnderline')}
                     onClick={() => openLink(social.youtube)}
-                    aria-label="Youtube"
+                    aria-label="YouTube"
                   >
                     <FaYoutube className={cx('icon')} />
                   </button>

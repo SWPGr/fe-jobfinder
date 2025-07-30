@@ -7,6 +7,7 @@ import {
   IconCircleCheck,
   IconPencil,
   IconX,
+  IconRefreshDot
 } from '@tabler/icons-react';
 import { Menu } from '@mantine/core';
 import { Images } from '~/assets';
@@ -15,75 +16,16 @@ import { EyeIcon } from 'lucide-react';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import JobApplications from '~/pages/CreateCVSeeker/Application';
 import EmployerService from '~/services/EmployerService';
+import { useNotification } from '~/hooks';
+import { format } from '~/utils';
+import { jobService } from '~/services';
+import { useDisclosure } from '@mantine/hooks';
+import { Modal } from '@mantine/core';
+import { useLoading } from '~/context/LoadingContext';
+
+
 
 const cx = classNames.bind(styles);
-
-const calcDaysBetween = (startDateStr, endDateStr) => {
-  if (!startDateStr || !endDateStr) return null;
-  const start = new Date(startDateStr);
-  const end = new Date(endDateStr);
-  const diffTime = end - start;
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-};
-
-const normalizeJobData = (data) => {
-  if (!data) return null;
-  const expiredDateStr = data.expiredDate;
-  const createdAtStr = data.createdAt;
-
-  let isActive = false;
-  if (expiredDateStr) {
-    const today = new Date();
-    const expiredDate = new Date(expiredDateStr);
-    isActive = expiredDate >= today;
-  }
-
-  const workTime = createdAtStr ? calcDaysBetween(createdAtStr, new Date().toISOString()) : null;
-  const remainDay =
-    expiredDateStr && new Date(expiredDateStr) > new Date()
-      ? calcDaysBetween(new Date().toISOString(), expiredDateStr)
-      : 0;
-
-  const normalizeField = (field) => {
-    if (!field) return null;
-    return typeof field === 'object' ? field : { id: field, name: '' };
-  };
-
-  return {
-    id: data.id,
-    title: data.title || '',
-    description: data.description || '',
-    location: data.location || '',
-    salaryMin: data.salaryMin || 0,
-    salaryMax: data.salaryMax || 0,
-    responsibility: data.responsibility || '',
-    expiredDate: expiredDateStr,
-    createdAt: createdAtStr,
-    category: normalizeField(data.category),
-    jobLevel: normalizeField(data.jobLevel),
-    jobType: normalizeField(data.jobType),
-    isActive,
-    numberApplications: data.numberApplications || 0,
-    workTime,
-    vacancy: data.vacancy || 1,
-    remainDay,
-    company: data.employer
-      ? {
-        name: data.employer.companyName || '',
-        description: data.employer.description || '',
-        phone: data.employer.phone || '',
-        email: data.employer.email || '',
-        website: data.employer.website || '',
-        founded: data.employer.yearOfEstablishment || '',
-        organization: data.employer.organizationType || '',
-        size: data.employer.teamSize || '',
-        avatarUrl: data.employer.avatarUrl || '',
-        logoUrl: data.employer.avatarUrl || '',
-      }
-      : null,
-    badges: data.badges || null,
-  };
-};
 
 const prepareUpdatePayload = (job) => ({
   title: job.title,
@@ -105,159 +47,152 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
       return response.data || {};
     }
     const response = await EmployerService.getJobDetail(id);
-    return response.data || {};
+    console.log('response', response);
+
+    return response || {};
   } catch (error) {
     if (error.response?.status === 404) {
       alert(`Job with ID ${id} not found.`);
       return null;
     }
-    console.error('Error fetching/updating/deleting job:', error);
     throw error;
   }
 };
 
-function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
-  const [jobData, setJobData] = useState(() => {
-    if (jobDescription && !jobDescription.id && jobDescription.jobId) {
-      return { ...jobDescription, id: jobDescription.jobId };
-    }
-    return jobDescription;
-  });
+function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, setFlag = () => { }, }) {
 
+  const [jobData, setJobData] = useState({ ...jobDescription });
+  const { showError, showSuccess } = useNotification();
   const [modalType, setModalType] = useState(null); // 'view' | 'edit' | null
   const [showApplications, setShowApplications] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [numberApplications, setNumberApplications] = useState(0);
+  const [type, setType] = useState('');
+  const [opened, { open, close }] = useDisclosure(false);
+  const { showLoading, hideLoading } = useLoading();
+
+
+
 
   const isMounted = useRef(true);
 
   useEffect(() => {
+
     isMounted.current = true;
     return () => {
       isMounted.current = false;
     };
   }, []);
 
-  useEffect(() => {
-    async function fetchDetail() {
-      if (!jobDescription?.id && jobDescription?.jobId) {
-        setJobData({ ...jobDescription, id: jobDescription.jobId });
-        return;
-      }
-      if (jobDescription?.id) {
-        setLoading(true);
-        try {
-          const data = await fetchJobDetailFake(jobDescription.id);
-          if (data) {
-            setJobData(normalizeJobData(data));
-          } else {
-            setJobData(jobDescription);
-          }
-        } catch {
-          setJobData(jobDescription);
-        } finally {
-          setLoading(false);
-        }
-      }
-    }
-    fetchDetail();
-  }, [jobDescription]);
 
-  // Fetch tổng số ứng viên
-  useEffect(() => {
-    async function fetchApplicationsCount() {
-      if (!jobData?.id) {
-        setNumberApplications(0);
-        return;
-      }
-      try {
-        const response = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
-        // response đã là result, không cần .result nữa
-        const total =
-          typeof response?.totalElements === 'number'
-            ? response.totalElements
-            : (Array.isArray(response?.content) ? response.content.length : 0);
-        setNumberApplications(total);
-      } catch (error) {
-        console.error('Error fetching candidate details:', error);
-        setNumberApplications(0);
-      }
-    }
-    fetchApplicationsCount();
-  }, [jobData?.id]);
 
   const openModal = async (type) => {
     if (!jobData?.id) {
-      alert('Job ID is missing');
+      showError('Job ID is missing');
       return;
     }
-    setLoading(true);
     try {
+      showLoading();
+
       const data = await fetchJobDetailFake(jobData.id);
-      if (!data) {
-        setLoading(false);
-        return;
-      }
+
+      hideLoading();
       if (isMounted.current) {
-        setJobData(normalizeJobData(data));
+        setJobData((format.transformJobData(data)));
         setModalType(type);
       }
     } catch (error) {
-      alert('Error loading job details.');
-    } finally {
-      if (isMounted.current) setLoading(false);
+      hideLoading();
+      showError('Error loading job details.');
     }
   };
 
   const handleSave = async (updatedJob) => {
     if (!jobData?.id) {
-      alert('Job ID is missing');
+      showError('Job ID is missing');
       return;
     }
-    setLoading(true);
     try {
       const payload = prepareUpdatePayload(updatedJob);
       const data = await fetchJobDetailFake(jobData.id, payload, false);
       if (!data) {
-        setLoading(false);
+        showLoading();
         alert('Failed to save job because job does not exist.');
         return;
       }
       if (isMounted.current) {
-        setJobData(normalizeJobData(data));
+        setJobData(format.transformJobData(data));
         setModalType(null);
       }
     } catch (error) {
       alert('Error saving job.');
     } finally {
-      if (isMounted.current) setLoading(false);
+      if (isMounted.current) hideLoading();
     }
   };
 
   const handleDelete = async () => {
     if (!jobData?.id) {
-      alert('Job ID is missing');
+      showError('Job ID is missing');
       return;
     }
-    if (window.confirm('Are you sure you want to delete this job?')) {
-      setLoading(true);
-      try {
-        await fetchJobDetailFake(jobData.id, null, true);
-        alert('Job deleted successfully');
-        if (isMounted.current) {
-          setModalType(null);
-          onDeleteSuccess?.(jobData.id);
-        }
-      } catch (error) {
-        alert('Error deleting job.');
-      } finally {
-        if (isMounted.current) setLoading(false);
+
+    try {
+      showLoading();
+      await fetchJobDetailFake(jobData.id, null, true);
+      hideLoading();
+      showSuccess('Job deleted successfully');
+      if (isMounted.current) {
+        setModalType(null);
       }
+    } catch (error) {
+      hideLoading();
+      showError('Error deleting job.');
+    } finally {
+      if (isMounted.current) hideLoading();
     }
+  };
+
+  const repostJob = async () => {
+    try {
+      const data = await jobService.getJobById(jobData.id);
+      const input = {
+        title: data.title,
+        description: data.description,
+        salaryMin: data.salaryMin,
+        salaryMax: data.salaryMax,
+        categoryId: data.category?.id || data.category || null,
+        jobLevelId: data.jobLevel?.id || data.jobLevel || null,
+        jobTypeId: data.jobType?.id || data.jobType || null,
+        educationId: data.education?.id || data.education || null,
+        experienceId: data.experience?.id || data.experience || null,
+        vacancy: data.vacancy,
+        responsibility: data.responsibility,
+        expiredDate: data.expiredDate,
+      }
+      await jobService.createJob(input);
+      // console.log('input', input);
+
+      showSuccess('Repost job successfully');
+    } catch (error) {
+      showError('Error repost job');
+    }
+  }
+
+  const handleConfirm = async () => {
+    if (type === 'delete') {
+      await handleDelete();
+    } else {
+      setType('repost')
+      openModal('edit')
+      // await repostJob();
+    }
+    setFlag((prev) => !prev); // ✅ bây giờ đảm bảo setFlag sau khi xử lý xong
+    setType('');
+    close();
   };
 
   const closeModal = () => setModalType(null);
   const closeApplications = () => setShowApplications(false);
+
 
   return (
     <>
@@ -268,15 +203,15 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
           </div>
           <div className={cx('job-description')}>
             <div className={cx('top')}>
-              <div className={cx('title')}>{jobData?.title}</div>
+              <div className={cx('title')}>{jobData?.jobTitle}</div>
             </div>
             <div className={cx('bottom')}>
               <div className={cx('work-time')}>
-                {jobData?.workTime !== null ? `${jobData.workTime} days posted` : ''}
+                {jobData?.workTime}
               </div>
-              <div className={cx('remain-date')}>
-                {jobData?.remainDay !== null ? `${jobData.remainDay} days remaining` : ''}
-              </div>
+              {/* <div className={cx('remain-date')}>
+                {jobData.remainDay}
+              </div> */}
             </div>
           </div>
         </div>
@@ -291,7 +226,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
             </p>
           )}
         </div>
-        <div className={cx('applications')}>{numberApplications} applications</div>
+        <div className={cx('applications')}>{jobData?.jobApplicationCounts} applications</div>
         <div className={cx('action')}>
           <Button className={cx('view-applications')} onClick={() => setShowApplications(true)}>
             Applications
@@ -307,36 +242,40 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
               </div>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item leftSection={<IconPencil size={20} />} onClick={() => openModal('edit')}>
-                Edit Job
-              </Menu.Item>
+              {!jobData?.isActive &&
+                <>
+                  {/* <Menu.Item leftSection={<IconPencil size={20} />} onClick={() => openModal('edit')}>
+                    Edit Job
+                  </Menu.Item> */}
+                  <Menu.Item leftSection={<IconRefreshDot size={20} />} onClick={() => {
+                    setType('repost');
+                    open();
+                  }}>
+                    Re-post job
+                  </Menu.Item>
+                </>
+              }
               <Menu.Item leftSection={<EyeIcon size={20} />} onClick={() => openModal('view')}>
                 View Job
               </Menu.Item>
-              <Menu.Item leftSection={<IconX size={20} />} onClick={handleDelete}>
-                Delete Job
-              </Menu.Item>
+              {jobData?.isActive && <Menu.Item leftSection={<IconX size={20} />} onClick={() => {
+                setType('delete');
+                open();
+              }}>
+                Close Job
+              </Menu.Item>}
             </Menu.Dropdown>
           </Menu>
         </div>
       </div>
 
-      {/* Loading Overlay */}
-      {loading && (
-        <div className={cx('loadingOverlay')}>
-          <p>Loading...</p>
-        </div>
-      )}
-
       {/* Modal for View/Edit Job */}
       {modalType && jobData && (
         <div className={cx('modalOverlay')}>
           <div className={cx('modalBox')}>
-            <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">
-              &times;
-            </button>
+            <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">&times;</button>
             {modalType === 'view' && <JobDetail key="view" job={jobData} />}
-            {modalType === 'edit' && <JobDetail key="edit" job={jobData} editable onSave={handleSave} />}
+            {modalType === 'edit' && <JobDetail key="edit" closeModal={closeModal} job={jobData} editable onSave={handleSave} />}
           </div>
         </div>
       )}
@@ -352,6 +291,22 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
           </div>
         </div>
       )}
+
+      <>
+        <Modal size={'auto'} classNames={{
+          header: cx('modal-header'), modal: cx('modal'),
+          content: cx('modal-content'),
+          inner: cx('modal-inner'),
+          body: cx('modal-body'),
+          close: cx('modal-close-button')
+        }} opened={opened} onClose={close} title={type === 'delete' ? 'Do you want to close this job?' : 'Do you want to re-post this job?'} centered>
+          <div className='text-center mt-4'>
+            <Button green_white onClick={handleConfirm}>Confirm</Button>
+            <Button red_white onClick={close}>Cancel</Button>
+          </div>
+        </Modal>
+      </>
+      {/*  */}
     </>
   );
 }

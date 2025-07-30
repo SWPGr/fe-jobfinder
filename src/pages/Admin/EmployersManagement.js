@@ -220,7 +220,7 @@ const EmployersManagement = () => {
                                 <td>{employer.email}</td>
                                 <td>{employer.location || '--'}</td>
                                 <td>{employer.phone || '--'}</td>
-                                <td>{employer.createdAt ? employer.createdAt.slice(0, 10) : '--'}</td>
+                                <td>{employer.createdAt ? employer.createdAt.slice(0, 10).split('-').reverse().join('/') : '--'}</td>
                                 <td>
                                     <span
                                         className={cx(
@@ -290,7 +290,7 @@ const EmployersManagement = () => {
                                     }</p>`,
                                 responsibilities: '<ul><li>Manage company operations</li></ul>',
                                 overview: {
-                                    posted: selectedEmployer.createdAt?.slice(0, 10) || 'N/A',
+                                    posted: selectedEmployer.createdAt?.slice(0, 10)?.split('-').reverse().join('/') || 'N/A',
                                     expire: 'N/A',
                                     education: 'N/A',
                                     salary: 'N/A',
