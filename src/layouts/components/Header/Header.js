@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
@@ -10,7 +10,7 @@ import { Button, AvatarButton, NotificationButtonButton } from '~/components';
 const cx = classNames.bind(styles);
 
 function Header({ className }) {
-    let { user, logout } = useAuth();
+    let { user } = useAuth();
     const navigate = useNavigate();
     // console.log('user in header', user.role);
 

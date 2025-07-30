@@ -8,7 +8,6 @@ import {
   FaLinkedinIn,
   FaRedditAlien,
   FaInstagram,
-  FaYoutube,
   FaGithub,
   FaPhoneAlt,
   FaRegUserCircle,
@@ -19,7 +18,6 @@ import { IoIosTime } from "react-icons/io";
 import { IoCloudDownloadOutline } from "react-icons/io5";
 import { TfiEmail } from "react-icons/tfi";
 import useNotification from "~/hooks/userNotification";
-import JobSeekerProfileService from "~/services/JobSeekerProfileService";
 
 const cx = classNames.bind(styles);
 

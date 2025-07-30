@@ -5,7 +5,6 @@ import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
 import { JobSearchFilters } from '~/components';
 import { useSearchParams } from 'react-router-dom';
-import { jobService } from '~/services';
 import { Pagination } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import useNotification from '~/hooks/userNotification';
@@ -78,7 +77,6 @@ const JobRowDropdown = ({ onAction, jobId, isActive }) => {
 const Jobs = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [visibleJobs, setVisibleJobs] = useState(10);
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);

@@ -148,22 +148,15 @@
 
 // POPULAR CATEGORY
 .popular-category__wrapper {
-    width: 100%;
-    height: auto;
-    display: flex;
-    justify-content: center;
+    padding: 2rem 0;
     background: var(--white);
 
     border-bottom: 1px solid var(--gray-100);
 }
 .popular-category__container {
-    width: var(--default-layout-width);
-    padding: 5rem 2rem;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2rem;
+    max-width: var(--default-layout-width);
+    margin: 0 auto;
+    padding: 0 1rem;
 
     .popular-category__title {
         width: 100%;
@@ -177,13 +170,19 @@
         }
     }
     .popular-category__list {
-        width: 100%;
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        place-content: center;
-        gap: 2rem;
+        grid-template-columns: 1fr 1fr 1fr 1fr; // 4 item mỗi dòng
+        grid-template-rows: repeat(2, auto); // 2 dòng
+        // gap: 2rem;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    .popular-category__slide {
+        padding-bottom: 2rem;
+        height: auto;
     }
     .popular-category__item {
+        width: 200px;
         p {
             font-size: var(--font-size-18px);
             font-weight: 500;

@@ -151,9 +151,12 @@
 
 // ========== SUBMIT BUTTON ==========
 .submit {
-    width: 100%;
+    width: 100% !important;
+    height: 4rem !important;
 }
-
+.submit-label {
+    font-size: 1.6rem !important;
+}
 // ========== OPTIONAL: ROOT BUTTON RESETPASSWORD  ==========
 .root-btn {
     border: none;

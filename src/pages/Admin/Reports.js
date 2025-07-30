@@ -1,7 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, MessageSquare, Bug, Lightbulb, Flag } from 'lucide-react';
 import ReportDetailModal from './components/ReportDetailModal';
-import StatsOverview from './components/StatsOverview';
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '@mantine/core';
 
@@ -156,7 +155,9 @@ const Reports = () => {
                             <input
                                 type="date"
                                 value={filters.fromDate}
+                                placeholder='From Date'
                                 name="fromDate"
+                                max={filters.toDate}
                                 onChange={(e) => handleChangeValue(e)}
                                 className="text-xl px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />

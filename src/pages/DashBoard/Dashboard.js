@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Dashboard.module.scss';
-import JobItemApplied from '~/components/JobItemApplied';
-import { Pagination } from '@mantine/core';
-import { Link } from 'react-router-dom';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 import JobSeekerProfileService from '~/services/JobSeekerProfileService';
-import JobDetail from '~/pages/JobDetail/JobDetail';
 import { useNotification } from '~/hooks';
 import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
 import { TiTick } from "react-icons/ti";

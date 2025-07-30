@@ -21,6 +21,30 @@ import { useNotification } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
+// const mockData = [
+//     { id: 11, name: 'Business Analysis' },
+//     { id: 15, name: 'Cloud Computing' },
+//     { id: 10, name: 'Content Writing' },
+//     { id: 7, name: 'Customer Service' },
+//     { id: 14, name: 'Cybersecurity' },
+//     { id: 5, name: 'Data Science' },
+//     { id: 13, name: 'DevOps' },
+//     { id: 4, name: 'Finance' },
+//     { id: 9, name: 'Graphic Design' },
+//     { id: 20, name: 'Healthcare' },
+//     { id: 3, name: 'Human Resources' },
+//     { id: 19, name: 'Legal' },
+//     { id: 2, name: 'Marketing' },
+//     { id: 16, name: 'Network Administration' },
+//     { id: 21, name: 'Other' },
+//     { id: 18, name: 'Product Management' },
+//     { id: 6, name: 'Project Management' },
+//     { id: 12, name: 'Quality Assurance' },
+//     { id: 8, name: 'Sales' },
+//     { id: 1, name: 'Software Development' },
+//     { id: 17, name: 'Technical Support' },
+// ];
+
 function PopularCategory() {
     const [categories, setCategories] = useState([]);
     const { showError } = useNotification();
@@ -71,6 +95,7 @@ function PopularCategory() {
                     </Button>
                 </div>
 
+
                 <Carousel
                     withIndicators
                     classNames={{
@@ -80,7 +105,7 @@ function PopularCategory() {
                         slide: cx('popular-category__slide'),
                     }}
                 >
-                    {[...Array(numberOfPage)].map((_, index) => (
+                    {Array.from({ length: numberOfPage }).map((_, index) => (
                         <Carousel.Slide key={index}>
                             <div className={cx('popular-category__list')}>
                                 {categories.slice(index * size, (index + 1) * size).map((category, index) => (

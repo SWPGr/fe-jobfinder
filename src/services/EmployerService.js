@@ -1,8 +1,8 @@
 // EmployerService.js
 import axios from 'axios';
-import { del, get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
+import { get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
 
-const API_URL = 'http://localhost:8080/api/job';
+const API_URL = 'job';
 
 // Các hàm axios thuần cho các API job chi tiết (có thể dùng thay thế hoặc bổ sung)
 const getJobDetail = (id) => axios.get(`${API_URL}/${id}`);

@@ -1,5 +1,4 @@
 import React from 'react';
-import { LeafIcon } from 'lucide-react';
 import banner from '~/assets/Images/Banner.png';
 
 const HeroSection = () => {
