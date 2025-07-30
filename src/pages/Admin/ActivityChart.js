@@ -21,6 +21,7 @@ export const ActivityChart = ({ data, height = 320 }) => {
             'Job Seekers': item.totalJobSeekers ?? 0,
             Employers: item.totalEmployers ?? 0,
             Applications: item.totalAppliedJobs ?? 0,
+            'Total Jobs': item.totalJobs ?? 0,
         };
     });
 
@@ -31,6 +32,7 @@ export const ActivityChart = ({ data, height = 320 }) => {
     const colorJobSeekers = getVar('--primary-color-light', '#3b82f6');
     const colorEmployers = getVar('--red-500', '#e05151');
     const colorApplications = getVar('--green-500', '#0ba02c');
+    const colorTotalJobs = getVar('--purple-500', '#8b5cf6');
 
     return (
         <div className={cx('activityChart-wrapper')}>
@@ -91,6 +93,16 @@ export const ActivityChart = ({ data, height = 320 }) => {
                         activeDot={{ r: 4 }}
                         isAnimationActive={true}
                         animationDuration={2200}
+                    />
+                    <Line
+                        type="monotone"
+                        dataKey="Total Jobs"
+                        stroke={colorTotalJobs}
+                        strokeWidth={2}
+                        dot={false}
+                        activeDot={{ r: 4 }}
+                        isAnimationActive={true}
+                        animationDuration={2400}
                     />
                 </LineChart>
             </ResponsiveContainer>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import { Pagination, Text } from '@mantine/core';
@@ -6,29 +6,15 @@ import { IconArrowLeft, IconArrowRight } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { CompanyItem } from '~/components';
 import { Images } from '~/assets';
+import { categoryService } from '~/services';
+import { useNotification } from '~/hooks';
 
 const cx = classNames.bind(styles);
 
-const companies = [
-    { companyName: 'Google asdasjd ajsdhkajd asdja skjdask djasdkjs', location: 'United States ' },
-    { companyName: 'Facebook', location: 'United States' },
-    { companyName: 'Amazon', location: 'United States' },
-    { companyName: 'Microsoft', location: 'United States' },
-    { companyName: 'Netflix', location: 'United States' },
-    { companyName: 'Airbnb', location: 'United States' },
-    { companyName: 'Tesla', location: 'United States' },
-    { companyName: 'Spotify', location: 'Sweden' },
-    { companyName: 'Dropbox', location: 'United States' },
-    { companyName: 'Salesforce', location: 'United States' },
-    { companyName: 'Intel', location: 'United States' },
-    { companyName: 'IBM', location: 'United States' },
-    { companyName: 'Adobe', location: 'United States' },
-    { companyName: 'Alibaba', location: 'China' },
-    { companyName: 'Tencent', location: 'China' },
-];
-
 function TopCompanies() {
+    const [companies, setCompanies] = useState([]);
     const [activePage, setActivePage] = useState(1);
+    const { showError } = useNotification();
 
     const pageSize = 8;
     const total = companies.length;
@@ -42,6 +28,22 @@ function TopCompanies() {
         total,
         pageSize * activePage,
     )} of ${total}`;
+
+    useEffect(() => {
+        const fetchTopCompanies = async () => {
+            try {
+                const response = await categoryService.getTopCompanies();
+                const data = response.result || response;
+                console.log('Top Companies:', data);
+                setCompanies(data);
+            } catch (error) {
+                showError('Error fetching top companies');
+                console.error('Error fetching top companies:', error);
+            }
+        };
+
+        fetchTopCompanies();
+    }, []);
 
     return (
         <div className={cx('top-companies__wrapper')}>
@@ -61,11 +63,11 @@ function TopCompanies() {
                         />
                     </div>
                 </div>
-                {/*  */}
+
                 <div className={cx('top-companies__list')}>
                     {currentPageItems.map((company, index) => (
                         <motion.div
-                            key={index}
+                            key={company.userId || index}
                             image={Images.google_image}
                             description={company}
                             className={cx('item')}
@@ -73,7 +75,17 @@ function TopCompanies() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.4, delay: index * 0.05 }}
                         >
-                            <CompanyItem image={Images.google_image} description={company} isFeatured saved />
+                            <CompanyItem
+                                image={Images.google_image}
+                                description={{
+                                    companyName: company.companyName,
+                                    location: company.userLocation,
+                                    openJobs: company.totalApplications,
+                                    id: company.userId
+                                }}
+                                isFeatured
+                                saved
+                            />
                         </motion.div>
                     ))}
                 </div>

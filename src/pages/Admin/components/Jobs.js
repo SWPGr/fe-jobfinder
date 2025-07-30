@@ -85,6 +85,7 @@ const Jobs = () => {
     const [loading, setLoading] = useState(true);
     const [totalHits, setTotalHits] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [page, setPage] = useState(1);
 
     const { showSuccess, showError } = useNotification();
 
@@ -137,22 +138,19 @@ const Jobs = () => {
         const fetchJobs = async () => {
             setLoading(true);
             try {
-                const response = await statisticsService.fetchAllJobsForManagement();
-
-                // Handle the correct response structure from API
+                const response = await statisticsService.fetchAllJobsForManagement({ page, size: 10 });
                 const jobArray = response?.content || [];
                 setJobs(jobArray);
                 setTotalHits(response?.totalElements || 0);
                 setTotalPages(response?.totalPages || 1);
             } catch (err) {
-                console.error('Failed to fetch jobs:', err);
                 setJobs([]);
             } finally {
                 setLoading(false);
             }
         };
         fetchJobs();
-    }, [searchParams]);
+    }, [page]);
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString('en-US', {
@@ -244,11 +242,12 @@ const Jobs = () => {
                 </table>
             </div>
 
+            {/* Remove Pagination */}
             <div className={cx('pagination')}>
                 <Pagination
                     total={totalPages}
-                    value={Number(searchParams.get('page')) || 1}
-                    onChange={handlePageChange}
+                    value={page}
+                    onChange={setPage}
                     radius="xl"
                     classNames={{ root: cx('pagination-root'), control: cx('control') }}
                 />

@@ -27,31 +27,38 @@ function PopularCategory() {
     const size = 8;
     const numberOfPage = Math.ceil(categories.length / size);
 
-    const categoriesList = [
-        { icon: <IconWand />, title: 'Design' },
-        { icon: <IconCode />, title: 'Development' },
-        { icon: <IconSpeakerphone />, title: 'Marketing' },
-        { icon: <IconBrandParsinta />, title: 'Sales' },
-        { icon: <IconMusic />, title: 'Music' },
-        { icon: <IconChartBarPopular />, title: 'Data Science' },
-        { icon: <IconFirstAidKit />, title: 'Health & Fitness' },
-        { icon: <IconDatabase />, title: 'Data & Science' },
-    ];
+    // Icon mapping cho từng category
+    const iconMapping = {
+        'Design': <IconWand />,
+        'Development': <IconCode />,
+        'Marketing': <IconSpeakerphone />,
+        'Sales': <IconBrandParsinta />,
+        'Music': <IconMusic />,
+        'Data Science': <IconChartBarPopular />,
+        'Health & Fitness': <IconFirstAidKit />,
+        'Data & Science': <IconDatabase />,
+        'Finance': <IconChartBarPopular />, // Thêm icon cho Finance
+    };
+
+    // Hàm lấy icon dựa trên category name
+    const getIconForCategory = (categoryName) => {
+        return iconMapping[categoryName] || <IconWand />; // Default icon nếu không tìm thấy
+    };
 
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchTopCategories = async () => {
             try {
-                const response = await categoryService.getAllCategory();
-                const data = response.result;
-                console.log('Categories:', data);
+                const response = await categoryService.getTopCategories();
+                const data = response.result || response;
+                console.log('Top Categories:', data);
                 setCategories(data);
             } catch (error) {
-                showError('Error fetching categories');
-                console.error('Error fetching categories:', error);
+                showError('Error fetching top categories');
+                console.error('Error fetching top categories:', error);
             }
         };
 
-        fetchCategories();
+        fetchTopCategories();
     }, []);
 
     return (
@@ -63,20 +70,7 @@ function PopularCategory() {
                         View All
                     </Button>
                 </div>
-                {/*  */}
 
-                {/* <div className={cx('popular-category__list')}>
-                    {categoriesList.map((category, index) => (
-                        <ItemInfo
-                            key={index}
-                            icon={category.icon}
-                            title={category.title}
-                            description={`${category.total} Open positions`}
-                            className={cx('popular-category__item')}
-                        />
-                    ))}
-                </div> */}
-                {/*  */}
                 <Carousel
                     withIndicators
                     classNames={{
@@ -91,15 +85,16 @@ function PopularCategory() {
                             <div className={cx('popular-category__list')}>
                                 {categories.slice(index * size, (index + 1) * size).map((category, index) => (
                                     <motion.div
-                                        key={index}
+                                        key={category.categoryId || index}
                                         className={cx('popular-category__item')}
                                         initial={{ opacity: 0, scale: 0.95 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         transition={{ duration: 0.4, delay: index * 0.05 }}
                                     >
                                         <ItemInfo
-                                            title={category.name}
-                                            description={`${category.total} Open positions`}
+                                            icon={getIconForCategory(category.categoryName)}
+                                            title={category.categoryName}
+                                            description={`${category.jobCount} Open positions`}
                                         />
                                     </motion.div>
                                 ))}

@@ -62,53 +62,30 @@ const fetchJobEmployerFake = async () => {
 const fetchMyJobFake = async (page = 0, size = 10) => {
     try {
         const response = await get(`/job/my-employer-jobs?page=${page}&size=${size}`);
-
         if (!response || !response.result || !Array.isArray(response.result.content)) {
             console.warn('Invalid API response structure:', response);
             return {
                 jobs: [],
                 pagination: {
-                    pageNumber: 0,
+                    pageNumber: page,
                     pageSize: size,
                     totalElements: 0,
                     totalPages: 1,
-                    isFirst: true,
+                    isFirst: page === 0,
                     isLast: true,
                 },
             };
         }
-
         const data = response.result;
-
-        const jobsFormatted = data.content.map((job) => {
-            const createdDate = new Date(job.createdAt);
-            const defaultExpireDate = new Date(createdDate);
-            defaultExpireDate.setDate(createdDate.getDate() + 30);
-            const expireDate = job.expiredDate ? new Date(job.expiredDate) : defaultExpireDate;
-            const today = new Date();
-            const remainingDays = Math.max(0, Math.ceil((expireDate - today) / (1000 * 60 * 60 * 24)));
-            const remainingText = remainingDays > 0 ? `${remainingDays} days remaining` : 'Expired';
-
-            return {
-                jobTitle: job.title || 'Unknown Title',
-                workTime: job.jobType?.name || 'Unknown Type',
-                remainDay: remainingText,
-                isActive: remainingDays > 0,
-                numberApplications: job.jobApplicationCounts || 0,
-                isVIP: job.employer?.isPremium || false,
-                id: job.id,
-            };
-        });
-
         return {
-            jobs: jobsFormatted,
+            jobs: data.content,
             pagination: {
-                pageNumber: data.pageNumber ?? 0,
-                pageSize: data.pageSize ?? size,
-                totalElements: data.totalElements ?? 0,
-                totalPages: data.totalPages ?? 1,
-                isFirst: data.first ?? true,
-                isLast: data.last ?? true,
+                pageNumber: data.pageNumber,
+                pageSize: data.pageSize,
+                totalElements: data.totalElements,
+                totalPages: data.totalPages,
+                isFirst: data.first,
+                isLast: data.last,
             },
         };
     } catch (error) {
@@ -116,11 +93,11 @@ const fetchMyJobFake = async (page = 0, size = 10) => {
         return {
             jobs: [],
             pagination: {
-                pageNumber: 0,
+                pageNumber: page,
                 pageSize: size,
                 totalElements: 0,
                 totalPages: 1,
-                isFirst: true,
+                isFirst: page === 0,
                 isLast: true,
             },
         };
@@ -228,20 +205,20 @@ const fetchCandidateDetail = async (applicationId) => {
     return response?.result || null;
 };
 const fetchFilteredCandidates = async (jobId, filters, sortOrder) => {
-  const query = new URLSearchParams();
+    const query = new URLSearchParams();
 
-  if (filters.fullName) query.append("fullName", filters.fullName);
-  if (filters.education) query.append("educationName", filters.education);
-  if (filters.experience) query.append("experienceName", filters.experience);
+    if (filters.fullName) query.append("fullName", filters.fullName);
+    if (filters.education) query.append("educationName", filters.education);
+    if (filters.experience) query.append("experienceName", filters.experience);
 
-  // sort: asc hoặc desc theo fullName
-  query.append(
-    "sort",
-    `jobSeeker.userDetail.fullName,${sortOrder === "newest" ? "asc" : "desc"}`
-  );
+    // sort: asc hoặc desc theo fullName
+    query.append(
+        "sort",
+        `jobSeeker.userDetail.fullName,${sortOrder === "newest" ? "asc" : "desc"}`
+    );
 
-  const response = await get(`/apply/candidates/${jobId}?${query.toString()}`);
-  return response?.result || null;
+    const response = await get(`/apply/candidates/${jobId}?${query.toString()}`);
+    return response?.result || null;
 };
 
 const fetchResume = async ({ applicationId }) => {
@@ -289,6 +266,30 @@ const uploadFile = async (file) => {
         throw error;
     }
 };
+//thay đổi mật khẩu employer
+const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const response = await post('/auth/change-password', {
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Refuse all applications for a specific job
+const fetchRefuseAllApplications = async (jobId) => {
+    try {
+        const response = await post(`/apply/job/${jobId}/reject-all`);
+        return response?.result || null;
+    } catch (error) {
+        console.error('Error refusing all applications:', error);
+        throw error;
+    }
+};
+
 const EmployerService = {
     getJobDetail,
     updateJob,
@@ -317,6 +318,8 @@ const EmployerService = {
     fetchResume,
     fetchFilteredCandidates,
     uploadFile,
+    changePassword,
+    fetchRefuseAllApplications,
 };
 
 export default EmployerService;

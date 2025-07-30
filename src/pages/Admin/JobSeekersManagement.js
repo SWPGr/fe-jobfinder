@@ -85,15 +85,6 @@ const getInitials = (name) => {
 
 const premiumClass = (isPremium) => (isPremium === true ? cx('statusText', 'active') : cx('statusText', 'inactive'));
 
-function normalizeVN(str) {
-    return (str || '')
-        .normalize('NFD')
-        .replace(/[ -\u036f]/g, '')
-        .replace(/đ/g, 'd')
-        .replace(/Đ/g, 'D')
-        .toLowerCase();
-}
-
 const JobSeekersManagement = () => {
     const [jobSeekers, setJobSeekers] = useState([]);
     const [error, setError] = useState('');
