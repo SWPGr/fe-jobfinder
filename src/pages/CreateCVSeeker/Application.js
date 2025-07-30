@@ -3,6 +3,7 @@ import styles from "./Application.module.scss";
 import SeekerDetail from "../SeekerDetail/SeekerDetail";
 import EmployerService from "~/services/EmployerService";
 import ResumeProfile from "./ResumeProfile";
+import { useNotification } from '~/hooks';
 
 const Application = ({
   fullName,
@@ -123,6 +124,7 @@ const Application = ({
 };
 
 const JobApplications = ({ jobId }) => {
+  const { showSuccess, showError, showWarning } = useNotification();
   const [applications, setApplications] = useState([]);
   const [sortOrder, setSortOrder] = useState("newest");
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -140,6 +142,7 @@ const JobApplications = ({ jobId }) => {
   const [selectedApplicantDetail, setSelectedApplicantDetail] = useState(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [showResumeProfile, setShowResumeProfile] = useState(false);
+  const [refusingAll, setRefusingAll] = useState(false);
 
   // Fetch danh sách education từ API
   useEffect(() => {
@@ -189,8 +192,8 @@ const JobApplications = ({ jobId }) => {
         const safeContent = Array.isArray(content)
           ? content
           : Array.isArray(content?.content)
-          ? content.content
-          : [];
+            ? content.content
+            : [];
 
         const mappedApps = safeContent.map((app) => {
           const appId =
@@ -327,6 +330,43 @@ const JobApplications = ({ jobId }) => {
         <button className={styles.active}>
           All Applicants ({applications.length})
         </button>
+        {applications.length > 0 && (
+          <button
+            className={styles.refuseAll}
+            onClick={async () => {
+              if (refusingAll) return; // Prevent multiple clicks
+
+              showWarning("Are you sure you want to refuse all applications? This action cannot be undone.", "Confirm Refuse All");
+
+              try {
+                setRefusingAll(true);
+                await EmployerService.fetchRefuseAllApplications(jobId);
+                setApplications(prev =>
+                  prev.map(app => ({ ...app, status: "REJECTED" }))
+                );
+                showSuccess("All applications have been refused successfully.");
+              } catch (error) {
+                console.error("Error refusing all applications:", error);
+                showError("Failed to refuse all applications. Please try again.");
+              } finally {
+                setRefusingAll(false);
+              }
+            }}
+            disabled={applications.every(app => app.status === "REJECTED") || refusingAll}
+            style={{
+              marginLeft: 16,
+              background: refusingAll ? "#95a5a6" : "#e74c3c",
+              color: "#fff",
+              border: "none",
+              padding: "8px 16px",
+              borderRadius: 6,
+              cursor: refusingAll ? "not-allowed" : "pointer",
+              opacity: refusingAll ? 0.7 : 1
+            }}
+          >
+            {refusingAll ? "Refusing..." : "Refuse All"}
+          </button>
+        )}
       </div>
 
       <div className={styles.sort}>

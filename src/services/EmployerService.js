@@ -107,6 +107,7 @@ const fetchJobEmployerFake = async () => {
     } catch (error) {
         console.error('Error fetching job employer:', error);
         return null;
+
     }
 };
 
@@ -340,6 +341,28 @@ const fetchEmployerProfileFake = async () => {
         console.error('Error fetching employer profile:', error);
         return {};
     }
+}//thay đổi mật khẩu employer
+const changePassword = async (oldPassword, newPassword) => {
+    try {
+        const response = await post('/auth/change-password', {
+            oldPassword: oldPassword,
+            newPassword: newPassword,
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Refuse all applications for a specific job
+const fetchRefuseAllApplications = async (jobId) => {
+    try {
+        const response = await post(`/apply/job/${jobId}/reject-all`);
+        return response?.result || null;
+    } catch (error) {
+        console.error('Error refusing all applications:', error);
+        throw error;
+    }
 };
 
 const EmployerService = {
@@ -370,6 +393,8 @@ const EmployerService = {
     fetchResume,
     fetchFilteredCandidates,
     uploadFile,
+    changePassword,
+    fetchRefuseAllApplications,
 };
 
 export default EmployerService;

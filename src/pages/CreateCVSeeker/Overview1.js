@@ -22,7 +22,10 @@ const Overview1 = () => {
     const [filters, setFilters] = useState({
         jobTitle: '',
         fromDate: '',
-        endDate: '',
+        // endDate: '',
+        endDate: new Date().toLocaleDateString('en-CA', {
+            timeZone: 'Asia/Ho_Chi_Minh',
+        }),
         page: 1,
         isActive: ''
     });
@@ -132,12 +135,13 @@ const Overview1 = () => {
                     type="date"
                     name="endDate"
                     value={filters.endDate}
-                    min={filters.startDate}
+                    min={filters.fromDate}
                     max={new Date().toLocaleDateString('en-CA', {
                         timeZone: "Asia/Ho_Chi_Minh"
                     })}
                     onChange={handleFilterChange}
                 />
+
             </div>
 
             <div className={cx('job-table-head')}>
@@ -164,8 +168,8 @@ const Overview1 = () => {
                 {pagination.totalPages > 1 && (
                     <Pagination
                         total={pagination.totalPages}
-                        value={filters.page}
-                        // defaultValue={1}
+                        value={filters.page + 1}
+                        defaultValue={0}
                         onChange={handlePageChange}
                         radius="xl"
                         classNames={{

@@ -1,7 +1,17 @@
 import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
-import { IconArrowRight } from '@tabler/icons-react';
+import {
+    IconArrowRight,
+    IconWand,
+    IconCode,
+    IconSpeakerphone,
+    IconBrandParsinta,
+    IconMusic,
+    IconChartBarPopular,
+    IconFirstAidKit,
+    IconDatabase,
+} from '@tabler/icons-react';
 import { Carousel } from '@mantine/carousel';
 import { motion } from 'framer-motion';
 import { Button } from '~/components';
@@ -41,19 +51,38 @@ function PopularCategory() {
     const size = 8;
     const numberOfPage = Math.ceil(categories.length / size);
 
+    // Icon mapping cho từng category
+    const iconMapping = {
+        'Design': <IconWand />,
+        'Development': <IconCode />,
+        'Marketing': <IconSpeakerphone />,
+        'Sales': <IconBrandParsinta />,
+        'Music': <IconMusic />,
+        'Data Science': <IconChartBarPopular />,
+        'Health & Fitness': <IconFirstAidKit />,
+        'Data & Science': <IconDatabase />,
+        'Finance': <IconChartBarPopular />, // Thêm icon cho Finance
+    };
+
+    // Hàm lấy icon dựa trên category name
+    const getIconForCategory = (categoryName) => {
+        return iconMapping[categoryName] || <IconWand />; // Default icon nếu không tìm thấy
+    };
+
     useEffect(() => {
-        const fetchCategories = async () => {
+        const fetchTopCategories = async () => {
             try {
-                const response = await categoryService.getAllCategory();
-                const data = response.result;
+                const response = await categoryService.getTopCategories();
+                const data = response.result || response;
+                console.log('Top Categories:', data);
                 setCategories(data);
             } catch (error) {
-                showError('Error fetching categories');
-                console.error('Error fetching categories:', error);
+                showError('Error fetching top categories');
+                console.error('Error fetching top categories:', error);
             }
         };
 
-        fetchCategories();
+        fetchTopCategories();
     }, []);
 
     return (
@@ -65,6 +94,7 @@ function PopularCategory() {
                         View All
                     </Button>
                 </div>
+
 
                 <Carousel
                     withIndicators
@@ -78,22 +108,21 @@ function PopularCategory() {
                     {Array.from({ length: numberOfPage }).map((_, index) => (
                         <Carousel.Slide key={index}>
                             <div className={cx('popular-category__list')}>
-                                {categories
-                                    .slice(index * size, (index + 1) * size)
-                                    .map((category, i) => (
-                                        <motion.div
-                                            key={category.id}
-                                            className={cx('popular-category__item')}
-                                            initial={{ opacity: 0, scale: 0.95 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ duration: 0.4, delay: i * 0.05 }}
-                                        >
-                                            <ItemInfo
-                                                title={category.name}
-                                                description={`9 Open positions`}
-                                            />
-                                        </motion.div>
-                                    ))}
+                                {categories.slice(index * size, (index + 1) * size).map((category, index) => (
+                                    <motion.div
+                                        key={category.categoryId || index}
+                                        className={cx('popular-category__item')}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                                    >
+                                        <ItemInfo
+                                            icon={getIconForCategory(category.categoryName)}
+                                            title={category.categoryName}
+                                            description={`${category.jobCount} Open positions`}
+                                        />
+                                    </motion.div>
+                                ))}
                             </div>
                         </Carousel.Slide>
                     ))}

@@ -9,8 +9,16 @@ import {
   FaRedditAlien,
   FaInstagram,
   FaGithub,
+  FaPhoneAlt,
+  FaRegUserCircle,
 } from "react-icons/fa";
+import { FaMapLocationDot } from "react-icons/fa6";
+import { MdOutlineWorkspacePremium, MdOutlineUpdate, MdVerified } from "react-icons/md";
+import { IoIosTime } from "react-icons/io";
+import { IoCloudDownloadOutline } from "react-icons/io5";
+import { TfiEmail } from "react-icons/tfi";
 import useNotification from "~/hooks/userNotification";
+import JobSeekerProfileService from "~/services/JobSeekerProfileService";
 
 const cx = classNames.bind(styles);
 
@@ -113,24 +121,24 @@ const SeekerDetail = ({ applicant }) => {
 
   const { showError, showInfo, showWarning } = useNotification();
 
-  // useEffect(() => {
-  //   const fetchSocialData = async () => {
-  //     try {
-  //       const [links, types] = await Promise.all([
-  //         JobSeekerProfileService.getMySocialLinks(),
-  //         JobSeekerProfileService.getSocialTypes(),
-  //       ]);
-  //       setSocialLinks(links);
-  //       setSocialTypes(types);
-  //       if (!links || links.length === 0) {
-  //         showInfo("No social media links found for this user.");
-  //       }
-  //     } catch (err) {
-  //       showWarning("Failed to fetch social media data.");
-  //     }
-  //   };
-  //   fetchSocialData();
-  // }, []);
+  useEffect(() => {
+    const fetchSocialData = async () => {
+      try {
+        const [links, types] = await Promise.all([
+          JobSeekerProfileService.getMySocialLinks(),
+          JobSeekerProfileService.getSocialTypes(),
+        ]);
+        setSocialLinks(links);
+        setSocialTypes(types);
+        if (!links || links.length === 0) {
+          showInfo("No social media links found for this user.");
+        }
+      } catch (err) {
+        showWarning("Failed to fetch social media data.");
+      }
+    };
+    fetchSocialData();
+  }, []);
 
 
   if (!applicant) {
@@ -190,10 +198,7 @@ const SeekerDetail = ({ applicant }) => {
             </div>
           </div>
 
-          <section className={cx("section")}>
-            <h3 className={cx("sectionTitle")}>COVER LETTER</h3>
-            <p className={cx("sectionText")}>{coverLetterDisplay}</p>
-          </section>
+
 
           <section className={cx("socialMedia")}>
             <span>Follow me on Social Media</span>
@@ -229,94 +234,127 @@ const SeekerDetail = ({ applicant }) => {
               )}
             </div>
           </section>
+          <div className={cx("right")}>
+            <div className={cx("infoBox")}>
+              <div className={cx("infoRow")}>
+              </div>
+
+              <div className={cx("infoRow")}>
+                <div className={cx("infoItem")}>
+
+                </div>
+                <div className={cx("infoItem")}>
+
+                </div>
+              </div>
+
+              <div className={cx("infoRow")}>
+                <div className={cx("infoItem")}>
+                  <p className={cx("infoLabel")}>EXPERIENCE</p>
+                  <p className={cx("infoValue")}>
+                    {experienceName || seekerDetail.experienceName || "N/A"}
+                  </p>
+                </div>
+                <div className={cx("infoItem")}>
+                  <p className={cx("infoLabel")}>EDUCATION</p>
+                  <p className={cx("infoValue")}>
+                    {educationName || seekerDetail.educationName || "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className={cx("infoBox", "resumeBox")}>
+              <h3 className={cx("resumeTitle")}>View Resume</h3>
+              <p className={cx("resumeName")}>{seekerDetail.fullName || "N/A"}</p>
+              <button
+                className={cx("downloadBtn")}
+                aria-label="Download Resume"
+                onClick={() => {
+                  if (seekerDetail.resumeUrl) {
+                    window.open(seekerDetail.resumeUrl, "_blank");
+                  } else {
+                    alert("Resume not available");
+                  }
+                }}
+              >
+                <IoCloudDownloadOutline />
+              </button>
+            </div>
+
+
+            {showSummary && (
+              <div className={cx("modalOverlay")}>
+                <div className={cx("modalContent")}>
+                  <button
+                    className={cx("closeBtn")}
+                    aria-label="Close Resume Summary"
+                    onClick={() => setShowSummary(false)}
+                  >
+                    ×
+                  </button>
+                  <ResumeProfile applicationId={applicationId} />
+                </div>
+              </div>
+            )}
+
+            <div className={cx("infoBox")}>
+              <h3 className={cx("contactTitle")}>Contact Information</h3>
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <TfiEmail /> </span>
+                <span className={cx("contactText")}>{email || "N/A"}</span>
+              </div>
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <FaPhoneAlt /> </span>
+                <span className={cx("contactText")}>{phone || "N/A"}</span>
+              </div>
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <FaMapLocationDot /> </span>
+                <span className={cx("contactText")}>{seekerDetail.location || "N/A"}</span>
+              </div>
+            </div>
+            {/* New infoBox for extra info */}
+            <div className={cx("infoBox")}>
+              <h3 className={cx("contactTitle")}>Account Details</h3>
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <FaRegUserCircle /> </span>
+                <span className={cx("contactText")}>{seekerDetail.roleName || "N/A"}</span>
+              </div>
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <MdOutlineWorkspacePremium /> </span>
+                <span className={cx("contactText")}>{seekerDetail.isPremium ? "Premium" : "Normal"}</span>
+              </div>
+              {/* <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <MdVerified /> </span>
+                <span className={cx("contactText")}>{seekerDetail.verified === 1 ? "Verified" : "Not Verified"}</span>
+              </div> */}
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <IoIosTime /> </span>
+                <span className={cx("contactText")}>{seekerDetail.createdAt ? new Date(seekerDetail.createdAt).toLocaleString() : "N/A"}</span>
+              </div>
+              <div className={cx("contactItem")}>
+                <span className={cx("icon")}> <MdOutlineUpdate /> </span>
+                <span className={cx("contactText")}>{seekerDetail.updatedAt ? new Date(seekerDetail.updatedAt).toLocaleString() : "N/A"}</span>
+              </div>
+            </div>
+
+            <div style={{ marginTop: "15px", textAlign: "center" }}>
+              <button
+                className={cx("downloadBtn")}
+                aria-label="View Resume Summary"
+                onClick={handleShowResumeSummary}
+              >
+                📄Resume Summary
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className={cx("right")}>
-          <div className={cx("infoBox")}>
-            <div className={cx("infoRow")}>
-            </div>
 
-            <div className={cx("infoRow")}>
-              <div className={cx("infoItem")}>
 
-              </div>
-              <div className={cx("infoItem")}>
 
-              </div>
-            </div>
-
-            <div className={cx("infoRow")}>
-              <div className={cx("infoItem")}>
-                <p className={cx("infoLabel")}>EXPERIENCE</p>
-                <p className={cx("infoValue")}>
-                  {experienceName || seekerDetail.experienceName || "N/A"}
-                </p>
-              </div>
-              <div className={cx("infoItem")}>
-                <p className={cx("infoLabel")}>EDUCATION</p>
-                <p className={cx("infoValue")}>
-                  {educationName || seekerDetail.educationName || "N/A"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className={cx("infoBox", "resumeBox")}>
-            <h3 className={cx("resumeTitle")}>View Resume</h3>
-            <p className={cx("resumeName")}>{seekerDetail.fullName || "N/A"}</p>
-            <button
-              className={cx("downloadBtn")}
-              aria-label="Download Resume"
-              onClick={() => {
-                if (seekerDetail.resumeUrl) {
-                  window.open(seekerDetail.resumeUrl, "_blank");
-                } else {
-                  alert("Resume not available");
-                }
-              }}
-            >
-              ⬇
-            </button>
-          </div>
-
-          <div style={{ marginTop: "15px", textAlign: "center" }}>
-            <button
-              className={cx("downloadBtn")}
-              aria-label="View Resume Summary"
-              onClick={handleShowResumeSummary}
-            >
-              📄Resume Summary
-            </button>
-          </div>
-
-          {showSummary && (
-            <div className={cx("modalOverlay")}>
-              <div className={cx("modalContent")}>
-                <button
-                  className={cx("closeBtn")}
-                  aria-label="Close Resume Summary"
-                  onClick={() => setShowSummary(false)}
-                >
-                  ×
-                </button>
-                <ResumeProfile applicationId={applicationId} />
-              </div>
-            </div>
-          )}
-
-          <div className={cx("infoBox")}>
-            <h3 className={cx("contactTitle")}>Contact Information</h3>
-            <div className={cx("contactItem")}>
-              <span className={cx("icon")}>✉️</span>
-              <span className={cx("contactText")}>{email || "N/A"}</span>
-            </div>
-            <div className={cx("contactItem")}>
-              <span className={cx("icon")}>📞</span>
-              <span className={cx("contactText")}>{phone || "N/A"}</span>
-            </div>
-          </div>
-        </div>
       </div>
+
     </div>
   );
 };

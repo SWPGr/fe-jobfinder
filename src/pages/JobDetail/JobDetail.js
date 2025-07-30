@@ -353,7 +353,7 @@ const JobDetail = ({
 
 
         {/*Report Button  */}
-        {isJOB_SEEKER && <ReportButton />}
+        {id && isJOB_SEEKER && <ReportButton />}
       </div>
 
       {/* Bên phải */}

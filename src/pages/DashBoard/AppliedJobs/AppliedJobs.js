@@ -292,7 +292,7 @@ function AppliedJobs() {
                                     }}
                                     isVIP={application.job?.employer?.isPremium || false}
                                     appliedDate={appliedDate}
-
+                                    status={application.status}
                                     onViewDetails={() => handleViewDetails(application.job.id)}
                                 />
                             </div>

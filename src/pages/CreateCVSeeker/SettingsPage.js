@@ -7,12 +7,19 @@ import styles from './SettingsPage.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import EmployerService from '~/services/EmployerService';
 import Single from '../Single/Single';
+import { useNotification } from '~/hooks';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
-const tabsOrder = ['Company Info', 'Founding Info', 'Contact'];
+const tabsOrder = ['Company Info', 'Founding Info', 'Social Media Profile', 'Contact'];
 
-
+const socialOptions = [
+  { label: 'Facebook', value: 'facebook', icon: '📘' },
+  { label: 'Twitter', value: 'twitter', icon: '🐦' },
+  { label: 'Instagram', value: 'instagram', icon: '📸' },
+  { label: 'Youtube', value: 'youtube', icon: '▶️' },
+];
 
 const SaveNextButton = ({ onClick, style }) => (
   <button type="button" className={cx('saveNextBtn')} onClick={onClick} style={style}>
@@ -21,6 +28,18 @@ const SaveNextButton = ({ onClick, style }) => (
 );
 
 function SettingsPage() {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [formData, setFormData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  const [loading, setLoading] = useState(false);
+  const { showSuccess, showError, showInfo } = useNotification();
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+
+
   const [activeTab, setActiveTab] = useState('Company Info');
 
   const [form, setForm] = useState({
@@ -50,9 +69,54 @@ function SettingsPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState('');
   const [uploadTarget, setUploadTarget] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    // Validation
+    if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
+      showError('Please fill in all fields');
+      return;
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      showError('New password and confirm password do not match');
+      return;
+    }
+
+    if (formData.newPassword.length < 6) {
+      showError('New password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await EmployerService.changePassword(formData.currentPassword, formData.newPassword);
+      showSuccess('Password changed successfully');
+
+      // Reset form
+      setFormData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      });
+    } catch (err) {
+      console.error('Error changing password:', err);
+      if (err.code === 7105) {
+        showError('Wrong password');
+      } else {
+        showError(`Failed to change password: ${err.message || 'Unknown error'}`);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
   // Load data profile từ API
   const loadData = async () => {
     try {
@@ -158,8 +222,6 @@ function SettingsPage() {
       return;
     }
     try {
-      setLoading(true); // Bật overlay loading
-      setSuccess(false);
       let avatarUrlUploaded = avatarUrl;
       if (logoFile) {
         const formData = new FormData();
@@ -185,6 +247,7 @@ function SettingsPage() {
 
       profileFormData.append("companyName", companyName.trim());
       profileFormData.append("description", aboutUs);
+      profileFormData.append("organization", 1);
       profileFormData.append("teamSize", form.teamSize);
       profileFormData.append("yearOfEstablishment", year);
       profileFormData.append("location", form.location);
@@ -212,13 +275,9 @@ function SettingsPage() {
 
       await loadData();
       setError('');
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
     } catch (error) {
       console.error('Error updating company info:', error);
       setError('Update failed. Please check your input.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -271,14 +330,14 @@ function SettingsPage() {
                   src={URL.createObjectURL(logoFile)}
                   alt="logo preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : avatarUrl ? (
                 <img
                   src={avatarUrl}
                   alt="logo preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : (
                 <>
@@ -310,7 +369,7 @@ function SettingsPage() {
                   </small>
                 </>
               )}
-              <div className={cx('uploadTitle')}>Upload Logo</div>
+
             </div>
 
             <div className={cx('uploadBox')} onClick={() => openUploadModal('banner')}>
@@ -319,14 +378,14 @@ function SettingsPage() {
                   src={URL.createObjectURL(bannerFile)}
                   alt="banner preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : bannerUrl ? (
                 <img
                   src={bannerUrl}
                   alt="banner preview"
                   className={cx('previewImage')}
-                  style={{ maxHeight: 140, objectFit: 'contain' }}
+
                 />
               ) : (
                 <>
@@ -358,7 +417,7 @@ function SettingsPage() {
                   </small>
                 </>
               )}
-              <div className={cx('uploadTitle')}>Banner Image</div>
+
             </div>
           </div>
 
@@ -383,8 +442,12 @@ function SettingsPage() {
           </div>
 
           <div className={cx('btnGroup')}>
-            <SaveNextButton onClick={() => { handleSave(); }} />
-
+            <SaveNextButton
+              onClick={() => {
+                handleSave();
+                goToNextTab();
+              }}
+            />
           </div>
         </div>
       )}
@@ -392,66 +455,141 @@ function SettingsPage() {
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
-  <div className={cx('inputGroup')}>
-    <label>Team Size</label>
-    <input
-      type="text"
-      name="teamSize"
-      value={form.teamSize}
-      onChange={handleChange}
-      placeholder="Enter team size"
-    />
-  </div>
-</div>
-
-            <div className={cx('row')}>
-              <div className={cx('inputGroup')}>
-                <label>Year of Establishment</label>
-                <input
-                  type="date"
-                  name="yearOfEstablishment"
-                  value={form.yearOfEstablishment}
-                  onChange={handleChange}
-                  placeholder="dd/mm/yyyy"
-                />
-              </div>
-              <div className={cx('inputGroup')}>
-                <label>Company Website</label>
-                <input
-                  type="url"
-                  name="companyWebsite"
-                  value={form.companyWebsite}
-                  onChange={handleChange}
-                  placeholder="Website url..."
-                />
-              </div>
+            {/* <div className={cx('inputGroup')}>
+              <label>Organization Type</label>
+              <select name="organizationType" value={form.organizationType} onChange={handleChange}>
+                <option value="">Select...</option>
+                <option value="Private">Private</option>
+                <option value="Public">Public</option>
+                <option value="Government">Government</option>
+                <option value="Non-profit">Non-profit</option>
+              </select>
             </div>
+            <div className={cx('inputGroup')}>
+              <label>Industry Types</label>
+              <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
+                <option value="">Select...</option>
+                <option value="Technology">Technology</option>
+                <option value="Finance">Finance</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Education">Education</option>
+              </select>
+            </div> */}
+            <div className={cx('inputGroup')}>
+              <label>Team Size</label>
+              <select name="teamSize" value={form.teamSize} onChange={handleChange}>
+                <option value="">Select...</option>
+                <option value="1-10">1-10</option>
+                <option value="11-50">11-50</option>
+                <option value="51-200">51-200</option>
+                <option value="201-500">201-500</option>
+                <option value="500+">500+</option>
+              </select>
+            </div>
+          </div>
 
-            <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
-              <label>Company Vision</label>
-              <SimpleRichTextEditor
-                placeholder="Tell us about your company vision..."
-                onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
-                value={typeof form.companyVision === 'string' ? form.companyVision : ''}
+          <div className={cx('row')}>
+            <div className={cx('inputGroup')}>
+              <label>Year of Establishment</label>
+              <input
+                type="date"
+                name="yearOfEstablishment"
+                value={form.yearOfEstablishment}
+                onChange={handleChange}
+                placeholder="dd/mm/yyyy"
               />
             </div>
-
-            <div className={cx('btnGroup')}>
-              <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
-                Previous
-              </button>
-              <button
-                type="submit"
-                className={cx('saveNextBtn')}
-                onClick={() => {
-                  handleSave();
-                  goToNextTab();
-                }}
-              >
-                Save & Next →
-              </button>
+            <div className={cx('inputGroup')}>
+              <label>Company Website</label>
+              <input
+                type="url"
+                name="companyWebsite"
+                value={form.companyWebsite}
+                onChange={handleChange}
+                placeholder="Website url..."
+              />
             </div>
+          </div>
+
+          <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
+            <label>Company Vision</label>
+            <SimpleRichTextEditor
+              placeholder="Tell us about your company vision..."
+              onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
+              value={typeof form.companyVision === 'string' ? form.companyVision : ''}
+            />
+          </div>
+
+          <div className={cx('btnGroup')}>
+            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
+              Previous
+            </button>
+            <button
+              type="submit"
+              className={cx('saveNextBtn')}
+              onClick={() => {
+                handleSave();
+                goToNextTab();
+              }}
+            >
+              Save & Next →
+            </button>
+          </div>
         </form>
+      )}
+
+      {activeTab === 'Social Media Profile' && (
+        <div className={cx('socialLinksContainer')}>
+          {socialLinks.map((link, idx) => (
+            <div key={link.id} className={cx('socialLinkRow')}>
+              <label>{`Social Link ${idx + 1}`}</label>
+              <div className={cx('socialLinkInputs')}>
+                <select
+                  value={link.type}
+                  onChange={(e) => handleSocialTypeChange(link.id, e.target.value)}
+                  className={cx('socialSelect')}
+                >
+                  {socialOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="Profile link/url..."
+                  value={link.url}
+                  onChange={(e) => handleSocialUrlChange(link.id, e.target.value)}
+                  className={cx('socialInput')}
+                />
+                <button
+                  type="button"
+                  className={cx('removeBtn')}
+                  onClick={() => handleRemoveSocialLink(link.id)}
+                  aria-label={`Remove Social Link ${idx + 1}`}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <button type="button" className={cx('addSocialBtn')} onClick={handleAddSocialLink}>
+            + Add New Social Link
+          </button>
+
+          <div className={cx('btnGroup')}>
+            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Founding Info')}>
+              Previous
+            </button>
+            <SaveNextButton
+              onClick={() => {
+                handleSave();
+                goToNextTab();
+              }}
+            />
+          </div>
+        </div>
       )}
 
       {activeTab === 'Contact' && (
@@ -497,9 +635,77 @@ function SettingsPage() {
 
           <hr className={cx('divider')} />
 
-          <div className={cx('sectionTitle')}>Change Password</div>
-          {/* Change password UI here */}
+          <form className={cx('account-setting-form')} onSubmit={handleSubmit}>
+            <div className={cx('heading3')}>Change Password</div>
+            <div className={cx('form-row')}>
+              <label>Current Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showCurrent ? 'text' : 'password'}
+                  name="currentPassword"
+                  value={formData.currentPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter current password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowCurrent((v) => !v)}
+                >
+                  {showCurrent ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
+            <div className={cx('form-row')}>
+              <label>New Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showNew ? 'text' : 'password'}
+                  name="newPassword"
+                  value={formData.newPassword}
+                  onChange={handleInputChange}
+                  placeholder="Enter new password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowNew((v) => !v)}
+                >
+                  {showNew ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
+            <div className={cx('form-row')}>
+              <label>Confirm Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showConfirm ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  placeholder="Confirm new password"
+                />
+                <button
+                  type="button"
+                  style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', fontSize: 18 }}
+                  tabIndex={-1}
+                  onClick={() => setShowConfirm((v) => !v)}
+                >
+                  {showConfirm ? <FaEye /> : <FaEyeSlash />}
+                </button>
+              </div>
+            </div>
 
+            <button
+              type="submit"
+              className={cx('save-btn')}
+              disabled={loading}
+            >
+              {loading ? 'Changing Password...' : 'Save Changes'}
+            </button>
+          </form>
           <hr className={cx('divider')} />
 
           <div className={cx('sectionTitle')}>Delete Your Company</div>
@@ -609,23 +815,7 @@ function SettingsPage() {
             Add Image
           </Button>
         </Group>
-      </Modal>{loading && (
-        <div className={cx('overlay')}>
-          <div className={cx('spinner')}></div>
-          <div className={cx('loadingText')}>
-            Loading
-            <span className={cx('dot')}>.</span>
-            <span className={cx('dot')}>.</span>
-            <span className={cx('dot')}>.</span>
-          </div>
-        </div>
-      )}
-
-      {success && (
-        <div className={cx('successToast')}>
-          Update Successful!
-        </div>
-      )}
+      </Modal>
     </div>
   );
 }
