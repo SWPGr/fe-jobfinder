@@ -32,6 +32,7 @@ const routes = {
 
     JobSearchEvent: '/job-search-event',
     CandidateSearchEvent: '/candidate-search-event',
+    blockedUser: '/blocked-user',
 };
 
 export default routes;

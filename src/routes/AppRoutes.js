@@ -30,6 +30,7 @@ const FeedBack = lazy(() => import('~/pages/FeedBack/FeedBack'));
 const CandidatesPage = lazy(() => import('~/pages/CandidatesPage/CandidatesPage'));
 const JobListingPage = lazy(() => import('~/pages/JobListingsPage/JobListingPage'));
 const EventDetailPage = lazy(() => import('~/pages/Home/EventDetailPage'));
+const BlockedUserPage = lazy(() => import('~/pages/BlockedUser/BlockedUser'));
 
 // ✅ Các route ai cũng truy cập được
 const publicRoutes = [
@@ -49,6 +50,7 @@ const publicRoutes = [
     { path: config.routes.PaymentManagement, component: PaymentManagement, layout: HeaderOnly },
 
     { path: config.routes.EventDetailPage, component: EventDetailPage, layout: HeaderOnly },
+    { path: config.routes.blockedUser, component: BlockedUserPage, layout: null },
 
     { path: config.routes.CandidateSearchEvent, component: CandidatesPage, layout: HeaderOnly },
     { path: config.routes.JobSearchEvent, component: JobListingPage, layout: HeaderOnly },

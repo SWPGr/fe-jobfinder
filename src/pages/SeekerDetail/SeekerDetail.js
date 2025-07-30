@@ -324,10 +324,10 @@ const SeekerDetail = ({ applicant }) => {
                 <span className={cx("icon")}> <MdOutlineWorkspacePremium /> </span>
                 <span className={cx("contactText")}>{seekerDetail.isPremium ? "Premium" : "Normal"}</span>
               </div>
-              <div className={cx("contactItem")}>
+              {/* <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <MdVerified /> </span>
                 <span className={cx("contactText")}>{seekerDetail.verified === 1 ? "Verified" : "Not Verified"}</span>
-              </div>
+              </div> */}
               <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <IoIosTime /> </span>
                 <span className={cx("contactText")}>{seekerDetail.createdAt ? new Date(seekerDetail.createdAt).toLocaleString() : "N/A"}</span>
