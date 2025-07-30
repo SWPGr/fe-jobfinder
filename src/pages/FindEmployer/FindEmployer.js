@@ -6,6 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useNotification } from '~/hooks';
 
 import { jobService, searchService } from '~/services';
+import { useLoading } from '~/context/LoadingContext';
 
 const cx = classNames.bind(styles);
 
@@ -16,13 +17,19 @@ function FindEmployer() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [totalHits, setTotalHits] = useState(0);
     const { showError } = useNotification();
+    const [isSearched, setIsSearched] = useState(false);
+    const { showLoading, hideLoading } = useLoading();
+    const [isFilterReady, setIsFilterReady] = useState(false);
+
+
 
     // ===== useEffect 1: Lấy filter options khi load trang =====
     useEffect(() => {
         const fetchOptions = async () => {
             try {
+                showLoading();
                 const data = await jobService.getAllOptions();
-
+                hideLoading();
                 const filters = {
                     organizationId: {
                         name: 'Organization Type',
@@ -33,7 +40,10 @@ function FindEmployer() {
 
                 setJobFilter(filters);
                 setCategoryOptions(data?.categories);
+                setIsFilterReady(true); // ✅ filter đã sẵn sàng
+
             } catch (error) {
+                hideLoading();
                 showError('Get options failed');
             }
         };
@@ -43,18 +53,29 @@ function FindEmployer() {
 
     useEffect(() => {
         const fetchJobs = async () => {
-            const cleanedParams = Object.fromEntries(
-                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null),
-            );
 
-            const result = await searchService.searchEmployer(cleanedParams);
-            const formatted = result.data;
-            setDataset(formatted);
-            setTotalHits(result.totalHits);
+            setIsSearched(false);
+            if (!isFilterReady) return; // ⛔ Không gọi nếu filter chưa sẵn sàng
+
+            try {
+                const cleanedParams = Object.fromEntries(
+                    [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null),
+                );
+
+                const result = await searchService.searchEmployer(cleanedParams);
+                const formatted = result.data;
+                setDataset(formatted);
+                setTotalHits(result.totalHits);
+            } catch (error) {
+                hideLoading();
+                showError('Get options failed');
+            } finally {
+                setIsSearched(true); // ✅ đánh dấu đã search xong
+            }
         };
 
         fetchJobs();
-    }, [searchParams]);
+    }, [searchParams, isFilterReady]);
 
     return (
         <div className={cx('find-job__wrapper')}>
@@ -73,6 +94,7 @@ function FindEmployer() {
                 totalHits={totalHits}
                 dataset={dataset}
                 type="COMPANY"
+                isSearched={isSearched}
             />
         </div>
     );

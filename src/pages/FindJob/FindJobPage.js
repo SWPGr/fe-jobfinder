@@ -7,6 +7,7 @@ import { useNotification } from '~/hooks';
 import { jobService } from '~/services';
 import { format } from '~/utils';
 import { Filter } from '~/components';
+import { useLoading } from '~/context/LoadingContext';
 
 const cx = classNames.bind(styles);
 
@@ -16,14 +17,20 @@ function FindJob() {
     const [categoryOptions, setCategoryOptions] = useState([]);
     const [totalHits, setTotalHits] = useState(0);
     const { showError } = useNotification();
+    const { showLoading, hideLoading } = useLoading();
+    const [isFilterReady, setIsFilterReady] = useState(false);
 
     const [searchParams, setSearchParams] = useSearchParams();
+    const [isSearched, setIsSearched] = useState(false);
+
 
     // ===== useEffect 1: Lấy filter options khi load trang =====
     useEffect(() => {
         const fetchOptions = async () => {
             try {
+                showLoading();
                 const data = await jobService.getAllOptions();
+                hideLoading();
                 const filters = {
                     experienceId: {
                         name: 'Experience',
@@ -60,9 +67,13 @@ function FindJob() {
                 };
                 setJobFilter(filters);
                 setCategoryOptions(data.categories);
+                setIsFilterReady(true); // ✅ filter đã sẵn sàng
+
             } catch (error) {
+                hideLoading();
                 showError(error);
             }
+
         };
 
         fetchOptions();
@@ -71,20 +82,32 @@ function FindJob() {
     // ===== useEffect 2: Mỗi khi searchParams thay đổi thì gọi API tìm job =====
     useEffect(() => {
         const fetchJobs = async () => {
-            const cleanedParams = Object.fromEntries(
-                [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null && v !== undefined),
-            );
+            setIsSearched(false);
+            if (!isFilterReady) return; // ⛔ Không gọi nếu filter chưa sẵn sàng
 
-            const result = await jobService.searchJob(cleanedParams);
-            console.log(result.data);
+            try {
+                showLoading();
+                const cleanedParams = Object.fromEntries(
+                    [...searchParams.entries()].filter(([_, v]) => v !== '' && v !== null && v !== undefined),
+                );
 
-            const formatted = result.data.map(format.transformJobData);
-            setDataset(formatted);
-            setTotalHits(result.totalHits);
+                const result = await jobService.searchJob(cleanedParams);
+                console.log(result);
+
+                hideLoading();
+
+                const formatted = result.data.map(format.transformJobData);
+                setDataset(formatted);
+                setTotalHits(result.totalHits);
+            } catch (error) {
+                hideLoading();
+                showError(error);
+            } finally {
+                setIsSearched(true); // ✅ đánh dấu đã search xong
+            }
         };
-
         fetchJobs();
-    }, [searchParams]);
+    }, [searchParams, isFilterReady]);
 
     return (
         <div className={cx('find-job__wrapper')}>
@@ -103,6 +126,7 @@ function FindJob() {
                     setSearchParams(formValues);
                 }}
                 isFindJob
+                isSearched={isSearched}
             />
         </div>
     );
