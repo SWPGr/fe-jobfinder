@@ -45,7 +45,7 @@ function ReportButton() {
         }
         if (opened) { fetchReportTypes(); }
 
-    }, [opened]);
+    }, []);
 
 
 
@@ -55,7 +55,7 @@ function ReportButton() {
             subject: '',
             content: '',
         });
-    }, [opened, form]);
+    }, [opened]);
 
     if (!id) {
         showError('Job id is missing');
