@@ -24,16 +24,6 @@ function BlockedUser() {
         navigate('/login');
     };
 
-    const handleContactSupport = () => {
-        // Mở email client với địa chỉ support
-        window.open('mailto:support@jobfinder.com?subject=Account Blocked - Need Assistance', '_blank');
-    };
-
-    const handleCallSupport = () => {
-        // Mở số điện thoại support
-        window.open('tel:+1234567890', '_blank');
-    };
-
     return (
         <div className={cx('blocked-container')}>
             <div className={cx('blocked-content')}>
@@ -61,15 +51,16 @@ function BlockedUser() {
                 {/* Phần thông tin liên hệ */}
                 <div className={cx('contact-section')}>
                     <h3 className={cx('contact-title')}>Need Help? Contact Support</h3>
-                    <div className={cx('contact-buttons')}>
-                        <button onClick={handleContactSupport} className={cx('contact-link')}>
+                    <div className={cx('contact-info')}>
+                        <div className={cx('contact-item-1')}>
                             <IconMail size={18} className={cx('contact-icon')} />
-                            <span>Email Support</span>
-                        </button>
-                        <button onClick={handleCallSupport} className={cx('contact-link')}>
-                            <IconPhone size={18} className={cx('contact-icon')} />
-                            <span>Call Support</span>
-                        </button>
+                            <span>support@jobfinder.com</span>
+                        </div>
+
+                    </div>
+                    <div className={cx('contact-item-2')}>
+                        <IconPhone size={18} className={cx('contact-icon')} />
+                        <span>+1 (234) 567-8900</span>
                     </div>
                 </div>
 

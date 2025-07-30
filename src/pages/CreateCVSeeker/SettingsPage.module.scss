@@ -10,6 +10,93 @@
     padding-left: 7rem;
 }
 
+.section {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 0.8rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sectionTitle {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--gray-700);
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+
+        &:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.saveBtn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover:not(:disabled) {
+        background: var(--primary-dark);
+    }
+
+    &:disabled {
+        background: var(--gray-400);
+        cursor: not-allowed;
+    }
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid var(--gray-300);
+    margin: 3rem 0;
+}
+
 .title {
     margin-bottom: 3rem;
     color: var(--gray-900);

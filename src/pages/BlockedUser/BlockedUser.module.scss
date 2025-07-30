@@ -124,36 +124,42 @@
     margin-bottom: 15px;
 }
 
-.contact-buttons {
+.contact-info {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.contact-link {
-    display: inline-flex;
+    flex-direction: column;
+    gap: 12px;
     align-items: center;
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 12px 25px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    border: none;
-    cursor: pointer;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.contact-link:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+.contact-item-1,
+.contact-item-2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    font-size: 16px;
+    color: #495057;
+    transition: all 0.3s ease;
+    min-width: 250px;
+    text-align: center;
+}
+
+.contact-item-1:hover,
+.contact-item-2:hover {
+    background-color: #e9ecef;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .contact-icon {
-    margin-right: 8px;
+    color: #007bff;
+    flex-shrink: 0;
 }
 
 .blocked-buttons {
@@ -328,8 +334,9 @@
     .blocked-buttons {
         flex-direction: row;
     }
-    .contact-buttons {
+    .contact-info {
         flex-direction: row;
+        justify-content: center;
     }
 }
 
@@ -338,8 +345,12 @@
         padding: 20px;
         margin: 10px;
     }
-    .contact-buttons {
+    .contact-info {
         flex-direction: column;
+    }
+    .contact-item-1,
+    .contact-item-2 {
+        min-width: 200px;
     }
     .reason {
         font-size: 14px;
