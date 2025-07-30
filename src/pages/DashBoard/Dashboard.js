@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Dashboard.module.scss';
-import JobItemApplied from '~/components/JobItemApplied';
-import { Pagination } from '@mantine/core';
-import { Link } from 'react-router-dom';
 import JobSeekerDashboardService from '~/services/JobSeekerDashboardService';
 import JobSeekerProfileService from '~/services/JobSeekerProfileService';
-import JobDetail from '~/pages/JobDetail/JobDetail';
 import { useNotification } from '~/hooks';
 import SeekerDetail from '~/pages/SeekerDetail/SeekerDetail';
+import { TiTick } from "react-icons/ti";
 
 const cx = classNames.bind(styles);
 
@@ -184,7 +181,7 @@ function Dashboard1() {
     };
 
     return (
-        <div className={cx('dashboard-content')}>
+        <div className={cx('dashboard-container-main')}>
             <div className={cx('dashboard-header')}>
                 <div>
                     <h2>Hello, {userName || 'User'}</h2>
@@ -206,19 +203,60 @@ function Dashboard1() {
                     <div className={cx('stat-label')}>Job Alerts</div>
                 </div>
             </div>
+            <div className={cx('dashboard-container')}>
 
-            {/* Card thông tin cá nhân - dùng SeekerDetail */}
-            {profileData && (
-                <SeekerDetail
-                    applicant={{
-                        ...profileData,
-                        seekerDetail: profileData, // sửa lại key này để SeekerDetail lấy đúng avatar và tên
-                        id: profileData.id || profileData._id || 1,
-                        title: '',
-                    }}
-                />
-            )}
+                <div className={cx('dashboard-content-1')}>
+
+
+                    {/* Card thông tin cá nhân - dùng SeekerDetail */}
+
+                    {profileData && (
+                        <SeekerDetail
+                            applicant={{
+                                ...profileData,
+                                seekerDetail: profileData, // sửa lại key này để SeekerDetail lấy đúng avatar và tên
+                                id: profileData.id || profileData._id || 1,
+                                title: '',
+                            }}
+                        />
+                    )}
+
+                </div>
+                <div className={cx('dashboard-content-2')}>
+                    <div className={cx('ad-banner-landing')}>
+                        <img
+                            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                            alt="JobFinder Banner"
+                            className={cx('ad-banner-img')}
+                        />
+                        <h2 className={cx('ad-banner-title')}>Find Your Perfect Job with JobFinder!</h2>
+                        <p className={cx('ad-banner-desc')}>
+                            Instantly search thousands of jobs tailored to your skills and interests.<br />
+                            <b>Use our smart filters</b> to discover the best opportunities for you!
+                        </p>
+                        <ul className={cx('ad-banner-benefits')}>
+                            <li><TiTick className={cx('tick-icon')} /> Advanced job search with real-time results</li>
+                            <li><TiTick className={cx('tick-icon')} /> Filter by location, salary, industry, and more</li>
+                            <li><TiTick className={cx('tick-icon')} /> Save your favorite jobs for later</li>
+                            <li><TiTick className={cx('tick-icon')} /> Get instant notifications for new matching jobs</li>
+                        </ul>
+                        <a
+                            href="/find-job"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={cx('ad-banner-cta')}
+                        >
+                            Find Jobs Now!
+                        </a>
+                        <div className={cx('ad-banner-contact')}>
+                            <span>Hotline: <a href="tel:0123456789">0123 456 789</a></span> |
+                            <span>Email: <a href="mailto:support@jobfinder.com">support@jobfinder.com</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     );
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPinIcon, ClockIcon, TagIcon } from 'lucide-react';
+import { MapPinIcon, ClockIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const JobCard = ({ title, company, location, employmentType, skills, logo, postedDate, featured = false }) => {
@@ -9,9 +9,8 @@ const JobCard = ({ title, company, location, employmentType, skills, logo, poste
     };
     return (
         <div
-            className={`bg-white rounded-lg shadow-md p-6 border ${
-                featured ? 'border-blue-400' : 'border-gray-100'
-            } hover:shadow-lg transition-shadow duration-300`}
+            className={`bg-white rounded-lg shadow-md p-6 border ${featured ? 'border-blue-400' : 'border-gray-100'
+                } hover:shadow-lg transition-shadow duration-300`}
         >
             {featured && (
                 <div className="absolute -top-3 -right-3">

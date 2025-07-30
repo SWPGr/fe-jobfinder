@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Avatar, Title } from '@mantine/core';
+import { Avatar } from '@mantine/core';
 import { IconChevronDown, IconSettingsFilled, IconArrowAutofitRightFilled } from '@tabler/icons-react';
 import classNames from 'classnames/bind';
 import styles from './Avatar.module.scss';
@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 
 function AvatarButton({ avatar }) {
     let [visible, setVisible] = useState(false);
-    const { user, logout } = useAuth();
+    const { logout } = useAuth();
     const navigate = useNavigate();
 
     const MENU_ITEMS = [
@@ -20,7 +20,7 @@ function AvatarButton({ avatar }) {
             title: 'Settings',
             iconLeft: <IconSettingsFilled />,
             iconRight: null,
-            to: '/profile',
+            to: 'profile',
             separate: false,
         },
         {

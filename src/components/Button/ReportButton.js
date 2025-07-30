@@ -55,7 +55,7 @@ function ReportButton() {
             subject: '',
             content: '',
         });
-    }, [opened]);
+    }, [opened, form]);
 
     if (!id) {
         showError('Job id is missing');

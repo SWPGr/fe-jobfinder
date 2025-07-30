@@ -40,7 +40,7 @@ const JobSeekerDashboardService = {
     getJobDetail: async (jobId, token) => {
         try {
             return await get(
-                '/apply/jobs/${jobId}', // Update to the correct endpoint (e.g., /apply/jobs/{id})
+                `/apply/jobs/${jobId}`, // Update to the correct endpoint (e.g., /apply/jobs/{id})
                 {},
                 {},
             );

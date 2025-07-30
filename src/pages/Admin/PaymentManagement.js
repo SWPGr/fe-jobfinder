@@ -3,12 +3,8 @@ import classNames from 'classnames/bind';
 import styles from './PaymentManagement.module.scss';
 import {
     Search,
-    Download,
-    DollarSign,
     CheckCircle2,
-    XCircle,
     Clock,
-    ArrowUpDown,
     Coins,
 } from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
@@ -39,6 +35,15 @@ const PaymentManagement = () => {
     const [paymentType, setPaymentType] = useState('all');
     const [status, setStatus] = useState('all');
 
+    // Thêm state cho applied filters
+    const [appliedFilters, setAppliedFilters] = useState({
+        searchText: '',
+        paymentType: 'all',
+        status: 'all',
+        fromDate: '',
+        toDate: ''
+    });
+
     // Thêm state cho payment statistics
     const [paymentStats, setPaymentStats] = useState({
         currentMonthTotalRevenue: 0,
@@ -60,14 +65,12 @@ const PaymentManagement = () => {
         const fetchPayments = async () => {
             setLoading(true);
             try {
-                // Chuẩn bị params filter
+                // Chỉ truyền các key có giá trị
                 const params = { page: page - 1, size: 10 };
-                if (searchText) params.keyword = searchText;
-                if (paymentType !== 'all') params.paymentType = paymentType;
-                if (status !== 'all') params.status = status;
-                // Thêm fromDate, toDate nếu có
-                if (fromDate) params.fromDate = fromDate;
-                if (toDate) params.toDate = toDate;
+                if (appliedFilters.userEmail) params.userEmail = appliedFilters.userEmail;
+                if (appliedFilters.paymentStatus) params.paymentStatus = appliedFilters.paymentStatus;
+                if (appliedFilters.fromDate) params.fromDate = appliedFilters.fromDate;
+                if (appliedFilters.toDate) params.toDate = appliedFilters.toDate;
                 const res = await statisticsService.fetchAllPayments(params);
                 setPayments(res.content || []);
                 setTotalPages(res.totalPages || 1);
@@ -79,7 +82,7 @@ const PaymentManagement = () => {
             }
         };
         fetchPayments();
-    }, [page, searchText, paymentType, status, fromDate, toDate]);
+    }, [page, appliedFilters]);
 
     // Fetch payment statistics
     useEffect(() => {
@@ -98,25 +101,48 @@ const PaymentManagement = () => {
         fetchPaymentStats();
     }, []);
 
-    // Khi filter thay đổi, reset page về 1
+    // Khi filter thay đổi, không reset page ngay
     const handleSearchChange = (e) => {
         setSearchText(e.target.value);
-        setPage(1);
     };
     const handlePaymentTypeChange = (e) => {
         setPaymentType(e.target.value);
-        setPage(1);
     };
     const handleStatusChange = (e) => {
         setStatus(e.target.value);
-        setPage(1);
     };
     const handleFromDateChange = (e) => {
         setFromDate(e.target.value);
-        setPage(1);
     };
     const handleToDateChange = (e) => {
         setToDate(e.target.value);
+    };
+
+    // Hàm apply filters
+    const handleApplyFilters = () => {
+        setAppliedFilters({
+            userEmail: searchText, // dùng userEmail cho input search
+            paymentStatus: status !== 'all' ? status : undefined, // dùng paymentStatus cho select
+            fromDate,
+            toDate
+        });
+        setPage(1); // Reset về trang 1 khi apply filters
+    };
+
+    // Hàm clear filters
+    const handleClearFilters = () => {
+        setSearchText('');
+        setPaymentType('all');
+        setStatus('all');
+        setFromDate('');
+        setToDate('');
+        setAppliedFilters({
+            searchText: '',
+            paymentType: 'all',
+            status: 'all',
+            fromDate: '',
+            toDate: ''
+        });
         setPage(1);
     };
 
@@ -252,7 +278,7 @@ const PaymentManagement = () => {
                             type="date"
                             className={cx('filter-select')}
                             value={fromDate}
-                            max={toDate}
+                            max={toDate || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' })}
                             onChange={handleFromDateChange}
                             placeholder="From date"
                             style={{ minWidth: '140px' }}
@@ -279,8 +305,23 @@ const PaymentManagement = () => {
                         <option value="PENDING">Pending</option>
                         <option value="SUCCESS">Successful</option>
                         <option value="FAILED">Failed</option>
-                        <option value="REFUNDED">Refunded</option>
                     </select>
+                </div>
+
+                {/* Filter buttons */}
+                <div className={cx('toolbar-actions')}>
+                    <button
+                        className={cx('action-button', 'primary')}
+                        onClick={handleApplyFilters}
+                    >
+                        Apply Filters
+                    </button>
+                    <button
+                        className={cx('action-button-clear')}
+                        onClick={handleClearFilters}
+                    >
+                        Clear Filters
+                    </button>
                 </div>
             </div>
 

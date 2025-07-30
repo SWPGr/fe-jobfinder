@@ -5,7 +5,6 @@ import { Combobox, useCombobox } from '@mantine/core';
 import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
 import { JobSearchFilters } from '~/components';
 import { useSearchParams } from 'react-router-dom';
-import { jobService } from '~/services';
 import { Pagination } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import useNotification from '~/hooks/userNotification';
@@ -78,13 +77,13 @@ const JobRowDropdown = ({ onAction, jobId, isActive }) => {
 const Jobs = () => {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const [visibleJobs, setVisibleJobs] = useState(10);
     const [jobs, setJobs] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [totalHits, setTotalHits] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [page, setPage] = useState(1);
 
     const { showSuccess, showError } = useNotification();
 
@@ -137,22 +136,19 @@ const Jobs = () => {
         const fetchJobs = async () => {
             setLoading(true);
             try {
-                const response = await statisticsService.fetchAllJobsForManagement();
-
-                // Handle the correct response structure from API
+                const response = await statisticsService.fetchAllJobsForManagement({ page, size: 10 });
                 const jobArray = response?.content || [];
                 setJobs(jobArray);
                 setTotalHits(response?.totalElements || 0);
                 setTotalPages(response?.totalPages || 1);
             } catch (err) {
-                console.error('Failed to fetch jobs:', err);
                 setJobs([]);
             } finally {
                 setLoading(false);
             }
         };
         fetchJobs();
-    }, [searchParams]);
+    }, [page]);
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleString('en-US', {
@@ -244,11 +240,12 @@ const Jobs = () => {
                 </table>
             </div>
 
+            {/* Remove Pagination */}
             <div className={cx('pagination')}>
                 <Pagination
                     total={totalPages}
-                    value={Number(searchParams.get('page')) || 1}
-                    onChange={handlePageChange}
+                    value={page}
+                    onChange={setPage}
                     radius="xl"
                     classNames={{ root: cx('pagination-root'), control: cx('control') }}
                 />

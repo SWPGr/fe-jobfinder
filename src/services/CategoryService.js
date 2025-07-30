@@ -45,12 +45,32 @@ const delCategoryById = async (id) => {
     }
 };
 
+const getTopCategories = async () => {
+    try {
+        const response = await get('categories/top-categories');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getTopCompanies = async () => {
+    try {
+        const response = await get('users/top-company');
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const categoryService = {
     getAllCategory,
     getCategoryById,
     createCategory,
     updateCategoryById,
     delCategoryById,
+    getTopCategories,
+    getTopCompanies,
 };
 
 export default categoryService;

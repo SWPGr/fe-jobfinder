@@ -1,7 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Filter, Eye, MessageSquare, Bug, Lightbulb, Flag } from 'lucide-react';
 import ReportDetailModal from './components/ReportDetailModal';
-import StatsOverview from './components/StatsOverview';
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '@mantine/core';
 

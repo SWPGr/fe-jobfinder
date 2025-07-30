@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { AiOutlineCalendar, AiOutlineMail } from 'react-icons/ai';
-import { IconBuildingCommunity, IconBriefcase, IconUsersGroup, IconWorld } from '@tabler/icons-react';
+import { IconUsersGroup, IconWorld } from '@tabler/icons-react';
 import styles from './Single.module.scss';
 import EmployerService from '~/services/EmployerService';
 const cx = classNames.bind(styles);

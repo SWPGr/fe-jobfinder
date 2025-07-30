@@ -1,24 +1,22 @@
-import { useState } from 'react';
+
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './CompanyItem.module.scss';
 import {
     IconMapPin,
-    IconBookmark,
-    IconBookmarkFilled,
-    IconStar,
-    IconStarFilled,
+
     IconArrowRight,
     IconBriefcase,
 } from '@tabler/icons-react';
 
 import { Images } from '~/assets';
 import { Button } from '~/components';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
 function CompanyItem({ image = Images.default_image, description = {}, isFeatured, saved, long, className }) {
-    const [save, setSave] = useState(saved || false);
+
 
     const { companyName, location, openJobs = 3 } = description;
 
@@ -28,6 +26,9 @@ function CompanyItem({ image = Images.default_image, description = {}, isFeature
         saved,
     });
 
+    useEffect(() => {
+        console.log(description)
+    }, []);
     return (
         <div className={classes}>
             <div className={cx('header')}>
@@ -44,7 +45,7 @@ function CompanyItem({ image = Images.default_image, description = {}, isFeature
                             <p>Featured</p>
                         </span>
                     )}
-                    <Link to={`/company/${companyName}`} className={cx('company-name')}>
+                    <Link to={`/company/${description.id}`} className={cx('company-name')}>
                         {companyName}
                     </Link>
                     <div className={cx('description')}>
@@ -64,9 +65,7 @@ function CompanyItem({ image = Images.default_image, description = {}, isFeature
             </div>
             {/* HEADER */}
             <div className={cx('action')}>
-                <div className={cx('save')} onClick={() => setSave(!save)}>
-                    {long ? save ? <IconStarFilled /> : <IconStar /> : save ? <IconBookmarkFilled /> : <IconBookmark />}
-                </div>
+
                 <Button
                     to={`/company/${description.id}`}
                     blue_lighter

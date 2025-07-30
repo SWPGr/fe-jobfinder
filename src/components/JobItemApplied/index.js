@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './JobItemApplied.module.scss';
-import { IconMapPin, IconCurrencyDollar, IconCheck, IconX } from '@tabler/icons-react';
+import { IconMapPin, IconCurrencyDollar } from '@tabler/icons-react';
 import { Badge } from '@mantine/core';
 import { Images } from '~/assets';
 import { Button } from '~/components';
@@ -18,7 +18,7 @@ function JobItemApplied({
 }) {
     const classes = cx('wrapper', { isLogin, isVIP });
 
-    const { companyName, companyAddress, jobTitle, workTime, salary, createdAt, isApplied } = jobDescription;
+    const { companyName, companyAddress, jobTitle, workTime, salary, isApplied } = jobDescription;
 
     // Hàm chọn màu badge theo status
     const getStatusBadgeProps = (status) => {
@@ -97,7 +97,7 @@ function JobItemApplied({
                 <div className={cx('status')}>
                     <Badge
                         color={statusBadge.color}
-                        size="lg"
+                        size="xl"
                         classNames={{ label: cx('label-badge', 'status'), root: cx('root-badge') }}
                     >
                         {statusBadge.label}
