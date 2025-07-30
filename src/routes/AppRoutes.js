@@ -1,4 +1,5 @@
 // routes.js
+import { Layout } from 'lucide-react';
 import { lazy } from 'react';
 import config from '~/config';
 
@@ -20,6 +21,7 @@ const VerifyPage = lazy(() => import('~/pages/Verify/VerifyPage'));
 const FindEmployer = lazy(() => import('~/pages/FindEmployer/FindEmployer'));
 const FindCandidate = lazy(() => import('~/pages/FindCandidate/FindCandidate'));
 const Term = lazy(() => import('~/pages/Term/Term'));
+const AboutPage = lazy(()=> import ('~/pages/CreateCVSeeker/About'));
 const ResetPassword = lazy(() => import('~/pages/ResetPassword/ResetPassword'));
 // const CustomerSupport = lazy(() => import('~/pages/'));
 const PaymentManagement = lazy(() => import('~/pages/Payment/Payment'));
@@ -43,6 +45,7 @@ const publicRoutes = [
     { path: config.routes.seekerDetailPage, component: SeekerDetailPage, layout: HeaderOnly },
     { path: config.routes.company, component: Single, layout: HeaderOnly },
     { path: config.routes.term, component: Term, layout: null },
+    { path: config.routes.AboutPage, component: AboutPage, Layout: HeaderOnly},
     { path: config.routes.resetPassword, component: ResetPassword, layout: null },
     { path: config.routes.verify, component: VerifyPage, layout: null },
     { path: config.routes.FeedBack, component: FeedBack, layout: HeaderOnly },

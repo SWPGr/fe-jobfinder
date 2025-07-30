@@ -1,3 +1,5 @@
+import { AboutPage } from "~/pages";
+
 const routes = {
     admin: '/admin', // Admin dashboard
     home: '/',
@@ -7,7 +9,7 @@ const routes = {
     postJob: '/post-job', // Page to post a new job
     login: '/login', // Login page
     register: '/register', // Registration page
-    about: '/about', // About page
+    AboutPage: '/about', // About page
     contact: '/contact', // Contact page
     dashboard: '/dashboard', // Admin or user dashboard
     applications: '/applications', // List of job applications
@@ -30,7 +32,6 @@ const routes = {
     FeedBack: '/feedback',
     PaymentManagement: '/payment',
     EventDetailPage: '/event-detail',
-
     JobSearchEvent: '/job-search-event',
     CandidateSearchEvent: '/candidate-search-event',
 };

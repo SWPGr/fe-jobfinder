@@ -19,7 +19,7 @@ function Footer({ dark }) {
             title: 'Quick Link',
             items: [
                 ['Home', '/'],
-                ['About', '/about'],
+                ['About', '/term'],
                 ['Contact', '/contact'],
                 ['Pricing', '/pricing'],
                 ['Blog', '/blog'],

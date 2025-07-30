@@ -1,90 +1,90 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './Term.module.scss';
+import img152 from '~/assets/Images/152.jpg';
+import { IconArrowDownDashed } from '@tabler/icons-react';
+import img124 from '~/assets/Images/124.jpg';
+
+// Ảnh đại diện thành viên (đã import sẵn)
+import timCook from '~/assets/Images/111.png';
+import katherineAdams from '~/assets/Images/111.png';
+import eddyCue from '~/assets/Images/111.png';
+import craigFed from '~/assets/Images/111.png';
+import member5 from '~/assets/Images/111.png';
 
 const cx = classNames.bind(styles);
 
-const Term = () => {
+
+const ImageComponent = () => {
   return (
-    <div className={cx('termsContainer')}>
-      <div className={cx('content')}>
-        <div className={cx('pageTitle')}>01. Terms & Condition</div>
-        <p>
-          Praesent placerat dictum eleifend. Nam pulvinar urna vel tellus maximus, eget faucibus
-          turpis hendrerit. Sed lacinia molestie arcu, et accumsan nisi. Quisque molestie velit vitae
-          ligula luctus bibendum. Duis ut lorem ornare, viverra ipsum sed, convallis sapien. Donec
-          justo erat, pulvinar vitae dui ut, finibus euismod enim. Donec velit
-          tortor, mollis at tortor aliquam, gravida facilisis arcu.
-        </p>
-        <ul>
-          <li>In ac turpis. Donec quis semper neque. Nulla cursus gravida interdum.</li>
-          <li>
-            Curabitur luctus sapien sed mattis faucibus nisi vehicula nec. Mauris et scelerisque lorem.
-            Nullam tempus felis ipsum, sagittis malesuada nulla vulputate et.
-          </li>
-          <li>
-            Aenean vel metus leo. Vivamus nec neque a libero sodales aliquet a et dolor.
-            Vestibulum rhoncus sagittis dolor vel finibus.
-          </li>
-          <li>Integer feugiat lacinia ut efficitur mattis. Sed quis molestie velit.</li>
-        </ul>
+    <div>
+      {/* Phần ảnh nền và overlay */}
+      <div className={cx('image-container')}>
+        <img src={img152} alt="Background 152" className={cx('background')} />
 
-        <div className={cx('pageTitle')}>02. Limitations</div>
-        <p>
-          In pretium est sit amet diam feugiat eleifend. Curabitur consectetur fringilla metus. Morbi
-          hendrerit facilisis odio, Sed condimentum lacinia arcu. Ut ut lacinia metus. Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit. Fusce vel erat elit. In vitae turpis tempor,
-          accumsan sapien vitae, rutrum eros. Integer pulvinar mattis libero at Nam bibendum lacinia
-          tristique eu. Donec nec eros commodo, malesuada leo at mollis libero. Ut scelerisque lacinia
-          interdum consectetur sodales.
-        </p>
-        <ul>
-          <li>In ac turpis. Donec quis semper neque. Nulla cursus gravida interdum.</li>
-          <li>Curabitur luctus sapien sed mattis.</li>
-          <li>
-            Nullam tempus felis ipsum, sagittis malesuada nulla vulputate et. Aenean vel metus leo.
-          </li>
-          <li>Vivamus nec neque a libero sodales aliquet a et dolor.</li>
-        </ul>
+        <div className={cx('overlay-text')}>
+          <div>
+            Chào mừng bạn đến <br /> JOBFINDER<br />
+            Nền tảng tìm việc lớn nhất Việt Nam
+          </div>
+          <div className={cx('arrow-icon')}>
+            <IconArrowDownDashed size={80} />
+          </div>
+        </div>
 
-        <div className={cx('pageTitle')}>03. Security</div>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ex neque, elementum eu
-          blandit in, pharetra ac elit. Phasellus id pellentesque nulla. Cras erat nisi, mattis
-          facilisis ut, lacinia a lacinia. Fusce gravida augue ut leo facilisis.
-        </p>
+        <div className={cx('img124-container')}>
+          <img src={img124} alt="About Us Background" className={cx('img124-background')} />
 
-        <div className={cx('pageTitle')}>04. Privacy Policy</div>
-        <p>
-          Praesent non sem facilisis, hendrerit nisi vitae, volutpat quam. Aliquam metus mauris, sem
-          eu eros vitae, blandit tristique metus. Vestibulum maximus nec justo sed maximus. Vivamus
-          sit amet turpis ut, integer vitae tortor ac scelerisque facilisis ac vitae urna. In hac
-          habitasse platea dictumst. Maecenas imperdiet tortor arcu, nec iaculis
-          molestie vulputat.
-        </p>
-        <ul>
-          <li>
-            Mauris at scelerisque lorem. Nullam tempus felis ipsum, sagittis malesuada nulla vulputate
-            et.
-          </li>
-          <li>
-            Aenean vel metus leo.
-            Vestibulum rhoncus sagittis dolor vel finibus.
-          </li>
-          <li>Integer feugiat lacinia ut efficitur mattis. Sed quis molestie velit.</li>
-        </ul>
+          <div className={cx('img124-overlay-text')}>
+            <h3>Về chúng tôi</h3>
+            <p>
+              Từ khởi nguyên thay đổi mọi chiếc CV đến nền tảng công nghệ tuyển dụng hàng đầu Việt Nam, sau 10 năm nghiên cứu, hình thành và phát triển, với hướng đi rõ ràng, giải đúng bài toán tuyển dụng đang “nhức nhối” của hầu hết doanh nghiệp Việt Nam trên hành trình chuyển đổi số, TopCV Việt Nam nhanh chóng vươn mình trở thành công ty hàng đầu trong lĩnh vực HR Tech với mức tăng trưởng 300% mỗi năm.
+            </p>
+          </div>
+        </div>
       </div>
-      <div className={cx('tableOfContents')}>
-        <div className={cx('sectionTitle')}>TABLE OF CONTENTS</div>
-        <ul>
-          <li>01. Terms & Condition</li>
-          <li>02. Limitations</li>
-          <li>03. Security</li>
-          <li>04. Privacy Policy</li>
-        </ul>
+
+      {/* Phần hồ sơ Ban Điều Hành cứng */}
+      <div className={cx('member-section')}>
+        <h2>Hồ Sơ Ban Điều Hành</h2>
+
+        <div className={cx('member-grid')}>
+          {/* Hàng trên 2 ô cứng */}
+          <div className={cx('member-row')}>
+            <div className={cx('member-card')}>
+              <img src={timCook} alt="Tim Cook"  className={cx('img-timcook')}/>
+              <div className={cx('member-name')}>Tim Cook</div>
+              <div className={cx('member-title')}>CEO</div>
+            </div>
+            <div className={cx('member-card')}>
+              <img src={katherineAdams} alt="Katherine Adams" />
+              <div className={cx('member-name')}>Katherine Adams</div>
+              <div className={cx('member-title')}>Senior Vice President and General Counsel</div>
+            </div>
+          </div>
+
+          {/* Hàng dưới 3 ô cứng */}
+          <div className={cx('member-row')}>
+            <div className={cx('member-card')}>
+              <img src={eddyCue} alt="Eddy Cue" />
+              <div className={cx('member-name')}>Eddy Cue</div>
+              <div className={cx('member-title')}>Senior Vice President Services</div>
+            </div>
+            <div className={cx('member-card')}>
+              <img src={craigFed} alt="Craig Federighi" />
+              <div className={cx('member-name')}>Craig Federighi</div>
+              <div className={cx('member-title')}>Senior Vice President Software Engineering</div>
+            </div>
+            <div className={cx('member-card')}>
+              <img src={member5} alt="Fifth Member" />
+              <div className={cx('member-name')}>Fifth Member</div>
+              <div className={cx('member-title')}>Title of Fifth Member</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Term;
+export default ImageComponent;
