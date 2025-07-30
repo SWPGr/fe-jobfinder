@@ -78,17 +78,8 @@ function BlockedUser() {
                         <IconHome size={20} />
                         <span>Home page</span>
                     </button>
-                    <button onClick={handleRefresh} className={cx('button-secondary')}>
-                        <IconRefresh size={20} />
-                        <span>Refresh</span>
-                    </button>
-                </div>
 
-                {/* Nút đăng xuất */}
-                <button onClick={handleLogout} className={cx('logout-button')}>
-                    <IconLogout size={18} />
-                    <span>Logout</span>
-                </button>
+                </div>
 
                 <div className={cx('blocked-footer')}>
                     <p className={cx('note')}>
