@@ -76,6 +76,8 @@ const JobDetail = ({
     const fetchJob = async () => {
       try {
         showLoading();
+        console.log('job', id);
+
         let jobData = await EmployerService.getJobDetail(id || job?.id);
         const input = format.transformJobData(jobData);
         if (input.salaryMax === null && input.salaryMin === null) {
@@ -87,7 +89,7 @@ const JobDetail = ({
       } catch (error) {
         hideLoading();
         setFormData(null);
-        showError('Job not foundasd');
+        showError('Job not found');
         navigate('/')
       }
     };

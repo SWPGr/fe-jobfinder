@@ -76,9 +76,8 @@ const EmployerRowDropdown = ({ onAction, employerId, isActive }) => {
                             Unblock
                         </Combobox.Option>
                     )}
-                    <Combobox.Option value="view" className={cx('dropdownItem')}>
-                        View
-                    </Combobox.Option>
+
+
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
@@ -165,9 +164,7 @@ const EmployersManagement = () => {
                 );
                 showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
-        } else if (action === 'view') {
-            setSelectedEmployer(employer);
-            setIsModalOpen(true);
+
         }
     };
 
@@ -289,17 +286,7 @@ const EmployersManagement = () => {
                                 jobDescription: `<p>Details for employer ${selectedEmployer.fullName || 'ID ' + selectedEmployer.id
                                     }</p>`,
                                 responsibilities: '<ul><li>Manage company operations</li></ul>',
-                                overview: {
-                                    posted: selectedEmployer.createdAt?.slice(0, 10)?.split('-').reverse().join('/') || 'N/A',
-                                    expire: 'N/A',
-                                    education: 'N/A',
-                                    salary: 'N/A',
-                                    location: selectedEmployer.location || 'N/A',
-                                    jobType: 'N/A',
-                                    experience: 'N/A',
-                                    vacancy: 'N/A',
-                                    jobLevel: selectedEmployer.isPremium ? 'Premium' : 'Normal',
-                                },
+
                                 company: {
                                     name: selectedEmployer.fullName || 'N/A',
                                     description: 'N/A',
