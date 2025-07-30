@@ -8,18 +8,9 @@ import { UserSearchFilters } from '~/components';
 import { Pagination } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 import useNotification from '~/hooks/userNotification';
+import { AdminHeader, AdminTable, StatusBadge } from './components';
 
 const cx = classNames.bind(styles);
-
-const sortColumns = [
-    { key: 'fullName', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'location', label: 'Location' },
-    { key: 'applications', label: 'Applications' },
-    { key: 'isPremium', label: 'Premium' },
-    // { key: 'createdAt', label: 'Joined' },
-    { key: 'active', label: 'Active' }, // Thêm cột Active
-];
 
 const JobSeekerRowDropdown = ({ onAction, seekerId, isActive }) => {
     const combobox = useCombobox();
@@ -94,8 +85,11 @@ const JobSeekersManagement = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { showSuccess, showError } = useNotification();
 
-    useEffect(() => {
+    // New state for AdminTable
+    const [searchValue, setSearchValue] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
 
+    useEffect(() => {
         const fetchJobSeekers = async () => {
             setLoading(true);
             try {
@@ -106,7 +100,6 @@ const JobSeekersManagement = () => {
                 setLoading(false);
                 setError(err.message || 'Failed to fetch job seekers');
             }
-
         }
         fetchJobSeekers();
     }, [searchParams]);
@@ -146,7 +139,6 @@ const JobSeekersManagement = () => {
                 showError(`Failed to unblock: ${err.message || 'Unknown error'}`);
             }
         }
-
     };
 
     const closeModal = () => {
@@ -159,83 +151,154 @@ const JobSeekersManagement = () => {
         setSearchParams(params);
     };
 
+    // Table columns configuration for AdminTable
+    const columns = [
+        {
+            key: 'fullName',
+            label: 'Name',
+            render: (value, row) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className={cx('company-avatar')}>{getInitials(row.fullName)}</div>
+                    <div style={{ marginLeft: 12 }}>
+                        <div className={cx('job-title')}>{row.fullName || '--'}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'email',
+            label: 'Email',
+            render: (value) => value || '--'
+        },
+        {
+            key: 'location',
+            label: 'Location',
+            render: (value) => value || '--'
+        },
+        {
+            key: 'applications',
+            label: 'Applications',
+            render: (value) => value ?? 0
+        },
+        {
+            key: 'isPremium',
+            label: 'Premium',
+            render: (value) => <StatusBadge status={value ? 'premium' : 'normal'} size="small" />
+        },
+        {
+            key: 'active',
+            label: 'Status',
+            render: (value) => <StatusBadge status={value ? 'active' : 'inactive'} size="small" />
+        }
+    ];
+
+    // Actions configuration for AdminTable
+    const actions = [
+        {
+            key: 'view',
+            label: 'View Details',
+            onClick: (row) => {
+                setSelectedSeeker(row);
+                setIsModalOpen(true);
+            }
+        },
+        {
+            key: 'block',
+            label: 'Block User',
+            variant: 'danger',
+            onClick: (row) => handleAction('block', row.id),
+            show: (row) => row.active === true
+        },
+        {
+            key: 'unblock',
+            label: 'Unblock User',
+            variant: 'success',
+            onClick: (row) => handleAction('unblock', row.id),
+            show: (row) => row.active === false
+        }
+    ];
+
+    // Bulk actions configuration
+    const bulkActions = [
+        {
+            key: 'block',
+            label: 'Block Selected',
+            variant: 'danger',
+            onClick: (selectedIds) => {
+                selectedIds.forEach(id => handleAction('block', id));
+            }
+        },
+        {
+            key: 'unblock',
+            label: 'Unblock Selected',
+            variant: 'success',
+            onClick: (selectedIds) => {
+                selectedIds.forEach(id => handleAction('unblock', id));
+            }
+        }
+    ];
+
+    // Filter options
+    const filters = [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'premium', label: 'Premium' },
+        { value: 'normal', label: 'Normal' }
+    ];
+
     if (error) return <div className={cx('error')}>{error}</div>;
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
-
-
-    if (error) return <div className={cx('error')}>{error}</div>;
-
     return (
         <div className={cx('jobs-wrapper')}>
-            <div className={cx('jobs-header')}>
-                <div className={cx('title')}>Job Seekers Management</div>
-            </div>
+            {/* New AdminHeader component */}
+            <AdminHeader
+                title="Job Seekers Management"
+                subtitle="Manage and monitor all job seekers on your platform"
+                breadcrumbs={['Management', 'Job Seekers']}
+                stats={[
+                    { value: jobSeekers.length, label: 'Total Job Seekers' },
+                    { value: jobSeekers.filter(s => s.active).length, label: 'Active Users' },
+                    { value: jobSeekers.filter(s => s.isPremium).length, label: 'Premium Users' }
+                ]}
+            />
 
-            <UserSearchFilters />
+            {/* New AdminTable component */}
+            <AdminTable
+                title="Job Seekers"
+                data={jobSeekers}
+                columns={columns}
+                loading={loading}
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                filters={filters}
+                onFilterChange={(value) => {
+                    // Implement filter logic here
+                    console.log('Filter changed:', value);
+                }}
+                onExport={() => {
+                    // Implement export logic here
+                    console.log('Export clicked');
+                }}
+                pagination={{
+                    currentPage: Number(searchParams.get('page')) || 1,
+                    totalPages: totalPages,
+                    from: 1,
+                    to: jobSeekers.length,
+                    total: totalHits
+                }}
+                onPageChange={handlePageChange}
+                actions={actions}
+                bulkActions={bulkActions}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                emptyMessage="No job seekers found"
+            />
 
-            <div className={cx('jobs-table-wrapper')}>
-                <table className={cx('jobs-table')}>
-                    <thead>
-                        <tr>
-                            {sortColumns.map((col) => (
-                                <th key={col.key}>{col.label}</th>
-                            ))}
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobSeekers.length > 0 && jobSeekers.map((seeker, idx) => (
-                            <tr key={seeker.id || idx}>
-                                <td>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div className={cx('company-avatar')}>{getInitials(seeker.fullName)}</div>
-                                        <div style={{ marginLeft: 12 }}>
-                                            <div className={cx('job-title')}>{seeker.fullName || '--'}</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className={{ cx: 'email' }}>{seeker.email || '--'}</td>
-                                <td>{seeker.location || '--'}</td>
-                                <td>{seeker.applications ?? 0}</td>
-                                <td>
-                                    <span className={premiumClass(seeker.isPremium)}>
-                                        {seeker.isPremium ? 'Premium' : 'Normal'}
-                                    </span>
-                                </td>
-                                {/* <td>{seeker.createdAt?.slice(0, 10) || '--'}</td> */}
-                                <td>
-                                    <span className={cx('statusText', seeker.active === true ? 'active' : 'inactive')}>
-                                        {seeker.active === true ? 'Active' : 'Inactive'}
-                                    </span>
-                                </td>
-                                <td>
-                                    <JobSeekerRowDropdown
-                                        onAction={(action) => handleAction(action, seeker.id)}
-                                        seekerId={seeker.id}
-                                        isActive={seeker.active === true}
-                                    />
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            {/*  */}
-
-            <div className={cx('pagination')}>
-                <Pagination
-                    total={totalPages}
-                    value={Number(searchParams.get('page')) || 1}
-                    onChange={handlePageChange}
-                    radius="xl"
-                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
-                />
-            </div>
-            {/*  */}
+            {/* Modal */}
             {isModalOpen && selectedSeeker && (
                 <div className={cx('modalOverlay')}>
                     <div className={cx('modalBox')}>

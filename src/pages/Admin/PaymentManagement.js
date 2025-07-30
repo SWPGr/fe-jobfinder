@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import styles from './PaymentManagement.module.scss';
-import {
-    Search,
-    CheckCircle2,
-    Clock,
-    Coins,
-} from 'lucide-react';
 import statisticsService from '~/services/statisticsService';
 import { Pagination } from '@mantine/core';
+import { AdminHeader, AdminTable, StatusBadge, QuickStats } from './components';
 
 const cx = classNames.bind(styles);
 
@@ -35,6 +30,10 @@ const PaymentManagement = () => {
     const [paymentType, setPaymentType] = useState('all');
     const [status, setStatus] = useState('all');
 
+    // New state for AdminTable
+    const [searchValue, setSearchValue] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
+
     // Thêm state cho applied filters
     const [appliedFilters, setAppliedFilters] = useState({
         searchText: '',
@@ -60,6 +59,31 @@ const PaymentManagement = () => {
         totalPaymentsStatus: 'no_change'
     });
     const [statsLoading, setStatsLoading] = useState(false);
+
+    // Quick stats data for the new QuickStats component
+    const quickStatsData = [
+        {
+            value: paymentStats.currentMonthTotalRevenue ? convertVNDtoUSD(paymentStats.currentMonthTotalRevenue) : 0,
+            label: 'Total Revenue',
+            trend: paymentStats.revenueChangePercentage || 0,
+            format: 'currency',
+            description: 'Revenue this month'
+        },
+        {
+            value: paymentStats.currentMonthTotalPaidPayments || 0,
+            label: 'Successful Payments',
+            trend: paymentStats.paidPaymentsChangePercentage || 0,
+            format: 'number',
+            description: 'Completed payments this month'
+        },
+        {
+            value: paymentStats.currentMonthTotalPendingPayments || 0,
+            label: 'Pending Payments',
+            trend: paymentStats.pendingPaymentsChangePercentage || 0,
+            format: 'number',
+            description: 'Pending payments this month'
+        }
+    ];
 
     useEffect(() => {
         const fetchPayments = async () => {
@@ -146,278 +170,115 @@ const PaymentManagement = () => {
         setPage(1);
     };
 
+    // Table columns configuration for AdminTable
+    const columns = [
+        {
+            key: 'id',
+            label: 'ID',
+            render: (value) => `#${value}`
+        },
+        {
+            key: 'paidAt',
+            label: 'Date',
+            render: (value) => value ? new Date(value).toLocaleString() : '--'
+        },
+        {
+            key: 'userEmail',
+            label: 'Customer',
+            render: (value, row) => (
+                <div className={cx('customer-info')}>
+                    <div className={cx('avatarCircle', 'blue')}>
+                        {value ? value.charAt(0).toUpperCase() : '?'}
+                    </div>
+                    <div className={cx('customer-details')}>
+                        <div className={cx('customer-name')}>{value || '--'}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'intendedPlanName',
+            label: 'Type',
+            render: (value, row) => value || row.paymentMethod || '--'
+        },
+        {
+            key: 'amount',
+            label: 'Amount',
+            render: (value) => value ? formatUSD(convertVNDtoUSD(value)) : '--'
+        },
+        {
+            key: 'payosStatus',
+            label: 'Status',
+            render: (value) => <StatusBadge status={value?.toLowerCase()} size="small" />
+        }
+    ];
+
+    // Actions configuration for AdminTable
+    const actions = [
+        {
+            key: 'view',
+            label: 'View Details',
+            onClick: (row) => {
+                console.log('View payment details:', row);
+            }
+        }
+    ];
+
+    // Filter options
+    const filters = [
+        { value: 'PENDING', label: 'Pending' },
+        { value: 'SUCCESS', label: 'Successful' },
+        { value: 'FAILED', label: 'Failed' }
+    ];
+
     return (
         <div className={cx('managementWrapper')}>
-            {/* Header */}
-            <div className={cx('payment-header')}>
-                <div className={cx('title')}>Payment Management</div>
-                <p className={cx('description')}>Track and manage all payment transactions on your platform.</p>
-            </div>
+            {/* New AdminHeader component */}
+            <AdminHeader
+                title="Payment Management"
+                subtitle="Track and manage all payment transactions on your platform"
+                breadcrumbs={['Management', 'Payments']}
+                stats={[
+                    { value: payments.length, label: 'Total Transactions' },
+                    { value: payments.filter(p => p.payosStatus === 'SUCCESS').length, label: 'Successful' },
+                    { value: payments.filter(p => p.payosStatus === 'PENDING').length, label: 'Pending' }
+                ]}
+            />
 
-            {/* Payment Summary Cards */}
-            <div className={cx('summary-grid')}>
-                {/* Total Revenue Card */}
-                <div className={cx('summary-card')}>
-                    <div className={cx('card-header')}>
-                        <div className={cx('card-icon', 'blue')}>
-                            <Coins size={24} className={cx('icon-blue')} />
-                        </div>
-                        <span className={cx('card-period')}>This Month</span>
-                    </div>
-                    <h3 className={cx('card-value')}>
-                        {statsLoading ? 'Loading...' :
-                            paymentStats.currentMonthTotalRevenue ?
-                                formatUSD(convertVNDtoUSD(paymentStats.currentMonthTotalRevenue)) :
-                                'No data'}
-                    </h3>
-                    <p className={cx('card-label')}>Total Revenue</p>
-                    {paymentStats.revenueChangePercentage !== undefined ? (
-                        <div className={cx('card-trend', paymentStats.revenueStatus === 'increase' ? 'up' : paymentStats.revenueStatus === 'decrease' ? 'down' : 'neutral')}>
-                            {paymentStats.revenueChangePercentage !== 0 ? (
-                                <span className={cx('trend-icon')}>
-                                    {paymentStats.revenueStatus === 'increase' ? '↑' : paymentStats.revenueStatus === 'decrease' ? '↓' : ''}
-                                </span>
-                            ) : null}
-                            {paymentStats.revenueChangePercentage > 0 && paymentStats.revenueChangePercentage < 100
-                                ? paymentStats.revenueChangePercentage.toFixed(2)
-                                : Math.round(paymentStats.revenueChangePercentage)}% from last month
-                        </div>
-                    ) : (
-                        <div className={cx('card-trend', 'neutral')}>
-                            <span className={cx('trend-icon')}>→</span>
-                            No comparison data
-                        </div>
-                    )}
-                </div>
+            {/* New QuickStats component */}
+            <QuickStats stats={quickStatsData} />
 
-                {/* Successful Payments Card */}
-                <div className={cx('summary-card')}>
-                    <div className={cx('card-header')}>
-                        <div className={cx('card-icon', 'green')}>
-                            <CheckCircle2 size={24} className={cx('icon-green')} />
-                        </div>
-                        <span className={cx('card-period')}>This Month</span>
-                    </div>
-                    <h3 className={cx('card-value')}>
-                        {statsLoading ? 'Loading...' :
-                            paymentStats.currentMonthTotalPaidPayments !== undefined ?
-                                paymentStats.currentMonthTotalPaidPayments :
-                                'No data'}
-                    </h3>
-                    <p className={cx('card-label')}>Successful Payments</p>
-                    {paymentStats.paidPaymentsChangePercentage !== undefined ? (
-                        <div className={cx('card-trend', paymentStats.paidPaymentsStatus === 'increase' ? 'up' : paymentStats.paidPaymentsStatus === 'decrease' ? 'down' : 'neutral')}>
-                            {paymentStats.paidPaymentsChangePercentage !== 0 ? (
-                                <span className={cx('trend-icon')}>
-                                    {paymentStats.paidPaymentsStatus === 'increase' ? '↑' : paymentStats.paidPaymentsStatus === 'decrease' ? '↓' : ''}
-                                </span>
-                            ) : null}
-                            {paymentStats.paidPaymentsChangePercentage > 0 && paymentStats.paidPaymentsChangePercentage < 100
-                                ? paymentStats.paidPaymentsChangePercentage.toFixed(2)
-                                : Math.round(paymentStats.paidPaymentsChangePercentage)}% from last month
-                        </div>
-                    ) : (
-                        <div className={cx('card-trend', 'neutral')}>
-                            <span className={cx('trend-icon')}>→</span>
-                            No comparison data
-                        </div>
-                    )}
-                </div>
-
-                {/* Pending Payments Card */}
-                <div className={cx('summary-card')}>
-                    <div className={cx('card-header')}>
-                        <div className={cx('card-icon', 'yellow')}>
-                            <Clock size={24} className={cx('icon-yellow')} />
-                        </div>
-                        <span className={cx('card-period')}>This Month</span>
-                    </div>
-                    <h3 className={cx('card-value')}>
-                        {statsLoading ? 'Loading...' :
-                            paymentStats.currentMonthTotalPendingPayments !== undefined ?
-                                paymentStats.currentMonthTotalPendingPayments :
-                                'No data'}
-                    </h3>
-                    <p className={cx('card-label')}>Pending Payments</p>
-                    {paymentStats.pendingPaymentsChangePercentage !== undefined ? (
-                        <div className={cx('card-trend', paymentStats.pendingPaymentsStatus === 'increase' ? 'up' : paymentStats.pendingPaymentsStatus === 'decrease' ? 'down' : 'neutral')}>
-                            {paymentStats.pendingPaymentsChangePercentage !== 0 ? (
-                                <span className={cx('trend-icon')}>
-                                    {paymentStats.pendingPaymentsStatus === 'increase' ? '↑' : paymentStats.pendingPaymentsStatus === 'decrease' ? '↓' : ''}
-                                </span>
-                            ) : null}
-                            {paymentStats.pendingPaymentsChangePercentage > 0 && paymentStats.pendingPaymentsChangePercentage < 100
-                                ? paymentStats.pendingPaymentsChangePercentage.toFixed(2)
-                                : Math.round(paymentStats.pendingPaymentsChangePercentage)}% from last month
-                        </div>
-                    ) : (
-                        <div className={cx('card-trend', 'neutral')}>
-                            <span className={cx('trend-icon')}>→</span>
-                            No comparison data
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Chỉ giữ lại filter và transaction table */}
-            <div className={cx('toolbar')}>
-                <div className={cx('toolbar-filters')}>
-                    <div className={cx('search-box')}>
-                        <Search className={cx('search-icon')} size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search transactions..."
-                            className={cx('search-input')}
-                            value={searchText}
-                            onChange={handleSearchChange}
-                        />
-                    </div>
-                    {/* Thay thế dropdown bằng 2 input date */}
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <input
-                            type="date"
-                            className={cx('filter-select')}
-                            value={fromDate}
-                            max={toDate || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' })}
-                            onChange={handleFromDateChange}
-                            placeholder="From date"
-                            style={{ minWidth: '140px' }}
-                        />
-                        <span style={{ color: '#666', fontSize: '14px' }}>-</span>
-                        <input
-                            type="date"
-                            className={cx('filter-select')}
-                            value={toDate}
-                            max={new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' })}
-                            min={fromDate}
-                            onChange={handleToDateChange}
-                            placeholder="To date"
-                            style={{ minWidth: '140px' }}
-                        />
-                    </div>
-
-                    <select
-                        className={cx('filter-select')}
-                        value={status}
-                        onChange={handleStatusChange}
-                    >
-                        <option value="all">All Statuses</option>
-                        <option value="PENDING">Pending</option>
-                        <option value="SUCCESS">Successful</option>
-                        <option value="FAILED">Failed</option>
-                    </select>
-                </div>
-
-                {/* Filter buttons */}
-                <div className={cx('toolbar-actions')}>
-                    <button
-                        className={cx('action-button', 'primary')}
-                        onClick={handleApplyFilters}
-                    >
-                        Apply Filters
-                    </button>
-                    <button
-                        className={cx('action-button-clear')}
-                        onClick={handleClearFilters}
-                    >
-                        Clear Filters
-                    </button>
-                </div>
-            </div>
-
-            {/* Transactions Table */}
-            <div className={cx('tableWrapper')}>
-                {loading ? (
-                    <div style={{ padding: 32, textAlign: 'center' }}>Loading...</div>
-                ) : (
-                    <table className={cx('dataTable')}>
-                        <thead className={cx('table-head')}>
-                            <tr>
-                                <th className={cx('table-header')}>
-                                    <div className={cx('header-content')}>
-                                        ID
-
-                                    </div>
-                                </th>
-                                <th className={cx('table-header')}>
-                                    <div className={cx('header-content')}>
-                                        Date
-
-                                    </div>
-                                </th>
-                                <th className={cx('table-header')}>Customer</th>
-                                <th className={cx('table-header')}>Type</th>
-                                <th className={cx('table-header')}>
-                                    <div className={cx('header-content')}>
-                                        Amount
-
-                                    </div>
-                                </th>
-                                <th className={cx('table-header')}>Status</th>
-                                <th className={cx('table-header')}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className={cx('table-body')}>
-                            {payments.length === 0 ? (
-                                <tr><td colSpan={7} style={{ textAlign: 'center', padding: 32 }}>No data</td></tr>
-                            ) : (
-                                payments.map((payment) => (
-                                    <tr className={cx('table-row')} key={payment.id}>
-                                        <td className={cx('table-cell', 'transaction-id')}>#{payment.id}</td>
-                                        <td className={cx('table-cell')}>
-                                            {payment.paidAt ? new Date(payment.paidAt).toLocaleString() : '--'}
-                                        </td>
-                                        <td className={cx('table-cell')}>
-                                            <div className={cx('customer-info')}>
-                                                <div className={cx('avatarCircle', 'blue')}>
-                                                    {payment.userEmail ? payment.userEmail.charAt(0).toUpperCase() : '?'}
-                                                </div>
-                                                <div className={cx('customer-details')}>
-                                                    <div className={cx('customer-name')}>{payment.userEmail || '--'}</div>
-                                                    {/* Có thể thêm tên user nếu có */}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className={cx('table-cell')}>
-                                            {payment.intendedPlanName || payment.paymentMethod || '--'}
-                                        </td>
-                                        <td className={cx('table-cell')}>
-                                            {/* chuyển từ việt nam đồng sang USD */}
-                                            {payment.amount ? formatUSD(convertVNDtoUSD(payment.amount)) : '--'}
-                                        </td>
-                                        <td className={cx('table-cell')}>
-                                            <span className={cx('statusText', payment.payosStatus === 'PENDING' ? 'pending' : payment.payosStatus === 'SUCCESS' ? 'success' : payment.payosStatus === 'FAILED' ? 'failed' : '')}>
-                                                {payment.payosStatus || '--'}
-                                            </span>
-                                        </td>
-                                        <td className={cx('table-cell', 'actions')}>
-                                            <button className={cx('action-button', 'view')}>View</button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                )}
-            </div>
-            {/* Pagination */}
-            <div style={{ display: 'flex', justifyContent: 'center', margin: '32px 0' }}>
-                {totalPages > 1 && (
-                    <Pagination
-                        total={totalPages}
-                        value={page}
-                        onChange={setPage}
-                        radius="xl"
-                        classNames={{
-                            root: cx('pagination-root'),
-                            control: cx('control'),
-                            item: cx('pagination-item'),
-                            active: cx('pagination-active')
-                        }}
-                    />
-                )}
-            </div>
-        </div >
+            {/* New AdminTable component */}
+            <AdminTable
+                title="Payment Transactions"
+                data={payments}
+                columns={columns}
+                loading={loading}
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                filters={filters}
+                onFilterChange={(value) => {
+                    // Implement filter logic here
+                    console.log('Filter changed:', value);
+                }}
+                onExport={() => {
+                    // Implement export logic here
+                    console.log('Export clicked');
+                }}
+                pagination={{
+                    currentPage: page,
+                    totalPages: totalPages,
+                    from: 1,
+                    to: payments.length,
+                    total: payments.length
+                }}
+                onPageChange={setPage}
+                actions={actions}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                emptyMessage="No payment transactions found"
+            />
+        </div>
     );
 };
 

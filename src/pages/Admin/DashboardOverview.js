@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './DashboardOverview.module.scss';
-import { Users, Briefcase, FileText, CheckCircle } from 'lucide-react';
-import { StatCard } from './StatCard';
 import { ActivityChart } from './ActivityChart';
 import statisticsService from '~/services/statisticsService';
 import { ApplicationTrendChart } from './components/ApplicationTrendChart';
 import JobCategoryPieChart from './components/JobCategoryChart';
+import { AdminHeader, QuickStats } from './components';
 
 const cx = classNames.bind(styles);
 
@@ -23,6 +22,38 @@ const DashboardOverview = () => {
     const [statCardData, setStatCardData] = useState(null);
     const [totalJobs, setTotalJobs] = useState('...');
 
+    // Quick stats data for the new QuickStats component
+    const quickStatsData = [
+        {
+            value: statCardData?.currentMonthTotalJobSeekers || 0,
+            label: 'Job Seekers',
+            trend: statCardData?.jobSeekersChangePercentage || 0,
+            format: 'number',
+            description: 'Active job seekers this month'
+        },
+        {
+            value: statCardData?.currentMonthTotalEmployers || 0,
+            label: 'Employers',
+            trend: statCardData?.employersChangePercentage || 0,
+            format: 'number',
+            description: 'Registered employers this month'
+        },
+        {
+            value: statCardData?.currentMonthTotalJobs || 0,
+            label: 'Active Jobs',
+            trend: statCardData?.jobsChangePercentage || 0,
+            format: 'number',
+            description: 'Job postings this month'
+        },
+        {
+            value: statCardData?.currentMonthTotalAppliedJobs || 0,
+            label: 'Applications',
+            trend: statCardData?.appliedJobsChangePercentage || 0,
+            format: 'number',
+            description: 'Job applications submitted'
+        }
+    ];
+
     const statCardsConfig = statCardData
         ? [
             {
@@ -30,31 +61,28 @@ const DashboardOverview = () => {
                 value: statCardData.currentMonthTotalJobSeekers,
                 change: statCardData.jobSeekersChangePercentage,
                 status: statCardData.jobSeekersStatus,
-                icon: <Users size={24} />,
             },
             {
                 title: 'Total Employers',
                 value: statCardData.currentMonthTotalEmployers,
                 change: statCardData.employersChangePercentage,
                 status: statCardData.employersStatus,
-                icon: <Briefcase size={24} />,
             },
             {
                 title: 'Active Jobs',
                 value: statCardData.currentMonthTotalJobs,
                 change: statCardData.jobsChangePercentage,
                 status: statCardData.jobsStatus,
-                icon: <FileText size={24} />,
             },
             {
                 title: 'Successful Matches',
                 value: statCardData.currentMonthTotalAppliedJobs,
                 change: statCardData.appliedJobsChangePercentage,
                 status: statCardData.appliedJobsStatus,
-                icon: <CheckCircle size={24} />,
             },
         ]
         : [];
+
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('user'))?.token;
         if (!token) return;
@@ -68,6 +96,7 @@ const DashboardOverview = () => {
                 setStatCardData(null);
             });
     }, []);
+
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('user'))?.token;
         if (!token) return;
@@ -112,47 +141,36 @@ const DashboardOverview = () => {
 
     return (
         <div className={cx('container')}>
-            <div className={cx('header')}>
-                <div>Dashboard Overview</div>
-                <div className={cx('subtitle')}>
-                    Welcome back! Here's what's happening with your job platform today.
-                </div>
-            </div>
-            <div className={cx('statsGrid')}>
-                {statCardsConfig.map((card) => (
-                    <StatCard
-                        key={card.title}
-                        title={card.title}
-                        value={card.value}
-                        icon={card.icon}
-                        status={card.status}
-                        change={
-                            card.status === 'nochange'
-                                ? '0%' // hoặc '±0%' tùy bạn
-                                : parseFloat(card.change) === 100
-                                    ? '100%' // không có phần thập phân
-                                    : `${parseFloat(card.change).toFixed(2)}%`
-                        }
-                        isPositive={card.status === 'increase'}
-                        desc={
-                            card.status === 'nochange'
-                                ? 'unchanged from last month'
-                                : card.status === 'increase'
-                                    ? 'from last month'
-                                    : 'from last month'
-                        }
-                    />
-                ))}
-            </div>
+            {/* New AdminHeader component */}
+            <AdminHeader
+                title="Dashboard Overview"
+                subtitle="Welcome back! Here's what's happening with your job platform today."
+                breadcrumbs={['Dashboard']}
+                stats={statCardsConfig.map(card => ({
+                    title: card.title,
+                    value: card.value,
+                    change: card.change,
+                    status: card.status,
+                    description: card.status === 'nochange'
+                        ? 'unchanged from last month'
+                        : 'from last month'
+                }))}
+            />
+
+            {/* New QuickStats component */}
+            {/* <QuickStats stats={quickStatsData} /> */}
+
+            {/* Removed StatCard section - now integrated into AdminHeader */}
 
             <div className={cx('mainGrid')}>
-                <div className={cx('card-activity')} style={{ minHeight: '380px' }}>
+                <div className={cx('card-activity')} style={{ minHeight: '320px' }}>
                     <div className={cx('selectRow')}>
-                        <h2>Platform Activity</h2>
+                        <h2 style={{ fontSize: '16px', margin: '0 0 8px 0' }}>Platform Activity</h2>
                         <select
                             className="text-sm border-gray-300 rounded-md"
                             value={selectedRange}
                             onChange={(e) => setSelectedRange(Number(e.target.value))}
+                            style={{ fontSize: '12px', padding: '4px 8px' }}
                         >
                             <option value={7}>Last 7 days</option>
                             <option value={30}>Last 30 days</option>
@@ -161,7 +179,7 @@ const DashboardOverview = () => {
                     </div>
                     <ActivityChart key={chartKey} data={filteredActivityData} />
                     {/* Summary Table for Total Jobs */}
-                    <div className={cx('summaryTable')} style={{ marginTop: 18, fontSize: '1.1rem' }}>
+                    <div className={cx('summaryTable')} style={{ marginTop: 12, fontSize: '12px' }}>
                         <table>
                             <tbody>
                                 <tr>
@@ -176,11 +194,11 @@ const DashboardOverview = () => {
 
             <div className={cx('chartsRow')}>
                 <div className={cx('card')}>
-                    <h2>Job Postings by Category</h2>
+                    <h2 style={{ fontSize: '16px', margin: '0 0 12px 0' }}>Job Postings by Category</h2>
                     <JobCategoryPieChart />
                 </div>
                 <div className={cx('card')}>
-                    <h2>Applications Submitted Over Time</h2>
+                    <h2 style={{ fontSize: '16px', margin: '0 0 12px 0' }}>Applications Submitted Over Time</h2>
                     <ApplicationTrendChart />
                 </div>
             </div>
