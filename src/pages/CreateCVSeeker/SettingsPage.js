@@ -10,7 +10,7 @@ import Single from '../Single/Single';
 
 const cx = classNames.bind(styles);
 
-const tabsOrder = ['Company Info', 'Founding Info',  'Contact'];
+const tabsOrder = ['Company Info', 'Founding Info', 'Contact'];
 
 
 
@@ -383,8 +383,8 @@ function SettingsPage() {
           </div>
 
           <div className={cx('btnGroup')}>
-            <SaveNextButton onClick={() => { handleSave();  }} />
-              
+            <SaveNextButton onClick={() => { handleSave(); }} />
+
           </div>
         </div>
       )}
@@ -392,86 +392,65 @@ function SettingsPage() {
       {activeTab === 'Founding Info' && (
         <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
           <div className={cx('row')}>
-            {/* <div className={cx('inputGroup')}>
-              <label>Organization Type</label>
-              <select name="organizationType" value={form.organizationType} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Private">Private</option>
-                <option value="Public">Public</option>
-                <option value="Government">Government</option>
-                <option value="Non-profit">Non-profit</option>
-              </select>
-            </div>
-            <div className={cx('inputGroup')}>
-              <label>Industry Types</label>
-              <select name="industryTypes" value={form.industryTypes} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="Technology">Technology</option>
-                <option value="Finance">Finance</option>
-                <option value="Healthcare">Healthcare</option>
-                <option value="Education">Education</option>
-              </select>
-            </div> */}
-            <div className={cx('inputGroup')}>
-              <label>Team Size</label>
-              <select name="teamSize" value={form.teamSize} onChange={handleChange}>
-                <option value="">Select...</option>
-                <option value="1-10">1-10</option>
-                <option value="11-50">11-50</option>
-                <option value="51-200">51-200</option>
-                <option value="201-500">201-500</option>
-                <option value="500+">500+</option>
-              </select>
-            </div>
-          </div>
+  <div className={cx('inputGroup')}>
+    <label>Team Size</label>
+    <input
+      type="text"
+      name="teamSize"
+      value={form.teamSize}
+      onChange={handleChange}
+      placeholder="Enter team size"
+    />
+  </div>
+</div>
 
-          <div className={cx('row')}>
-            <div className={cx('inputGroup')}>
-              <label>Year of Establishment</label>
-              <input
-                type="date"
-                name="yearOfEstablishment"
-                value={form.yearOfEstablishment}
-                onChange={handleChange}
-                placeholder="dd/mm/yyyy"
+            <div className={cx('row')}>
+              <div className={cx('inputGroup')}>
+                <label>Year of Establishment</label>
+                <input
+                  type="date"
+                  name="yearOfEstablishment"
+                  value={form.yearOfEstablishment}
+                  onChange={handleChange}
+                  placeholder="dd/mm/yyyy"
+                />
+              </div>
+              <div className={cx('inputGroup')}>
+                <label>Company Website</label>
+                <input
+                  type="url"
+                  name="companyWebsite"
+                  value={form.companyWebsite}
+                  onChange={handleChange}
+                  placeholder="Website url..."
+                />
+              </div>
+            </div>
+
+            <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
+              <label>Company Vision</label>
+              <SimpleRichTextEditor
+                placeholder="Tell us about your company vision..."
+                onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
+                value={typeof form.companyVision === 'string' ? form.companyVision : ''}
               />
             </div>
-            <div className={cx('inputGroup')}>
-              <label>Company Website</label>
-              <input
-                type="url"
-                name="companyWebsite"
-                value={form.companyWebsite}
-                onChange={handleChange}
-                placeholder="Website url..."
-              />
+
+            <div className={cx('btnGroup')}>
+              <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
+                Previous
+              </button>
+              <button
+                type="submit"
+                className={cx('saveNextBtn')}
+                onClick={() => {
+                  handleSave();
+                  goToNextTab();
+                }}
+              >
+                Save & Next →
+              </button>
             </div>
-          </div>
-
-          <div className={cx('inputGroup')} style={{ marginBottom: '20px' }}>
-            <label>Company Vision</label>
-            <SimpleRichTextEditor
-              placeholder="Tell us about your company vision..."
-              onChange={(html) => setForm((prev) => ({ ...prev, companyVision: html }))}
-              value={typeof form.companyVision === 'string' ? form.companyVision : ''}
-            />
-          </div>
-
-          <div className={cx('btnGroup')}>
-            <button type="button" className={cx('previousBtn')} onClick={() => setActiveTab('Company Info')}>
-              Previous
-            </button>
-            <button
-              type="submit"
-              className={cx('saveNextBtn')}
-              onClick={() => {
-                handleSave();
-                goToNextTab();
-              }}
-            >
-              Save & Next →
-            </button>
-          </div>
         </form>
       )}
 
@@ -634,11 +613,11 @@ function SettingsPage() {
         <div className={cx('overlay')}>
           <div className={cx('spinner')}></div>
           <div className={cx('loadingText')}>
-  Loading
-  <span className={cx('dot')}>.</span>
-  <span className={cx('dot')}>.</span>
-  <span className={cx('dot')}>.</span>
-</div>
+            Loading
+            <span className={cx('dot')}>.</span>
+            <span className={cx('dot')}>.</span>
+            <span className={cx('dot')}>.</span>
+          </div>
         </div>
       )}
 
