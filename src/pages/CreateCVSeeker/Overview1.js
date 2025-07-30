@@ -15,6 +15,8 @@ const Overview1 = () => {
     const [jobs, setJobs] = useState([]);
     const [pagination, setPagination] = useState({});
     const [scroll, scrollTo] = useWindowScroll();
+    const [flag, setFlag] = useState(false);
+
 
     // --- Filter ---
     const [filters, setFilters] = useState({
@@ -49,7 +51,7 @@ const Overview1 = () => {
         };
         fetchJobs();
         scrollTo({ y: 0 });
-    }, [filters]);
+    }, [filters, flag]);
 
 
     const handlePageChange = (newPage) => {
@@ -152,6 +154,7 @@ const Overview1 = () => {
                         jobDescription={job}
                         isVIP={job.isVIP}
                         isActive={job.isActive}
+                        setFlag={setFlag}
                     />
                 ))}
             </div>
@@ -161,8 +164,8 @@ const Overview1 = () => {
                 {pagination.totalPages > 1 && (
                     <Pagination
                         total={pagination.totalPages}
-                        value={filters.page + 1}
-                        defaultValue={1}
+                        value={filters.page}
+                        // defaultValue={1}
                         onChange={handlePageChange}
                         radius="xl"
                         classNames={{
@@ -174,6 +177,8 @@ const Overview1 = () => {
                     />
                 )}
             </div>
+
+            {/*  */}
         </div>
     );
 };

@@ -391,10 +391,13 @@
     font-size: 1.6rem;
     line-height: 1.6;
     font-family: inherit;
-    width: 100%;
+    width: 200px;
     box-sizing: border-box;
-    color: #333;
-    font-weight: 700;
+    color: var(--gray-900);
+    font-weight: 500;
+}
+.job-title {
+    width: 100%;
 }
 
 .editable-input:focus,

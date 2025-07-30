@@ -9,7 +9,9 @@
 
 .my-content {
     min-height: 250px;
+    max-height: 300px;
     font-size: 1.6rem;
+    overflow: auto;
 }
 .my-control {
     width: 3rem;

@@ -24,6 +24,7 @@ function transformJobData(rawJob) {
         jobType: rawJob.jobType?.name || 'Unknown',
         category: rawJob.category?.name || 'Unknown',
         vacancy: rawJob.vacancy,
+        education: rawJob.education?.name || 'Unknown',
         company: {
             ...rawJob.employer
         }

@@ -9,6 +9,13 @@ import {
   IconUsers,
   IconBookmarkFilled,
   IconBookmark,
+  IconClockHour4,
+  IconBrandStackoverflow,
+  IconStackPop,
+  IconCategory,
+  IconBooks,
+  IconGrain,
+
 } from '@tabler/icons-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import SimpleRichTextEditor from 'src/components/RichTextEditor/RichTextEditor.js';
@@ -22,6 +29,8 @@ import ReportButton from '~/components/Button/ReportButton';
 import { format } from '~/utils';
 import { useLoading } from '~/context/LoadingContext';
 import { useNavigate } from 'react-router-dom';
+import { jobService } from '~/services';
+import { validator } from '~/utils';
 
 const cx = classNames.bind(styles);
 
@@ -33,6 +42,7 @@ const JobDetail = ({
   onSave = noop,
   onCancel = noop,
   isApplied = false,
+  closeModal
 }) => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -49,6 +59,8 @@ const JobDetail = ({
   const { showSuccess, showError } = useNotification();
   const [salaryError, setSalaryError] = useState('');
   const navigate = useNavigate();
+  const [options, setOptions] = useState({})
+  const [isNegotiable, setIsNegotiable] = useState(false);
 
   const validateSalaryRange = () => {
     const min = Number(formData.salaryMin) || 0;
@@ -65,7 +77,10 @@ const JobDetail = ({
       try {
         showLoading();
         let jobData = await EmployerService.getJobDetail(id || job?.id);
-        console.log('jobData', format.transformJobData(jobData));
+        const input = format.transformJobData(jobData);
+        if (input.salaryMax === null && input.salaryMin === null) {
+          setIsNegotiable(true);
+        }
 
         hideLoading();
         setFormData(format.transformJobData(jobData));
@@ -77,9 +92,23 @@ const JobDetail = ({
       }
     };
     fetchJob();
-  }, [id, job]);
+  }, [id]);
 
   useEffect(() => {
+    if (editable) {
+      const fetchAllOptions = async () => {
+        try {
+          const response = await jobService.getAllOptions();
+          setOptions(response)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      fetchAllOptions();
+      if (jobDetailRef.current) {
+        jobDetailRef.current.focus();
+      }
+    }
     scrollTo({ y: 0 });
   }, []);
 
@@ -110,36 +139,42 @@ const JobDetail = ({
     }
   };
 
-  const handleUpdateJob = async () => {
-    if (!formData.id || salaryError || !validateSalaryRange()) return;
-    setLoading(true);
-    try {
-      const payload = {
-        ...formData,
-        title: formData.title,
-        expiredDate: formData.expiredDate?.includes('T')
-          ? formData.expiredDate
-          : `${formData.expiredDate}T00:00:00`,
-        education: formData.education?.id || null,
-        experience: formData.experience?.id || null,
-        jobTypeId: formData.jobType?.id || null,
-        jobTypeName: formData.jobType?.name || null,
-        jobLevelId: formData.jobLevel?.id || null,
-        jobLevelName: formData.jobLevel?.name || null,
-        category: formData.category?.id || null,
-        company: { ...formData.company },
-      };
 
-      const updated = await EmployerService.updateJob(formData.id, payload);
-      setFormData(updated || formData);
-      showSuccess('Job updated successfully');
-      onSave(formData);
+
+  const handleRepostJob = async () => {
+    try {
+      if (validator.validationText('Job title', formData.jobTitle) || validator.validationTextArea('Job description', formData.job_description) || validator.validationText('Responsibility', formData.responsibility) || validator.validateFutureDate(formData.expiredDate)) {
+        showError(validator.validationText('Job title', formData.jobTitle) || validator.validationTextArea('Job description', formData.job_description) || validator.validationText('Responsibility', formData.responsibility) || validator.validateFutureDate(formData.expiredDate))
+        return;
+      }
+      const transformedJob = {
+        title: formData.jobTitle,
+        description: (formData.job_description),
+        location: formData.companyAddress,
+        salaryMin: (formData.salaryMin),
+        salaryMax: (formData.salaryMax),
+        categoryId: (getIdFromOptions(options.categories, formData.category)),
+        jobLevelId: (getIdFromOptions(options.jobLevels, formData.jobLevel)),
+        jobTypeId: (getIdFromOptions(options.jobTypes, formData.jobType)),
+        educationId: (getIdFromOptions(options.educations, formData.education)),
+        experienceId: (getIdFromOptions(options.experiences, formData.experience)),
+        vacancy: (formData.vacancy),
+        responsibility: (formData.responsibility),
+        expiredDate: formData.expiredDate.split('T')[0], // hoặc dùng dayjs để format nếu cần
+      };
+      console.log('payload', transformedJob);
+      showLoading();
+      await jobService.createJob(transformedJob);
+      console.log('input', transformedJob);
+      hideLoading();
+      closeModal();
+
+      showSuccess('Repost job successfully');
     } catch (error) {
-      showError('Failed to update job');
-    } finally {
-      setLoading(false);
+      hideLoading();
+      showError('Error repost job');
     }
-  };
+  }
 
   const handleSaveJob = async () => {
     try {
@@ -163,6 +198,7 @@ const JobDetail = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if (name === 'expiredDate') {
       const formattedValue = value ? `${value}T00:00:00` : '';
       setFormData((prev) => ({ ...prev, [name]: formattedValue }));
@@ -172,9 +208,42 @@ const JobDetail = ({
   };
 
   const handleChangeRichText = (name, value) => {
-    console.log(name, value);
+    // console.log(name, value);
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  function singularize(word) {
+    if (typeof word !== 'string') return word;
+
+    // Trường hợp bất quy tắc phổ biến
+    if (word.endsWith('ies')) {
+      return word.slice(0, -3) + 'y'; // categories -> category
+    }
+
+    // Trường hợp kết thúc bằng 'sses' (processes → process)
+    if (word.endsWith('sses')) {
+      return word.slice(0, -2); // giữ lại "ss", bỏ "es"
+    }
+    if (word.endsWith('ss')) {
+      return word;
+    }
+
+    // Trường hợp thông thường kết thúc bằng 's' (jobs → job)
+    if (word.endsWith('s') && word.length > 1) {
+      return word.slice(0, -1);
+    }
+    // console.log(word);
+
+
+    return word;
+  }
+
+  function getIdFromOptions(options = [], value = '') {
+    if (!value || !Array.isArray(options)) return value;
+
+    const match = options.find((opt) => opt.name === value);
+    return match ? match.id : value;
+  }
+
 
   return (
     <div className={cx('container', { 'editable-container': editable })} ref={jobDetailRef}>
@@ -193,7 +262,7 @@ const JobDetail = ({
             {editable ? (
               <input
                 className={cx('job-info__title', 'job-title')}
-                name="title"
+                name="jobTitle"
                 value={formData?.title || formData?.jobTitle}
                 onChange={(e) => handleChange(e)}
               />
@@ -242,7 +311,7 @@ const JobDetail = ({
           {editable ? (
             <SimpleRichTextEditor
               placeholder="Add your job description..."
-              onChange={(value) => handleChangeRichText('description', value)}
+              onChange={(value) => handleChangeRichText('job_description', value)}
               content={formData.job_description || ''}
               value={formData.job_description || ''}
             />
@@ -293,36 +362,83 @@ const JobDetail = ({
           <div className={cx('job-overview__title')}>Job Overview</div>
           <div className={cx('job-overview__items', !editable && 'editable')}>
             {[
-              {
-                key: 'salaryMin',
-                label: 'Minimum Salary',
-                icon: <IconWallet />,
-                render: () => `${formData?.salaryMin || ''}`,
-              },
-              {
-                key: 'salaryMax',
-                label: 'Maximum Salary',
-                icon: <IconWallet />,
-                render: () => `${formData?.salaryMax || ''}`,
-              },
+              ...((!isNegotiable || editable)
+                ? [
+                  {
+                    key: 'salaryMin',
+                    label: 'Minimum Salary',
+                    icon: <IconWallet />,
+                    render: `${formData?.salaryMin}`,
+                  },
+                  {
+                    key: 'salaryMax',
+                    label: 'Maximum Salary',
+                    icon: <IconWallet />,
+                    render: `${formData?.salaryMax}`,
+                  },
+                ]
+                : [
+                  {
+                    key: 'salary',
+                    label: 'Salary',
+                    icon: <IconWallet />,
+                    render: `${formData?.salaryMin}`,
+                  },
+                ]),
               {
                 key: 'companyAddress',
                 label: 'Location',
                 icon: <IconMapPin />,
-                render: () => `${formData?.companyAddress}`,
+                render: `${formData?.companyAddress}`,
               },
               {
                 key: 'vacancy',
                 label: 'Vacancies',
                 icon: <IconUsers />,
-                render: () => `${formData?.vacancy || ''}`,
+                render: `${formData?.vacancy || ''}`,
               },
               {
                 key: 'expiredDate',
                 label: 'Expired Date',
-                icon: <IconBookmark />,
-                render: () => `${formData.expiredDate || ''}`,
+                icon: <IconClockHour4 />,
+                render: `${formData.expiredDate || ''}`,
               },
+              {
+                key: 'jobType',
+                label: 'Job Type',
+                icon: <IconBrandStackoverflow />,
+                options: options.jobTypes,
+                render: `${options.jobTypes || ''}`,
+              },
+              {
+                key: 'jobLevel',
+                label: 'Job Level',
+                icon: <IconStackPop />,
+                options: options.jobLevels,
+                render: `${options.jobLevels || ''}`,
+              },
+              {
+                key: 'category',
+                label: 'Category',
+                icon: <IconCategory />,
+                options: options.categories,
+                render: `${options.categories || ''}`,
+              },
+              {
+                key: 'education',
+                label: 'Education',
+                icon: <IconBooks />,
+                options: options.educations,
+                render: `${options.educations || ''}`,
+              },
+              {
+                key: 'experience',
+                label: 'Experience',
+                icon: <IconGrain />,
+                options: options.experiences,
+                render: `${options.experiences || ''}`,
+              },
+
             ].map(({ key, label, icon, options, render }) => (
               <div key={key} className={cx('overview-item')}>
                 <span className={cx('overview-item__icon')}>{icon}</span>
@@ -347,7 +463,7 @@ const JobDetail = ({
                     ) : options ? (
                       <select
                         name={key}
-                        value={formData[key]?.id || ''}
+                        value={getIdFromOptions(options, formData[key])}
                         onChange={handleChange}
                         className={cx('editable-input', 'overview-item__value')}
                       >
@@ -373,9 +489,7 @@ const JobDetail = ({
                     )
                   ) : (
                     <strong className={cx('overview-item__value')}>
-                      {render
-                        ? render(formData[key])
-                        : formData[key]?.name || formData[key] || ''}
+                      {formData[singularize(key)]}
                     </strong>
                   )}
                 </div>
@@ -464,8 +578,9 @@ const JobDetail = ({
               </button>
             ) : (
               <>
-                <button onClick={handleUpdateJob} className={cx('save-btn')} disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Changes'}
+
+                <button onClick={handleRepostJob} className={cx('save-btn')} disabled={loading}>
+                  {loading ? 'Saving...' : 'Repost job'}
                 </button>
                 <button
                   onClick={onCancel}

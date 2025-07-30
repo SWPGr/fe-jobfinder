@@ -7,6 +7,7 @@ import {
   IconCircleCheck,
   IconPencil,
   IconX,
+  IconRefreshDot
 } from '@tabler/icons-react';
 import { Menu } from '@mantine/core';
 import { Images } from '~/assets';
@@ -17,6 +18,11 @@ import JobApplications from '~/pages/CreateCVSeeker/Application';
 import EmployerService from '~/services/EmployerService';
 import { useNotification } from '~/hooks';
 import { format } from '~/utils';
+import { jobService } from '~/services';
+import { useDisclosure } from '@mantine/hooks';
+import { Modal } from '@mantine/core';
+import { useLoading } from '~/context/LoadingContext';
+
 
 
 const cx = classNames.bind(styles);
@@ -53,13 +59,18 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
   }
 };
 
-function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
+function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, setFlag = () => { }, }) {
 
   const [jobData, setJobData] = useState({ ...jobDescription });
-  const { showError } = useNotification();
+  const { showError, showSuccess } = useNotification();
   const [modalType, setModalType] = useState(null); // 'view' | 'edit' | null
   const [showApplications, setShowApplications] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [type, setType] = useState('');
+  const [opened, { open, close }] = useDisclosure(false);
+  const { showLoading, hideLoading } = useLoading();
+
+
+
 
   const isMounted = useRef(true);
 
@@ -78,37 +89,32 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
       showError('Job ID is missing');
       return;
     }
-    setLoading(true);
     try {
-      const data = await fetchJobDetailFake(jobData.id);
-      console.log('data', data);
+      showLoading();
 
-      if (!data) {
-        setLoading(false);
-        return;
-      }
+      const data = await fetchJobDetailFake(jobData.id);
+
+      hideLoading();
       if (isMounted.current) {
         setJobData((format.transformJobData(data)));
         setModalType(type);
       }
     } catch (error) {
+      hideLoading();
       showError('Error loading job details.');
-    } finally {
-      if (isMounted.current) setLoading(false);
     }
   };
 
   const handleSave = async (updatedJob) => {
     if (!jobData?.id) {
-      alert('Job ID is missing');
+      showError('Job ID is missing');
       return;
     }
-    setLoading(true);
     try {
       const payload = prepareUpdatePayload(updatedJob);
       const data = await fetchJobDetailFake(jobData.id, payload, false);
       if (!data) {
-        setLoading(false);
+        showLoading();
         alert('Failed to save job because job does not exist.');
         return;
       }
@@ -119,30 +125,69 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
     } catch (error) {
       alert('Error saving job.');
     } finally {
-      if (isMounted.current) setLoading(false);
+      if (isMounted.current) hideLoading();
     }
   };
 
   const handleDelete = async () => {
     if (!jobData?.id) {
-      alert('Job ID is missing');
+      showError('Job ID is missing');
       return;
     }
-    if (window.confirm('Are you sure you want to delete this job?')) {
-      setLoading(true);
-      try {
-        await fetchJobDetailFake(jobData.id, null, true);
-        alert('Job deleted successfully');
-        if (isMounted.current) {
-          setModalType(null);
-          onDeleteSuccess?.(jobData.id);
-        }
-      } catch (error) {
-        alert('Error deleting job.');
-      } finally {
-        if (isMounted.current) setLoading(false);
+
+    try {
+      showLoading();
+      await fetchJobDetailFake(jobData.id, null, true);
+      hideLoading();
+      showSuccess('Job deleted successfully');
+      if (isMounted.current) {
+        setModalType(null);
       }
+    } catch (error) {
+      hideLoading();
+      showError('Error deleting job.');
+    } finally {
+      if (isMounted.current) hideLoading();
     }
+  };
+
+  const repostJob = async () => {
+    try {
+      const data = await jobService.getJobById(jobData.id);
+      const input = {
+        title: data.title,
+        description: data.description,
+        salaryMin: data.salaryMin,
+        salaryMax: data.salaryMax,
+        categoryId: data.category?.id || data.category || null,
+        jobLevelId: data.jobLevel?.id || data.jobLevel || null,
+        jobTypeId: data.jobType?.id || data.jobType || null,
+        educationId: data.education?.id || data.education || null,
+        experienceId: data.experience?.id || data.experience || null,
+        vacancy: data.vacancy,
+        responsibility: data.responsibility,
+        expiredDate: data.expiredDate,
+      }
+      await jobService.createJob(input);
+      // console.log('input', input);
+
+      showSuccess('Repost job successfully');
+    } catch (error) {
+      showError('Error repost job');
+    }
+  }
+
+  const handleConfirm = async () => {
+    if (type === 'delete') {
+      await handleDelete();
+    } else {
+      setType('repost')
+      openModal('edit')
+      // await repostJob();
+    }
+    setFlag((prev) => !prev); // ✅ bây giờ đảm bảo setFlag sau khi xử lý xong
+    setType('');
+    close();
   };
 
   const closeModal = () => setModalType(null);
@@ -197,26 +242,32 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
               </div>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item leftSection={<IconPencil size={20} />} onClick={() => openModal('edit')}>
-                Edit Job
-              </Menu.Item>
+              {!jobData?.isActive &&
+                <>
+                  {/* <Menu.Item leftSection={<IconPencil size={20} />} onClick={() => openModal('edit')}>
+                    Edit Job
+                  </Menu.Item> */}
+                  <Menu.Item leftSection={<IconRefreshDot size={20} />} onClick={() => {
+                    setType('repost');
+                    open();
+                  }}>
+                    Re-post job
+                  </Menu.Item>
+                </>
+              }
               <Menu.Item leftSection={<EyeIcon size={20} />} onClick={() => openModal('view')}>
                 View Job
               </Menu.Item>
-              <Menu.Item leftSection={<IconX size={20} />} onClick={handleDelete}>
-                Delete Job
-              </Menu.Item>
+              {jobData?.isActive && <Menu.Item leftSection={<IconX size={20} />} onClick={() => {
+                setType('delete');
+                open();
+              }}>
+                Close Job
+              </Menu.Item>}
             </Menu.Dropdown>
           </Menu>
         </div>
       </div>
-
-      {/* Loading Overlay */}
-      {loading && (
-        <div className={cx('loadingOverlay')}>
-          <p>Loading...</p>
-        </div>
-      )}
 
       {/* Modal for View/Edit Job */}
       {modalType && jobData && (
@@ -224,7 +275,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
           <div className={cx('modalBox')}>
             <button className={cx('closeBtn')} onClick={closeModal} aria-label="Close modal">&times;</button>
             {modalType === 'view' && <JobDetail key="view" job={jobData} />}
-            {modalType === 'edit' && <JobDetail key="edit" job={jobData} editable onSave={handleSave} />}
+            {modalType === 'edit' && <JobDetail key="edit" closeModal={closeModal} job={jobData} editable onSave={handleSave} />}
           </div>
         </div>
       )}
@@ -240,6 +291,22 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
           </div>
         </div>
       )}
+
+      <>
+        <Modal size={'auto'} classNames={{
+          header: cx('modal-header'), modal: cx('modal'),
+          content: cx('modal-content'),
+          inner: cx('modal-inner'),
+          body: cx('modal-body'),
+          close: cx('modal-close-button')
+        }} opened={opened} onClose={close} title={type === 'delete' ? 'Do you want to close this job?' : 'Do you want to re-post this job?'} centered>
+          <div className='text-center mt-4'>
+            <Button green_white onClick={handleConfirm}>Confirm</Button>
+            <Button red_white onClick={close}>Cancel</Button>
+          </div>
+        </Modal>
+      </>
+      {/*  */}
     </>
   );
 }
