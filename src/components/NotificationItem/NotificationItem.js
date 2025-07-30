@@ -4,10 +4,13 @@ import { FaTrashCan } from "react-icons/fa6";
 
 import { Images } from '~/assets';
 import ReactMarkdown from 'react-markdown';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function NotificationItem({ data, onClick, onDelete, onRead }) {
+    const navigate = useNavigate();
+
     // Format time function
     const formatTime = (timestamp) => {
         if (!timestamp) return '';
@@ -36,6 +39,8 @@ function NotificationItem({ data, onClick, onDelete, onRead }) {
         // Mark as read if not already read
         if (data && !data.isRead && onRead) {
             onRead(data.id);
+            navigate(`/jobDetails/${data.jobId}`);
+
         }
         // Call the original onClick handler with the notification data
         if (onClick) {
