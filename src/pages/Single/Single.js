@@ -5,6 +5,7 @@ import { AiOutlineCalendar, AiOutlineMail } from 'react-icons/ai';
 import { IconUsersGroup, IconWorld } from '@tabler/icons-react';
 import styles from './Single.module.scss';
 import EmployerService from '~/services/EmployerService';
+import { BadgeCheck } from 'lucide-react';
 
 const cx = classNames.bind(styles);
 

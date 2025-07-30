@@ -43,7 +43,7 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
                 {/*  */}
                 <div className={cx('inf')}>
                     <div className={cx('top')}>
-                        <div className={cx('name')}>{fullName}</div>
+                        <div className={cx('name')}>{fullName || 'Unknown'}</div>
                         <div className={cx('job_role')}>{job_role}</div>
                     </div>
                     <div className={cx('bottom')}>
@@ -73,22 +73,22 @@ function CandidateItem({ image = Images.default_image, description = {}, saved, 
             {/* END MAIN */}
 
             <div className={cx('action')}>
-                {long && (
+                {/* {long && (
                     <div className={cx('download', 'action_btn')}>
                         <IconDownload />
                     </div>
-                )}
-                <div
+                )} */}
+                {/* <div
                     className={cx('save', 'action_btn')}
                     onClick={() => {
                         setSave(!save);
                     }}
                 >
                     <IconComponent />
-                </div>
+                </div> */}
                 {long && (
                     <Button
-                        to={`/seekerDetailPage/1`}
+                        to={`/seekerDetailPage/${description.id}`}
                         blue_lighter
                         rightIcon={<IconArrowRight />}
                         className={cx('view-profile-btn')}

@@ -113,12 +113,12 @@ export const items = {
                 page: <PostJob />,
                 link: '/dashboard/postjob',
             },
-            {
-                title: 'My Jobs',
-                icon: <IconBriefcase />,
-                page: <MyJob />,
-                link: '/dashboard/my-jobs',
-            },
+            // {
+            //     title: 'My Jobs',
+            //     icon: <IconBriefcase />,
+            //     page: <MyJob />,
+            //     link: '/dashboard/my-jobs',
+            // },
             // {
             //     title: 'Saved Candidates',
             //     icon: <IconBookmark />,

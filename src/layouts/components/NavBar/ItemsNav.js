@@ -28,7 +28,7 @@ const itemsNav = {
             { name: 'Find Candidate', link: '/find-candidate' },
             { name: 'Dashboard', link: '/dashboard/overview' },
             { name: 'My Jobs', link: '/dashboard/my-jobs' },
-            { name: 'Applications', link: '/dashboard/saved-candidates' },
+            // { name: 'Applications', link: '/dashboard/overview' },
             { name: 'Feed Back', link: '/feedback' },
         ],
     },

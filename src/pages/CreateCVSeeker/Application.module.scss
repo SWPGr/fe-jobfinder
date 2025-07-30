@@ -253,11 +253,16 @@
     position: relative;
     background: white;
     border-radius: 10px;
-    padding: 20px;
+    // padding: 20px;
     max-width: 900px;
     margin: 40px auto;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 20;
+    min-width: 800px;
+    height: 700px;
+    align-self: center;
+    transform: translateY(-10%) translateX(-95%);
+    left: 50%;
 }
 
 .closeBtn {

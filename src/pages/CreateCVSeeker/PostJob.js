@@ -4,6 +4,8 @@ import styles from './PostJob.module.scss';
 import SimpleRichTextEditor from '~/components/RichTextEditor/RichTextEditor';
 import { Button } from '~/components';
 import { useWindowScroll } from '@mantine/hooks';
+import { Alert } from '@mantine/core';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 import { jobService } from '~/services';
 import { useNotification } from '~/hooks';
@@ -15,6 +17,8 @@ const PostJob = () => {
     const [scroll, scrollTo] = useWindowScroll();
     const { showSuccess, showError } = useNotification();
     const { showLoading, hideLoading } = useLoading();
+    const [errorMessage, setErrorMessage] = useState(null); // null = không hiển thị
+
 
     const [formData, setFormData] = useState({
         jobTitle: '',
@@ -187,7 +191,10 @@ const PostJob = () => {
             setFormErrors({});
         } catch (error) {
             hideLoading();
-            showError('Failed to post job');
+            setErrorMessage(error.message);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 10000);
         }
     };
 
@@ -224,94 +231,119 @@ const PostJob = () => {
     );
 
     return (
-        <form className={cx('postJobTab')} onSubmit={handleSubmit}>
-            <div className={cx('pageTitle')}>Post a job</div>
-            {renderInput('Job Title', 'jobTitle')}
+        <>  {errorMessage && (
+            <div style={{
+                position: 'fixed',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 9999, // đảm bảo hiển thị trên mọi thứ
+                width: '80%',
+                maxWidth: '500px',
+            }}
+            >
+                <Alert
+                    variant="filled"
+                    color="cyan"
+                    title="Error"
+                    icon={<IconInfoCircle />}
+                    classNames={{ message: cx('error-message'), label: cx('error-label') }}
+                    withCloseButton
+                    onClose={() => setErrorMessage(null)} // đóng ngay khi nhấn dấu X
+                >
+                    {errorMessage}
+                </Alert>
+            </div >
+        )}
+            <form className={cx('postJobTab')} onSubmit={handleSubmit}>
+                <div className={cx('pageTitle')}>Post a job</div>
+                {renderInput('Job Title', 'jobTitle')}
 
-            <div className={cx('row')}>
-                {renderInput('Tags', 'tags')}
-                {renderSelect('Job Role', 'jobRole', dropdowns.jobRoles)}
-            </div>
-
-            <div className={cx('sectionTitle')}>Salary</div>
-            <div className={cx('inputGroup')}>
-                <label className={cx('checkboxLabel')}>
-                    <input
-                        type="checkbox"
-                        checked={formData.isNegotiable}
-                        onChange={handleCheckboxChange('isNegotiable')}
-                    />
-                    &nbsp; Negotiable salary
-                </label>
-            </div>
-
-            {!formData.isNegotiable && (
-                <>
-                    <div className={cx('row')}>
-                        {renderInput('Min Salary', 'minSalary', 'number')}
-                        {renderInput('Max Salary', 'maxSalary', 'number')}
-                    </div>
-                    {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
-                </>
-            )}
-
-            <div className={cx('sectionTitle')}>Advance Information</div>
-            <div className={cx('row')}>
-                {renderSelect('Education', 'education', dropdowns.educations)}
-                {renderSelect('Experience', 'experience', dropdowns.experiences)}
-                {renderSelect('Job Type', 'jobType', dropdowns.jobTypes)}
-            </div>
-
-            <div className={cx('row')}>
-                {renderInput('Vacancies', 'vacancy', 'number')}
-                {renderInput('Expiration Date', 'expirationDate', 'date')}
-                {renderSelect('Job Level', 'jobLevel', dropdowns.jobLevels)}
-            </div>
-
-            <div className={cx('formGroup')}>
-                <label>Description</label>
-                <SimpleRichTextEditor
-                    placeholder="Add your job description..."
-                    onChange={handleEditorChange('description')}
-                    value={formData.description}
-                />
-                {formErrors.description && <div className={cx('error')}>{formErrors.description}</div>}
-            </div>
-
-            <div className={cx('formGroup')}>
-                <label>Responsibilities</label>
-                <SimpleRichTextEditor
-                    placeholder="Add your job responsibilities..."
-                    onChange={handleEditorChange('responsibilities')}
-                    value={formData.responsibilities}
-                />
-                {formErrors.responsibilities && <div className={cx('error')}>{formErrors.responsibilities}</div>}
-            </div>
-
-            <button type="submit" className={cx('saveNextBtn')}>
-                Post Job <span className={cx('arrow')}>&rarr;</span>
-            </button>
-
-            {Object.values(formErrors).some(Boolean) && (
-                <div className={cx('error', 'formSubmitError')}>
-                    Please fix the above errors before submitting the form.
+                <div className={cx('row')}>
+                    {renderInput('Tags', 'tags')}
+                    {renderSelect('Job Role', 'jobRole', dropdowns.jobRoles)}
                 </div>
-            )}
 
-            {showConfirmPopup && (
-                <div className={cx('popupOverlay')}>
-                    <div className={cx('popup')}>
-                        <p>Do you want to post this job?</p>
-                        <div className={cx('popupActions')}>
-                            <Button green_white onClick={handleConfirm}>Yes</Button>
-                            <Button red_white onClick={() => setShowConfirmPopup(false)}>
-                                Cancel
-                            </Button>
+                <div className={cx('sectionTitle')}>Salary</div>
+                <div className={cx('inputGroup')}>
+                    <label className={cx('checkboxLabel')}>
+                        <input
+                            type="checkbox"
+                            checked={formData.isNegotiable}
+                            onChange={handleCheckboxChange('isNegotiable')}
+                        />
+                        &nbsp; Negotiable salary
+                    </label>
+                </div>
+
+                {!formData.isNegotiable && (
+                    <>
+                        <div className={cx('row')}>
+                            {renderInput('Min Salary', 'minSalary', 'number')}
+                            {renderInput('Max Salary', 'maxSalary', 'number')}
+                        </div>
+                        {formErrors.salaryRange && <div className={cx('error')}>{formErrors.salaryRange}</div>}
+                    </>
+                )}
+
+                <div className={cx('sectionTitle')}>Advance Information</div>
+                <div className={cx('row')}>
+                    {renderSelect('Education', 'education', dropdowns.educations)}
+                    {renderSelect('Experience', 'experience', dropdowns.experiences)}
+                    {renderSelect('Job Type', 'jobType', dropdowns.jobTypes)}
+                </div>
+
+                <div className={cx('row')}>
+                    {renderInput('Vacancies', 'vacancy', 'number')}
+                    {renderInput('Expiration Date', 'expirationDate', 'date')}
+                    {renderSelect('Job Level', 'jobLevel', dropdowns.jobLevels)}
+                </div>
+
+                <div className={cx('formGroup')}>
+                    <label>Description</label>
+                    <SimpleRichTextEditor
+                        placeholder="Add your job description..."
+                        onChange={handleEditorChange('description')}
+                        value={formData.description}
+                    />
+                    {formErrors.description && <div className={cx('error')}>{formErrors.description}</div>}
+                </div>
+
+                <div className={cx('formGroup')}>
+                    <label>Responsibilities</label>
+                    <SimpleRichTextEditor
+                        placeholder="Add your job responsibilities..."
+                        onChange={handleEditorChange('responsibilities')}
+                        value={formData.responsibilities}
+                    />
+                    {formErrors.responsibilities && <div className={cx('error')}>{formErrors.responsibilities}</div>}
+                </div>
+
+                <button type="submit" className={cx('saveNextBtn')}>
+                    Post Job <span className={cx('arrow')}>&rarr;</span>
+                </button>
+
+                {Object.values(formErrors).some(Boolean) && (
+                    <div className={cx('error', 'formSubmitError')}>
+                        Please fix the above errors before submitting the form.
+                    </div>
+                )}
+
+                {showConfirmPopup && (
+                    <div className={cx('popupOverlay')}>
+                        <div className={cx('popup')}>
+                            <p>Do you want to post this job?</p>
+                            <div className={cx('popupActions')}>
+                                <Button green_white onClick={handleConfirm}>Yes</Button>
+                                <Button red_white onClick={() => setShowConfirmPopup(false)}>
+                                    Cancel
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </form>
+                )}
+            </form>
+        </>
     );
 };
 

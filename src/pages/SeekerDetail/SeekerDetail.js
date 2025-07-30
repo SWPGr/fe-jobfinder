@@ -19,6 +19,8 @@ import { IoCloudDownloadOutline } from "react-icons/io5";
 import { TfiEmail } from "react-icons/tfi";
 import useNotification from "~/hooks/userNotification";
 import JobSeekerProfileService from "~/services/JobSeekerProfileService";
+import { useParams } from "react-router-dom";
+import { jobService } from "~/services";
 
 const cx = classNames.bind(styles);
 
@@ -118,6 +120,9 @@ const SeekerDetail = ({ applicant }) => {
   const [showSummary, setShowSummary] = useState(false);
   const [socialLinks, setSocialLinks] = useState([]);
   const [socialTypes, setSocialTypes] = useState([]);
+  const [userDetail, setUserDetail] = useState({});
+  const [options, setOptions] = useState([]);
+  const { id } = useParams();
 
   const { showError, showInfo, showWarning } = useNotification();
 
@@ -130,21 +135,30 @@ const SeekerDetail = ({ applicant }) => {
         ]);
         setSocialLinks(links);
         setSocialTypes(types);
-        if (!links || links.length === 0) {
-          showInfo("No social media links found for this user.");
-        }
+        // if (!links || links.length === 0) {
+        //   showInfo("No social media links found for this user.");
+        // }
       } catch (err) {
         showWarning("Failed to fetch social media data.");
       }
     };
+    const fetchUserData = async () => {
+      if (!id) return;
+      try {
+        const user = await JobSeekerProfileService.getUserById(id);
+        const response = await jobService.getAllOptions();
+
+        setUserDetail(user.result);
+        setOptions(response);
+      } catch (error) {
+
+      }
+    }
     fetchSocialData();
+    fetchUserData();
+
   }, []);
 
-
-  if (!applicant) {
-    showError("User not found");
-    return null;
-  }
 
   const {
     seekerDetail = {},
@@ -154,16 +168,18 @@ const SeekerDetail = ({ applicant }) => {
     email,
     phone = seekerDetail.phone,
     title,
-  } = applicant;
+    description,
+  } = applicant || userDetail;
+
   const coverLetterDisplay =
     (coverLetter && coverLetter.trim()) ||
     (seekerDetail.coverLetter && seekerDetail.coverLetter.trim()) ||
     "Không có cover letter";
-  const applicationId = applicant.applicationId || applicant.id || null;
-  console.log("applicant", applicant);
+
+  const applicationId = applicant?.applicationId || applicant?.id || userDetail?.id || null;
+  console.log("applicant", applicationId);
   console.log("seekerDetail", seekerDetail);
-  if (!applicationId) {
-    alert("Application ID không hợp lệ");
+  if (!applicationId && !userDetail?.id) {
     return null;
   }
 
@@ -172,6 +188,8 @@ const SeekerDetail = ({ applicant }) => {
   const handleShowResumeSummary = () => {
     setShowSummary(true);
   };
+
+
 
   // Sửa lại icon map cho đúng
   const iconMap = {
@@ -188,13 +206,13 @@ const SeekerDetail = ({ applicant }) => {
         <div className={cx("left")}>
           <div className={cx("header")}>
             <div className={cx("avatar")}>
-              {seekerDetail.avatarUrl && (
-                <img src={seekerDetail.avatarUrl} alt={seekerDetail.fullName} />
+              {(seekerDetail.avatarUrl || userDetail?.avatarUrl) && (
+                <img src={userDetail?.avatarUrl || seekerDetail?.avatarUrl} alt={seekerDetail.fullName} />
               )}
             </div>
             <div className={cx("basic-info")}>
-              <h2 className={cx("name")}>{seekerDetail.fullName || "N/A"}</h2>
-              <p className={cx("jobTitle")}>{title || "Website Designer (UI/UX)"}</p>
+              <h2 className={cx("name")}>{seekerDetail.fullName || userDetail?.fullName || "N/A"}</h2>
+              {/* <p className={cx("jobTitle")}>{title || "Website Designer (UI/UX)"}</p> */}
             </div>
           </div>
 
@@ -252,13 +270,13 @@ const SeekerDetail = ({ applicant }) => {
                 <div className={cx("infoItem")}>
                   <p className={cx("infoLabel")}>EXPERIENCE</p>
                   <p className={cx("infoValue")}>
-                    {experienceName || seekerDetail.experienceName || "N/A"}
+                    {experienceName || seekerDetail?.experienceName || userDetail?.experience?.name || "N/A"}
                   </p>
                 </div>
                 <div className={cx("infoItem")}>
                   <p className={cx("infoLabel")}>EDUCATION</p>
                   <p className={cx("infoValue")}>
-                    {educationName || seekerDetail.educationName || "N/A"}
+                    {educationName || seekerDetail?.educationName || userDetail?.education?.name || "N/A"}
                   </p>
                 </div>
               </div>
@@ -266,15 +284,15 @@ const SeekerDetail = ({ applicant }) => {
 
             <div className={cx("infoBox", "resumeBox")}>
               <h3 className={cx("resumeTitle")}>View Resume</h3>
-              <p className={cx("resumeName")}>{seekerDetail.fullName || "N/A"}</p>
+              <p className={cx("resumeName")}>{seekerDetail.fullName || userDetail?.fullName || "N/A"}</p>
               <button
                 className={cx("downloadBtn")}
                 aria-label="Download Resume"
                 onClick={() => {
-                  if (seekerDetail.resumeUrl) {
-                    window.open(seekerDetail.resumeUrl, "_blank");
+                  if (seekerDetail?.resumeUrl || userDetail?.resumeUrl) {
+                    window.open(seekerDetail?.resumeUrl || userDetail?.resumeUrl, "_blank");
                   } else {
-                    alert("Resume not available");
+                    showError("Resume not available");
                   }
                 }}
               >
@@ -310,16 +328,16 @@ const SeekerDetail = ({ applicant }) => {
               </div>
               <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <FaMapLocationDot /> </span>
-                <span className={cx("contactText")}>{seekerDetail.location || "N/A"}</span>
+                <span className={cx("contactText")}>{seekerDetail.location || userDetail?.location || "N/A"}</span>
               </div>
             </div>
             {/* New infoBox for extra info */}
             <div className={cx("infoBox")}>
               <h3 className={cx("contactTitle")}>Account Details</h3>
-              <div className={cx("contactItem")}>
+              {/* <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <FaRegUserCircle /> </span>
                 <span className={cx("contactText")}>{seekerDetail.roleName || "N/A"}</span>
-              </div>
+              </div> */}
               <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <MdOutlineWorkspacePremium /> </span>
                 <span className={cx("contactText")}>{seekerDetail.isPremium ? "Premium" : "Normal"}</span>
@@ -330,15 +348,19 @@ const SeekerDetail = ({ applicant }) => {
               </div> */}
               <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <IoIosTime /> </span>
-                <span className={cx("contactText")}>{seekerDetail.createdAt ? new Date(seekerDetail.createdAt).toLocaleString() : "N/A"}</span>
+                {/* <span className={cx("contactText")}>{seekerDetail.description || userDetail?.description || "N/A"}</span> */}
+                <div
+                  className={cx('content')}
+                  dangerouslySetInnerHTML={{ __html: seekerDetail.description || userDetail?.description || "N/A" || 'No description available.' }}
+                />
               </div>
-              <div className={cx("contactItem")}>
+              {/* <div className={cx("contactItem")}>
                 <span className={cx("icon")}> <MdOutlineUpdate /> </span>
                 <span className={cx("contactText")}>{seekerDetail.updatedAt ? new Date(seekerDetail.updatedAt).toLocaleString() : "N/A"}</span>
-              </div>
+              </div> */}
             </div>
 
-            <div style={{ marginTop: "15px", textAlign: "center" }}>
+            {!id && <div style={{ textAlign: "center" }}>
               <button
                 className={cx("downloadBtn")}
                 aria-label="View Resume Summary"
@@ -346,7 +368,7 @@ const SeekerDetail = ({ applicant }) => {
               >
                 📄Resume Summary
               </button>
-            </div>
+            </div>}
           </div>
         </div>
 

@@ -89,11 +89,21 @@ function HoverCardJob({ description, children }) {
                     <div className={cx('description')}>
                         <div className={cx('job-description')}>
                             <h4 className={cx('title')}>Job Description</h4>
-                            <div className={cx('content')}>{job_description}</div>
+                            {/* <div className={cx('content')}>{job_description}</div> */}
+                            <div
+                                className={cx('content')}
+                                dangerouslySetInnerHTML={{ __html: job_description || 'No description available.' }}
+                            />
+
+
                         </div>
                         <div className={cx('responsibility')}>
                             <h4 className={cx('title')}>Responsibility</h4>
-                            <div className={cx('content')}>{responsibility}</div>
+                            {/* <div className={cx('content')}>{responsibility}</div> */}
+                            <div
+                                className={cx('content')}
+                                dangerouslySetInnerHTML={{ __html: responsibility || 'No description available.' }}
+                            />
                         </div>
                     </div>
 

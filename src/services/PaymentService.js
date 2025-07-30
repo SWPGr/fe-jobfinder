@@ -45,12 +45,22 @@ const getAllPayments = async (params) => {
     }
 };
 
+const confirmPaymentSuccess = async () => {
+    try {
+        await post('payos/process-frontend-success');
+        return true;
+    } catch (error) {
+        throw error;
+    }
+}
+
 const paymentService = {
     getAllSubscriptionPlans,
     getSubscriptionPlanById,
     createPayment,
     getAllPaymentForAdmin,
     getAllPayments,
+    confirmPaymentSuccess
 };
 
 export default paymentService;

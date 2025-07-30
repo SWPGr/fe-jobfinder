@@ -54,7 +54,7 @@ function NotificationButton() {
         // Navigate based on user role
         if (user?.role === 'EMPLOYER') {
             // For employers, navigate to my-jobs page
-            navigate('/dashboard/my-jobs');
+            navigate('/dashboard/overview');
         } else {
             // For job seekers, navigate to job detail page if jobId exists and is valid
             if (notification.jobId && notification.jobId > 0) {

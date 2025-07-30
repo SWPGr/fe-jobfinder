@@ -14,7 +14,7 @@ const Payment = ({ items = [] }) => {
     const { showLoading, hideLoading } = useLoading();
 
     function renderSubscriptionPlan(plan, index) {
-        const returnUrl = `${window.location.origin}/`;
+        const returnUrl = `${window.location.origin}/payment-success`;
         const cancelUrl = `${window.location.origin}/dashboard/plans/manage-plans`;
         return (
             <div key={plan.id || index} className={cx('plan', { recommended: plan.highlightJobs })}>
@@ -47,6 +47,7 @@ const Payment = ({ items = [] }) => {
                     </Button>
                 ) : (
                     <Button
+                        disabled={plan.price === 0}
                         onClick={() =>
                             handleSubscription({
                                 planId: plan.id,
@@ -56,7 +57,7 @@ const Payment = ({ items = [] }) => {
                         }
                         className={cx('plan__button')}
                     >
-                        Choose plan
+                        {plan.price === 0 ? 'Free' : 'Choose plan'}
                     </Button>
                 )}
             </div>
@@ -72,7 +73,7 @@ const Payment = ({ items = [] }) => {
             hideLoading();
         } catch (err) {
             hideLoading();
-            console.error('Failed to create premium payment link:', err);
+            // console.error('Failed to create premium payment link:', err);
         }
     };
 

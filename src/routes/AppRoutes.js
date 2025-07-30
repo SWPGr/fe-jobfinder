@@ -31,6 +31,7 @@ const CandidatesPage = lazy(() => import('~/pages/CandidatesPage/CandidatesPage'
 const JobListingPage = lazy(() => import('~/pages/JobListingsPage/JobListingPage'));
 const EventDetailPage = lazy(() => import('~/pages/Home/EventDetailPage'));
 const BlockedUserPage = lazy(() => import('~/pages/BlockedUser/BlockedUser'));
+const PaymentSuccess = lazy(() => import('~/pages/PaymentSuccess/PaymentSuccess'));
 
 // ✅ Các route ai cũng truy cập được
 const publicRoutes = [
@@ -93,6 +94,12 @@ const privateRoutes = [
         layout: HeaderOnly,
         allowedRoles: ['EMPLOYER', 'JOB_SEEKER', 'ADMIN'],
     },
+    {
+        path: config.routes.paymentSuccess,
+        component: PaymentSuccess,
+        layout: null,
+        allowedRoles: ['EMPLOYER', 'JOB_SEEKER', 'ADMIN'],
+    }
 ];
 
 export { publicRoutes, privateRoutes };
