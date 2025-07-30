@@ -15,80 +15,11 @@ import { EyeIcon } from 'lucide-react';
 import JobDetail from '~/pages/JobDetail/JobDetail';
 import JobApplications from '~/pages/CreateCVSeeker/Application';
 import EmployerService from '~/services/EmployerService';
+import { useNotification } from '~/hooks';
+import { format } from '~/utils';
+
 
 const cx = classNames.bind(styles);
-
-const calcDaysBetween = (startDateStr, endDateStr) => {
-  if (!startDateStr || !endDateStr) return null;
-  const start = new Date(startDateStr);
-  const end = new Date(endDateStr);
-  const diffTime = end - start;
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-};
-
-const normalizeJobData = (data) => {
-  if (!data) return null;
-  const expiredDateStr = data.expiredDate;
-  const createdAtStr = data.createdAt;
-
-
-  let isActive = false;
-  if (expiredDateStr) {
-    const today = new Date();
-    const expiredDate = new Date(expiredDateStr);
-    isActive = expiredDate >= today;
-  }
-
-  const workTime = createdAtStr ? calcDaysBetween(createdAtStr, new Date().toISOString()) : null;
-  const remainDay =
-    expiredDateStr && new Date(expiredDateStr) > new Date()
-      ? calcDaysBetween(new Date().toISOString(), expiredDateStr)
-      : 0;
-
-  const normalizeField = (field) => {
-    if (!field) return null;
-    return typeof field === 'object' ? field : { id: field, name: '' };
-  };
-
-
-
-
-  return {
-
-    id: data.id,
-    title: data.title || '',
-    description: data.description || '',
-    location: data.location || '',
-    salaryMin: data.salaryMin || 0,
-    salaryMax: data.salaryMax || 0,
-    responsibility: data.responsibility || '',
-    expiredDate: expiredDateStr,
-    createdAt: createdAtStr,
-    category: normalizeField(data.category),
-    jobLevel: normalizeField(data.jobLevel),
-    jobType: normalizeField(data.jobType),
-    isActive,
-    numberApplications: data.numberApplications || 0,
-    workTime,
-    vacancy: data.vacancy || 1,
-    remainDay,
-    company: data.employer
-      ? {
-        name: data.employer.companyName || '',
-        description: data.employer.description || '',
-        phone: data.employer.phone || '',
-        email: data.employer.email || '',
-        website: data.employer.website || '',
-        founded: data.employer.yearOfEstablishment || '',
-        organization: data.employer.organizationType || '',
-        size: data.employer.teamSize || '',
-        avatarUrl: data.employer.avatarUrl || '',
-        logoUrl: data.employer.avatarUrl || '',
-      }
-      : null,
-    badges: data.badges || null,
-  };
-};
 
 const prepareUpdatePayload = (job) => ({
   title: job.title,
@@ -104,14 +35,14 @@ const prepareUpdatePayload = (job) => ({
 });
 
 const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) => {
-  console.log('Fetching job detail for ID:', id);
-
   try {
     if (deleteFlag) {
       const response = await EmployerService.deleteJob(id);
       return response.data || {};
     }
     const response = await EmployerService.getJobDetail(id);
+    console.log('response', response);
+
     return response || {};
   } catch (error) {
     if (error.response?.status === 404) {
@@ -124,26 +55,15 @@ const fetchJobDetailFake = async (id, updatedData = null, deleteFlag = false) =>
 
 function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP = false, onDeleteSuccess }) {
 
-  const [jobData, setJobData] = useState(() => {
-    if (jobDescription && jobDescription.id) {
-      // Nếu jobDescription đã có id, trả về một đối tượng mới với id
-      // Giữ nguyên các trường khác
-      console.log('Job description has ID 1:', jobDescription);
-
-      return { ...jobDescription, id: jobDescription.id };
-    }
-    return jobDescription;
-  });
-
+  const [jobData, setJobData] = useState({ ...jobDescription });
+  const { showError } = useNotification();
   const [modalType, setModalType] = useState(null); // 'view' | 'edit' | null
   const [showApplications, setShowApplications] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [numberApplications, setNumberApplications] = useState(0);
 
   const isMounted = useRef(true);
 
   useEffect(() => {
-    console.log('JobItemOwner mounted with jobDescription:', jobDescription);
 
     isMounted.current = true;
     return () => {
@@ -151,71 +71,28 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
     };
   }, []);
 
-  useEffect(() => {
-    async function fetchDetail() {
-      try {
-        console.log('Fetching job detail for ID:', jobDescription.id);
 
-        setLoading(true);
-        const data = await fetchJobDetailFake(jobDescription?.id);
-
-        console.log('Fetched job data:', data);
-
-        if (data) {
-          setJobData(normalizeJobData(data));
-        } else {
-          setJobData(jobDescription);
-        }
-      } catch {
-        setJobData(jobDescription);
-      } finally {
-        setLoading(false);
-      }
-
-    }
-    fetchDetail();
-  }, [jobDescription]);
-
-  // Fetch tổng số ứng viên
-  useEffect(() => {
-    async function fetchApplicationsCount() {
-      if (!jobData?.id) {
-        setNumberApplications(0);
-        return;
-      }
-      try {
-        const response = await EmployerService.fetchApplicationData(jobData.id, 'candidates');
-        // response đã là result, không cần .result nữa
-        const total =
-          typeof response?.totalElements === 'number'
-            ? response.totalElements
-            : (Array.isArray(response?.content) ? response.content.length : 0);
-        setNumberApplications(total);
-      } catch (error) {
-        setNumberApplications(0);
-      }
-    }
-    fetchApplicationsCount();
-  }, [jobData?.id]);
 
   const openModal = async (type) => {
     if (!jobData?.id) {
-      alert('Job ID is missing');
+      showError('Job ID is missing');
       return;
     }
     setLoading(true);
     try {
       const data = await fetchJobDetailFake(jobData.id);
+      console.log('data', data);
+
       if (!data) {
         setLoading(false);
         return;
       }
       if (isMounted.current) {
-        setJobData(normalizeJobData(data));
+        setJobData((format.transformJobData(data)));
         setModalType(type);
       }
     } catch (error) {
-      alert('Error loading job details.');
+      showError('Error loading job details.');
     } finally {
       if (isMounted.current) setLoading(false);
     }
@@ -236,7 +113,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
         return;
       }
       if (isMounted.current) {
-        setJobData(normalizeJobData(data));
+        setJobData(format.transformJobData(data));
         setModalType(null);
       }
     } catch (error) {
@@ -281,19 +158,15 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
           </div>
           <div className={cx('job-description')}>
             <div className={cx('top')}>
-              {jobData && jobData.title ? (
-                <div className={cx('title')}>{jobData.title}</div>
-              ) : (
-                <div className={cx('error')}>Job title not available</div>
-              )}
+              <div className={cx('title')}>{jobData?.jobTitle}</div>
             </div>
             <div className={cx('bottom')}>
               <div className={cx('work-time')}>
-                {jobData?.workTime !== null ? `${jobData.workTime} days posted` : ''}
+                {jobData?.workTime}
               </div>
-              <div className={cx('remain-date')}>
-                {jobData?.remainDay !== null ? `${jobData.remainDay} days remaining` : ''}
-              </div>
+              {/* <div className={cx('remain-date')}>
+                {jobData.remainDay}
+              </div> */}
             </div>
           </div>
         </div>
@@ -308,7 +181,7 @@ function JobItemOwner({ image = Images.default_image, jobDescription = {}, isVIP
             </p>
           )}
         </div>
-        <div className={cx('applications')}>{numberApplications} applications</div>
+        <div className={cx('applications')}>{jobData?.jobApplicationCounts} applications</div>
         <div className={cx('action')}>
           <Button className={cx('view-applications')} onClick={() => setShowApplications(true)}>
             Applications

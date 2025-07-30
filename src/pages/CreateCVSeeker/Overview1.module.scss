@@ -1,224 +1,299 @@
 .container {
-  padding: 2.4rem;
-  font-family: var(--font-family);
-  color: var(--gray-900);
-  max-width: 1500rem;
+    padding: 2.4rem;
+    font-family: var(--font-family);
+    color: var(--gray-900);
+    max-width: 1500rem;
 }
 
 .overview-header {
-  margin-bottom: 1.6rem;
+    margin-bottom: 1.6rem;
 
-  .titleMain {
-    margin: 0 0 0.8rem 0;
-    font-weight: 700;
-    font-size: 2.8rem;
-    color: var(--gray-900);
-  }
+    .titleMain {
+        margin: 0 0 0.8rem 0;
+        font-weight: 700;
+        font-size: 2.8rem;
+        color: var(--gray-900);
+    }
 
-  .desc {
-    margin: 0;
-    color: var(--gray-600);
-    font-size: 1.8rem;
-    font-weight: 500;
-  }
+    .desc {
+        margin: 0;
+        color: var(--gray-600);
+        font-size: 1.8rem;
+        font-weight: 500;
+    }
 }
 
 .info-cards {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2.4rem;
-
-  .info-card {
-    flex: 1;
-    background-color: var(--blue-50);
-    border-radius: 1.2rem;
-    padding: 2rem;
     display: flex;
-    align-items: center;
-    position: relative;
+    gap: 2rem;
+    margin-bottom: 2.4rem;
 
-    &.blue {
-      background-color: var(--blue-100);
-    }
-    &.yellow {
-      background-color: var(--orange-100);
-    }
+    .info-card {
+        flex: 1;
+        background-color: var(--blue-50);
+        border-radius: 1.2rem;
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        position: relative;
 
-    .info-number {
-      font-weight: 700;
-      font-size: 2.4rem;
-      margin-right: 1.2rem;
-      color: var(--gray-900);
-    }
+        &.blue {
+            background-color: var(--blue-100);
+        }
+        &.yellow {
+            background-color: var(--orange-100);
+        }
 
-    .info-label {
-      flex: 1;
-      font-weight: 500;
-      font-size: 1.4rem;
-      color: var(--gray-600);
-    }
+        .info-number {
+            font-weight: 700;
+            font-size: 2.4rem;
+            margin-right: 1.2rem;
+            color: var(--gray-900);
+        }
 
-    .info-icon {
-      width: 4rem;
-      height: 4rem;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+        .info-label {
+            flex: 1;
+            font-weight: 500;
+            font-size: 1.4rem;
+            color: var(--gray-600);
+        }
+
+        .info-icon {
+            width: 4rem;
+            height: 4rem;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     }
-  }
 }
 
 .job-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.2rem;
 
-  .sectionTitle {
-    margin: 0;
-    font-weight: 600;
-  }
-
-  /* Nút Filter (nếu muốn giữ lại cho sau này) */
-  .filterBtn {
-    background-color: var(--blue-100);
-    border: 1px solid var(--blue-300);
-    border-radius: 0.6rem;
-    padding: 0.4rem 1rem;
-    cursor: pointer;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--blue-700);
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: var(--blue-200);
+    .sectionTitle {
+        margin: 0;
+        font-weight: 600;
     }
-  }
+
+    /* Nút Filter (nếu muốn giữ lại cho sau này) */
+    .filterBtn {
+        background-color: var(--blue-100);
+        border: 1px solid var(--blue-300);
+        border-radius: 0.6rem;
+        padding: 0.4rem 1rem;
+        cursor: pointer;
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--blue-700);
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: var(--blue-200);
+        }
+    }
 }
 
 /* Panel Filter: Đẩy sang bên phải */
 .filter-panel {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
 
-  background-color: var(--gray-100);
-  border: 1px solid var(--gray-300);
-  border-radius: 0.8rem;
-  margin-left: auto;
-   // width: max-content;
-
-
-  /* Căn kích thước đồng nhất cho input và select */
-  input,
-  select {
-    padding: 0.8rem 0.8rem;
-    height: 3.6rem;
-    line-height: 1.4rem;
+    background-color: var(--gray-100);
     border: 1px solid var(--gray-300);
-    border-radius: 0.4rem;
-    font-size: 1.4rem;
-    outline: none;
-    box-sizing: border-box;
-    width: 16rem; /* Đặt width đồng nhất */
-    &:focus {
-      border-color: var(--blue-500);
+    border-radius: 0.8rem;
+    margin-left: auto;
+    // width: max-content;
+
+    /* Căn kích thước đồng nhất cho input và select */
+    input,
+    select {
+        padding: 0.8rem 0.8rem;
+        height: 3.6rem;
+        line-height: 1.4rem;
+        border: 1px solid var(--gray-300);
+        border-radius: 0.4rem;
+        font-size: 1.4rem;
+        outline: none;
+        box-sizing: border-box;
+        width: 16rem; /* Đặt width đồng nhất */
+        &:focus {
+            border-color: var(--blue-500);
+        }
     }
-  }
 
-  /* Riêng Start Day và End Day dùng width 16rem để làm chuẩn */
-  .start-day,
-  .end-day {
-    width: 16rem;
-  }
+    /* Riêng Start Day và End Day dùng width 16rem để làm chuẩn */
+    .start-day,
+    .end-day {
+        width: 16rem;
+    }
 
-  /* Đặt All Status và Name cũng width 16rem để bằng nhau */
-  .status-filter,
-  .name-filter {
-    width: 16rem;
-  }
+    /* Đặt All Status và Name cũng width 16rem để bằng nhau */
+    .status-filter,
+    .name-filter {
+        width: 16rem;
+    }
 
-  /* Chữ "to" giữa 2 ngày */
-  .to-text {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--gray-700);
-    white-space: nowrap;
-    margin: 0 0.5rem;
-    line-height: 3.6rem;
-  }
+    /* Chữ "to" giữa 2 ngày */
+    .to-text {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        white-space: nowrap;
+        margin: 0 0.5rem;
+        line-height: 3.6rem;
+    }
 }
 
-
 .job-table-head {
-  display: grid;
-  grid-template-columns: 3fr 1fr 1fr 1fr;
-  background-color: var(--gray-100);
-  padding: 1.2rem 1.6rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--gray-400);
-  border-radius: 0.8rem;
-  text-transform: uppercase;
-  margin-bottom: 0.8rem;
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    background-color: var(--gray-100);
+    padding: 1.2rem 1.6rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gray-400);
+    border-radius: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
 
-  span {
-    display: flex;
-    align-items: center;
-  }
+    span {
+        display: flex;
+        align-items: center;
+    }
 
-  .jobs {
-    margin-left: 10rem;
-  }
+    .jobs {
+        margin-left: 10rem;
+    }
 
-  .status {
-    margin-left: -7.5rem;
-  }
+    .status {
+        margin-left: -7.5rem;
+    }
 
-  .applications {
-    margin-left: -9.5rem;
-  }
+    .applications {
+        margin-left: -9.5rem;
+    }
 
-  .actions {
-    margin-left: 1rem;
-  }
+    .actions {
+        margin-left: 1rem;
+    }
 }
 
 .pagination {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
 
-  button {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 6px 12px;
-    border-radius: 4px;
+    button {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        &.active {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+    }
+}
+
+// Pagination styles
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px 0;
+    padding: 16px 0;
+}
+
+.pagination-root {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #64748b;
     font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
-      background-color: #f0f0f0;
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #475569;
     }
 
     &:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f1f5f9;
     }
-
-    &.active {
-      background-color: #007bff;
-      color: #fff;
-      border-color: #007bff;
-    }
-  }
 }
 
+.pagination-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #64748b;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+        color: #475569;
+    }
+}
+
+.pagination-active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: white;
+    font-weight: 600;
+
+    &:hover {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: white;
+    }
+}

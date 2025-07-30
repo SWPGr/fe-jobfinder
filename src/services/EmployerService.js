@@ -1,15 +1,11 @@
-import axios from 'axios';
 import { get, post, put } from '~/utils/httpRequest'; // utils httpRequest của bạn
 
-const API_URL = 'job';
 
 // Các hàm axios thuần cho các API job chi tiết (có thể dùng thay thế hoặc bổ sung)
 const getJobDetail = async (id) => {
     try {
-        const response = await axios.get(`${API_URL}/${id}`);
-        console.log(`Fetching job detail for ID ${id}:`, response.data);
-
-        return response.data;
+        const response = await get(`job/${id}`);
+        return response;
     } catch (error) {
         console.error(`Error fetching job detail for ID ${id}:`, error);
         throw error;
@@ -18,8 +14,8 @@ const getJobDetail = async (id) => {
 
 const updateJob = async (id, data) => {
     try {
-        console.log('Updating jobbbbb:');
-        const response = await axios.put(`${API_URL}/${id}`, data);
+        const response = await put(`job/${id}`, data);
+
         return response.data;
     } catch (error) {
         console.error(`Error updating job with ID ${id}:`, error);
@@ -29,7 +25,7 @@ const updateJob = async (id, data) => {
 
 const deleteJob = async (id) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}`);
+        const response = await put(`job/${id}`);
         return response.data;
     } catch (error) {
         console.error(`Error deleting job with ID ${id}:`, error);
@@ -114,80 +110,13 @@ const fetchJobEmployerFake = async () => {
     }
 };
 
-const fetchMyJobFake = async (page = 0, size = 10, isActive = true, jobTitle = '', fromDate = '', toDate = '') => {
+const fetchMyJobFake = async (params) => {
     try {
-        const formattedFromDate = fromDate ? new Date(fromDate).toISOString() : '';
-        const formattedToDate = toDate ? new Date(toDate).toISOString() : '';
-
-        let url = `/job/my-employer-jobs?page=${page}&size=${size}&isActive=${isActive}&jobTitle=${jobTitle}&fromDate=${formattedFromDate}`;
-
-        if (formattedToDate) {
-            url += `&toDate=${formattedToDate}`;
-        }
-
-        const response = await get(url);
-
-        if (!response || !response.result || !Array.isArray(response.result.content)) {
-            console.warn('Invalid API response structure:', response);
-            return {
-                jobs: [],
-                pagination: {
-                    pageNumber: 0,
-                    pageSize: size,
-                    totalElements: 0,
-                    totalPages: 1,
-                    isFirst: true,
-                    isLast: true,
-                },
-            };
-        }
-
-        const data = response.result;
-
-        const jobsFormatted = data.content.map((job) => {
-            const createdDate = new Date(job.createdAt);
-            const defaultExpireDate = new Date(createdDate);
-            defaultExpireDate.setDate(createdDate.getDate() + 30);
-            const expireDate = job.expiredDate ? new Date(job.expiredDate) : defaultExpireDate;
-            const today = new Date();
-            const remainingDays = Math.max(0, Math.ceil((expireDate - today) / (1000 * 60 * 60 * 24)));
-            const remainingText = remainingDays > 0 ? `${remainingDays} days remaining` : 'Expired';
-
-            return {
-                jobTitle: job.title || 'Unknown Title',
-                workTime: job.jobType?.name || 'Unknown Type',
-                remainDay: remainingText,
-                isActive: remainingDays > 0,
-                numberApplications: job.jobApplicationCounts || 0,
-                isVIP: job.employer?.isPremium || false,
-                id: job.id,
-            };
-        });
-
-        return {
-            jobs: jobsFormatted,
-            pagination: {
-                pageNumber: data.pageNumber ?? 0,
-                pageSize: data.pageSize ?? size,
-                totalElements: data.totalElements ?? 0,
-                totalPages: data.totalPages ?? 1,
-                isFirst: data.first ?? true,
-                isLast: data.last ?? true,
-            },
-        };
+        const response = await get('/job/my-employer-jobs', params);
+        return response || null;
     } catch (error) {
-        console.error('Error fetching my jobs:', error.message);
-        return {
-            jobs: [],
-            pagination: {
-                pageNumber: 0,
-                pageSize: size,
-                totalElements: 0,
-                totalPages: 1,
-                isFirst: true,
-                isLast: true,
-            },
-        };
+        console.error('Error fetching my job:', error);
+        return null;
     }
 };
 
