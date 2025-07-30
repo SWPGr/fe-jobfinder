@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Jobs.module.scss';
 import { Combobox, useCombobox } from '@mantine/core';
-import JobDetail from '~/pages/JobDetail/JobDetail'; // Modal cho View
+import JobDetail from '~/pages/JobDetail/JobDetail';
 import { JobSearchFilters } from '~/components';
 import { useSearchParams } from 'react-router-dom';
 import { Pagination } from '@mantine/core';
 import statisticsService from '~/services/statisticsService';
 import useNotification from '~/hooks/userNotification';
+import { AdminHeader, AdminTable, StatusBadge } from '../components';
 
 const cx = classNames.bind(styles);
 
@@ -83,6 +84,10 @@ const Jobs = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
 
+    // New state for AdminTable
+    const [searchValue, setSearchValue] = useState('');
+    const [selectedItems, setSelectedItems] = useState([]);
+
     const { showSuccess, showError } = useNotification();
 
     const handleAction = async (action, jobId) => {
@@ -115,7 +120,6 @@ const Jobs = () => {
             }
         }
     };
-
 
     const closeModal = () => {
         setIsModalOpen(false);
@@ -154,11 +158,120 @@ const Jobs = () => {
             minute: '2-digit',
         });
     };
+
     const handlePageChange = (page) => {
         const params = new URLSearchParams(searchParams);
         params.set('page', page);
         setSearchParams(params);
     };
+
+    // Table columns configuration for AdminTable
+    const columns = [
+        {
+            key: 'title',
+            label: 'Job Title',
+            render: (value, row) => (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div className={cx('avatarCircle')}>
+                        {row.employer?.email?.charAt(0) || 'U'}
+                    </div>
+                    <div>
+                        <div className={cx('job-title')}>{value}</div>
+                        <div className={cx('job-company')}>{row.employer?.email}</div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'location',
+            label: 'Location',
+            render: (value) => value
+        },
+        {
+            key: 'jobType',
+            label: 'Type',
+            render: (value) => (
+                <span className={cx('job-type')}>
+                    {value?.name || '--'}
+                </span>
+            )
+        },
+        {
+            key: 'salary',
+            label: 'Salary Range',
+            render: (value, row) => `$${row.salaryMin} - $${row.salaryMax}`
+        },
+        {
+            key: 'jobApplicationCounts',
+            label: 'Applicants',
+            render: (value) => value || 0
+        },
+        {
+            key: 'active',
+            label: 'Status',
+            render: (value) => <StatusBadge status={value ? 'active' : 'inactive'} size="small" />
+        },
+        {
+            key: 'createdAt',
+            label: 'Posted',
+            render: (value) => value ? formatDate(value).split(',')[0] : ''
+        }
+    ];
+
+    // Actions configuration for AdminTable
+    const actions = [
+        {
+            key: 'view',
+            label: 'View Details',
+            onClick: (row) => {
+                setSelectedJob(row);
+                setIsModalOpen(true);
+            }
+        },
+        {
+            key: 'block',
+            label: 'Block Job',
+            variant: 'danger',
+            onClick: (row) => handleAction('block', row.id),
+            show: (row) => row.active === true
+        },
+        {
+            key: 'unblock',
+            label: 'Unblock Job',
+            variant: 'success',
+            onClick: (row) => handleAction('unblock', row.id),
+            show: (row) => row.active === false
+        }
+    ];
+
+    // Bulk actions configuration
+    const bulkActions = [
+        {
+            key: 'block',
+            label: 'Block Selected',
+            variant: 'danger',
+            onClick: (selectedIds) => {
+                selectedIds.forEach(id => handleAction('block', id));
+            }
+        },
+        {
+            key: 'unblock',
+            label: 'Unblock Selected',
+            variant: 'success',
+            onClick: (selectedIds) => {
+                selectedIds.forEach(id => handleAction('unblock', id));
+            }
+        }
+    ];
+
+    // Filter options
+    const filters = [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'fulltime', label: 'Full Time' },
+        { value: 'parttime', label: 'Part Time' },
+        { value: 'contract', label: 'Contract' }
+    ];
 
     if (loading) {
         return <div>Loading...</div>;
@@ -166,85 +279,49 @@ const Jobs = () => {
 
     return (
         <div className={cx('managementWrapper')}>
-            <div className={cx('jobs-header')}>
-                <h1 className={cx('title')}>Jobs Management</h1>
-            </div>
+            {/* New AdminHeader component */}
+            <AdminHeader
+                title="Jobs Management"
+                subtitle="Manage and monitor all job postings on your platform"
+                breadcrumbs={['Management', 'Jobs']}
+                stats={[
+                    { value: jobs.length, label: 'Total Jobs' },
+                    { value: jobs.filter(j => j.active).length, label: 'Active Jobs' },
+                    { value: jobs.reduce((sum, job) => sum + (job.jobApplicationCounts || 0), 0), label: 'Total Applications' }
+                ]}
+            />
 
-            <JobSearchFilters />
-            {/* Thanh tìm kiếm ngang với các filter mới */}
-
-            {/* Bảng jobs và các phần còn lại giữ nguyên */}
-            <div className={cx('tableWrapper')}>
-                <table className={cx('jobs-table')}>
-                    <thead>
-                        <tr>
-                            <th>Job Title</th>
-                            <th>Location</th>
-                            <th>Type</th>
-                            <th>Salary Range</th>
-                            <th>Applicants</th>
-                            <th>Status</th>
-                            <th>Posted</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {jobs.length > 0 ? (
-                            jobs.map((job) => (
-                                <tr key={job.id}>
-                                    <td>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            <div className={cx('avatarCircle')}>
-                                                {job.employer?.email?.charAt(0) || 'U'}
-                                            </div>
-                                            <div>
-                                                <div className={cx('job-title')}>{job.title}</div>
-                                                <div className={cx('job-company')}>{job.employer?.email}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{job.location}</td>
-                                    <td>
-                                        <span className={cx('job-type')}>{job.jobType?.name || '--'}</span>
-                                    </td>
-                                    <td>
-                                        ${job.salaryMin} - ${job.salaryMax}
-                                    </td>
-                                    <td>{job.jobApplicationCounts || 0}</td>
-                                    <td>
-                                        <span className={cx('job-status', job.active ? 'active' : 'inactive')}>
-                                            {job.active ? 'Active' : 'Inactive'}
-                                        </span>
-                                    </td>
-                                    <td>{job.createdAt ? formatDate(job.createdAt).split(',')[0] : ''}</td>
-                                    <td>
-                                        <JobRowDropdown
-                                            onAction={(action) => handleAction(action, job.id)}
-                                            jobId={job.id}
-                                            isActive={job.active === true}
-                                        />
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="8">No jobs available</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Remove Pagination */}
-            <div className={cx('pagination')}>
-                <Pagination
-                    total={totalPages}
-                    value={page}
-                    onChange={setPage}
-                    radius="xl"
-                    classNames={{ root: cx('pagination-root'), control: cx('control') }}
-                />
-            </div>
+            {/* New AdminTable component */}
+            <AdminTable
+                title="Jobs"
+                data={jobs}
+                columns={columns}
+                loading={loading}
+                searchValue={searchValue}
+                onSearchChange={setSearchValue}
+                filters={filters}
+                onFilterChange={(value) => {
+                    // Implement filter logic here
+                    console.log('Filter changed:', value);
+                }}
+                onExport={() => {
+                    // Implement export logic here
+                    console.log('Export clicked');
+                }}
+                pagination={{
+                    currentPage: page,
+                    totalPages: totalPages,
+                    from: 1,
+                    to: jobs.length,
+                    total: totalHits
+                }}
+                onPageChange={setPage}
+                actions={actions}
+                bulkActions={bulkActions}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                emptyMessage="No jobs available"
+            />
 
             {/* Modal với JobDetail */}
             {isModalOpen && selectedJob && (
@@ -263,31 +340,31 @@ const Jobs = () => {
                                 badges: { featured: false, fulltime: selectedJob.jobType?.name || 'N/A' },
                                 minSalary: selectedJob.salaryMin,
                                 maxSalary: selectedJob.salaryMax,
-                                salaryType: 'monthly', // Giả định
-                                education: 'N/A', // Chưa có trong API
-                                experience: 'N/A', // Chưa có trong API
+                                salaryType: 'monthly',
+                                education: 'N/A',
+                                experience: 'N/A',
                                 jobType: selectedJob.jobType?.name || 'N/A',
                                 vacancy: selectedJob.vacancy,
-                                expirationDate: '2025-07-31', // Giả định
+                                expirationDate: '2025-07-31',
                                 jobLevel: selectedJob.jobLevel?.name || 'N/A',
                                 contactUrl: selectedJob.employer?.website || 'N/A',
                                 phone: selectedJob.employer?.phone || 'N/A',
                                 email: selectedJob.employer?.email || 'N/A',
                                 jobDescription: selectedJob.description || '<p>No description available</p>',
-                                responsibilities: '<ul><li>Manage job responsibilities</li></ul>', // Giả định
+                                responsibilities: '<ul><li>Manage job responsibilities</li></ul>',
 
                                 company: {
                                     name: selectedJob.employer?.email || 'N/A',
-                                    description: 'N/A', // Chưa có trong API
-                                    founded: 'N/A', // Chưa có trong API
-                                    organization: 'N/A', // Chưa có trong API
-                                    size: 'N/A', // Chưa có trong API
+                                    description: 'N/A',
+                                    founded: 'N/A',
+                                    organization: 'N/A',
+                                    size: 'N/A',
                                     phone: selectedJob.employer?.phone || 'N/A',
                                     email: selectedJob.employer?.email || 'N/A',
                                     website: selectedJob.employer?.website || 'N/A',
                                 },
                             }}
-                            editable={isModalOpen === 'edit'} // Chỉnh sửa khi nhấn Edit
+                            editable={isModalOpen === 'edit'}
                             onSave={handleSave}
                             onCancel={closeModal}
                         />

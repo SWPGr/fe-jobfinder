@@ -14,6 +14,7 @@ import { GoogleLoginButton } from '~/components';
 import { useContext } from 'react';
 import { AuthContext } from '~/context/AuthContext';
 import { useNotification } from '~/hooks';
+import config from '~/config';
 
 // Bind styles for conditional class names
 const cx = classNames.bind(styles);
@@ -47,7 +48,13 @@ function Login() {
         setLoading(true);
         const data = await login(values.email, values.password, values.userRole);
         setLoading(false);
-        console.log('Response data:', data);
+        console.log('📡 Response data:', data);
+        console.log('🔍 Checking conditions - Code:', data.code, 'Message:', data.message);
+        console.log('🔍 Message type:', typeof data.message);
+        console.log('🔍 Message content:', data.message);
+        if (data.message && typeof data.message === 'object') {
+            console.log('🔍 Message.message:', data.message.message);
+        }
 
         if (data.success) {
             navigate('/');
@@ -55,6 +62,20 @@ function Login() {
         } else {
             const message =
                 typeof data.message === 'string' ? data.message : data.message?.toString() || 'An error occurred';
+
+            // Check if user is blocked and redirect to block-user page
+            if ((data.code === 1004) ||
+                (data.message && typeof data.message === 'string' && (data.message.toLowerCase().includes('blocked') || data.message.toLowerCase().includes('inactive'))) ||
+                (data.message && typeof data.message === 'object' && data.message.message && data.message.message.toLowerCase().includes('blocked'))) {
+                console.log('🚫 User is blocked - Showing error message:', message);
+                showError(message);
+                // Delay redirect to allow user to see the error message
+                setTimeout(() => {
+                    console.log('🔄 Redirecting to blocked user page:', config.routes.blockedUser);
+                    navigate(config.routes.blockedUser);
+                }, 1000); // 1 seconds delay
+                return;
+            }
 
             showError(message);
             // setError(data.message);
