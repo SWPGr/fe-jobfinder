@@ -317,7 +317,7 @@ const PaymentManagement = () => {
                         Apply Filters
                     </button>
                     <button
-                        className={cx('action-button')}
+                        className={cx('action-button-clear')}
                         onClick={handleClearFilters}
                     >
                         Clear Filters

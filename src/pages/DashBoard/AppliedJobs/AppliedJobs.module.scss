@@ -288,10 +288,10 @@
     min-width: 130px;
     height: 40px;
     padding: 8px 38px 8px 14px; /* padding-right lớn để icon không bị sát */
-    border-radius: 6px;
+    border-radius: 3px;
     border: 1.5px solid #bfc9d9;
     background: #fff;
-    font-size: 15px;
+    font-size: 13px;
     color: #222;
     transition: border 0.2s;
     box-shadow: none;
@@ -313,7 +313,7 @@
 
 .filterSelect option {
     padding: 10px 16px;
-    font-size: 15px;
+    font-size: 12px;
     color: #222;
     background: #fff;
 }
@@ -328,8 +328,8 @@
     color: #fff;
     border: none;
     font-weight: 600;
-    font-size: 15px;
-    border-radius: 8px;
+    font-size: 13px;
+    border-radius: 3px;
     padding: 0 2.2rem;
     height: 40px;
     min-width: 100px;
@@ -349,8 +349,8 @@
     color: #dc2626;
     border: 1.5px solid #dc2626;
     font-weight: 600;
-    font-size: 15px;
-    border-radius: 8px;
+    font-size: 12px;
+    border-radius: 3px;
     padding: 0 22px;
     height: 40px;
     margin-left: 2px;
