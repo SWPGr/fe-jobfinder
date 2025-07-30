@@ -574,7 +574,7 @@ Company:
 
 
         {/*Report Button  */}
-        {isJOB_SEEKER && <ReportButton />}
+        {id && isJOB_SEEKER && <ReportButton />}
       </div>
 
       {/* Bên phải */}
@@ -677,9 +677,9 @@ Company:
             {formData.company?.companyName || formData.company?.name}
           </div>
           <p
-  className={cx('company-info__desc')}
-  dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
-></p>
+            className={cx('company-info__desc')}
+            dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
+          ></p>
           <div className={cx('company-details')}>
             {[
               { label: 'Founded in:', key: 'founded' },
