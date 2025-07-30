@@ -5,16 +5,29 @@ function transformJobData(rawJob) {
         id: rawJob.id,
         companyName: rawJob.employer?.fullName || rawJob.employer?.email || 'Unknown',
         companyLogo: rawJob.employer?.avatarUrl,
-        companyAddress: rawJob.location || 'Địa chỉ không xác định',
+        companyAddress: rawJob.location || 'Unknown',
         jobTitle: rawJob.title,
-        workTime: rawJob.jobType?.name || 'Không rõ',
+        workTime: rawJob.jobType?.name || 'Unknown',
         salary: formatSalary(rawJob.salaryMin, rawJob.salaryMax),
+        salaryMin: rawJob.salaryMin,
+        salaryMax: rawJob.salaryMax,
         timeAgo: timeAgo(rawJob.createdAt),
         remainDay: getTimeUntilDueDate(rawJob?.expiredDate),
-        experience: rawJob.experience?.name || 'Không rõ',
+        expiredDate: rawJob?.expiredDate,
+        experience: rawJob.experience?.name || 'Unknown',
         isSave: rawJob.isSave,
-        job_description: rawJob.description || 'Không rõ',
-        responsibility: rawJob.responsibility || 'Không rõ',
+        job_description: rawJob.description || 'Unknown',
+        responsibility: rawJob.responsibility || 'Unknown',
+        jobApplicationCounts: rawJob?.jobApplicationCounts || 0,
+        isActive: rawJob.active,
+        jobLevel: rawJob.jobLevel?.name || 'Unknown',
+        jobType: rawJob.jobType?.name || 'Unknown',
+        category: rawJob.category?.name || 'Unknown',
+        vacancy: rawJob.vacancy,
+        education: rawJob.education?.name || 'Unknown',
+        company: {
+            ...rawJob.employer
+        }
     };
 }
 

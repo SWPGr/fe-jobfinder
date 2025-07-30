@@ -4,43 +4,45 @@ import classNames from 'classnames/bind';
 import styles from './JobDetail.module.scss';
 import EmployerService from '~/services/EmployerService';
 import {
-  IconBriefcase,
   IconWallet,
   IconMapPin,
   IconUsers,
-  IconBrightnessAuto,
   IconBookmarkFilled,
   IconBookmark,
+  IconClockHour4,
+  IconBrandStackoverflow,
+  IconStackPop,
+  IconCategory,
+  IconBooks,
+  IconGrain,
+
 } from '@tabler/icons-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import SimpleRichTextEditor from 'src/components/RichTextEditor/RichTextEditor.js';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+
 import { useWindowScroll } from '@mantine/hooks';
 
 import ApplyButton from '~/components/Button/ApplyButton';
 import { useAuth } from '~/context/AuthContext';
 import { useNotification } from '~/hooks';
 import ReportButton from '~/components/Button/ReportButton';
+import { format } from '~/utils';
+import { useLoading } from '~/context/LoadingContext';
+import { useNavigate } from 'react-router-dom';
+import { jobService } from '~/services';
+import { validator } from '~/utils';
 
 const cx = classNames.bind(styles);
 
 const noop = () => undefined;
-
-// Helper: Lấy object theo id hoặc name từ danh sách phụ trợ
-const findObjectByIdOrName = (list, val) => {
-  if (!val) return null;
-  if (typeof val === 'object' && val !== null) return val;
-  const valStr = val.toString();
-  return list.find((item) => item.id?.toString() === valStr || item.name === valStr) || null;
-};
 
 const JobDetail = ({
   job = null,
   editable = false,
   onSave = noop,
   onCancel = noop,
-  isApplied = false, // New prop, default to false, hide Apply and Save when true
+  isApplied = false,
+  closeModal
 }) => {
   const { id } = useParams();
   const { user } = useAuth();
@@ -48,134 +50,70 @@ const JobDetail = ({
 
   const [save, setSave] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [loadingAuxiliary, setLoadingAuxiliary] = useState(true);
-  const [loadingJob, setLoadingJob] = useState(true);
   const [formData, setFormData] = useState(null);
   const jobDetailRef = useRef(null);
+  const { showLoading, hideLoading } = useLoading();
 
   const IconComponent = save ? IconBookmarkFilled : IconBookmark;
-  const [, scrollTo] = useWindowScroll();
+  const [scroll, scrollTo] = useWindowScroll();
   const { showSuccess, showError } = useNotification();
-
-  // Dữ liệu phụ trợ cho dropdown
-  const [educations, setEducations] = useState([]);
-  const [jobTypes, setJobTypes] = useState([]);
-  const [jobLevels, setJobLevels] = useState([]);
-  const [experiences, setExperiences] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [salaryError, setSalaryError] = useState('');
-
-  // Load dữ liệu phụ trợ
-  useEffect(() => {
-    const fetchAuxiliaryData = async () => {
-      try {
-        const educationRes = await EmployerService.fetchEducationFake();
-        const jobTypesRes = await EmployerService.fetchJobTypesFake();
-        const jobLevelsRes = await EmployerService.fetchJobLevelFake();
-        const experiencesRes = await EmployerService.fetchExperienceFake();
-        const categoriesRes = await EmployerService.fetchCategoriesFake();
-
-        setEducations(educationRes.result || educationRes || []);
-        setJobTypes(jobTypesRes.result || jobTypesRes || []);
-        setJobLevels(jobLevelsRes.result || jobLevelsRes || []);
-        setExperiences(experiencesRes.result || experiencesRes || []);
-        setCategories(categoriesRes.result || categoriesRes || []);
-      } catch (error) {
-        console.error('Error fetching auxiliary data:', error);
-      } finally {
-        setLoadingAuxiliary(false);
-      }
-    };
-    fetchAuxiliaryData();
-  }, []);
-
-  // Chuẩn hóa dữ liệu job
-  const normalizeData = (data) => {
-    if (!data) return null;
-
-    return {
-      ...data,
-      salaryMin: data.salaryMin ?? '',
-      salaryMax: data.salaryMax ?? '',
-      email: data.email || data.employer?.email || '',
-      roleName: data.roleName || data.employer?.roleName || '',
-      phone: data.phone || data.employer?.phone || '',
-      education: findObjectByIdOrName(educations, data.education),
-      experience: findObjectByIdOrName(experiences, data.experience),
-      jobLevel: findObjectByIdOrName(jobLevels, data.jobLevel),
-      jobType: findObjectByIdOrName(jobTypes, data.jobType),
-      responsibility: data.responsibility || data.responsibility || '',
-      description: data.description || data.jobDescription || '',
-      company: {
-        avatarUrl: data.company?.avatarUrl || data.employer?.avatarUrl || '',
-        logoUrl: data.company?.logoUrl || data.employer?.avatarUrl || '',
-        companyName: data.company?.companyName || data.company?.name || data.employer?.companyName || '',
-        description: data.company?.description || data.employer?.description || '',
-        founded: data.company?.founded || data.employer?.yearOfEstablishment || '',
-        organization: data.company?.organization || data.employer?.organizationType || '',
-        size: data.company?.size || data.employer?.teamSize || '',
-        phone: data.company?.phone || data.employer?.phone || '',
-        email: data.company?.email || data.employer?.email || '',
-        website: data.company?.website || data.employer?.website || '',
-      },
-      badges: data.badges || null,
-      tags: data.tags || '',
-      jobRole: data.jobRole || '',
-      contactUrl: data.contactUrl || '',
-      createdAt: data.createdAt || data.postedAt || '',
-    };
-  };
+  const navigate = useNavigate();
+  const [options, setOptions] = useState({})
+  const [isNegotiable, setIsNegotiable] = useState(false);
 
   const validateSalaryRange = () => {
     const min = Number(formData.salaryMin) || 0;
     const max = Number(formData.salaryMax) || 0;
-
     if (min >= max) {
       showError('Minimum Salary must be less than Maximum Salary');
       return false;
     }
     return true;
   };
+
   useEffect(() => {
-    if (loadingAuxiliary) return;
-
     const fetchJob = async () => {
-      if (!id && !job) {
-        setFormData(null);
-        setLoadingJob(false);
-        return;
-      }
-
-      setLoadingJob(true);
-
       try {
-        let jobData;
-        if (job) {
-          jobData = job;
-        } else {
-          const response = await EmployerService.getJobDetail(id);
-          jobData = response.data;
-        }
-        console.log('Fetched job data:', jobData);
+        showLoading();
+        console.log('job', id);
 
-        setFormData(normalizeData(jobData));
+        let jobData = await EmployerService.getJobDetail(id || job?.id);
+        const input = format.transformJobData(jobData);
+        if (input.salaryMax === null && input.salaryMin === null) {
+          setIsNegotiable(true);
+        }
+
+        hideLoading();
+        setFormData(format.transformJobData(jobData));
       } catch (error) {
-        console.error('Error fetching job detail:', error);
+        hideLoading();
         setFormData(null);
-      } finally {
-        setLoadingJob(false);
+        showError('Job not found');
+        navigate('/')
       }
     };
-
     fetchJob();
-  }, [id, job, loadingAuxiliary, educations, jobTypes, jobLevels, experiences]);
+  }, [id]);
 
-  // Scroll to top when opening
   useEffect(() => {
+    if (editable) {
+      const fetchAllOptions = async () => {
+        try {
+          const response = await jobService.getAllOptions();
+          setOptions(response)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      fetchAllOptions();
+      if (jobDetailRef.current) {
+        jobDetailRef.current.focus();
+      }
+    }
     scrollTo({ y: 0 });
-  }, [scrollTo]);
+  }, []);
 
-  // Close modal on outside click (if editable)
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (jobDetailRef.current && !jobDetailRef.current.contains(e.target) && editable) {
@@ -186,91 +124,14 @@ const JobDetail = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [editable, onCancel]);
 
-  if (loadingAuxiliary || loadingJob || !formData) return <div>Loading...</div>;
+  if (!formData) return <div>Loading...</div>;
 
-  // Handle form changes
-  const handleChange = (e, section = null) => {
-    const { name, value } = e.target;
-    if (section === 'description' || section === 'responsibility') {
-      setFormData((prev) => ({ ...prev, [section]: value }));
-      return;
-    }
-
-    if (name?.startsWith('company.')) {
-      const key = name.split('.')[1];
-      setFormData((prev) => ({
-        ...prev,
-        company: { ...prev.company, [key]: value },
-      }));
-      return;
-    }
-    if (name === 'salaryMin' || name === 'salaryMax') {
-      const min = name === 'salaryMin' ? Number(value) : Number(formData.salaryMin || 0);
-      const max = name === 'salaryMax' ? Number(value) : Number(formData.salaryMax || 0);
-
-      if (min >= max && max !== 0) {
-        setSalaryError('Maximum Salary must be greater than Minimum Salary');
-      } else {
-        setSalaryError('');
-      }
-    }
-
-    if (section === 'description' || section === 'responsibility') {
-      setFormData((prev) => ({ ...prev, [section]: value }));
-      return;
-    }
-
-    if (name?.startsWith('company.')) {
-      const key = name.split('.')[1];
-      setFormData((prev) => ({
-        ...prev,
-        company: { ...prev.company, [key]: value },
-      }));
-      return;
-    }
-
-    // Các select trường object map theo id
-    if (name === 'education') {
-      const selected = educations.find((e) => e.id === Number(value));
-      setFormData((prev) => ({ ...prev, education: selected || { id: Number(value) } }));
-      return;
-    }
-    if (name === 'experience') {
-      const selected = experiences.find((e) => e.id === Number(value));
-      setFormData((prev) => ({ ...prev, experience: selected || { id: Number(value) } }));
-      return;
-    }
-    if (name === 'jobLevel') {
-      const selected = jobLevels.find((j) => j.id === Number(value));
-      setFormData((prev) => ({ ...prev, jobLevel: selected || { id: Number(value) } }));
-      return;
-    }
-    if (name === 'jobType') {
-      console.log('Job Type changed:', value);
-
-      const selected = jobTypes.find((j) => j.id === Number(value));
-      setFormData((prev) => ({ ...prev, jobType: selected || { id: Number(value) } }));
-      return;
-    }
-
-    // Các input bình thường
-    if (name) {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  // Tạo job mới
   const handleCreateJob = async () => {
-    if (salaryError) {
-      showError('Please fix salary errors before saving');
-      return;
-    }
-    if (!validateSalaryRange()) return;
-
+    if (salaryError || !validateSalaryRange()) return;
     setLoading(true);
     try {
       const created = await EmployerService.fetchPostJobFake(formData);
-      setFormData(normalizeData(created));
+      setFormData(created);
       showSuccess('Job created successfully');
     } catch (error) {
       showError('Failed to create job');
@@ -280,49 +141,43 @@ const JobDetail = ({
     }
   };
 
-  // Cập nhật job
-  const handleUpdateJob = async () => {
-    if (!formData.id) {
-      showError('Job ID missing for update');
-      return;
-    }
 
-    if (salaryError) {
-      showError('Please fix salary errors before saving');
-      return;
-    }
-    if (!validateSalaryRange()) return;
 
-    setLoading(true);
+  const handleRepostJob = async () => {
     try {
-      const payload = {
-        ...formData,
-        education: formData.education?.id || null,
-        experience: formData.experience?.id || null,
-        jobTypeId: formData.jobType?.id || null,
-        jobTypeName: formData.jobType?.name || null,
-        jobLevelId: formData.jobLevel?.id || null,
-        jobLevelName: formData.jobLevel?.name || null,
-        category: formData.category?.id || null,
-        company: { ...formData.company },
+      if (validator.validationText('Job title', formData.jobTitle) || validator.validationTextArea('Job description', formData.job_description) || validator.validationText('Responsibility', formData.responsibility) || validator.validateFutureDate(formData.expiredDate)) {
+        showError(validator.validationText('Job title', formData.jobTitle) || validator.validationTextArea('Job description', formData.job_description) || validator.validationText('Responsibility', formData.responsibility) || validator.validateFutureDate(formData.expiredDate))
+        return;
+      }
+      const transformedJob = {
+        title: formData.jobTitle,
+        description: (formData.job_description),
+        location: formData.companyAddress,
+        salaryMin: (formData.salaryMin),
+        salaryMax: (formData.salaryMax),
+        categoryId: (getIdFromOptions(options.categories, formData.category)),
+        jobLevelId: (getIdFromOptions(options.jobLevels, formData.jobLevel)),
+        jobTypeId: (getIdFromOptions(options.jobTypes, formData.jobType)),
+        educationId: (getIdFromOptions(options.educations, formData.education)),
+        experienceId: (getIdFromOptions(options.experiences, formData.experience)),
+        vacancy: (formData.vacancy),
+        responsibility: (formData.responsibility),
+        expiredDate: formData.expiredDate.split('T')[0], // hoặc dùng dayjs để format nếu cần
       };
-      delete payload.createdAt;
-      delete payload.badges;
-      delete payload.expiredDate;
+      console.log('payload', transformedJob);
+      showLoading();
+      await jobService.createJob(transformedJob);
+      console.log('input', transformedJob);
+      hideLoading();
+      closeModal();
 
-      const updated = await EmployerService.updateJob(formData.id, payload);
-      setFormData(normalizeData(updated.data || formData));
-      showSuccess('Job updated successfully');
-      if (onSave) onSave(formData);
+      showSuccess('Repost job successfully');
     } catch (error) {
-      showError('Failed to update job');
-      console.error(error);
-    } finally {
-      setLoading(false);
+      hideLoading();
+      showError('Error repost job');
     }
-  };
+  }
 
-  // Lưu / bỏ lưu job
   const handleSaveJob = async () => {
     try {
       setSave(true);
@@ -343,50 +198,54 @@ const JobDetail = ({
     }
   };
 
-  // Tải chi tiết job dạng zip
-  const handleDownloadJobDetails = async () => {
-    const zip = new JSZip();
+  const handleChange = (e) => {
+    const { name, value } = e.target;
 
-    const jobContent = `
-  Job Title: ${formData.title || formData.jobTitle || ''}
-  Tags: ${formData.tags || ''}
-  Job Role: ${formData.jobRole || ''}
-  Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''} ${formData.salaryType || ''}
-  Education: ${formData.education?.name || ''}
-  Experience: ${formData.experience?.name || ''}
-  Job Type: ${formData.jobType?.name || ''}
-  Vacancies: ${formData.vacancy || ''}
-  Expiration Date: ${formData.expiredDate || ''}
-  Job Level: ${formData.jobLevel?.name || ''}
-  Contact URL: ${formData.contactUrl || ''}
-  Phone: ${formData.phone || ''}
-  Email: ${formData.email || ''}
-  Job Description: ${formData.description || ''}
-  Responsibilities: ${formData.responsibility || ''}
-  Overview:
-  Posted: ${formData.createdAt ? new Date(formData.createdAt).toLocaleDateString() : ''}
-  Education: ${formData.education?.name || ''}
-  Salary: ${formData.salaryMin || ''} - ${formData.salaryMax || ''}
-  Location: ${formData.location || ''}
-  Job Type: ${formData.jobType?.name || ''}
-  Experience: ${formData.experience?.name || ''}
-  Vacancies: ${formData.vacancy || ''}
-  Job Level: ${formData.jobLevel?.name || ''}
-Company:
-  Name: ${formData.company?.companyName || formData.company?.name || ''}
-  Description: ${formData.company?.description || ''}
-  Founded: ${formData.company?.founded || ''}
-  Organization: ${formData.company?.organization || ''}
-  Size: ${formData.company?.size || ''}
-  Phone: ${formData.company?.phone || ''}
-  Email: ${formData.company?.email || ''}
-  Website: ${formData.company?.website || ''}
-    `;
-
-    zip.file(`${formData.title || formData.jobTitle || 'job'}_details.txt`, jobContent);
-    const zipBlob = await zip.generateAsync({ type: 'blob' });
-    saveAs(zipBlob, `${formData.title || formData.jobTitle || 'job'}_details.zip`);
+    if (name === 'expiredDate') {
+      const formattedValue = value ? `${value}T00:00:00` : '';
+      setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
+
+  const handleChangeRichText = (name, value) => {
+    // console.log(name, value);
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  function singularize(word) {
+    if (typeof word !== 'string') return word;
+
+    // Trường hợp bất quy tắc phổ biến
+    if (word.endsWith('ies')) {
+      return word.slice(0, -3) + 'y'; // categories -> category
+    }
+
+    // Trường hợp kết thúc bằng 'sses' (processes → process)
+    if (word.endsWith('sses')) {
+      return word.slice(0, -2); // giữ lại "ss", bỏ "es"
+    }
+    if (word.endsWith('ss')) {
+      return word;
+    }
+
+    // Trường hợp thông thường kết thúc bằng 's' (jobs → job)
+    if (word.endsWith('s') && word.length > 1) {
+      return word.slice(0, -1);
+    }
+    // console.log(word);
+
+
+    return word;
+  }
+
+  function getIdFromOptions(options = [], value = '') {
+    if (!value || !Array.isArray(options)) return value;
+
+    const match = options.find((opt) => opt.name === value);
+    return match ? match.id : value;
+  }
+
 
   return (
     <div className={cx('container', { 'editable-container': editable })} ref={jobDetailRef}>
@@ -395,20 +254,19 @@ Company:
         <div className={cx('header')}>
           <img
             src={
-              formData.company?.avatarUrl ||
-              formData.company?.logoUrl ||
+              formData.companyLogo ||
               'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/120px-Instagram_logo_2016.svg.png'
             }
-            alt={formData.company?.companyName || formData.company?.name || 'Company Logo'}
+            alt={formData.company?.companyName || 'Company Logo'}
             className={cx('logo')}
           />
           <div className={cx('job-info')}>
             {editable ? (
               <input
                 className={cx('job-info__title', 'job-title')}
-                name="title"
-                value={formData.title || ''}
-                onChange={handleChange}
+                name="jobTitle"
+                value={formData?.title || formData?.jobTitle}
+                onChange={(e) => handleChange(e)}
               />
             ) : (
               <div className={cx('job-info__title')}>
@@ -419,11 +277,10 @@ Company:
                       Featured
                     </span>
                   )}
-                  {formData.badges?.fulltime && (
-                    <span className={cx('job-info__badge', 'job-info__badge--fulltime')}>
-                      {formData.badges.fulltime}
-                    </span>
-                  )}
+                  <span className={cx('job-info__badge', 'job-info__badge--fulltime')}>
+                    {formData.workTime}
+                  </span>
+
                 </div>
                 {!editable &&
                   !isApplied &&
@@ -446,83 +303,7 @@ Company:
                   )}
               </div>
             )}
-            {/* <div className={cx('contact')}>
-              {editable ? (
-                <>
-                  <input
-                    type="text"
-                    name="contactUrl"
-                    value={formData.contactUrl || ''}
-                    onChange={handleChange}
-                    className={cx('contact__link')}
-                  />
-                  <input
-                    type="text"
-                    name="phone"
-                    value={formData.phone || ''}
-                    onChange={handleChange}
-                    className={cx('editable-input')}
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email || ''}
-                    onChange={handleChange}
-                    className={cx('editable-input')}
-                  />
-                </>
-              ) : (
-                <>
-                  <a
-                    href={formData.contactUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={cx('contact__link')}
-                  >
-                    <IconCirclesRelation className={cx('contact__icon')} />
-                    {formData.contactUrl}
-                  </a>
-                  <span className={cx('contact__phone')}>
-                    <IconPhone className={cx('contact__icon')} /> {formData.phone}
-                  </span>
-                  <span className={cx('contact__email')}>
-                    <IconMailOpened className={cx('contact__icon')} /> {formData.email}
-                  </span>
-                </>
-              )}
-            </div> */}
-            {/* {editable ? (
-              <>
-                <div className={cx('inputgroup')}>
-                  <label>Tags:</label>
-                  <input
-                    type="text"
-                    name="tags"
-                    value={formData.tags || ''}
-                    onChange={handleChange}
-                    placeholder="Job keyword, tags etc..."
-                  />
-                </div>
-                <div className={cx('inputgroup')}>
-                  <label>Job Role:</label>
-                  <select name="jobRole" value={formData.jobRole || ''} onChange={handleChange}>
-                    <option value="">Select...</option>
-                    <option value="Designer">Designer</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Senior">Senior</option>
-                  </select>
-                </div>
-              </>
-            ) : (
-              <div className={cx('additional-info')}>
-                <p>
-                  <strong>Tags:</strong> {formData.tags}
-                </p>
-                <p>
-                  <strong>Job Role:</strong> {formData.jobRole}
-                </p>
-              </div>
-            )} */}
+
           </div>
         </div>
 
@@ -532,14 +313,14 @@ Company:
           {editable ? (
             <SimpleRichTextEditor
               placeholder="Add your job description..."
-              onChange={(value) => handleChange({ target: { value } }, 'description')}
-              content={formData.description || ''}
-              value={formData.description || ''}
+              onChange={(value) => handleChangeRichText('job_description', value)}
+              content={formData.job_description || ''}
+              value={formData.job_description || ''}
             />
           ) : (
             <div
               className={cx('job-description__content')}
-              dangerouslySetInnerHTML={{ __html: formData.description || '' }}
+              dangerouslySetInnerHTML={{ __html: formData.job_description || '' }}
             />
           )}
         </div>
@@ -550,7 +331,7 @@ Company:
           {editable ? (
             <SimpleRichTextEditor
               placeholder="Add your job responsibilities..."
-              onChange={(value) => handleChange({ target: { value } }, 'responsibility')}
+              onChange={(value) => handleChangeRichText('responsibility', value)}
               content={formData.responsibility || ''}
               value={formData.responsibility || ''}
             />
@@ -583,50 +364,108 @@ Company:
           <div className={cx('job-overview__title')}>Job Overview</div>
           <div className={cx('job-overview__items', !editable && 'editable')}>
             {[
+              ...((!isNegotiable || editable)
+                ? [
+                  {
+                    key: 'salaryMin',
+                    label: 'Minimum Salary',
+                    icon: <IconWallet />,
+                    render: `${formData?.salaryMin}`,
+                  },
+                  {
+                    key: 'salaryMax',
+                    label: 'Maximum Salary',
+                    icon: <IconWallet />,
+                    render: `${formData?.salaryMax}`,
+                  },
+                ]
+                : [
+                  {
+                    key: 'salary',
+                    label: 'Salary',
+                    icon: <IconWallet />,
+                    render: `${formData?.salaryMin}`,
+                  },
+                ]),
               {
-                key: 'salaryMin',
-                label: 'Minimum Salary',
-                icon: <IconWallet />,
-                render: () => `${formData.salaryMin || ''}`,
-              },
-              {
-                key: 'salaryMax',
-                label: 'Maxmimum Salary',
-                icon: <IconWallet />,
-                render: () => `${formData.salaryMax || ''}`,
-              },
-              {
-                key: 'location',
+                key: 'companyAddress',
                 label: 'Location',
                 icon: <IconMapPin />,
-              },
-              {
-                key: 'jobType',
-                label: 'Job Type',
-                icon: <IconBriefcase />,
-                options: jobTypes,
+                render: `${formData?.companyAddress}`,
               },
               {
                 key: 'vacancy',
                 label: 'Vacancies',
                 icon: <IconUsers />,
+                render: `${formData?.vacancy || ''}`,
+              },
+              {
+                key: 'expiredDate',
+                label: 'Expired Date',
+                icon: <IconClockHour4 />,
+                render: `${formData.expiredDate || ''}`,
+              },
+              {
+                key: 'jobType',
+                label: 'Job Type',
+                icon: <IconBrandStackoverflow />,
+                options: options.jobTypes,
+                render: `${options.jobTypes || ''}`,
               },
               {
                 key: 'jobLevel',
                 label: 'Job Level',
-                icon: <IconBrightnessAuto />,
-                options: jobLevels,
+                icon: <IconStackPop />,
+                options: options.jobLevels,
+                render: `${options.jobLevels || ''}`,
               },
+              {
+                key: 'category',
+                label: 'Category',
+                icon: <IconCategory />,
+                options: options.categories,
+                render: `${options.categories || ''}`,
+              },
+              {
+                key: 'education',
+                label: 'Education',
+                icon: <IconBooks />,
+                options: options.educations,
+                render: `${options.educations || ''}`,
+              },
+              {
+                key: 'experience',
+                label: 'Experience',
+                icon: <IconGrain />,
+                options: options.experiences,
+                render: `${options.experiences || ''}`,
+              },
+
             ].map(({ key, label, icon, options, render }) => (
               <div key={key} className={cx('overview-item')}>
                 <span className={cx('overview-item__icon')}>{icon}</span>
                 <div className={cx('overview-item__content', editable && 'editable_content')}>
                   <p className={cx('overview-item__label')}>{label}:</p>
                   {editable ? (
-                    options ? (
+                    key === 'expiredDate' ? (
+                      <input
+                        type="date"
+                        name="expiredDate"
+                        value={formData.expiredDate ? formData.expiredDate.slice(0, 10) : ''}
+                        onChange={(e) => {
+                          const selectedDate = e.target.value;
+                          const formattedDate = selectedDate ? `${selectedDate}T00:00:00` : '';
+                          setFormData((prev) => ({
+                            ...prev,
+                            expiredDate: formattedDate,
+                          }));
+                        }}
+                        className={cx('editable-input', 'overview-item__value')}
+                      />
+                    ) : options ? (
                       <select
                         name={key}
-                        value={formData[key]?.id || ''}
+                        value={getIdFromOptions(options, formData[key])}
                         onChange={handleChange}
                         className={cx('editable-input', 'overview-item__value')}
                       >
@@ -637,21 +476,12 @@ Company:
                           </option>
                         ))}
                       </select>
-                    ) : key === 'vacancy' ? (
-                      <input
-                        name={key}
-                        value={formData[key] || ''}
-                        onChange={handleChange}
-                        className={cx('editable-input', 'overview-item__value')}
-                      />
                     ) : (
                       <input
                         type={
                           key === 'salaryMin' || key === 'salaryMax' || key === 'vacancy'
                             ? 'number'
-                            : key === 'expiredDate'
-                              ? 'date'
-                              : 'text'
+                            : 'text'
                         }
                         name={key}
                         value={formData[key] || ''}
@@ -661,29 +491,24 @@ Company:
                     )
                   ) : (
                     <strong className={cx('overview-item__value')}>
-                      {
-                        render
-                          ? render(formData[key])
-                          : formData[key]?.name || formData[key] || ''}
+                      {formData[singularize(key)]}
                     </strong>
                   )}
                 </div>
               </div>
             ))}
+
           </div>
         </div>
         {!editable && <div className={cx('company-info')}>
           <div className={cx('company-info__title')}>
-            {formData.company?.companyName || formData.company?.name}
+            {formData.companyName || formData.company?.name}
           </div>
-          <p
-            className={cx('company-info__desc')}
-            dangerouslySetInnerHTML={{ __html: formData.company?.description || '' }}
-          ></p>
+
           <div className={cx('company-details')}>
             {[
-              { label: 'Founded in:', key: 'founded' },
-              { label: 'Company size:', key: 'size' },
+              { label: 'Founded in:', key: 'yearOfEstablishment' },
+              { label: 'Company size:', key: 'teamSize' },
               { label: 'Phone:', key: 'phone' },
               { label: 'Email:', key: 'email' },
               { label: 'Website:', key: 'website' },
@@ -755,8 +580,9 @@ Company:
               </button>
             ) : (
               <>
-                <button onClick={handleUpdateJob} className={cx('save-btn')} disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Changes'}
+
+                <button onClick={handleRepostJob} className={cx('save-btn')} disabled={loading}>
+                  {loading ? 'Saving...' : 'Repost job'}
                 </button>
                 <button
                   onClick={onCancel}
@@ -770,10 +596,6 @@ Company:
             )}
           </div>
         )}
-
-        <button onClick={handleDownloadJobDetails} className={cx('apply-btn')}>
-          Download Job Details
-        </button>
       </div>
     </div>
   );

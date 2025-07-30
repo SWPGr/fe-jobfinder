@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 import { LoadingOverlay } from '@mantine/core';
 
 const LoadingContext = createContext();
@@ -6,8 +6,8 @@ const LoadingContext = createContext();
 export function LoadingProvider({ children }) {
     const [visible, setVisible] = useState(false);
 
-    const showLoading = () => setVisible(true);
-    const hideLoading = () => setVisible(false);
+    const showLoading = useCallback(() => setVisible(true), []);
+    const hideLoading = useCallback(() => setVisible(false), []);
 
     return (
         <LoadingContext.Provider value={{ visible, showLoading, hideLoading }}>
