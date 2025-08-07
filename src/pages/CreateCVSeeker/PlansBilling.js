@@ -22,7 +22,7 @@ const PlansBilling = () => {
 
     const form = useForm({
         initialValues: {
-            paymentStatus: 'SUCCESS',
+            paymentStatus: 'PAID',
             pageNumber: Number(searchParams.get('pageNumber')) || 1,
             fromDate: searchParams.get('fromDate') || '',
             toDate: searchParams.get('toDate') || '',

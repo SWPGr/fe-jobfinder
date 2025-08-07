@@ -133,6 +133,7 @@ const JobApplications = ({ jobId }) => {
     experience: "",
     education: "",
   });
+  const [loading, setLoading] = useState(false);
 
   // state lưu options động
   const [educationOptions, setEducationOptions] = useState([]);
@@ -274,7 +275,7 @@ const JobApplications = ({ jobId }) => {
 
   const handleSelect = (app) => {
     if (!app.applicationId || isNaN(Number(app.applicationId))) {
-      alert("No valid application ID found.");
+      showError("No valid application ID found.");
       return;
     }
     setSelectedApplicationId(app.applicationId);
@@ -286,7 +287,7 @@ const JobApplications = ({ jobId }) => {
     if (app.resumeUrl) {
       window.open(app.resumeUrl, "_blank");
     } else {
-      alert(`CV of ${app.fullName} is not available.`);
+      showWarning(`CV of ${app.fullName} is not available.`);
     }
   };
 
@@ -294,7 +295,7 @@ const JobApplications = ({ jobId }) => {
     try {
       await EmployerService.fetchStatusJobFake(applicationId, status, message);
 
-      alert(
+      showSuccess(
         `Ứng viên đã được ${status === "ACCEPTED" ? "chấp nhận" : "từ chối"} thành công.`
       );
 
@@ -304,12 +305,12 @@ const JobApplications = ({ jobId }) => {
         )
       );
     } catch (error) {
-      alert("Không thể cập nhật trạng thái ứng viên. Vui lòng thử lại.");
+      showError("Không thể cập nhật trạng thái ứng viên. Vui lòng thử lại.");
     }
   };
 
   const handleDownloadAll = () => {
-    alert("Download all CV feature not implemented yet.");
+    showError("Download all CV feature not implemented yet.");
   };
 
   const handleFilterToggle = (e) => {

@@ -37,6 +37,8 @@ function ReportButton() {
         const fetchReportTypes = async () => {
             try {
                 const response = await reportService.getAllReportTypes();
+                console.log(response);
+
                 setReportTypes(response);
                 console.log(response);
             } catch (error) {

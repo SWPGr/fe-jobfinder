@@ -218,7 +218,7 @@ const Reports = () => {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {reports.length > 0 &&
                                     reports.map((report) => {
-                                        const TypeIcon = reportTypesIcon[report.id - 1].icon;
+                                        const TypeIcon = reportTypesIcon[report.id - 1]?.icon;
 
                                         return (
                                             <tr key={report.id} className="hover:bg-gray-50 transition-colors">
@@ -233,7 +233,7 @@ const Reports = () => {
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center gap-2">
                                                         <TypeIcon
-                                                            className={`w-6 h-6 ${reportTypesIcon[report.id - 1].color
+                                                            className={`w-6 h-6 ${reportTypesIcon[report.id - 1]?.color
                                                                 }`}
                                                         />
                                                         <span className="text-xl text-gray-900">

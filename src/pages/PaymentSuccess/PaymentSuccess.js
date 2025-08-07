@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle, Crown, Star, Zap, Shield, Download, ArrowRight, Gift } from 'lucide-react';
 import { paymentService } from '~/services';
+import { useSearchParams } from 'react-router-dom';
+import { useNotification } from '~/hooks';
+import { useNavigate } from 'react-router-dom';
 
 function PaymentSuccess() {
     const [showContent, setShowContent] = useState(false);
     const [showBenefits, setShowBenefits] = useState(false);
+    const [searchParams] = useSearchParams();
+    const orderCode = searchParams.get('orderCode');
+    const { showSuccess, showError } = useNotification();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer1 = setTimeout(() => setShowContent(true), 300);
@@ -19,10 +26,13 @@ function PaymentSuccess() {
     useEffect(() => {
         const confirmPayment = async () => {
             try {
-                await paymentService.confirmPaymentSuccess();
-                console.log('Payment confirmed successfully');
+                console.log(orderCode);
+
+                await paymentService.confirmPaymentSuccess(orderCode);
+                showSuccess('Payment confirmed successfully');
+                navigate('/');
             } catch (error) {
-                console.log(error);
+                showError(error);
             }
         }
         confirmPayment();

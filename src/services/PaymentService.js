@@ -45,13 +45,20 @@ const getAllPayments = async (params) => {
     }
 };
 
-const confirmPaymentSuccess = async () => {
+const confirmPaymentSuccess = async (data) => {
     try {
-        await post('payos/process-frontend-success');
+        const orderCode = data;
+        await post('payos/process-frontend-success', { orderCode });
         return true;
     } catch (error) {
-        throw error;
+        console.error("Error details:", {
+            message: error.message,
+            status: error.response?.status,
+            responseData: error.response?.data,
+        });
+        throw new Error(error.response?.data?.message || 'Unknown error');
     }
+
 }
 
 const paymentService = {
